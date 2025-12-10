@@ -1073,4 +1073,65 @@ footer {
     .btn-sm {
         align-self: flex-end;
     }
+    /* ===== BOTÃO GOOGLE ===== */
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #555;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.btn-google:hover {
+    background: #f8f8f8;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+    border-color: #ccc;
+}
+
+.btn-google:active {
+    transform: translateY(0);
+}
+
+.btn-google i {
+    color: #DB4437;
+    font-size: 18px;
+}
+
+/* ===== DIVISOR ===== */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.divider span {
+    padding: 0 15px;
+    background: white;
+}
+
+/* ===== ÍCONES NOS BOTÕES EXISTENTES ===== */
+.btn-primary i,
+.btn-success i {
+    margin-right: 8px;
+}
     }
