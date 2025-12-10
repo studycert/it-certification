@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyCert - Sua Plataforma de Certificação em TI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Study<span>Cert</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
+                        <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
+                        <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
+                        <li><a href="#" class="nav-link" data-target="materiais">Material de Estudo</a></li>
+                        <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons" id="authButtons">
+                    <!-- Será preenchido dinamicamente via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Modal de Login/Cadastro -->
+    <div id="modalAuth" class="modal-auth">
+        <div class="auth-container">
+            <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-header">
+                <h2>Study<span style="color: #3498db;">Cert</span></h2>
+                <p>Sua jornada começa aqui</p>
+            </div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Entrar</div>
+                <div class="auth-tab" data-tab="register">Cadastrar</div>
+            </div>
+            
+            <div id="loginForm" class="auth-form active">
+                <div id="loginMessage" class="message"></div>
+                <div class="form-group">
+                    <label for="loginEmail">E-mail</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha">
+                </div>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
+                <div class="auth-footer">
+                    <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
+                </div>
+            </div>
+            
+            <div id="registerForm" class="auth-form">
+                <div id="registerMessage" class="message"></div>
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
+                </div>
+                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Prepare-se para suas Certificações de TI</h2>
+            <p>Encontre materiais de estudo, participe de discussões no fórum e teste seus conhecimentos com nossos simulados.</p>
+            <a href="#" class="btn btn-primary" onclick="openRegister()">Começar Agora</a>
+        </div>
+    </section>
+
+    <!-- Home Content -->
+    <section id="home" class="main-content active">
+        <div class="container">
+            <div class="section-title">
+                <h2>Bem-vindo ao StudyCert</h2>
+                <p>Sua plataforma completa para preparação e certificação em Tecnologia da Informação</p>
+            </div>
+
+            <!-- Progresso do Usuário -->
+            <div id="userProgress" class="user-progress" style="display: none;">
+                <h3>Seu Progresso</h3>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <p id="progressText">Carregando progresso...</p>
+            </div>
+
+            <div class="cards-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-comments"></i> Fórum de Discussão</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Participe de discussões, tire dúvidas e compartilhe conhecimento com outros profissionais de TI.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary" data-target="forum">Acessar Fórum</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-book"></i> Material de Estudo</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Acesse guias, resumos, videoaulas e outros recursos para sua preparação.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary" data-target="materiais">Ver Materiais</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-alt"></i> Simulados</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Teste seus conhecimentos com nossos simulados e acompanhe seu progresso.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary" data-target="simulados">Ver Simulados</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>Certificações em Destaque</h2>
+                <p>As certificações mais relevantes do mercado de TI</p>
+            </div>
+
+            <div class="certifications-grid">
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Cloud</span>
+                        <h3>Azure Fundamentals</h3>
+                        <p>AZ-900: Conceitos fundamentais de nuvem e serviços Azure.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Cloud</span>
+                        <h3>AWS Cloud Practitioner</h3>
+                        <p>Fundamentos da AWS e conceitos de computação em nuvem.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Segurança</span>
+                        <h3>Security+</h3>
+                        <p>CompTIA Security+: Fundamentos de cybersecurity.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Governança</span>
+                        <h3>ITIL 4 Foundation</h3>
+                        <p>Framework de gerenciamento de serviços de TI.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificações Content -->
+    <section id="certificacoes" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nossas Certificações</h2>
+                <p>Prepare-se para as certificações mais demandadas do mercado</p>
+            </div>
+
+            <div class="certifications-grid" id="certificacoesContent">
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Cloud</span>
+                        <h3>Azure Administrator</h3>
+                        <p>AZ-104: Implementação, gerenciamento e monitoramento de ambientes Azure.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Cloud</span>
+                        <h3>AWS Solutions Architect</h3>
+                        <p>SAA-C03: Projeto e implantação de sistemas escaláveis na AWS.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Segurança</span>
+                        <h3>Cybersecurity Analyst</h3>
+                        <p>CySA+: Análise de ameaças e resposta a incidentes de segurança.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Governança</span>
+                        <h3>ITIL 4 Specialist</h3>
+                        <p>Práticas avançadas de gerenciamento de serviços de TI.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Linux</span>
+                        <h3>LPIC-1</h3>
+                        <p>Certificação Linux Professional Institute - Nível 1.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Linux</span>
+                        <h3>LPIC-2</h3>
+                        <p>Certificação Linux Professional Institute - Nível Avançado.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Rede</span>
+                        <h3>CCNA</h3>
+                        <p>Cisco Certified Network Associate: Fundamentos de redes.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Dados</span>
+                        <h3>Data Fundamentals</h3>
+                        <p>DP-900: Conceitos fundamentais de dados e analytics.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forum Content -->
+    <section id="forum" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Fórum de Discussão</h2>
+                <p>Tire dúvidas, compartilhe experiências e conecte-se com outros profissionais</p>
+            </div>
+
+            <div id="forumContent">
+                <div class="forum-container">
+                    <div class="forum-categories">
+                        <h3>Categorias</h3>
+                        <ul class="category-list" id="forumCategories">
+                            <li><a href="#">Certificações Microsoft <span class="category-count">24</span></a></li>
+                            <li><a href="#">Certificações AWS <span class="category-count">18</span></a></li>
+                            <li><a href="#">LPIC-1 e LPIC-2 <span class="category-count">15</span></a></li>
+                            <li><a href="#">ITIL e Governança <span class="category-count">12</span></a></li>
+                            <li><a href="#">Security & Cybersecurity <span class="category-count">9</span></a></li>
+                            <li><a href="#">Cloud Computing <span class="category-count">21</span></a></li>
+                            <li><a href="#">Dúvidas Gerais <span class="category-count">32</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div class="forum-posts" id="forumPosts">
+                        <div class="post">
+                            <div class="post-header">
+                                <a href="#" class="post-title">Dúvida sobre LPIC-1 - Comandos essenciais</a>
+                                <div class="post-meta">por João Silva • 2 horas atrás</div>
+                            </div>
+                            <div class="post-excerpt">
+                                <p>Estou estudando para a LPIC-1 e tenho dúvidas sobre os comandos mais importantes para o exame. Alguém tem uma lista dos comandos que mais caem?</p>
+                            </div>
+                            <div class="post-footer">
+                                <span><i class="far fa-comment"></i> 7 respostas</span>
+                                <span><i class="far fa-eye"></i> 42 visualizações</span>
+                            </div>
+                        </div>
+
+                        <div class="post">
+                            <div class="post-header">
+                                <a href="#" class="post-title">Material de estudo para ITIL 4 Foundation</a>
+                                <div class="post-meta">por Maria Santos • 1 dia atrás</div>
+                            </div>
+                            <div class="post-excerpt">
+                                <p>Alguém tem recomendações de materiais de estudo para a ITIL 4 Foundation? Estou procurando livros, videoaulas e simulados.</p>
+                            </div>
+                            <div class="post-footer">
+                                <span><i class="far fa-comment"></i> 12 respostas</span>
+                                <span><i class="far fa-eye"></i> 87 visualizações</span>
+                            </div>
+                        </div>
+
+                        <div class="post">
+                            <div class="post-header">
+                                <a href="#" class="post-title">Experiência com exame Security+</a>
+                                <div class="post-meta">por Carlos Oliveira • 3 dias atrás</div>
+                            </div>
+                            <div class="post-excerpt">
+                                <p>Acabei de fazer o exame Security+ e gostaria de compartilhar minha experiência e dar algumas dicas para quem vai fazer.</p>
+                            </div>
+                            <div class="post-footer">
+                                <span><i class="far fa-comment"></i> 23 respostas</span>
+                                <span><i class="far fa-eye"></i> 156 visualizações</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary new-post-btn" onclick="createNewPost()">Nova Discussão</button>
+        </div>
+    </section>
+
+    <!-- Study Materials Content -->
+    <section id="materiais" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Material de Estudo</h2>
+                <p>Recursos selecionados para sua preparação</p>
+            </div>
+
+            <div id="materialsContent" class="materials-grid">
+                <div class="material-card">
+                    <div class="material-icon">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="material-content">
+                        <h3>Microsoft Azure</h3>
+                        <p>Guias de estudo, resumos e recursos para certificações Azure.</p>
+                        <a href="#" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+
+                <div class="material-card">
+                    <div class="material-icon">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="material-content">
+                        <h3>Amazon AWS</h3>
+                        <p>Material para Cloud Practitioner, Solutions Architect e outras.</p>
+                        <a href="#" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+
+                <div class="material-card">
+                    <div class="material-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="material-content">
+                        <h3>LPIC-1 e LPIC-2</h3>
+                        <p>Recursos para certificações Linux Professional Institute.</p>
+                        <a href="#" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+
+                <div class="material-card">
+                    <div class="material-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="material-content">
+                        <h3>ITIL 4</h3>
+                        <p>Guias, resumos e material para certificação ITIL.</p>
+                        <a href="materiais/itil4-materiais.html" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+
+                <div class="material-card">
+                    <div class="material-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="material-content">
+                        <h3>Security+</h3>
+                        <p>Material para preparação da certificação CompTIA Security+.</p>
+                        <a href="#" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+
+                <div class="material-card">
+                    <div class="material-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="material-content">
+                        <h3>CCNA</h3>
+                        <p>Recursos para Cisco Certified Network Associate.</p>
+                        <a href="#" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 4rem;">
+                <h2>Videoaulas</h2>
+                <p>Aprenda com instrutores especializados</p>
+            </div>
+
+            <div id="videosContent" class="cards-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-play-circle"></i> LPIC-1: Comandos Essenciais</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Curso completo cobrindo todos os comandos essenciais para o exame LPIC-1.</p>
+                        <p><strong>Duração:</strong> 6 horas</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Assistir</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-play-circle"></i> ITIL 4 Foundation</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Videoaulas cobrindo o framework ITIL 4 e conceitos de gerenciamento de serviços.</p>
+                        <p><strong>Duração:</strong> 5 horas</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Assistir</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-play-circle"></i> Security+ SY0-601</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Preparação completa para o exame CompTIA Security+.</p>
+                        <p><strong>Duração:</strong> 12 horas</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Assistir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulados Content -->
+    <section id="simulados" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Simulados</h2>
+                <p>Teste seus conhecimentos e acompanhe seu progresso</p>
+            </div>
+
+            <div class="upload-area" id="uploadArea" style="display: none;">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Compartilhe Seu Simulado</h3>
+                <p>Faça upload de simulados HTML para compartilhar com a comunidade</p>
+                <input type="file" id="fileUpload" accept=".html" style="display: none;">
+                <button class="btn btn-primary" onclick="uploadSimulado()">Upload de Arquivo</button>
+            </div>
+
+            <div id="simuladosContent" class="simulados-container">
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-alt"></i> ITIL 4 Foundation</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">11 Simulados Disponíveis</span>
+                        <p>Pacote completo de simulados para certificação ITIL 4 Foundation.</p>
+                        <button class="show-simulados-btn" onclick="abrirModalSimulados()">
+                            <i class="fas fa-list"></i> Ver 11 Simulados
+                        </button>
+                    </div>
+                    <div class="card-footer">
+                        <small><strong>Progresso:</strong> 5 de 11 disponíveis • 120 questões</small>
+                    </div>
+                </div>
+                
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-server"></i> LPIC-1</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">60 questões</span>
+                        <p>Simulado para Linux Professional Institute Certification Level 1.</p>
+                        <p><strong>Tempo estimado:</strong> 90 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-shield-alt"></i> Security+</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">45 questões</span>
+                        <p>Simulado para CompTIA Security+ (SY0-601).</p>
+                        <p><strong>Tempo estimado:</strong> 90 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fab fa-aws"></i> AWS Cloud Practitioner</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">50 questões</span>
+                        <p>Simulado para AWS Certified Cloud Practitioner.</p>
+                        <p><strong>Tempo estimado:</strong> 90 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fab fa-microsoft"></i> Azure Fundamentals</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">40 questões</span>
+                        <p>Simulado para AZ-900: Azure Fundamentals.</p>
+                        <p><strong>Tempo estimado:</strong> 60 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-network-wired"></i> CCNA</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">55 questões</span>
+                        <p>Simulado para Cisco Certified Network Associate.</p>
+                        <p><strong>Tempo estimado:</strong> 90 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-database"></i> Data Fundamentals</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">35 questões</span>
+                        <p>Simulado para DP-900: Data Fundamentals.</p>
+                        <p><strong>Tempo estimado:</strong> 45 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-server"></i> LPIC-2</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">70 questões</span>
+                        <p>Simulado para Linux Professional Institute Level 2.</p>
+                        <p><strong>Tempo estimado:</strong> 120 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fab fa-aws"></i> AWS Solutions Architect</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">65 questões</span>
+                        <p>Simulado para SAA-C03: AWS Solutions Architect.</p>
+                        <p><strong>Tempo estimado:</strong> 130 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-plus-circle"></i> Adicionar Simulado</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Compartilhe seu próprio simulado com a comunidade.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="openUploadModal()">Upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal da Lista de Simulados -->
+    <div id="modalSimulados" class="modal-simulados">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> Simulados ITIL 4 Foundation</h3>
+                <button class="fechar-modal" onclick="fecharModalSimulados()">&times;</button>
+            </div>
+            
+            <div class="modal-body" id="simuladosList">
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 1 - Conceitos Básicos</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-01.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 2 - Dimensões do Serviço</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-02.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 3 - Cadeia de Valor</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-03.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 4 - Práticas Gerais</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-04.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 5 - Gerenciamento de Serviço</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-05.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 6 - Princípios Orientadores</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-06.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 7 - Melhoria Contínua</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-07.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 8 - Governança</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-08.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 9 - Modelos de Mudança</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-09.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                         <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 10 - Práticas Técnicas</span>
+                    </div>
+                <a href="simulados/simulado-itil4-10.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>                        
+                        <span class="simulado-nome">Simulado 11 - Final Completo</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-11.html" class="btn btn-primary btn-sm">Iniciar</a>                    
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <div><strong>11</strong> simulados disponíveis</div>
+                <div><strong>440</strong> questões no total</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Upload (será criado dinamicamente pelo JS) -->
+    <div id="modalUpload"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>StudyCert</h3>
+                    <p>Sua plataforma completa para preparação e certificação em Tecnologia da Informação.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Links Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" data-target="home">Início</a></li>
+                        <li><a href="#" data-target="certificacoes">Certificações</a></li>
+                        <li><a href="#" data-target="forum">Fórum</a></li>
+                        <li><a href="#" data-target="materiais">Material de Estudo</a></li>
+                        <li><a href="#" data-target="simulados">Simulados</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Certificações</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Microsoft Azure</a></li>
+                        <li><a href="#">AWS</a></li>
+                        <li><a href="#">LPIC-1 e LPIC-2</a></li>
+                        <li><a href="#">ITIL 4</a></li>
+                        <li><a href="#">Security+</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Contato</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> contato@studyCert.com</li>
+                        <li><i class="fas fa-phone"></i> (11) 9999-9999</li>
+                        <li><i class="fas fa-map-marker-alt"></i> São Paulo, SP</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2025 StudyCert. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
