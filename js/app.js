@@ -1,667 +1,630 @@
-// Configurações do Supabase
-const supabaseUrl = SUPABASE_CONFIG.url;
-const supabaseKey = SUPABASE_CONFIG.anonKey;
-
-// Inicializar Supabase
-const supabase = supabaseClient || supabase.createClient(supabaseUrl, supabaseKey);
-
-// Verificar se o Supabase foi inicializado corretamente
-if (!supabase) {
-    console.error('Erro: Supabase não foi inicializado corretamente');
-}
-
-// Variáveis globais
-let currentUser = null;
-
-// Inicializar quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', function() {
-    console.log(`${APP_CONFIG.name} v${APP_CONFIG.version} inicializando...`);
-    
-    // Inicializar aplicação
-    initApp();
-});
-
-// Inicializar aplicação
-async function initApp() {
-    try {
-        // Configurar navegação
-        setupNavigation();
-        
-        // Configurar tabs de autenticação
-        setupAuthTabs();
-        
-        // Verificar se o usuário está logado
-        await checkAuthStatus();
-        
-        // Configurar eventos
-        setupEventListeners();
-        
-        // Carregar dados iniciais
-        loadInitialData();
-        
-        console.log('Aplicação inicializada com sucesso!');
-    } catch (error) {
-        console.error('Erro ao inicializar aplicação:', error);
+// App principal - StudyCert
+class StudyCertApp {
+    constructor() {
+        this.supabase = null;
+        this.currentUser = null;
+        this.init();
     }
-}
 
-// Verificar status de autenticação
-async function checkAuthStatus() {
-    try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+    async init() {
+        console.log('StudyCert - Inicializando aplicação');
         
-        if (error) {
-            console.error('Erro ao verificar sessão:', error);
-            return;
-        }
-        
-        if (session) {
-            // Usuário está logado
-            currentUser = session.user;
-            updateUIForLoggedInUser(session.user);
-            
-            // Carregar progresso do usuário
-            loadUserProgress(session.user.id);
-            
-            // Mostrar área de upload na página de simulados
-            if (window.location.hash.includes('simulados')) {
-                showUploadArea();
-            }
-        } else {
-            // Usuário não está logado
-            currentUser = null;
-            updateUIForLoggedOutUser();
-        }
-    } catch (error) {
-        console.error('Erro ao verificar autenticação:', error);
-    }
-}
-
-// Atualizar UI para usuário logado
-function updateUIForLoggedInUser(user) {
-    const authButtons = document.getElementById('authButtons');
-    
-    if (!authButtons) return;
-    
-    const userName = user.user_metadata?.name || user.email.split('@')[0];
-    
-    authButtons.innerHTML = `
-        <div class="user-info">
-            <i class="fas fa-user-circle" style="margin-right: 8px;"></i>
-            <span class="user-name">${userName}</span>
-        </div>
-        <button class="btn btn-secondary" onclick="logout()">Sair</button>
-    `;
-    
-    // Mostrar progresso do usuário
-    const userProgress = document.getElementById('userProgress');
-    if (userProgress) {
-        userProgress.style.display = 'block';
-    }
-}
-
-// Atualizar UI para usuário não logado
-function updateUIForLoggedOutUser() {
-    const authButtons = document.getElementById('authButtons');
-    
-    if (!authButtons) return;
-    
-    authButtons.innerHTML = `
-        <button class="btn btn-primary" onclick="openAuthModal()">Entrar</button>
-        <button class="btn btn-success" onclick="openRegister()">Cadastrar</button>
-    `;
-    
-    // Esconder progresso do usuário
-    const userProgress = document.getElementById('userProgress');
-    if (userProgress) {
-        userProgress.style.display = 'none';
-    }
-    
-    // Esconder área de upload
-    const uploadArea = document.getElementById('uploadArea');
-    if (uploadArea) {
-        uploadArea.style.display = 'none';
-    }
-}
-
-// Configurar navegação
-function setupNavigation() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    const mainContents = document.querySelectorAll('.main-content');
-    const footerLinks = document.querySelectorAll('footer a[data-target]');
-    
-    // Função para mostrar seção
-    function showSection(targetId) {
-        // Remover classe active de todos os links
-        navLinks.forEach(l => l.classList.remove('active'));
-        
-        // Adicionar classe active ao link correspondente
-        const activeLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
-        if (activeLink) {
-            activeLink.classList.add('active');
-        }
-        
-        // Esconder todos os conteúdos
-        mainContents.forEach(content => {
-            content.classList.remove('active');
-        });
-        
-        // Mostrar conteúdo alvo
-        const targetContent = document.getElementById(targetId);
-        if (targetContent) {
-            targetContent.classList.add('active');
-            window.location.hash = targetId;
-            
-            // Mostrar/ocultar área de upload baseado na página
-            const uploadArea = document.getElementById('uploadArea');
-            if (uploadArea) {
-                if (targetId === 'simulados' && currentUser) {
-                    showUploadArea();
-                } else {
-                    uploadArea.style.display = 'none';
-                }
-            }
-        }
-    }
-    
-    // Adicionar evento de clique aos links de navegação
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = this.getAttribute('data-target');
-            showSection(target);
-        });
-    });
-    
-    // Adicionar evento aos links do footer
-    footerLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = this.getAttribute('data-target');
-            showSection(target);
-        });
-    });
-    
-    // Verificar hash na URL ao carregar a página
-    if (window.location.hash) {
-        const target = window.location.hash.substring(1);
-        showSection(target);
-    } else {
-        // Mostrar home por padrão
-        showSection('home');
-    }
-}
-
-// Configurar tabs de autenticação
-function setupAuthTabs() {
-    const authTabs = document.querySelectorAll('.auth-tab');
-    
-    authTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const tabName = this.getAttribute('data-tab');
-            
-            // Remover active de todas as tabs
-            authTabs.forEach(t => t.classList.remove('active'));
-            
-            // Adicionar active à tab clicada
-            this.classList.add('active');
-            
-            // Mostrar formulário correspondente
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            
-            if (tabName === 'login') {
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
+        try {
+            // Inicializar Supabase
+            if (typeof supabase !== 'undefined' && SUPABASE_CONFIG) {
+                this.supabase = window.supabase.createClient(
+                    SUPABASE_CONFIG.url,
+                    SUPABASE_CONFIG.anonKey
+                );
+                console.log('✅ Supabase configurado com sucesso!');
             } else {
-                loginForm.classList.remove('active');
-                registerForm.classList.add('active');
+                throw new Error('Configuração do Supabase não encontrada');
             }
+            
+            // Carregar navegação
+            this.loadNavigation();
+            
+            // Verificar autenticação
+            await this.checkAuth();
+            
+            // Configurar eventos
+            this.setupEventListeners();
+            
+            // Inicializar sistema de upload
+            this.initUploadSystem();
+            
+        } catch (err) {
+            console.error('❌ Erro na inicialização:', err);
+            this.showGlobalError('Erro na configuração do sistema. Por favor, recarregue a página.');
+        }
+    }
+
+    // ==================== NAVEGAÇÃO ====================
+    loadNavigation() {
+        const navLinks = document.querySelectorAll('.nav-link, .footer-links a[data-target], .btn[data-target]');
+        const mainContents = document.querySelectorAll('.main-content');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('data-target');
+                this.showSection(targetId);
+            });
         });
-    });
-}
+    }
 
-// Configurar event listeners
-function setupEventListeners() {
-    // Fechar modais ao clicar fora
-    window.addEventListener('click', function(event) {
-        const modalAuth = document.getElementById('modalAuth');
-        const modalSimulados = document.getElementById('modalSimulados');
+    showSection(sectionId) {
+        // Remover active de todos
+        document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+        document.querySelectorAll('.main-content').forEach(content => content.classList.remove('active'));
         
-        if (modalAuth && event.target === modalAuth) {
-            closeAuthModal();
+        // Adicionar active ao clicado
+        const activeLink = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
+        if (activeLink) activeLink.classList.add('active');
+        
+        // Mostrar seção correspondente
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
-        if (modalSimulados && event.target === modalSimulados) {
-            fecharModalSimulados();
-        }
-    });
-    
-    // Fechar modais com ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeAuthModal();
-            fecharModalSimulados();
-        }
-    });
-}
+    }
 
-// Carregar dados iniciais
-function loadInitialData() {
-    // Você pode usar STATIC_DATA aqui se necessário
-    console.log('Dados estáticos disponíveis:', STATIC_DATA);
-}
-
-// Abrir modal de autenticação
-function openAuthModal() {
-    const modal = document.getElementById('modalAuth');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevenir scroll
-    }
-}
-
-// Fechar modal de autenticação
-function closeAuthModal() {
-    const modal = document.getElementById('modalAuth');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto'; // Restaurar scroll
-        
-        // Limpar mensagens
-        clearAuthMessages();
-        
-        // Limpar campos (opcional)
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginPassword').value = '';
-        document.getElementById('registerName').value = '';
-        document.getElementById('registerEmail').value = '';
-        document.getElementById('registerPassword').value = '';
-    }
-}
-
-// Alternar para registro
-function openRegister() {
-    openAuthModal();
-    
-    // Ativar tab de registro
-    const registerTab = document.querySelector('.auth-tab[data-tab="register"]');
-    if (registerTab) {
-        registerTab.click();
-    }
-}
-
-// Login
-async function login() {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    const message = document.getElementById('loginMessage');
-    
-    // Validação básica
-    if (!email || !password) {
-        showMessage(message, 'Por favor, preencha todos os campos', 'error');
-        return;
-    }
-    
-    if (!validateEmail(email)) {
-        showMessage(message, 'Por favor, insira um e-mail válido', 'error');
-        return;
-    }
-    
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password: password
-        });
-        
-        if (error) {
-            showMessage(message, error.message, 'error');
-            return;
-        }
-        
-        showMessage(message, 'Login realizado com sucesso!', 'success');
-        
-        // Atualizar UI
-        updateUIForLoggedInUser(data.user);
-        
-        // Fechar modal após 1.5 segundos
-        setTimeout(() => {
-            closeAuthModal();
-        }, 1500);
-        
-    } catch (error) {
-        console.error('Erro no login:', error);
-        showMessage(message, 'Erro ao fazer login. Tente novamente.', 'error');
-    }
-}
-
-// Registro
-async function register() {
-    const name = document.getElementById('registerName').value;
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-    const message = document.getElementById('registerMessage');
-    
-    // Validação básica
-    if (!name || !email || !password) {
-        showMessage(message, 'Por favor, preencha todos os campos', 'error');
-        return;
-    }
-    
-    if (!validateEmail(email)) {
-        showMessage(message, 'Por favor, insira um e-mail válido', 'error');
-        return;
-    }
-    
-    if (password.length < 6) {
-        showMessage(message, 'A senha deve ter pelo menos 6 caracteres', 'error');
-        return;
-    }
-    
-    try {
-        const { data, error } = await supabase.auth.signUp({
-            email: email.trim(),
-            password: password,
-            options: {
-                data: {
-                    name: name.trim(),
-                    created_at: new Date().toISOString()
-                }
+    // ==================== AUTENTICAÇÃO ====================
+    async checkAuth() {
+        try {
+            if (!this.supabase) return;
+            
+            const { data, error } = await this.supabase.auth.getSession();
+            
+            if (error) throw error;
+            
+            if (data.session) {
+                this.currentUser = data.session.user;
+                console.log('👤 Usuário logado:', this.currentUser.email);
+            } else {
+                this.currentUser = null;
             }
-        });
-        
-        if (error) {
-            showMessage(message, error.message, 'error');
-            return;
+            
+            this.updateAuthUI();
+            if (this.currentUser) this.showUserProgress();
+            
+        } catch (err) {
+            console.error('❌ Erro ao verificar autenticação:', err);
+            this.updateAuthUI();
         }
-        
-        showMessage(message, 'Conta criada com sucesso! Faça login para continuar.', 'success');
-        
-        // Alternar para tab de login após 2 segundos
-        setTimeout(() => {
-            const loginTab = document.querySelector('.auth-tab[data-tab="login"]');
-            if (loginTab) {
-                loginTab.click();
-            }
-        }, 2000);
-        
-    } catch (error) {
-        console.error('Erro no registro:', error);
-        showMessage(message, 'Erro ao criar conta. Tente novamente.', 'error');
     }
-}
 
-// Logout
-async function logout() {
-    try {
-        const { error } = await supabase.auth.signOut();
+    updateAuthUI() {
+        const authButtons = document.getElementById('authButtons');
+        const uploadArea = document.getElementById('uploadArea');
         
-        if (error) {
-            console.error('Erro no logout:', error);
-            return;
-        }
-        
-        currentUser = null;
-        updateUIForLoggedOutUser();
-        
-        // Se estiver na página de simulados, recarregar para atualizar UI
-        if (window.location.hash.includes('simulados')) {
-            const navLink = document.querySelector('.nav-link[data-target="simulados"]');
-            if (navLink) {
-                navLink.click();
-            }
-        }
-        
-    } catch (error) {
-        console.error('Erro ao fazer logout:', error);
-    }
-}
-
-// Redefinir senha
-async function forgotPassword() {
-    const email = prompt('Digite seu e-mail para redefinir a senha:');
-    
-    if (!email) return;
-    
-    if (!validateEmail(email)) {
-        alert('Por favor, insira um e-mail válido.');
-        return;
-    }
-    
-    try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-            redirectTo: `${window.location.origin}/reset-password.html`,
-        });
-        
-        if (error) {
-            alert('Erro ao enviar e-mail de redefinição: ' + error.message);
+        if (this.currentUser) {
+            const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
+            const initials = displayName.substring(0, 2).toUpperCase();
+            
+            authButtons.innerHTML = `
+                <div class="user-info">
+                    <div class="user-avatar">${initials}</div>
+                    <span>${displayName}</span>
+                    <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
+                </div>
+            `;
+            
+            if (uploadArea) uploadArea.style.display = 'block';
         } else {
-            alert('E-mail de redefinição enviado com sucesso! Verifique sua caixa de entrada.');
+            authButtons.innerHTML = `
+                <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
+                <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
+            `;
+            
+            if (uploadArea) uploadArea.style.display = 'none';
         }
-    } catch (error) {
-        console.error('Erro ao redefinir senha:', error);
-        alert('Erro ao processar solicitação.');
     }
-}
 
-// Carregar progresso do usuário
-async function loadUserProgress(userId) {
-    const userProgress = document.getElementById('userProgress');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    
-    if (!userProgress || !progressFill || !progressText) return;
-    
-    try {
-        // Aqui você implementaria a lógica para buscar o progresso real do usuário
-        // Por enquanto, usaremos dados de exemplo
-        const progressPercentage = 35; // Exemplo: 35% completo
+    // Modal de Autenticação
+    openLogin(e) {
+        if (e) e.preventDefault();
+        document.getElementById('modalAuth').classList.add('active');
+        this.showAuthTab('login');
+    }
+
+    openRegister(e) {
+        if (e) e.preventDefault();
+        document.getElementById('modalAuth').classList.add('active');
+        this.showAuthTab('register');
+    }
+
+    closeAuthModal() {
+        document.getElementById('modalAuth').classList.remove('active');
+        this.clearAuthMessages();
+    }
+
+    showAuthTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
         
-        // Animar barra de progresso
-        setTimeout(() => {
-            progressFill.style.width = `${progressPercentage}%`;
-            progressText.textContent = `Você completou ${progressPercentage}% da sua jornada de estudos`;
-        }, 300);
+        document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
+        document.getElementById(`${tab}Form`).classList.add('active');
+        this.clearAuthMessages();
+    }
+
+    clearAuthMessages() {
+        const loginMsg = document.getElementById('loginMessage');
+        const registerMsg = document.getElementById('registerMessage');
         
-    } catch (error) {
-        console.error('Erro ao carregar progresso:', error);
-        progressText.textContent = 'Não foi possível carregar seu progresso';
+        if (loginMsg) {
+            loginMsg.innerHTML = '';
+            loginMsg.style.display = 'none';
+        }
+        if (registerMsg) {
+            registerMsg.innerHTML = '';
+            registerMsg.style.display = 'none';
+        }
     }
-}
 
-// Mostrar área de upload
-function showUploadArea() {
-    const uploadArea = document.getElementById('uploadArea');
-    if (uploadArea && currentUser) {
-        uploadArea.style.display = 'block';
+    async login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        if (!email || !password) {
+            this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
+            return;
+        }
+        
+        try {
+            const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            
+            this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
+            this.currentUser = data.user;
+            
+            setTimeout(() => {
+                this.closeAuthModal();
+                this.updateAuthUI();
+                this.showUserProgress();
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            }, 1500);
+            
+        } catch (error) {
+            console.error('❌ Erro no login:', error);
+            this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
+        }
     }
-}
 
-// Criar nova postagem no fórum
-function createNewPost() {
-    if (!currentUser) {
-        alert('Você precisa estar logado para criar uma nova discussão.');
-        openAuthModal();
-        return;
+    async register() {
+        const name = document.getElementById('registerName').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        
+        if (!name || !email || !password) {
+            this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
+            return;
+        }
+        
+        if (password.length < 6) {
+            this.showMessage('registerMessage', 'A senha deve ter pelo menos 6 caracteres', 'error');
+            return;
+        }
+        
+        try {
+            const { data, error } = await this.supabase.auth.signUp({
+                email,
+                password,
+                options: { data: { full_name: name } }
+            });
+            
+            if (error) throw error;
+            
+            this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
+            
+            setTimeout(() => {
+                document.getElementById('registerName').value = '';
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                this.showAuthTab('login');
+            }, 3000);
+            
+        } catch (error) {
+            console.error('❌ Erro no cadastro:', error);
+            this.showMessage('registerMessage', this.getAuthErrorMessage(error), 'error');
+        }
     }
-    
-    alert('Funcionalidade de criar nova postagem será implementada em breve!');
-}
 
-// Abrir modal de simulados
-function abrirModalSimulados() {
-    const modal = document.getElementById('modalSimulados');
-    if (modal) {
+    getAuthErrorMessage(error) {
+        if (error.message.includes('Invalid login credentials')) {
+            return '❌ Email ou senha incorretos';
+        } else if (error.message.includes('User already registered')) {
+            return '❌ Este email já está cadastrado';
+        } else if (error.message.includes('Email not confirmed')) {
+            return '❌ Confirme seu email antes de fazer login';
+        } else if (error.message.includes('Invalid API key')) {
+            return '❌ Problema de configuração do sistema';
+        } else {
+            return `❌ Erro: ${error.message}`;
+        }
+    }
+
+    showMessage(elementId, message, type) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.innerHTML = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+        }
+    }
+
+    async logout() {
+        try {
+            await this.supabase.auth.signOut();
+            this.currentUser = null;
+            this.updateAuthUI();
+            
+            const userProgress = document.getElementById('userProgress');
+            if (userProgress) userProgress.style.display = 'none';
+            
+            // Volta para a página inicial
+            this.showSection('home');
+            
+        } catch (error) {
+            console.error('❌ Erro ao fazer logout:', error);
+        }
+    }
+
+    showUserProgress() {
+        if (!this.currentUser) return;
+        
+        const progressElement = document.getElementById('userProgress');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        if (progressElement && progressFill && progressText) {
+            progressElement.style.display = 'block';
+            const progress = 45; // 45%
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `Você completou ${progress}% da sua jornada de certificação`;
+        }
+    }
+
+    // ==================== SIMULADOS ====================
+    abrirModalSimulados() {
+        const modal = document.getElementById('modalSimulados');
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
-}
 
-// Fechar modal de simulados
-function fecharModalSimulados() {
-    const modal = document.getElementById('modalSimulados');
-    if (modal) {
+    fecharModalSimulados() {
+        const modal = document.getElementById('modalSimulados');
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
     }
-}
 
-// Upload de simulado
-function openUploadModal() {
-    if (!currentUser) {
-        alert('Você precisa estar logado para fazer upload de simulados.');
-        openAuthModal();
-        return;
+    // ==================== UPLOAD SYSTEM ====================
+    initUploadSystem() {
+        console.log('📤 Sistema de upload inicializado');
+        
+        // Evento para upload de arquivo antigo (compatibilidade)
+        const fileUpload = document.getElementById('fileUpload');
+        if (fileUpload) {
+            fileUpload.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    if (file.type !== 'text/html') {
+                        alert('Por favor, selecione apenas arquivos HTML.');
+                        return;
+                    }
+                    alert(`Arquivo "${file.name}" selecionado para upload.`);
+                    console.log('Arquivo para upload:', file);
+                    e.target.value = '';
+                }
+            });
+        }
     }
-    
-    const fileInput = document.getElementById('fileUpload');
-    if (fileInput) {
-        fileInput.click();
-    }
-}
 
-// Processar upload de arquivo
-async function uploadSimulado() {
-    if (!currentUser) {
-        alert('Você precisa estar logado para fazer upload de simulados.');
-        openAuthModal();
-        return;
-    }
-    
-    const fileInput = document.getElementById('fileUpload');
-    
-    fileInput.onchange = async function(e) {
-        const file = e.target.files[0];
-        
-        if (!file) return;
-        
-        if (!file.name.endsWith('.html')) {
-            alert('Por favor, selecione apenas arquivos HTML.');
-            fileInput.value = '';
+    uploadSimulado() {
+        if (!this.currentUser) {
+            alert('Por favor, faça login para fazer upload de simulados.');
+            this.openLogin();
             return;
         }
         
-        if (file.size > 5 * 1024 * 1024) { // 5MB limite
-            alert('O arquivo é muito grande. O tamanho máximo é 5MB.');
-            fileInput.value = '';
+        document.getElementById('fileUpload').click();
+    }
+
+    // Modal de Upload
+    openUploadModal() {
+        if (!this.currentUser) {
+            alert('Por favor, faça login para fazer upload de simulados.');
+            this.openLogin();
+            return;
+        }
+        
+        if (!document.getElementById('modalUpload')) {
+            this.createUploadModal();
+        }
+        
+        document.getElementById('modalUpload').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    createUploadModal() {
+        const modalHTML = `
+            <div id="modalUpload" class="modal-upload">
+                <div class="modal-container" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-cloud-upload-alt"></i> Enviar Simulado</h3>
+                        <button class="fechar-modal" onclick="app.closeUploadModal()">&times;</button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div id="uploadMessage" class="message"></div>
+                        
+                        <div class="form-group">
+                            <label for="simuladoNome">Nome do Simulado *</label>
+                            <input type="text" id="simuladoNome" placeholder="Ex: ITIL 4 Foundation - Simulado 1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="simuladoDescricao">Descrição</label>
+                            <textarea id="simuladoDescricao" rows="3" placeholder="Descreva seu simulado..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="simuladoCategoria">Categoria</label>
+                            <select id="simuladoCategoria">
+                                <option value="ITIL">ITIL</option>
+                                <option value="Linux">Linux (LPIC)</option>
+                                <option value="AWS">AWS</option>
+                                <option value="Azure">Azure</option>
+                                <option value="Security">Security+</option>
+                                <option value="CCNA">CCNA</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                        
+                        <div class="upload-area" style="margin: 20px 0;">
+                            <i class="fas fa-file-upload"></i>
+                            <h4>Selecione o arquivo HTML</h4>
+                            <p>Arraste ou clique para selecionar um arquivo HTML</p>
+                            <input type="file" id="fileUploadInput" accept=".html,.htm" style="display: none;">
+                            <button class="btn btn-primary" onclick="document.getElementById('fileUploadInput').click()">
+                                <i class="fas fa-folder-open"></i> Selecionar Arquivo
+                            </button>
+                            <p id="fileName" style="margin-top: 10px; color: var(--gray);"></p>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>
+                                <input type="checkbox" id="termosAceitos" required>
+                                Concordo com os <a href="#" onclick="alert('Termos de uso em desenvolvimento')">termos de uso</a>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="app.closeUploadModal()">Cancelar</button>
+                        <button class="btn btn-success" onclick="app.enviarSimulado()" id="btnEnviarSimulado">
+                            <i class="fas fa-paper-plane"></i> Enviar Simulado
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Configurar eventos do modal
+        const modal = document.getElementById('modalUpload');
+        modal.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                this.closeUploadModal();
+            }
+        });
+        
+        // Evento do input de arquivo
+        const fileInput = document.getElementById('fileUploadInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    const fileNameElement = document.getElementById('fileName');
+                    if (fileNameElement) {
+                        fileNameElement.textContent = `Arquivo selecionado: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                    }
+                }
+            });
+        }
+    }
+
+    closeUploadModal() {
+        const modal = document.getElementById('modalUpload');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+        document.body.style.overflow = 'auto';
+        
+        // Limpar formulário
+        if (document.getElementById('simuladoNome')) {
+            document.getElementById('simuladoNome').value = '';
+            document.getElementById('simuladoDescricao').value = '';
+            document.getElementById('simuladoCategoria').value = 'ITIL';
+            document.getElementById('fileName').textContent = '';
+            document.getElementById('termosAceitos').checked = false;
+            document.getElementById('uploadMessage').style.display = 'none';
+        }
+    }
+
+    async enviarSimulado() {
+        const nome = document.getElementById('simuladoNome').value.trim();
+        const descricao = document.getElementById('simuladoDescricao').value.trim();
+        const categoria = document.getElementById('simuladoCategoria').value;
+        const fileInput = document.getElementById('fileUploadInput');
+        const file = fileInput.files[0];
+        
+        const uploadMessage = document.getElementById('uploadMessage');
+        const btnEnviar = document.getElementById('btnEnviarSimulado');
+        
+        // Validação
+        if (!nome) {
+            this.showUploadMessage('Por favor, insira um nome para o simulado.', 'error');
+            return;
+        }
+        
+        if (!file) {
+            this.showUploadMessage('Por favor, selecione um arquivo HTML.', 'error');
+            return;
+        }
+        
+        if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
+            this.showUploadMessage('Por favor, selecione apenas arquivos HTML.', 'error');
+            return;
+        }
+        
+        if (!document.getElementById('termosAceitos').checked) {
+            this.showUploadMessage('Você precisa aceitar os termos de uso.', 'error');
             return;
         }
         
         try {
             // Mostrar loading
-            const originalText = fileInput.nextElementSibling?.textContent;
-            if (fileInput.nextElementSibling) {
-                fileInput.nextElementSibling.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            }
+            btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            btnEnviar.disabled = true;
             
-            // Aqui você implementaria o upload real do arquivo
-            // Exemplo com Supabase Storage:
-            /*
-            const { data, error } = await supabase.storage
+            // Fazer upload para o Storage
+            const nomeArquivo = `${Date.now()}_${this.currentUser.id}_${file.name.replace(/\s+/g, '_')}`;
+            
+            const { data: uploadData, error: uploadError } = await this.supabase.storage
                 .from(APP_CONFIG.storageBucket)
-                .upload(`${currentUser.id}/${Date.now()}_${file.name}`, file);
-            */
+                .upload(nomeArquivo, file);
             
-            // Simulando upload
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            if (uploadError) throw uploadError;
             
-            alert(`Arquivo "${file.name}" enviado com sucesso! Será revisado antes de ser publicado.`);
+            // Salvar metadados no banco de dados
+            const { error: dbError } = await this.supabase
+                .from('simulados')
+                .insert({
+                    nome: nome,
+                    descricao: descricao,
+                    arquivo_url: nomeArquivo,
+                    usuario_id: this.currentUser.id,
+                    usuario_nome: this.currentUser.user_metadata?.full_name || this.currentUser.email,
+                    categoria: categoria,
+                    data_upload: new Date().toISOString(),
+                    visualizacoes: 0,
+                    downloads: 0,
+                    ativo: true
+                });
             
-            // Restaurar texto do botão
-            if (fileInput.nextElementSibling && originalText) {
-                fileInput.nextElementSibling.textContent = originalText;
-            }
+            if (dbError) throw dbError;
+            
+            this.showUploadMessage('✅ Simulado enviado com sucesso!', 'success');
+            
+            setTimeout(() => {
+                this.closeUploadModal();
+                alert('Simulado enviado com sucesso!');
+            }, 2000);
             
         } catch (error) {
-            console.error('Erro no upload:', error);
-            alert('Erro ao fazer upload do arquivo.');
+            console.error('❌ Erro ao enviar simulado:', error);
+            this.showUploadMessage(`❌ Erro ao enviar simulado: ${error.message}`, 'error');
         } finally {
-            // Limpar input
-            fileInput.value = '';
+            // Restaurar botão
+            if (btnEnviar) {
+                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
+                btnEnviar.disabled = false;
+            }
         }
-    };
-    
-    fileInput.click();
+    }
+
+    showUploadMessage(message, type) {
+        const element = document.getElementById('uploadMessage');
+        if (element) {
+            element.innerHTML = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+        }
+    }
+
+    // ==================== EVENT LISTENERS ====================
+    setupEventListeners() {
+        // Modal de autenticação
+        const modalAuth = document.getElementById('modalAuth');
+        if (modalAuth) {
+            modalAuth.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) this.closeAuthModal();
+            });
+        }
+
+        // Modal de simulados
+        const modalSimulados = document.getElementById('modalSimulados');
+        if (modalSimulados) {
+            modalSimulados.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) this.fecharModalSimulados();
+            });
+        }
+
+        // Tabs de autenticação
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                this.showAuthTab(tabName);
+            });
+        });
+
+        // Tecla ESC para fechar modais
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeAuthModal();
+                this.closeUploadModal();
+                this.fecharModalSimulados();
+            }
+        });
+    }
+
+    // ==================== FUNÇÕES AUXILIARES ====================
+    createNewPost() {
+        if (!this.currentUser) {
+            alert('Por favor, faça login para criar posts.');
+            this.openLogin();
+            return;
+        }
+        alert('Funcionalidade de criação de posts em desenvolvimento.');
+    }
+
+    forgotPassword() {
+        alert('Funcionalidade de redefinição de senha em desenvolvimento.');
+    }
+
+    showGlobalError(message) {
+        console.error('Erro global:', message);
+        // Aqui você pode implementar uma notificação mais elaborada
+    }
 }
 
-// Função auxiliar para mostrar mensagens
-function showMessage(element, text, type) {
-    if (!element) return;
-    
-    element.textContent = text;
-    element.className = `message ${type}`;
-    element.style.display = 'block';
-    
-    // Auto-remover após 5 segundos
-    setTimeout(() => {
-        element.style.display = 'none';
-    }, 5000);
-}
-
-// Limpar mensagens de autenticação
-function clearAuthMessages() {
-    const loginMessage = document.getElementById('loginMessage');
-    const registerMessage = document.getElementById('registerMessage');
-    
-    if (loginMessage) {
-        loginMessage.style.display = 'none';
-    }
-    
-    if (registerMessage) {
-        registerMessage.style.display = 'none';
-    }
-}
-
-// Validar e-mail
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
-// Função para redirecionar para página de estudo
-function goToStudyPage(certificationName) {
-    if (!currentUser) {
-        alert('Você precisa estar logado para acessar este conteúdo.');
-        openAuthModal();
-        return false;
-    }
-    
-    // Em uma implementação real, você redirecionaria para a página de estudo
-    console.log(`Redirecionando para estudo: ${certificationName}`);
-    return false; // Retorna false para prevenir navegação padrão
-}
-
-// Adicionar CSS para user-info
-const userInfoStyle = document.createElement('style');
-userInfoStyle.textContent = `
-    .user-info {
-        display: flex;
-        align-items: center;
-        margin-right: 15px;
-        color: #555;
-        font-weight: 500;
-    }
-    
-    .user-name {
-        font-size: 0.95rem;
-    }
-    
-    .fas.fa-user-circle {
-        font-size: 1.2rem;
-        color: #3498db;
-    }
-`;
-document.head.appendChild(userInfoStyle);
-
-// Configurar Supabase para escutar mudanças de autenticação
-supabase.auth.onAuthStateChange((event, session) => {
-    console.log('Estado de autenticação mudou:', event);
-    
-    if (event === 'SIGNED_IN') {
-        currentUser = session.user;
-        updateUIForLoggedInUser(session.user);
-    } else if (event === 'SIGNED_OUT') {
-        currentUser = null;
-        updateUIForLoggedOutUser();
-    }
+// Inicializar app quando o DOM estiver pronto
+let app;
+document.addEventListener('DOMContentLoaded', () => {
+    app = new StudyCertApp();
 });
+
+// ==================== FUNÇÕES GLOBAIS ====================
+// Estas funções são acessíveis via onclick no HTML
+
+// Autenticação
+window.openLogin = (e) => app.openLogin(e);
+window.openRegister = (e) => app.openRegister(e);
+window.closeAuthModal = () => app.closeAuthModal();
+window.login = () => app.login();
+window.register = () => app.register();
+window.logout = () => app.logout();
+
+// Simulados
+window.abrirModalSimulados = () => app.abrirModalSimulados();
+window.fecharModalSimulados = () => app.fecharModalSimulados();
+window.uploadSimulado = () => app.uploadSimulado();
+window.openUploadModal = () => app.openUploadModal();
+
+// Outras funções
+window.createNewPost = () => app.createNewPost();
+window.forgotPassword = () => app.forgotPassword();
