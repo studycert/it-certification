@@ -231,6 +231,40 @@ class StudyCertApp {
             this.showMessage('registerMessage', this.getAuthErrorMessage(error), 'error');
         }
     }
+        // ==================== LOGIN COM GOOGLE ====================
+    async loginWithGoogle() {
+        try {
+            console.log('🔐 Iniciando login com Google...');
+            
+            // Mostrar mensagem de carregamento
+            const loginMessage = document.getElementById('loginMessage');
+            if (loginMessage) {
+                loginMessage.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecionando para Google...';
+                loginMessage.className = 'message info';
+                loginMessage.style.display = 'block';
+            }
+            
+            const { error } = await this.supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: 'https://studycert.github.io/it-certification/'
+                }
+            });
+            
+            if (error) {
+                console.error('❌ Erro no login Google:', error);
+                this.showMessage('loginMessage', `Erro: ${error.message}`, 'error');
+                return;
+            }
+            
+            // Redirecionamento automático acontece aqui
+            console.log('✅ Redirecionando para autenticação Google...');
+            
+        } catch (error) {
+            console.error('❌ Erro inesperado no login Google:', error);
+            this.showMessage('loginMessage', 'Erro inesperado no login com Google', 'error');
+        }
+    }
 
     getAuthErrorMessage(error) {
         if (error.message.includes('Invalid login credentials')) {
@@ -628,3 +662,21 @@ window.openUploadModal = () => app.openUploadModal();
 // Outras funções
 window.createNewPost = () => app.createNewPost();
 window.forgotPassword = () => app.forgotPassword();
+
+// ==================== FUNÇÕES GLOBAIS ====================
+// Estas funções são acessíveis via onclick no HTML
+
+// Autenticação
+window.openLogin = (e) => app.openLogin(e);
+window.openRegister = (e) => app.openRegister(e);
+window.closeAuthModal = () => app.closeAuthModal();
+window.login = () => app.login();
+window.register = () => app.register();
+window.logout = () => app.logout();
+
+// ADICIONE ESTA LINHA (importante!):
+window.loginWithGoogle = () => app.loginWithGoogle();
+
+// Simulados
+window.abrirModalSimulados = () => app.abrirModalSimulados();
+// ... resto do código ...
