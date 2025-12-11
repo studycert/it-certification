@@ -6,7 +6,6 @@
     <title>Autenticando - StudyCert</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Mesmo estilo anterior, mantido para consistência */
         * {
             margin: 0;
             padding: 0;
@@ -100,6 +99,15 @@
             border-radius: 6px;
             border: 1px solid #f8d7da;
         }
+
+        .success {
+            color: #27ae60;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f9f4;
+            border-radius: 6px;
+            border: 1px solid #d1e7dd;
+        }
     </style>
 </head>
 <body>
@@ -111,10 +119,14 @@
         
         <div class="spinner"></div>
         
-        <h2>Autenticando...</h2>
-        <p>Por favor, aguarde enquanto processamos seu login.</p>
+        <h2 id="statusText">Autenticando...</h2>
+        <p id="statusDescription">Por favor, aguarde enquanto processamos seu login.</p>
         
-        <div id="errorMessage" class="error" style="display: none;"></div>
+        <div id="message" class="error" style="display: none;"></div>
+        
+        <a href="./index.html" id="backButton" class="btn" style="display: none;">
+            <i class="fas fa-arrow-left"></i> Voltar à página inicial
+        </a>
     </div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -134,40 +146,59 @@
                 
                 // Verificar se há erro
                 const error = params.get('error');
+                const errorDescription = params.get('error_description');
+                
                 if (error) {
-                    throw new Error(`Erro do Google: ${error}. Descrição: ${params.get('error_description')}`);
+                    throw new Error(`Erro do Google: ${error}${errorDescription ? ` - ${errorDescription}` : ''}`);
                 }
                 
-                // Tentar obter a sessão atual
-                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                // VERIFICAÇÃO IMPORTANTE: Se não há token na URL
+                if (!hash.includes('access_token') && !hash.includes('error')) {
+                    throw new Error('URL de callback inválida. Não foram encontrados tokens de autenticação.');
+                }
                 
-                if (sessionError) {
-                    throw sessionError;
+                // Processar o token de autenticação do hash da URL
+                const { data: { session }, error: authError } = await supabase.auth.getSession();
+                
+                // IMPORTANTE: Tentar também processar o hash explicitamente
+                // O Supabase v2 gerencia automaticamente o hash da URL quando você chama getSession()
+                // Mas podemos chamar também setSession se necessário
+                
+                if (authError) {
+                    throw authError;
                 }
                 
                 if (session) {
-                    // Login bem-sucedido - redirecionar para a página principal
+                    // Login bem-sucedido
                     console.log('Login bem-sucedido! Usuário:', session.user.email);
+                    console.log('Sessão:', session);
                     
-                    // Redirecionar para a página principal após 1 segundo
-                    setTimeout(() => {
-                        // Redirecionar para a página principal
-                        const baseUrl = window.location.origin + window.location.pathname;
-                        const mainPage = baseUrl.replace('auth-callback.html', 'index.html');
-                        window.location.href = mainPage;
-                    }, 1000);
-                } else {
-                    // Nenhuma sessão encontrada
-                    document.getElementById('errorMessage').textContent = 
-                        'Autenticação falhou. Não foi possível criar uma sessão.';
-                    document.getElementById('errorMessage').style.display = 'block';
+                    // Atualizar UI para sucesso
+                    document.getElementById('statusText').textContent = 'Autenticado com sucesso!';
+                    document.getElementById('statusDescription').textContent = `Bem-vindo, ${session.user.email}`;
+                    document.getElementById('message').className = 'success';
+                    document.getElementById('message').textContent = 'Redirecionando para a página principal...';
+                    document.getElementById('message').style.display = 'block';
                     
+                    // Redirecionar para a página principal após 2 segundos
                     setTimeout(() => {
                         window.location.href = './index.html';
-                    }, 3000);
+                    }, 2000);
+                    
+                } else {
+                    // Nenhuma sessão encontrada após processar o hash
+                    throw new Error('Não foi possível criar uma sessão. O token pode ser inválido ou expirado.');
                 }
+                
             } catch (error) {
                 console.error('Erro no callback de autenticação:', error);
+                
+                // Parar o spinner
+                document.querySelector('.spinner').style.display = 'none';
+                
+                // Atualizar UI para erro
+                document.getElementById('statusText').textContent = 'Falha na autenticação';
+                document.getElementById('statusDescription').textContent = 'Não foi possível completar o login.';
                 
                 let errorMessage = 'Erro durante a autenticação.';
                 
@@ -177,14 +208,22 @@
                     errorMessage = 'Acesso negado. Você cancelou o login.';
                 } else if (error.message.includes('Google')) {
                     errorMessage = error.message;
+                } else if (error.message.includes('callback inválida')) {
+                    errorMessage = 'URL de retorno inválida. Tente fazer login novamente.';
+                } else if (error.message.includes('sessão')) {
+                    errorMessage = 'Sessão inválida ou expirada. Tente fazer login novamente.';
                 }
                 
-                document.getElementById('errorMessage').textContent = errorMessage;
-                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('message').textContent = errorMessage;
+                document.getElementById('message').style.display = 'block';
                 
+                // Mostrar botão para voltar
+                document.getElementById('backButton').style.display = 'inline-block';
+                
+                // Auto-redirecionar após 10 segundos
                 setTimeout(() => {
                     window.location.href = './index.html';
-                }, 5000);
+                }, 10000);
             }
         }
 
