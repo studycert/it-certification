@@ -36,70 +36,68 @@
     </header>
 
     <!-- Modal de Login/Cadastro -->
-<div id="modalAuth" class="modal-auth">
-    <div class="auth-container">
-        <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
-        <div class="auth-header">
-            <h2>Study<span style="color: #3498db;">Cert</span></h2>
-            <p>Sua jornada começa aqui</p>
-        </div>
-        <div class="auth-tabs">
-            <div class="auth-tab active" data-tab="login">Entrar</div>
-            <div class="auth-tab" data-tab="register">Cadastrar</div>
-        </div>
-        
-        <div id="loginForm" class="auth-form active">
-            <div id="loginMessage" class="message"></div>
-            <div class="form-group">
-                <label for="loginEmail">E-mail</label>
-                <input type="email" id="loginEmail" placeholder="seu@email.com">
+    <div id="modalAuth" class="modal-auth">
+        <div class="auth-container">
+            <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-header">
+                <h2>Study<span style="color: #3498db;">Cert</span></h2>
+                <p>Sua jornada começa aqui</p>
             </div>
-            <div class="form-group">
-                <label for="loginPassword">Senha</label>
-                <input type="password" id="loginPassword" placeholder="Sua senha">
-            </div>
-            <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
-            <div class="auth-footer">
-                <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
-            </div>
-        </div>
-        
-        <div id="registerForm" class="auth-form">
-            <div id="registerMessage" class="message"></div>
-            <div class="form-group">
-                <label for="registerName">Nome Completo</label>
-                <input type="text" id="registerName" placeholder="Seu nome completo">
-            </div>
-            <div class="form-group">
-                <label for="registerEmail">E-mail</label>
-                <input type="email" id="registerEmail" placeholder="seu@email.com">
-            </div>
-            <div class="form-group">
-                <label for="registerPassword">Senha</label>
-                <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
-            </div>
-            <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
-        </div>
-        
-        <!-- ADICIONE ESTA SEÇÃO AQUI -->
-        <div class="social-auth" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-            <div class="divider" style="text-align: center; margin-bottom: 20px; position: relative;">
-                <span style="background: white; padding: 0 15px; color: #7f8c8d; font-size: 0.9rem;">
-                    ou entre com
-                </span>
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Entrar</div>
+                <div class="auth-tab" data-tab="register">Cadastrar</div>
             </div>
             
-            <button class="btn btn-google" onclick="loginWithGoogle()" 
-                    style="width: 100%; background-color: #fff; color: #757575; border: 1px solid #ddd; 
-                           display: flex; align-items: center; justify-content: center; gap: 10px; 
-                           padding: 12px; font-weight: 600; margin-bottom: 10px;">
-                <i class="fab fa-google" style="color: #DB4437;"></i> Continuar com Google
-            </button>
+            <div id="loginForm" class="auth-form active">
+                <div id="loginMessage" class="message"></div>
+                <div class="form-group">
+                    <label for="loginEmail">E-mail</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha">
+                </div>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
+                <div class="auth-footer">
+                    <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
+                </div>
+            </div>
+            
+            <div id="registerForm" class="auth-form">
+                <div id="registerMessage" class="message"></div>
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
+                </div>
+                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
+            </div>
+            
+            <!-- Seção de Autenticação Social -->
+            <div class="social-auth" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                <div class="divider" style="text-align: center; margin-bottom: 20px; position: relative;">
+                    <span style="background: white; padding: 0 15px; color: #7f8c8d; font-size: 0.9rem;">
+                        ou entre com
+                    </span>
+                </div>
+                
+                <button class="btn btn-google" onclick="loginWithGoogle()" 
+                        style="width: 100%; background-color: #fff; color: #757575; border: 1px solid #ddd; 
+                               display: flex; align-items: center; justify-content: center; gap: 10px; 
+                               padding: 12px; font-weight: 600; margin-bottom: 10px;">
+                    <i class="fab fa-google" style="color: #DB4437;"></i> Continuar com Google
+                </button>
+            </div>
         </div>
-        <!-- FIM DA SEÇÃO SOCIAL -->
-        
     </div>
-</div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -179,7 +177,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>Azure Fundamentals</h3>
                         <p>AZ-900: Conceitos fundamentais de nuvem e serviços Azure.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Azure Fundamentals')">Estudar</a>
                     </div>
                 </div>
 
@@ -191,7 +189,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>AWS Cloud Practitioner</h3>
                         <p>Fundamentos da AWS e conceitos de computação em nuvem.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('AWS Cloud Practitioner')">Estudar</a>
                     </div>
                 </div>
 
@@ -203,7 +201,7 @@
                         <span class="cert-level">Segurança</span>
                         <h3>Security+</h3>
                         <p>CompTIA Security+: Fundamentos de cybersecurity.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Security+')">Estudar</a>
                     </div>
                 </div>
 
@@ -215,7 +213,7 @@
                         <span class="cert-level">Governança</span>
                         <h3>ITIL 4 Foundation</h3>
                         <p>Framework de gerenciamento de serviços de TI.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('ITIL 4 Foundation')">Estudar</a>
                     </div>
                 </div>
             </div>
@@ -239,7 +237,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>Azure Administrator</h3>
                         <p>AZ-104: Implementação, gerenciamento e monitoramento de ambientes Azure.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Azure Administrator')">Estudar</a>
                     </div>
                 </div>
 
@@ -251,7 +249,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>AWS Solutions Architect</h3>
                         <p>SAA-C03: Projeto e implantação de sistemas escaláveis na AWS.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('AWS Solutions Architect')">Estudar</a>
                     </div>
                 </div>
 
@@ -263,7 +261,7 @@
                         <span class="cert-level">Segurança</span>
                         <h3>Cybersecurity Analyst</h3>
                         <p>CySA+: Análise de ameaças e resposta a incidentes de segurança.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Cybersecurity Analyst')">Estudar</a>
                     </div>
                 </div>
 
@@ -275,7 +273,7 @@
                         <span class="cert-level">Governança</span>
                         <h3>ITIL 4 Specialist</h3>
                         <p>Práticas avançadas de gerenciamento de serviços de TI.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('ITIL 4 Specialist')">Estudar</a>
                     </div>
                 </div>
 
@@ -287,7 +285,7 @@
                         <span class="cert-level">Linux</span>
                         <h3>LPIC-1</h3>
                         <p>Certificação Linux Professional Institute - Nível 1.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('LPIC-1')">Estudar</a>
                     </div>
                 </div>
 
@@ -299,7 +297,7 @@
                         <span class="cert-level">Linux</span>
                         <h3>LPIC-2</h3>
                         <p>Certificação Linux Professional Institute - Nível Avançado.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('LPIC-2')">Estudar</a>
                     </div>
                 </div>
 
@@ -311,7 +309,7 @@
                         <span class="cert-level">Rede</span>
                         <h3>CCNA</h3>
                         <p>Cisco Certified Network Associate: Fundamentos de redes.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('CCNA')">Estudar</a>
                     </div>
                 </div>
 
@@ -323,7 +321,7 @@
                         <span class="cert-level">Dados</span>
                         <h3>Data Fundamentals</h3>
                         <p>DP-900: Conceitos fundamentais de dados e analytics.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Data Fundamentals')">Estudar</a>
                     </div>
                 </div>
             </div>
@@ -419,7 +417,7 @@
                     <div class="material-content">
                         <h3>Microsoft Azure</h3>
                         <p>Guias de estudo, resumos e recursos para certificações Azure.</p>
-                        <a href="#" class="btn btn-primary">Acessar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Microsoft Azure')">Acessar</a>
                     </div>
                 </div>
 
@@ -430,7 +428,7 @@
                     <div class="material-content">
                         <h3>Amazon AWS</h3>
                         <p>Material para Cloud Practitioner, Solutions Architect e outras.</p>
-                        <a href="#" class="btn btn-primary">Acessar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Amazon AWS')">Acessar</a>
                     </div>
                 </div>
 
@@ -441,7 +439,7 @@
                     <div class="material-content">
                         <h3>LPIC-1 e LPIC-2</h3>
                         <p>Recursos para certificações Linux Professional Institute.</p>
-                        <a href="#" class="btn btn-primary">Acessar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('LPIC-1 e LPIC-2')">Acessar</a>
                     </div>
                 </div>
 
@@ -452,7 +450,7 @@
                     <div class="material-content">
                         <h3>ITIL 4</h3>
                         <p>Guias, resumos e material para certificação ITIL.</p>
-                        <a href="materiais/itil4-materiais.html" class="btn btn-primary">Acessar</a>
+                        <a href="materiais/itil4-materiais.html" class="btn btn-primary" onclick="goToStudyPage('ITIL 4 Materiais')">Acessar</a>
                     </div>
                 </div>
 
@@ -463,7 +461,7 @@
                     <div class="material-content">
                         <h3>Security+</h3>
                         <p>Material para preparação da certificação CompTIA Security+.</p>
-                        <a href="#" class="btn btn-primary">Acessar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Security+ Materiais')">Acessar</a>
                     </div>
                 </div>
 
@@ -474,7 +472,7 @@
                     <div class="material-content">
                         <h3>CCNA</h3>
                         <p>Recursos para Cisco Certified Network Associate.</p>
-                        <a href="#" class="btn btn-primary">Acessar</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('CCNA Materiais')">Acessar</a>
                     </div>
                 </div>
             </div>
@@ -494,7 +492,7 @@
                         <p><strong>Duração:</strong> 6 horas</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Assistir</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('LPIC-1 Videoaulas')">Assistir</a>
                     </div>
                 </div>
 
@@ -507,7 +505,7 @@
                         <p><strong>Duração:</strong> 5 horas</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Assistir</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('ITIL 4 Videoaulas')">Assistir</a>
                     </div>
                 </div>
 
@@ -520,7 +518,7 @@
                         <p><strong>Duração:</strong> 12 horas</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Assistir</a>
+                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Security+ Videoaulas')">Assistir</a>
                     </div>
                 </div>
             </div>
@@ -570,7 +568,7 @@
                         <p><strong>Tempo estimado:</strong> 90 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                        <a href="simulados/simulado-lpic1.html" class="btn btn-primary">Iniciar Simulado</a>
                     </div>
                 </div>
 
@@ -584,7 +582,7 @@
                         <p><strong>Tempo estimado:</strong> 90 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                        <a href="simulados/simulado-security.html" class="btn btn-primary">Iniciar Simulado</a>
                     </div>
                 </div>
 
@@ -598,7 +596,7 @@
                         <p><strong>Tempo estimado:</strong> 90 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                        <a href="simulados/simulado-aws.html" class="btn btn-primary">Iniciar Simulado</a>
                     </div>
                 </div>
 
@@ -612,7 +610,7 @@
                         <p><strong>Tempo estimado:</strong> 60 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                        <a href="simulados/simulado-azure.html" class="btn btn-primary">Iniciar Simulado</a>
                     </div>
                 </div>
 
@@ -626,7 +624,7 @@
                         <p><strong>Tempo estimado:</strong> 90 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                        <a href="simulados/simulado-ccna.html" class="btn btn-primary">Iniciar Simulado</a>
                     </div>
                 </div>
 
@@ -640,7 +638,7 @@
                         <p><strong>Tempo estimado:</strong> 45 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                        <a href="simulados/simulado-data.html" class="btn btn-primary">Iniciar Simulado</a>
                     </div>
                 </div>
 
@@ -654,7 +652,7 @@
                         <p><strong>Tempo estimado:</strong> 120 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                        <a href="simulados/simulado-lpic2.html" class="btn btn-primary">Iniciar Simulado</a>
                     </div>
                 </div>
 
@@ -668,7 +666,7 @@
                         <p><strong>Tempo estimado:</strong> 130 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                        <a href="simulados/simulado-aws-solutions.html" class="btn btn-primary">Iniciar Simulado</a>
                     </div>
                 </div>
 
@@ -792,9 +790,6 @@
         </div>
     </div>
 
-    <!-- Modal de Upload (será criado dinamicamente pelo JS) -->
-    <div id="modalUpload"></div>
-
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -808,7 +803,8 @@
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#"><i class="fab fa-youtube"></i></a>
                         <a href="https://instagram.com/seu-usuario" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-instagram"></i>        
+                            <i class="fab fa-instagram"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -826,11 +822,11 @@
                 <div class="footer-column">
                     <h3>Certificações</h3>
                     <ul class="footer-links">
-                        <li><a href="#">Microsoft Azure</a></li>
-                        <li><a href="#">AWS</a></li>
-                        <li><a href="#">LPIC-1 e LPIC-2</a></li>
-                        <li><a href="#">ITIL 4</a></li>
-                        <li><a href="#">Security+</a></li>
+                        <li><a href="#" data-target="certificacoes">Microsoft Azure</a></li>
+                        <li><a href="#" data-target="certificacoes">AWS</a></li>
+                        <li><a href="#" data-target="certificacoes">LPIC-1 e LPIC-2</a></li>
+                        <li><a href="#" data-target="certificacoes">ITIL 4</a></li>
+                        <li><a href="#" data-target="certificacoes">Security+</a></li>
                     </ul>
                 </div>
 
@@ -849,5 +845,60 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Adicione esta função ao seu app.js também
+        async function loginWithGoogle() {
+            try {
+                const supabase = supabase.createClient(
+                    SUPABASE_CONFIG.url, 
+                    SUPABASE_CONFIG.anonKey
+                );
+                
+                // Detectar se está no GitHub Pages ou localhost
+                const isGitHubPages = window.location.hostname === 'studycert.github.io';
+                
+                // URL de redirecionamento baseada no ambiente
+                let redirectUrl;
+                
+                if (isGitHubPages) {
+                    // Para GitHub Pages
+                    redirectUrl = 'https://studycert.github.io/it-certification/auth-callback.html';
+                } else {
+                    // Para desenvolvimento local
+                    const port = window.location.port || '3000';
+                    redirectUrl = `http://localhost:${port}/auth-callback.html`;
+                }
+                
+                console.log('Redirecionando para:', redirectUrl);
+                
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: redirectUrl,
+                        queryParams: {
+                            access_type: 'offline',
+                            prompt: 'consent'
+                        }
+                    }
+                });
+                
+                if (error) {
+                    console.error('Erro no login com Google:', error);
+                    alert(`Erro: ${error.message}`);
+                    return;
+                }
+                
+                // O Supabase retorna uma URL para redirecionamento
+                if (data?.url) {
+                    window.location.href = data.url;
+                }
+                
+            } catch (error) {
+                console.error('Erro no login com Google:', error);
+                alert('Erro ao conectar com Google. Tente novamente.');
+            }
+        }
+    </script>
 </body>
 </html>
