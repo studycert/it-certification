@@ -1,25 +1,25 @@
-// App principal - StudyCert
+// app_updated.js - Versão atualizada com todas as funcionalidades
+import StudyCertAPI from './api.js';
+
 class StudyCertApp {
     constructor() {
         this.supabase = null;
         this.currentUser = null;
+        this.userProfile = null;
         this.init();
     }
 
     async init() {
-        console.log('StudyCert - Inicializando aplicação');
+        console.log('🚀 StudyCert - Inicializando aplicação...');
         
         try {
             // Inicializar Supabase
-            if (typeof supabase !== 'undefined' && SUPABASE_CONFIG) {
-                this.supabase = window.supabase.createClient(
-                    SUPABASE_CONFIG.url,
-                    SUPABASE_CONFIG.anonKey
-                );
-                console.log('✅ Supabase configurado com sucesso!');
-            } else {
-                throw new Error('Configuração do Supabase não encontrada');
-            }
+            this.supabase = window.supabase.createClient(
+                SUPABASE_CONFIG.url,
+                SUPABASE_CONFIG.anonKey
+            );
+            
+            console.log('✅ Supabase configurado');
             
             // Carregar navegação
             this.loadNavigation();
@@ -30,19 +30,211 @@ class StudyCertApp {
             // Configurar eventos
             this.setupEventListeners();
             
-            // Inicializar sistema de upload
-            this.initUploadSystem();
+            // Carregar dados iniciais
+            await this.loadInitialData();
+            
+            console.log('🎉 Aplicação inicializada com sucesso!');
             
         } catch (err) {
             console.error('❌ Erro na inicialização:', err);
-            this.showGlobalError('Erro na configuração do sistema. Por favor, recarregue a página.');
+            this.showGlobalError('Erro na configuração do sistema.');
         }
     }
 
-    // ==================== NAVEGAÇÃO ====================
+    // ==================== AUTENTICAÇÃO ====================
+    async checkAuth() {
+        try {
+            const { data: { session }, error } = await this.supabase.auth.getSession();
+            
+            if (error) throw error;
+            
+            if (session) {
+                this.currentUser = session.user;
+                console.log('👤 Usuário logado:', this.currentUser.email);
+                
+                // Carregar perfil do usuário
+                await this.loadUserProfile();
+            } else {
+                this.currentUser = null;
+                this.userProfile = null;
+            }
+            
+            this.updateAuthUI();
+            this.updateNavigation();
+            
+        } catch (err) {
+            console.error('❌ Erro ao verificar autenticação:', err);
+            this.updateAuthUI();
+        }
+    }
+
+    async loadUserProfile() {
+        try {
+            const { data, error } = await this.supabase
+                .from('usuarios')
+                .select('*')
+                .eq('id', this.currentUser.id)
+                .single();
+            
+            if (error) throw error;
+            
+            this.userProfile = data;
+            console.log('📋 Perfil carregado:', this.userProfile.nome);
+            
+            // Mostrar progresso do usuário
+            await this.showUserProgress();
+            
+        } catch (err) {
+            console.error('❌ Erro ao carregar perfil:', err);
+            this.userProfile = null;
+        }
+    }
+
+    updateAuthUI() {
+        const authButtons = document.getElementById('authButtons');
+        const uploadArea = document.getElementById('uploadArea');
+        
+        if (this.currentUser) {
+            const displayName = this.userProfile?.nome || 
+                              this.currentUser.user_metadata?.full_name || 
+                              this.currentUser.email.split('@')[0];
+            
+            const initials = displayName.substring(0, 2).toUpperCase();
+            
+            authButtons.innerHTML = `
+                <div class="user-info">
+                    <div class="user-avatar" onclick="app.showUserMenu()">
+                        ${initials}
+                    </div>
+                    <span>${displayName}</span>
+                    <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">
+                        Sair
+                    </button>
+                </div>
+            `;
+            
+            if (uploadArea) uploadArea.style.display = 'block';
+            
+        } else {
+            authButtons.innerHTML = `
+                <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
+                <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
+            `;
+            
+            if (uploadArea) uploadArea.style.display = 'none';
+        }
+    }
+
+    showUserMenu() {
+        if (!this.currentUser) return;
+        
+        const menuHTML = `
+            <div class="user-menu" style="
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                min-width: 200px;
+                z-index: 1000;
+            ">
+                <div class="user-menu-header" style="
+                    padding: 15px;
+                    border-bottom: 1px solid #eee;
+                    background: linear-gradient(135deg, #2c3e50, #3498db);
+                    color: white;
+                    border-radius: 8px 8px 0 0;
+                ">
+                    <strong>${this.userProfile?.nome || 'Usuário'}</strong>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">${this.currentUser.email}</div>
+                </div>
+                <div class="user-menu-items">
+                    <a href="#" onclick="app.showUserProfile()" style="
+                        display: block;
+                        padding: 12px 15px;
+                        color: #333;
+                        text-decoration: none;
+                        border-bottom: 1px solid #f5f5f5;
+                        transition: background 0.3s;
+                    ">
+                        <i class="fas fa-user" style="margin-right: 10px;"></i>
+                        Meu Perfil
+                    </a>
+                    <a href="#" onclick="app.showMyProgress()" style="
+                        display: block;
+                        padding: 12px 15px;
+                        color: #333;
+                        text-decoration: none;
+                        border-bottom: 1px solid #f5f5f5;
+                        transition: background 0.3s;
+                    ">
+                        <i class="fas fa-chart-line" style="margin-right: 10px;"></i>
+                        Meu Progresso
+                    </a>
+                    <a href="#" onclick="app.showMyMaterials()" style="
+                        display: block;
+                        padding: 12px 15px;
+                        color: #333;
+                        text-decoration: none;
+                        border-bottom: 1px solid #f5f5f5;
+                        transition: background 0.3s;
+                    ">
+                        <i class="fas fa-book" style="margin-right: 10px;"></i>
+                        Meus Materiais
+                    </a>
+                    <a href="#" onclick="app.showMyPosts()" style="
+                        display: block;
+                        padding: 12px 15px;
+                        color: #333;
+                        text-decoration: none;
+                        transition: background 0.3s;
+                    ">
+                        <i class="fas fa-comments" style="margin-right: 10px;"></i>
+                        Meus Posts
+                    </a>
+                </div>
+                <div class="user-menu-footer" style="
+                    padding: 10px 15px;
+                    border-top: 1px solid #eee;
+                    text-align: center;
+                ">
+                    <button class="btn btn-outline" onclick="app.logout()" style="
+                        width: 100%;
+                        padding: 8px;
+                        font-size: 0.9rem;
+                    ">
+                        <i class="fas fa-sign-out-alt" style="margin-right: 5px;"></i>
+                        Sair
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Remover menu anterior se existir
+        const existingMenu = document.querySelector('.user-menu');
+        if (existingMenu) existingMenu.remove();
+        
+        // Adicionar novo menu
+        document.body.insertAdjacentHTML('beforeend', menuHTML);
+        
+        // Fechar menu ao clicar fora
+        setTimeout(() => {
+            const closeMenu = (e) => {
+                const menu = document.querySelector('.user-menu');
+                if (menu && !menu.contains(e.target) && !e.target.closest('.user-avatar')) {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenu);
+                }
+            };
+            document.addEventListener('click', closeMenu);
+        }, 100);
+    }
+
+    // ==================== NAVEGAÇÃO E CONTEÚDO ====================
     loadNavigation() {
+        // Navegação principal
         const navLinks = document.querySelectorAll('.nav-link, .footer-links a[data-target], .btn[data-target]');
-        const mainContents = document.querySelectorAll('.main-content');
         
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -50,6 +242,33 @@ class StudyCertApp {
                 const targetId = link.getAttribute('data-target');
                 this.showSection(targetId);
             });
+        });
+        
+        // Botões de categoria de materiais
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const category = btn.getAttribute('data-category');
+                this.filterMaterials(category);
+            });
+        });
+    }
+
+    updateNavigation() {
+        // Atualizar links baseados no status de autenticação
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            const target = link.getAttribute('data-target');
+            
+            // Esconder/mostrar links baseados na autenticação
+            if (target === 'forum' && !this.currentUser) {
+                link.style.display = 'none';
+            } else {
+                link.style.display = 'block';
+            }
         });
     }
 
@@ -67,62 +286,501 @@ class StudyCertApp {
         if (targetSection) {
             targetSection.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Carregar conteúdo específico da seção
+            this.loadSectionContent(sectionId);
         }
     }
 
-    // ==================== AUTENTICAÇÃO ====================
-    async checkAuth() {
+    async loadSectionContent(sectionId) {
         try {
-            if (!this.supabase) return;
-            
-            const { data, error } = await this.supabase.auth.getSession();
+            switch (sectionId) {
+                case 'home':
+                    await this.loadHomeContent();
+                    break;
+                case 'certificacoes':
+                    await this.loadCertificacoes();
+                    break;
+                case 'forum':
+                    await this.loadForumPosts();
+                    break;
+                case 'materiais':
+                    await this.loadMaterials();
+                    break;
+                case 'simulados':
+                    await this.loadSimulados();
+                    break;
+            }
+        } catch (err) {
+            console.error(`❌ Erro ao carregar seção ${sectionId}:`, err);
+        }
+    }
+
+    // ==================== CARREGAMENTO DE DADOS ====================
+    async loadInitialData() {
+        // Carregar certificações
+        await this.loadCertificacoes();
+        
+        // Carregar estatísticas do site
+        await this.loadSiteStats();
+    }
+
+    async loadHomeContent() {
+        // Carregar certificações em destaque
+        try {
+            const { data: certificacoes, error } = await this.supabase
+                .from('certificacoes')
+                .select('*')
+                .eq('ativo', true)
+                .order('popularidade', { ascending: false })
+                .limit(4);
             
             if (error) throw error;
             
-            if (data.session) {
-                this.currentUser = data.session.user;
-                console.log('👤 Usuário logado:', this.currentUser.email);
-            } else {
-                this.currentUser = null;
+            // Atualizar grid de certificações
+            const certificationsGrid = document.querySelector('.certifications-grid');
+            if (certificationsGrid && certificacoes) {
+                certificationsGrid.innerHTML = certificacoes.map(cert => `
+                    <div class="cert-card">
+                        <div class="cert-icon">
+                            <i class="${cert.icon_name || 'fas fa-certificate'}"></i>
+                        </div>
+                        <div class="cert-content">
+                            <span class="cert-level">${cert.nivel}</span>
+                            <h3>${cert.nome}</h3>
+                            <p>${cert.descricao?.substring(0, 100) || 'Certificação de TI'}...</p>
+                            <a href="#" class="btn btn-primary" onclick="app.studyCertification('${cert.id}')">Estudar</a>
+                        </div>
+                    </div>
+                `).join('');
             }
             
-            this.updateAuthUI();
-            if (this.currentUser) this.showUserProgress();
+        } catch (err) {
+            console.error('❌ Erro ao carregar certificações:', err);
+        }
+    }
+
+    async loadCertificacoes() {
+        try {
+            const { data: certificacoes, error } = await this.supabase
+                .from('certificacoes')
+                .select('*')
+                .eq('ativo', true)
+                .order('nome');
+            
+            if (error) throw error;
+            
+            const container = document.getElementById('certificacoesContent');
+            if (container && certificacoes) {
+                container.innerHTML = certificacoes.map(cert => `
+                    <div class="cert-card">
+                        <div class="cert-icon">
+                            <i class="${cert.icon_name || 'fas fa-certificate'}"></i>
+                        </div>
+                        <div class="cert-content">
+                            <span class="cert-level">${cert.nivel}</span>
+                            <h3>${cert.nome}</h3>
+                            <p>${cert.descricao?.substring(0, 80) || 'Certificação de TI'}...</p>
+                            <a href="#" class="btn btn-primary" onclick="app.studyCertification('${cert.id}')">Estudar</a>
+                        </div>
+                    </div>
+                `).join('');
+            }
             
         } catch (err) {
-            console.error('❌ Erro ao verificar autenticação:', err);
-            this.updateAuthUI();
+            console.error('❌ Erro ao carregar certificações:', err);
         }
     }
 
-    updateAuthUI() {
-        const authButtons = document.getElementById('authButtons');
-        const uploadArea = document.getElementById('uploadArea');
+    async loadMaterials() {
+        try {
+            const { data: materiais, error } = await this.supabase
+                .from('materiais')
+                .select(`
+                    *,
+                    usuarios:nome
+                `)
+                .eq('status', 'aprovado')
+                .order('created_at', { ascending: false })
+                .limit(12);
+            
+            if (error) throw error;
+            
+            const container = document.getElementById('materialsContent');
+            if (container && materiais) {
+                container.innerHTML = materiais.map(material => `
+                    <div class="material-card">
+                        <div class="material-icon">
+                            <i class="${this.getMaterialIcon(material.tipo)}"></i>
+                        </div>
+                        <div class="material-content">
+                            <h3>${material.titulo}</h3>
+                            <p>${material.descricao?.substring(0, 100) || 'Material de estudo'}...</p>
+                            <div class="material-meta">
+                                <span><i class="fas fa-user"></i> ${material.usuarios?.nome || 'Anônimo'}</span>
+                                <span><i class="far fa-eye"></i> ${material.visualizacoes}</span>
+                            </div>
+                            <a href="${material.caminho_arquivo || material.url_externa}" 
+                               target="_blank" 
+                               class="btn btn-primary"
+                               onclick="app.incrementMaterialViews('${material.id}')">
+                                Acessar
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+        } catch (err) {
+            console.error('❌ Erro ao carregar materiais:', err);
+        }
+    }
+
+    async loadForumPosts() {
+        try {
+            const { data: posts, error } = await this.supabase
+                .from('forum_posts')
+                .select(`
+                    *,
+                    forum_categorias:nome,
+                    usuarios:nome
+                `)
+                .order('created_at', { ascending: false })
+                .limit(20);
+            
+            if (error) throw error;
+            
+            const container = document.getElementById('forumPosts');
+            if (container && posts) {
+                container.innerHTML = posts.map(post => `
+                    <div class="post">
+                        <div class="post-header">
+                            <a href="#" class="post-title" onclick="app.viewForumPost('${post.id}')">${post.titulo}</a>
+                            <div class="post-meta">
+                                por ${post.usuarios?.nome || 'Anônimo'} • ${this.formatDate(post.created_at)}
+                            </div>
+                        </div>
+                        <div class="post-excerpt">
+                            <p>${post.conteudo?.substring(0, 150) || 'Sem conteúdo'}...</p>
+                        </div>
+                        <div class="post-footer">
+                            <span><i class="far fa-comment"></i> ${post.respostas} respostas</span>
+                            <span><i class="far fa-eye"></i> ${post.visualizacoes} visualizações</span>
+                            <span><i class="fas fa-tag"></i> ${post.forum_categorias?.nome || 'Geral'}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+        } catch (err) {
+            console.error('❌ Erro ao carregar posts do fórum:', err);
+        }
+    }
+
+    async loadSimulados() {
+        try {
+            const { data: simulados, error } = await this.supabase
+                .from('simulados')
+                .select(`
+                    *,
+                    certificacoes:nome,
+                    usuarios:nome
+                `)
+                .eq('status', 'aprovado')
+                .order('created_at', { ascending: false });
+            
+            if (error) throw error;
+            
+            const container = document.getElementById('simuladosContent');
+            if (container && simulados) {
+                container.innerHTML = simulados.map(simulado => `
+                    <div class="simulado-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-file-alt"></i> ${simulado.nome}</h3>
+                        </div>
+                        <div class="card-body">
+                            <span class="simulado-badge">${simulado.total_questoes} questões</span>
+                            <p>${simulado.descricao?.substring(0, 100) || 'Simulado de certificação'}</p>
+                            <p><strong>Certificação:</strong> ${simulado.certificacoes?.nome || 'Geral'}</p>
+                            <p><strong>Tempo estimado:</strong> ${simulado.tempo_estimado_minutos} minutos</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="${simulado.arquivo_url}" 
+                               target="_blank" 
+                               class="btn btn-primary"
+                               onclick="app.incrementSimuladoViews('${simulado.id}')">
+                                Iniciar Simulado
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Adicionar card para upload
+                container.innerHTML += `
+                    <div class="simulado-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-plus-circle"></i> Adicionar Simulado</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Compartilhe seu próprio simulado com a comunidade.</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="app.openUploadModal()">Upload</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+        } catch (err) {
+            console.error('❌ Erro ao carregar simulados:', err);
+        }
+    }
+
+    async loadSiteStats() {
+        try {
+            // Obter estatísticas
+            const [
+                { count: totalUsers },
+                { count: totalMaterials },
+                { count: totalSimulados },
+                { count: totalPosts }
+            ] = await Promise.all([
+                this.supabase.from('usuarios').select('*', { count: 'exact', head: true }),
+                this.supabase.from('materiais').select('*', { count: 'exact', head: true }).eq('status', 'aprovado'),
+                this.supabase.from('simulados').select('*', { count: 'exact', head: true }).eq('status', 'aprovado'),
+                this.supabase.from('forum_posts').select('*', { count: 'exact', head: true })
+            ]);
+            
+            console.log('📊 Estatísticas do site:');
+            console.log('- Usuários:', totalUsers);
+            console.log('- Materiais:', totalMaterials);
+            console.log('- Simulados:', totalSimulados);
+            console.log('- Posts:', totalPosts);
+            
+        } catch (err) {
+            console.error('❌ Erro ao carregar estatísticas:', err);
+        }
+    }
+
+    // ==================== FUNCIONALIDADES DO USUÁRIO ====================
+    async showUserProgress() {
+        if (!this.currentUser) return;
         
-        if (this.currentUser) {
-            const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
-            const initials = displayName.substring(0, 2).toUpperCase();
+        try {
+            const { data: progresso, error } = await this.supabase
+                .from('progresso_usuario')
+                .select(`
+                    *,
+                    certificacoes:nome
+                `)
+                .eq('usuario_id', this.currentUser.id);
             
-            authButtons.innerHTML = `
-                <div class="user-info">
-                    <div class="user-avatar">${initials}</div>
-                    <span>${displayName}</span>
-                    <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
-                </div>
-            `;
+            if (error) throw error;
             
-            if (uploadArea) uploadArea.style.display = 'block';
-        } else {
-            authButtons.innerHTML = `
-                <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
-                <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
-            `;
+            const progressElement = document.getElementById('userProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
             
-            if (uploadArea) uploadArea.style.display = 'none';
+            if (progressElement && progressFill && progressText) {
+                if (progresso && progresso.length > 0) {
+                    progressElement.style.display = 'block';
+                    
+                    // Calcular progresso médio
+                    const totalProgress = progresso.reduce((sum, p) => sum + (p.progresso_percentual || 0), 0);
+                    const avgProgress = Math.round(totalProgress / progresso.length);
+                    
+                    progressFill.style.width = `${avgProgress}%`;
+                    progressText.textContent = `Você completou ${avgProgress}% da sua jornada de certificação`;
+                    
+                } else {
+                    progressElement.style.display = 'none';
+                }
+            }
+            
+        } catch (err) {
+            console.error('❌ Erro ao carregar progresso:', err);
         }
     }
 
-    // Modal de Autenticação
+    async studyCertification(certificacaoId) {
+        if (!this.currentUser) {
+            alert('Por favor, faça login para acompanhar seu progresso.');
+            this.openLogin();
+            return;
+        }
+        
+        try {
+            // Verificar se já existe progresso
+            const { data: existing, error: checkError } = await this.supabase
+                .from('progresso_usuario')
+                .select('*')
+                .eq('usuario_id', this.currentUser.id)
+                .eq('certificacao_id', certificacaoId)
+                .single();
+            
+            if (checkError && checkError.code !== 'PGRST116') throw checkError;
+            
+            if (!existing) {
+                // Criar novo progresso
+                const { error: insertError } = await this.supabase
+                    .from('progresso_usuario')
+                    .insert({
+                        usuario_id: this.currentUser.id,
+                        certificacao_id: certificacaoId,
+                        status: 'em_andamento',
+                        progresso_percentual: 0,
+                        data_inicio: new Date().toISOString().split('T')[0]
+                    });
+                
+                if (insertError) throw insertError;
+                
+                alert('🎯 Progresso iniciado para esta certificação!');
+            }
+            
+            // Redirecionar para materiais desta certificação
+            this.showSection('materiais');
+            
+        } catch (err) {
+            console.error('❌ Erro ao iniciar certificação:', err);
+            alert('Erro ao iniciar certificação.');
+        }
+    }
+
+    // ==================== FUNÇÕES AUXILIARES ====================
+    getMaterialIcon(tipo) {
+        const icons = {
+            pdf: 'fas fa-file-pdf pdf',
+            ppt: 'fas fa-file-powerpoint ppt',
+            doc: 'fas fa-file-word doc',
+            video: 'fas fa-file-video video',
+            zip: 'fas fa-file-archive zip',
+            link: 'fas fa-external-link-alt',
+            default: 'fas fa-file'
+        };
+        
+        return icons[tipo] || icons.default;
+    }
+
+    formatDate(dateString) {
+        if (!dateString) return '';
+        
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 0) {
+            return 'Hoje';
+        } else if (diffDays === 1) {
+            return 'Ontem';
+        } else if (diffDays < 7) {
+            return `${diffDays} dias atrás`;
+        } else {
+            return date.toLocaleDateString('pt-BR');
+        }
+    }
+
+    async incrementMaterialViews(materialId) {
+        try {
+            const { error } = await this.supabase.rpc('increment_views', {
+                material_id: materialId
+            });
+            
+            if (error) throw error;
+            
+        } catch (err) {
+            console.error('❌ Erro ao incrementar visualizações:', err);
+        }
+    }
+
+    async incrementSimuladoViews(simuladoId) {
+        try {
+            const { error } = await this.supabase
+                .from('simulados')
+                .update({ visualizacoes: this.supabase.raw('visualizacoes + 1') })
+                .eq('id', simuladoId);
+            
+            if (error) throw error;
+            
+        } catch (err) {
+            console.error('❌ Erro ao incrementar visualizações do simulado:', err);
+        }
+    }
+
+    // ==================== FILTROS ====================
+    filterMaterials(category) {
+        const materials = document.querySelectorAll('.material-card');
+        
+        materials.forEach(material => {
+            const materialCategory = material.getAttribute('data-category');
+            
+            if (category === 'all' || materialCategory === category) {
+                material.style.display = 'block';
+            } else {
+                material.style.display = 'none';
+            }
+        });
+    }
+
+    // ==================== EVENT LISTENERS ====================
+    setupEventListeners() {
+        // Modal de autenticação
+        const modalAuth = document.getElementById('modalAuth');
+        if (modalAuth) {
+            modalAuth.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) this.closeAuthModal();
+            });
+        }
+
+        // Modal de simulados
+        const modalSimulados = document.getElementById('modalSimulados');
+        if (modalSimulados) {
+            modalSimulados.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) this.fecharModalSimulados();
+            });
+        }
+
+        // Tabs de autenticação
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                this.showAuthTab(tabName);
+            });
+        });
+
+        // Tecla ESC para fechar modais
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeAuthModal();
+                this.closeUploadModal();
+                this.fecharModalSimulados();
+                
+                // Fechar menu do usuário
+                const userMenu = document.querySelector('.user-menu');
+                if (userMenu) userMenu.remove();
+            }
+        });
+
+        // Listeners para formulários de login/registro
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.login();
+            });
+        }
+        
+        if (registerForm) {
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.register();
+            });
+        }
+    }
+
+    // ==================== MÉTODOS PÚBLICOS (disponíveis no HTML) ====================
     openLogin(e) {
         if (e) e.preventDefault();
         document.getElementById('modalAuth').classList.add('active');
@@ -179,10 +837,11 @@ class StudyCertApp {
             this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
             this.currentUser = data.user;
             
-            setTimeout(() => {
+            setTimeout(async () => {
+                await this.loadUserProfile();
                 this.closeAuthModal();
                 this.updateAuthUI();
-                this.showUserProgress();
+                this.updateNavigation();
                 document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
             }, 1500);
@@ -239,8 +898,6 @@ class StudyCertApp {
             return '❌ Este email já está cadastrado';
         } else if (error.message.includes('Email not confirmed')) {
             return '❌ Confirme seu email antes de fazer login';
-        } else if (error.message.includes('Invalid API key')) {
-            return '❌ Problema de configuração do sistema';
         } else {
             return `❌ Erro: ${error.message}`;
         }
@@ -259,12 +916,18 @@ class StudyCertApp {
         try {
             await this.supabase.auth.signOut();
             this.currentUser = null;
+            this.userProfile = null;
             this.updateAuthUI();
+            this.updateNavigation();
             
             const userProgress = document.getElementById('userProgress');
             if (userProgress) userProgress.style.display = 'none';
             
-            // Volta para a página inicial
+            // Fechar menu do usuário se aberto
+            const userMenu = document.querySelector('.user-menu');
+            if (userMenu) userMenu.remove();
+            
+            // Voltar para a página inicial
             this.showSection('home');
             
         } catch (error) {
@@ -272,22 +935,6 @@ class StudyCertApp {
         }
     }
 
-    showUserProgress() {
-        if (!this.currentUser) return;
-        
-        const progressElement = document.getElementById('userProgress');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        
-        if (progressElement && progressFill && progressText) {
-            progressElement.style.display = 'block';
-            const progress = 45; // 45%
-            progressFill.style.width = `${progress}%`;
-            progressText.textContent = `Você completou ${progress}% da sua jornada de certificação`;
-        }
-    }
-
-    // ==================== SIMULADOS ====================
     abrirModalSimulados() {
         const modal = document.getElementById('modalSimulados');
         modal.classList.add('active');
@@ -300,309 +947,13 @@ class StudyCertApp {
         document.body.style.overflow = 'auto';
     }
 
-    // ==================== UPLOAD SYSTEM ====================
-    initUploadSystem() {
-        console.log('📤 Sistema de upload inicializado');
-        
-        // Evento para upload de arquivo antigo (compatibilidade)
-        const fileUpload = document.getElementById('fileUpload');
-        if (fileUpload) {
-            fileUpload.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    if (file.type !== 'text/html') {
-                        alert('Por favor, selecione apenas arquivos HTML.');
-                        return;
-                    }
-                    alert(`Arquivo "${file.name}" selecionado para upload.`);
-                    console.log('Arquivo para upload:', file);
-                    e.target.value = '';
-                }
-            });
-        }
-    }
-
-    uploadSimulado() {
-        if (!this.currentUser) {
-            alert('Por favor, faça login para fazer upload de simulados.');
-            this.openLogin();
-            return;
-        }
-        
-        document.getElementById('fileUpload').click();
-    }
-
-    // Modal de Upload
-    openUploadModal() {
-        if (!this.currentUser) {
-            alert('Por favor, faça login para fazer upload de simulados.');
-            this.openLogin();
-            return;
-        }
-        
-        if (!document.getElementById('modalUpload')) {
-            this.createUploadModal();
-        }
-        
-        document.getElementById('modalUpload').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    createUploadModal() {
-        const modalHTML = `
-            <div id="modalUpload" class="modal-upload">
-                <div class="modal-container" style="max-width: 600px;">
-                    <div class="modal-header">
-                        <h3><i class="fas fa-cloud-upload-alt"></i> Enviar Simulado</h3>
-                        <button class="fechar-modal" onclick="app.closeUploadModal()">&times;</button>
-                    </div>
-                    
-                    <div class="modal-body">
-                        <div id="uploadMessage" class="message"></div>
-                        
-                        <div class="form-group">
-                            <label for="simuladoNome">Nome do Simulado *</label>
-                            <input type="text" id="simuladoNome" placeholder="Ex: ITIL 4 Foundation - Simulado 1" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="simuladoDescricao">Descrição</label>
-                            <textarea id="simuladoDescricao" rows="3" placeholder="Descreva seu simulado..."></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="simuladoCategoria">Categoria</label>
-                            <select id="simuladoCategoria">
-                                <option value="ITIL">ITIL</option>
-                                <option value="Linux">Linux (LPIC)</option>
-                                <option value="AWS">AWS</option>
-                                <option value="Azure">Azure</option>
-                                <option value="Security">Security+</option>
-                                <option value="CCNA">CCNA</option>
-                                <option value="Outros">Outros</option>
-                            </select>
-                        </div>
-                        
-                        <div class="upload-area" style="margin: 20px 0;">
-                            <i class="fas fa-file-upload"></i>
-                            <h4>Selecione o arquivo HTML</h4>
-                            <p>Arraste ou clique para selecionar um arquivo HTML</p>
-                            <input type="file" id="fileUploadInput" accept=".html,.htm" style="display: none;">
-                            <button class="btn btn-primary" onclick="document.getElementById('fileUploadInput').click()">
-                                <i class="fas fa-folder-open"></i> Selecionar Arquivo
-                            </button>
-                            <p id="fileName" style="margin-top: 10px; color: var(--gray);"></p>
-                        </div>
-                        
-                        <div class="form-group" style="margin-top: 20px;">
-                            <label>
-                                <input type="checkbox" id="termosAceitos" required>
-                                Concordo com os <a href="#" onclick="alert('Termos de uso em desenvolvimento')">termos de uso</a>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button class="btn btn-outline" onclick="app.closeUploadModal()">Cancelar</button>
-                        <button class="btn btn-success" onclick="app.enviarSimulado()" id="btnEnviarSimulado">
-                            <i class="fas fa-paper-plane"></i> Enviar Simulado
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-        
-        // Configurar eventos do modal
-        const modal = document.getElementById('modalUpload');
-        modal.addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.closeUploadModal();
-            }
-        });
-        
-        // Evento do input de arquivo
-        const fileInput = document.getElementById('fileUploadInput');
-        if (fileInput) {
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    const fileNameElement = document.getElementById('fileName');
-                    if (fileNameElement) {
-                        fileNameElement.textContent = `Arquivo selecionado: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
-                    }
-                }
-            });
-        }
-    }
-
-    closeUploadModal() {
-        const modal = document.getElementById('modalUpload');
-        if (modal) {
-            modal.classList.remove('active');
-        }
-        document.body.style.overflow = 'auto';
-        
-        // Limpar formulário
-        if (document.getElementById('simuladoNome')) {
-            document.getElementById('simuladoNome').value = '';
-            document.getElementById('simuladoDescricao').value = '';
-            document.getElementById('simuladoCategoria').value = 'ITIL';
-            document.getElementById('fileName').textContent = '';
-            document.getElementById('termosAceitos').checked = false;
-            document.getElementById('uploadMessage').style.display = 'none';
-        }
-    }
-
-    async enviarSimulado() {
-        const nome = document.getElementById('simuladoNome').value.trim();
-        const descricao = document.getElementById('simuladoDescricao').value.trim();
-        const categoria = document.getElementById('simuladoCategoria').value;
-        const fileInput = document.getElementById('fileUploadInput');
-        const file = fileInput.files[0];
-        
-        const uploadMessage = document.getElementById('uploadMessage');
-        const btnEnviar = document.getElementById('btnEnviarSimulado');
-        
-        // Validação
-        if (!nome) {
-            this.showUploadMessage('Por favor, insira um nome para o simulado.', 'error');
-            return;
-        }
-        
-        if (!file) {
-            this.showUploadMessage('Por favor, selecione um arquivo HTML.', 'error');
-            return;
-        }
-        
-        if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
-            this.showUploadMessage('Por favor, selecione apenas arquivos HTML.', 'error');
-            return;
-        }
-        
-        if (!document.getElementById('termosAceitos').checked) {
-            this.showUploadMessage('Você precisa aceitar os termos de uso.', 'error');
-            return;
-        }
-        
-        try {
-            // Mostrar loading
-            btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            btnEnviar.disabled = true;
-            
-            // Fazer upload para o Storage
-            const nomeArquivo = `${Date.now()}_${this.currentUser.id}_${file.name.replace(/\s+/g, '_')}`;
-            
-            const { data: uploadData, error: uploadError } = await this.supabase.storage
-                .from(APP_CONFIG.storageBucket)
-                .upload(nomeArquivo, file);
-            
-            if (uploadError) throw uploadError;
-            
-            // Salvar metadados no banco de dados
-            const { error: dbError } = await this.supabase
-                .from('simulados')
-                .insert({
-                    nome: nome,
-                    descricao: descricao,
-                    arquivo_url: nomeArquivo,
-                    usuario_id: this.currentUser.id,
-                    usuario_nome: this.currentUser.user_metadata?.full_name || this.currentUser.email,
-                    categoria: categoria,
-                    data_upload: new Date().toISOString(),
-                    visualizacoes: 0,
-                    downloads: 0,
-                    ativo: true
-                });
-            
-            if (dbError) throw dbError;
-            
-            this.showUploadMessage('✅ Simulado enviado com sucesso!', 'success');
-            
-            setTimeout(() => {
-                this.closeUploadModal();
-                alert('Simulado enviado com sucesso!');
-            }, 2000);
-            
-        } catch (error) {
-            console.error('❌ Erro ao enviar simulado:', error);
-            this.showUploadMessage(`❌ Erro ao enviar simulado: ${error.message}`, 'error');
-        } finally {
-            // Restaurar botão
-            if (btnEnviar) {
-                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
-                btnEnviar.disabled = false;
-            }
-        }
-    }
-
-    showUploadMessage(message, type) {
-        const element = document.getElementById('uploadMessage');
-        if (element) {
-            element.innerHTML = message;
-            element.className = `message ${type}`;
-            element.style.display = 'block';
-        }
-    }
-
-    // ==================== EVENT LISTENERS ====================
-    setupEventListeners() {
-        // Modal de autenticação
-        const modalAuth = document.getElementById('modalAuth');
-        if (modalAuth) {
-            modalAuth.addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) this.closeAuthModal();
-            });
-        }
-
-        // Modal de simulados
-        const modalSimulados = document.getElementById('modalSimulados');
-        if (modalSimulados) {
-            modalSimulados.addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) this.fecharModalSimulados();
-            });
-        }
-
-        // Tabs de autenticação
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.getAttribute('data-tab');
-                this.showAuthTab(tabName);
-            });
-        });
-
-        // Tecla ESC para fechar modais
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeAuthModal();
-                this.closeUploadModal();
-                this.fecharModalSimulados();
-            }
-        });
-    }
-
-    // ==================== FUNÇÕES AUXILIARES ====================
-    createNewPost() {
-        if (!this.currentUser) {
-            alert('Por favor, faça login para criar posts.');
-            this.openLogin();
-            return;
-        }
-        alert('Funcionalidade de criação de posts em desenvolvimento.');
-    }
-
-    forgotPassword() {
-        alert('Funcionalidade de redefinição de senha em desenvolvimento.');
-    }
-
     showGlobalError(message) {
         console.error('Erro global:', message);
-        // Aqui você pode implementar uma notificação mais elaborada
+        // Você pode implementar um sistema de notificação mais elaborado aqui
     }
 }
 
-// Inicializar app quando o DOM estiver pronto
+// Inicializar aplicação quando o DOM estiver pronto
 let app;
 document.addEventListener('DOMContentLoaded', () => {
     app = new StudyCertApp();
@@ -622,7 +973,6 @@ window.logout = () => app.logout();
 // Simulados
 window.abrirModalSimulados = () => app.abrirModalSimulados();
 window.fecharModalSimulados = () => app.fecharModalSimulados();
-window.uploadSimulado = () => app.uploadSimulado();
 window.openUploadModal = () => app.openUploadModal();
 
 // Outras funções
