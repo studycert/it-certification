@@ -9,6 +9,44 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/app.js" defer></script>
+    <style>
+        /* Estilos para mensagens */
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -36,7 +74,7 @@
     </header>
 
     <!-- Modal de Login/Cadastro -->
-    <div id="modalAuth" class="modal-auth">
+    <div id="modalAuth" class="modal-auth" style="display: none;">
         <div class="auth-container">
             <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
             <div class="auth-header">
@@ -44,8 +82,8 @@
                 <p>Sua jornada começa aqui</p>
             </div>
             <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login">Entrar</div>
-                <div class="auth-tab" data-tab="register">Cadastrar</div>
+                <div class="auth-tab active" data-tab="login" onclick="showLoginForm()">Entrar</div>
+                <div class="auth-tab" data-tab="register" onclick="showRegisterForm()">Cadastrar</div>
             </div>
             
             <div id="loginForm" class="auth-form active">
@@ -64,7 +102,7 @@
                 </div>
             </div>
             
-            <div id="registerForm" class="auth-form">
+            <div id="registerForm" class="auth-form" style="display: none;">
                 <div id="registerMessage" class="message"></div>
                 <div class="form-group">
                     <label for="registerName">Nome Completo</label>
@@ -88,7 +126,7 @@
         <div class="container">
             <h2>Prepare-se para suas Certificações de TI</h2>
             <p>Encontre materiais de estudo, participe de discussões no fórum e teste seus conhecimentos com nossos simulados.</p>
-            <a href="#" class="btn btn-primary" onclick="openRegister()">Começar Agora</a>
+            <a href="#" class="btn btn-primary" onclick="openAuthModal('register')">Começar Agora</a>
         </div>
     </section>
 
@@ -104,7 +142,7 @@
             <div id="userProgress" class="user-progress" style="display: none;">
                 <h3>Seu Progresso</h3>
                 <div class="progress-bar">
-                    <div id="progressFill" class="progress-fill"></div>
+                    <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
                 </div>
                 <p id="progressText">Carregando progresso...</p>
             </div>
@@ -161,7 +199,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>Azure Fundamentals</h3>
                         <p>AZ-900: Conceitos fundamentais de nuvem e serviços Azure.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                     </div>
                 </div>
 
@@ -173,7 +211,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>AWS Cloud Practitioner</h3>
                         <p>Fundamentos da AWS e conceitos de computação em nuvem.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                     </div>
                 </div>
 
@@ -185,7 +223,7 @@
                         <span class="cert-level">Segurança</span>
                         <h3>Security+</h3>
                         <p>CompTIA Security+: Fundamentos de cybersecurity.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                     </div>
                 </div>
 
@@ -197,7 +235,7 @@
                         <span class="cert-level">Governança</span>
                         <h3>ITIL 4 Foundation</h3>
                         <p>Framework de gerenciamento de serviços de TI.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                     </div>
                 </div>
             </div>
@@ -205,7 +243,7 @@
     </section>
 
     <!-- Certificações Content -->
-    <section id="certificacoes" class="main-content">
+    <section id="certificacoes" class="main-content" style="display: none;">
         <div class="container">
             <div class="section-title">
                 <h2>Nossas Certificações</h2>
@@ -313,7 +351,7 @@
     </section>
 
     <!-- Forum Content -->
-    <section id="forum" class="main-content">
+    <section id="forum" class="main-content" style="display: none;">
         <div class="container">
             <div class="section-title">
                 <h2>Fórum de Discussão</h2>
@@ -386,7 +424,7 @@
     </section>
 
     <!-- Study Materials Content -->
-    <section id="materiais" class="main-content">
+    <section id="materiais" class="main-content" style="display: none;">
         <div class="container">
             <div class="section-title">
                 <h2>Material de Estudo</h2>
@@ -510,7 +548,7 @@
     </section>
 
     <!-- Simulados Content -->
-    <section id="simulados" class="main-content">
+    <section id="simulados" class="main-content" style="display: none;">
         <div class="container">
             <div class="section-title">
                 <h2>Simulados</h2>
@@ -670,7 +708,7 @@
     </section>
 
     <!-- Modal da Lista de Simulados -->
-    <div id="modalSimulados" class="modal-simulados">
+    <div id="modalSimulados" class="modal-simulados" style="display: none;">
         <div class="modal-container">
             <div class="modal-header">
                 <h3><i class="fas fa-file-alt"></i> Simulados ITIL 4 Foundation</h3>
@@ -774,9 +812,6 @@
         </div>
     </div>
 
-    <!-- Modal de Upload (será criado dinamicamente pelo JS) -->
-    <div id="modalUpload"></div>
-
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -795,22 +830,22 @@
                 <div class="footer-column">
                     <h3>Links Rápidos</h3>
                     <ul class="footer-links">
-                        <li><a href="#" data-target="home">Início</a></li>
-                        <li><a href="#" data-target="certificacoes">Certificações</a></li>
-                        <li><a href="#" data-target="forum">Fórum</a></li>
-                        <li><a href="#" data-target="materiais">Material de Estudo</a></li>
-                        <li><a href="#" data-target="simulados">Simulados</a></li>
+                        <li><a href="#" onclick="showContent('home')">Início</a></li>
+                        <li><a href="#" onclick="showContent('certificacoes')">Certificações</a></li>
+                        <li><a href="#" onclick="showContent('forum')">Fórum</a></li>
+                        <li><a href="#" onclick="showContent('materiais')">Material de Estudo</a></li>
+                        <li><a href="#" onclick="showContent('simulados')">Simulados</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
                     <h3>Certificações</h3>
                     <ul class="footer-links">
-                        <li><a href="#">Microsoft Azure</a></li>
-                        <li><a href="#">AWS</a></li>
-                        <li><a href="#">LPIC-1 e LPIC-2</a></li>
-                        <li><a href="#">ITIL 4</a></li>
-                        <li><a href="#">Security+</a></li>
+                        <li><a href="#" onclick="showContent('certificacoes')">Microsoft Azure</a></li>
+                        <li><a href="#" onclick="showContent('certificacoes')">AWS</a></li>
+                        <li><a href="#" onclick="showContent('certificacoes')">LPIC-1 e LPIC-2</a></li>
+                        <li><a href="#" onclick="showContent('certificacoes')">ITIL 4</a></li>
+                        <li><a href="#" onclick="showContent('certificacoes')">Security+</a></li>
                     </ul>
                 </div>
 
@@ -831,8 +866,9 @@
     </footer>
 
     <script>
-        // Funções para autenticação
+        // Funções para autenticação - CORRIGIDAS
         function openAuthModal(tab = 'login') {
+            console.log('Abrindo modal de autenticação com tab:', tab);
             const modal = document.getElementById('modalAuth');
             modal.style.display = 'flex';
             
@@ -845,24 +881,42 @@
         }
 
         function closeAuthModal() {
+            console.log('Fechando modal de autenticação');
             document.getElementById('modalAuth').style.display = 'none';
         }
 
         function showLoginForm() {
-            document.getElementById('loginForm').classList.add('active');
-            document.getElementById('registerForm').classList.remove('active');
+            console.log('Mostrando formulário de login');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            
+            // Atualizar abas
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
             document.querySelector('[data-tab="login"]').classList.add('active');
-            document.querySelector('[data-tab="register"]').classList.remove('active');
+            
+            // Limpar mensagens
+            document.getElementById('loginMessage').style.display = 'none';
         }
 
         function showRegisterForm() {
-            document.getElementById('registerForm').classList.add('active');
-            document.getElementById('loginForm').classList.remove('active');
+            console.log('Mostrando formulário de registro');
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+            
+            // Atualizar abas
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
             document.querySelector('[data-tab="register"]').classList.add('active');
-            document.querySelector('[data-tab="login"]').classList.remove('active');
+            
+            // Limpar mensagens
+            document.getElementById('registerMessage').style.display = 'none';
         }
 
         function login() {
+            console.log('Tentando fazer login');
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
@@ -890,6 +944,7 @@
         }
 
         function register() {
+            console.log('Tentando registrar');
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
@@ -914,6 +969,14 @@
                     updateAuthUI(true);
                     closeAuthModal();
                     showLoginForm();
+                    
+                    // Mostrar progresso do usuário
+                    document.getElementById('userProgress').style.display = 'block';
+                    document.getElementById('progressFill').style.width = '10%';
+                    document.getElementById('progressText').textContent = '10% completo - Comece seus estudos!';
+                    
+                    // Mostrar área de upload
+                    document.getElementById('uploadArea').style.display = 'block';
                 }, 1500);
             }, 1000);
         }
@@ -925,10 +988,6 @@
             }
         }
 
-        function openRegister() {
-            openAuthModal('register');
-        }
-
         function showMessage(elementId, message, type) {
             const element = document.getElementById(elementId);
             element.textContent = message;
@@ -937,6 +996,7 @@
         }
 
         function updateAuthUI(isLoggedIn) {
+            console.log('Atualizando UI de autenticação:', isLoggedIn);
             const authButtons = document.getElementById('authButtons');
             
             if (isLoggedIn) {
@@ -959,45 +1019,15 @@
         }
 
         function logout() {
+            console.log('Fazendo logout');
             updateAuthUI(false);
             alert('Você saiu da sua conta.');
         }
 
         // Inicializar botões de autenticação
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM carregado, inicializando...');
             updateAuthUI(false);
-            
-            // Adicionar eventos às abas de autenticação
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabType = this.getAttribute('data-tab');
-                    if (tabType === 'login') {
-                        showLoginForm();
-                    } else {
-                        showRegisterForm();
-                    }
-                });
-            });
-            
-            // Adicionar eventos aos links de navegação
-            document.querySelectorAll('.nav-link, .footer-links a[data-target]').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = this.getAttribute('data-target');
-                    showContent(target);
-                });
-            });
-            
-            // Adicionar eventos aos botões que têm data-target
-            document.querySelectorAll('a[data-target], button[data-target]').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    if (this.hasAttribute('data-target')) {
-                        e.preventDefault();
-                        const target = this.getAttribute('data-target');
-                        showContent(target);
-                    }
-                });
-            });
             
             // Fechar modal ao clicar fora
             document.getElementById('modalAuth').addEventListener('click', function(e) {
@@ -1005,19 +1035,27 @@
                     closeAuthModal();
                 }
             });
+            
+            // Fechar modal de simulados ao clicar fora
+            document.getElementById('modalSimulados').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    fecharModalSimulados();
+                }
+            });
         });
 
         // Funções para navegação entre conteúdos
         function showContent(contentId) {
+            console.log('Mostrando conteúdo:', contentId);
             // Esconder todos os conteúdos
             document.querySelectorAll('.main-content').forEach(content => {
-                content.classList.remove('active');
+                content.style.display = 'none';
             });
             
             // Mostrar o conteúdo selecionado
             const targetContent = document.getElementById(contentId);
             if (targetContent) {
-                targetContent.classList.add('active');
+                targetContent.style.display = 'block';
             }
             
             // Atualizar navegação ativa
@@ -1027,20 +1065,24 @@
                     link.classList.add('active');
                 }
             });
+            
+            // Rolar para o topo
+            window.scrollTo(0, 0);
         }
 
         // Funções para simulados
         function abrirModalSimulados() {
+            console.log('Abrindo modal de simulados');
             document.getElementById('modalSimulados').style.display = 'block';
         }
 
         function fecharModalSimulados() {
+            console.log('Fechando modal de simulados');
             document.getElementById('modalSimulados').style.display = 'none';
         }
 
         function openUploadModal() {
             alert('Funcionalidade de upload em desenvolvimento. Em breve você poderá compartilhar seus próprios simulados!');
-            // Em uma implementação real, isso abriria um modal para upload de arquivos
         }
 
         function uploadSimulado() {
@@ -1051,12 +1093,21 @@
             alert('Funcionalidade de criação de posts em desenvolvimento. Em breve você poderá criar novas discussões no fórum!');
         }
 
-        // Fechar modal de simulados ao clicar fora
-        document.getElementById('modalSimulados').addEventListener('click', function(e) {
-            if (e.target === this) {
-                fecharModalSimulados();
-            }
-        });
+        // Atribuir funções ao objeto window para acesso global
+        window.openAuthModal = openAuthModal;
+        window.closeAuthModal = closeAuthModal;
+        window.showLoginForm = showLoginForm;
+        window.showRegisterForm = showRegisterForm;
+        window.login = login;
+        window.register = register;
+        window.forgotPassword = forgotPassword;
+        window.logout = logout;
+        window.showContent = showContent;
+        window.abrirModalSimulados = abrirModalSimulados;
+        window.fecharModalSimulados = fecharModalSimulados;
+        window.openUploadModal = openUploadModal;
+        window.uploadSimulado = uploadSimulado;
+        window.createNewPost = createNewPost;
     </script>
 </body>
 </html>
