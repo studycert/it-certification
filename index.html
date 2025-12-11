@@ -829,5 +829,24 @@
             </div>
         </div>
     </footer>
+    <script>
+// Solução temporária para mostrar botões
+document.addEventListener('DOMContentLoaded', function() {
+  const authButtons = document.getElementById('authButtons');
+  if (authButtons) {
+    authButtons.innerHTML = `
+      <button class="btn btn-outline" onclick="openAuthModal('login')">Entrar</button>
+      <button class="btn btn-primary" onclick="openAuthModal('register')">Cadastrar</button>
+    `;
+  }
+  
+  // Defina a função openAuthModal se não existir
+  if (typeof openAuthModal === 'undefined') {
+    window.openAuthModal = function(tab) {
+      alert('Funcionalidade de login em desenvolvimento. Tab: ' + tab);
+    };
+  }
+});
+</script>
 </body>
 </html>
