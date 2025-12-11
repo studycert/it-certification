@@ -1,6 +1,4 @@
-// app_updated.js - Versão atualizada com todas as funcionalidades
-import StudyCertAPI from './api.js';
-
+// app.js - StudyCert Application
 class StudyCertApp {
     constructor() {
         this.supabase = null;
@@ -15,22 +13,22 @@ class StudyCertApp {
         try {
             // Inicializar Supabase
             this.supabase = window.supabase.createClient(
-                SUPABASE_CONFIG.url,
-                SUPABASE_CONFIG.anonKey
+                window.SUPABASE_CONFIG.url,
+                window.SUPABASE_CONFIG.anonKey
             );
             
             console.log('✅ Supabase configurado');
             
-            // Carregar navegação
-            this.loadNavigation();
+            // Configurar eventos
+            this.setupEventListeners();
             
             // Verificar autenticação
             await this.checkAuth();
             
-            // Configurar eventos
-            this.setupEventListeners();
+            // Carregar navegação
+            this.setupNavigation();
             
-            // Carregar dados iniciais
+            // Carregar conteúdo inicial
             await this.loadInitialData();
             
             console.log('🎉 Aplicação inicializada com sucesso!');
@@ -46,9 +44,12 @@ class StudyCertApp {
         try {
             const { data: { session }, error } = await this.supabase.auth.getSession();
             
-            if (error) throw error;
+            if (error) {
+                console.error('Erro na sessão:', error);
+                return;
+            }
             
-            if (session) {
+            if (session?.user) {
                 this.currentUser = session.user;
                 console.log('👤 Usuário logado:', this.currentUser.email);
                 
@@ -60,7 +61,6 @@ class StudyCertApp {
             }
             
             this.updateAuthUI();
-            this.updateNavigation();
             
         } catch (err) {
             console.error('❌ Erro ao verificar autenticação:', err);
@@ -76,9 +76,27 @@ class StudyCertApp {
                 .eq('id', this.currentUser.id)
                 .single();
             
-            if (error) throw error;
+            if (error) {
+                console.log('Criando novo perfil para usuário...');
+                // Criar perfil se não existir
+                const { data: newProfile, error: createError } = await this.supabase
+                    .from('usuarios')
+                    .insert({
+                        id: this.currentUser.id,
+                        email: this.currentUser.email,
+                        nome: this.currentUser.user_metadata?.full_name || 
+                              this.currentUser.email.split('@')[0]
+                    })
+                    .select()
+                    .single();
+                
+                if (createError) throw createError;
+                
+                this.userProfile = newProfile;
+            } else {
+                this.userProfile = data;
+            }
             
-            this.userProfile = data;
             console.log('📋 Perfil carregado:', this.userProfile.nome);
             
             // Mostrar progresso do usuário
@@ -117,11 +135,20 @@ class StudyCertApp {
             
         } else {
             authButtons.innerHTML = `
-                <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
-                <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
+                <button class="btn btn-outline" id="loginBtn">Entrar</button>
+                <button class="btn btn-primary" id="registerBtn">Cadastrar</button>
             `;
             
             if (uploadArea) uploadArea.style.display = 'none';
+            
+            // Reatribuir eventos aos botões
+            setTimeout(() => {
+                const loginBtn = document.getElementById('loginBtn');
+                const registerBtn = document.getElementById('registerBtn');
+                
+                if (loginBtn) loginBtn.addEventListener('click', () => this.openLogin());
+                if (registerBtn) registerBtn.addEventListener('click', () => this.openRegister());
+            }, 100);
         }
     }
 
@@ -129,82 +156,32 @@ class StudyCertApp {
         if (!this.currentUser) return;
         
         const menuHTML = `
-            <div class="user-menu" style="
-                position: absolute;
-                top: 60px;
-                right: 20px;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-                min-width: 200px;
-                z-index: 1000;
-            ">
-                <div class="user-menu-header" style="
-                    padding: 15px;
-                    border-bottom: 1px solid #eee;
-                    background: linear-gradient(135deg, #2c3e50, #3498db);
-                    color: white;
-                    border-radius: 8px 8px 0 0;
-                ">
+            <div class="user-menu">
+                <div class="user-menu-header">
                     <strong>${this.userProfile?.nome || 'Usuário'}</strong>
                     <div style="font-size: 0.9rem; opacity: 0.8;">${this.currentUser.email}</div>
                 </div>
                 <div class="user-menu-items">
-                    <a href="#" onclick="app.showUserProfile()" style="
-                        display: block;
-                        padding: 12px 15px;
-                        color: #333;
-                        text-decoration: none;
-                        border-bottom: 1px solid #f5f5f5;
-                        transition: background 0.3s;
-                    ">
-                        <i class="fas fa-user" style="margin-right: 10px;"></i>
+                    <a href="#" onclick="app.showUserProfile()">
+                        <i class="fas fa-user"></i>
                         Meu Perfil
                     </a>
-                    <a href="#" onclick="app.showMyProgress()" style="
-                        display: block;
-                        padding: 12px 15px;
-                        color: #333;
-                        text-decoration: none;
-                        border-bottom: 1px solid #f5f5f5;
-                        transition: background 0.3s;
-                    ">
-                        <i class="fas fa-chart-line" style="margin-right: 10px;"></i>
+                    <a href="#" onclick="app.showMyProgress()">
+                        <i class="fas fa-chart-line"></i>
                         Meu Progresso
                     </a>
-                    <a href="#" onclick="app.showMyMaterials()" style="
-                        display: block;
-                        padding: 12px 15px;
-                        color: #333;
-                        text-decoration: none;
-                        border-bottom: 1px solid #f5f5f5;
-                        transition: background 0.3s;
-                    ">
-                        <i class="fas fa-book" style="margin-right: 10px;"></i>
+                    <a href="#" onclick="app.showMyMaterials()">
+                        <i class="fas fa-book"></i>
                         Meus Materiais
                     </a>
-                    <a href="#" onclick="app.showMyPosts()" style="
-                        display: block;
-                        padding: 12px 15px;
-                        color: #333;
-                        text-decoration: none;
-                        transition: background 0.3s;
-                    ">
-                        <i class="fas fa-comments" style="margin-right: 10px;"></i>
+                    <a href="#" onclick="app.showMyPosts()">
+                        <i class="fas fa-comments"></i>
                         Meus Posts
                     </a>
                 </div>
-                <div class="user-menu-footer" style="
-                    padding: 10px 15px;
-                    border-top: 1px solid #eee;
-                    text-align: center;
-                ">
-                    <button class="btn btn-outline" onclick="app.logout()" style="
-                        width: 100%;
-                        padding: 8px;
-                        font-size: 0.9rem;
-                    ">
-                        <i class="fas fa-sign-out-alt" style="margin-right: 5px;"></i>
+                <div class="user-menu-footer">
+                    <button class="btn btn-outline" onclick="app.logout()" style="width: 100%; padding: 8px; font-size: 0.9rem;">
+                        <i class="fas fa-sign-out-alt"></i>
                         Sair
                     </button>
                 </div>
@@ -231,45 +208,27 @@ class StudyCertApp {
         }, 100);
     }
 
-    // ==================== NAVEGAÇÃO E CONTEÚDO ====================
-    loadNavigation() {
+    // ==================== NAVEGAÇÃO ====================
+    setupNavigation() {
         // Navegação principal
-        const navLinks = document.querySelectorAll('.nav-link, .footer-links a[data-target], .btn[data-target]');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
+            // Links de navegação
+            if (e.target.matches('.nav-link, .footer-links a[data-target], .btn[data-target]')) {
                 e.preventDefault();
-                const targetId = link.getAttribute('data-target');
+                const targetId = e.target.getAttribute('data-target');
                 this.showSection(targetId);
-            });
-        });
-        
-        // Botões de categoria de materiais
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const category = btn.getAttribute('data-category');
-                this.filterMaterials(category);
-            });
-        });
-    }
-
-    updateNavigation() {
-        // Atualizar links baseados no status de autenticação
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            const target = link.getAttribute('data-target');
+            }
             
-            // Esconder/mostrar links baseados na autenticação
-            if (target === 'forum' && !this.currentUser) {
-                link.style.display = 'none';
-            } else {
-                link.style.display = 'block';
+            // Links do fórum
+            if (e.target.matches('.category-list a')) {
+                e.preventDefault();
+                const category = e.target.getAttribute('data-category');
+                this.filterForumPosts(category);
             }
         });
+        
+        // Mostrar seção inicial
+        this.showSection('home');
     }
 
     showSection(sectionId) {
@@ -316,18 +275,124 @@ class StudyCertApp {
         }
     }
 
+    // ==================== EVENT LISTENERS ====================
+    setupEventListeners() {
+        // Modal de autenticação
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('#loginBtn, #startNowBtn')) {
+                e.preventDefault();
+                this.openLogin();
+            }
+            
+            if (e.target.matches('#registerBtn')) {
+                e.preventDefault();
+                this.openRegister();
+            }
+            
+            if (e.target.matches('#closeAuthModal') || 
+                (e.target.classList.contains('modal-auth') && e.target.id === 'modalAuth')) {
+                this.closeAuthModal();
+            }
+            
+            if (e.target.matches('#submitLogin')) {
+                e.preventDefault();
+                this.login();
+            }
+            
+            if (e.target.matches('#submitRegister')) {
+                e.preventDefault();
+                this.register();
+            }
+        });
+        
+        // Tabs de autenticação
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                this.showAuthTab(tabName);
+            });
+        });
+        
+        // Modal de simulados
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('#closeSimuladosModal') || 
+                (e.target.classList.contains('modal-simulados') && e.target.id === 'modalSimulados')) {
+                this.closeSimuladosModal();
+            }
+            
+            if (e.target.matches('.show-simulados-btn')) {
+                this.openSimuladosModal();
+            }
+            
+            if (e.target.matches('#uploadSimuladoBtn')) {
+                this.openUploadModal();
+            }
+            
+            if (e.target.matches('#submitUpload')) {
+                e.preventDefault();
+                this.uploadSimulado();
+            }
+            
+            if (e.target.matches('#closeUploadModal') || 
+                (e.target.classList.contains('modal-upload') && e.target.id === 'modalUpload')) {
+                this.closeUploadModal();
+            }
+            
+            if (e.target.matches('#newPostBtn')) {
+                e.preventDefault();
+                if (!this.currentUser) {
+                    alert('Por favor, faça login para criar um novo post.');
+                    this.openLogin();
+                    return;
+                }
+                this.createNewPost();
+            }
+        });
+        
+        // Formulários
+        document.addEventListener('submit', (e) => {
+            if (e.target.matches('#loginForm')) {
+                e.preventDefault();
+                this.login();
+            }
+            
+            if (e.target.matches('#registerForm')) {
+                e.preventDefault();
+                this.register();
+            }
+        });
+        
+        // Tecla ESC para fechar modais
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeAuthModal();
+                this.closeSimuladosModal();
+                this.closeUploadModal();
+                
+                // Fechar menu do usuário
+                const userMenu = document.querySelector('.user-menu');
+                if (userMenu) userMenu.remove();
+            }
+        });
+    }
+
     // ==================== CARREGAMENTO DE DADOS ====================
     async loadInitialData() {
-        // Carregar certificações
-        await this.loadCertificacoes();
-        
-        // Carregar estatísticas do site
-        await this.loadSiteStats();
+        try {
+            // Carregar certificações em destaque
+            await this.loadHomeContent();
+            
+            // Carregar estatísticas
+            await this.loadStats();
+            
+        } catch (err) {
+            console.error('❌ Erro ao carregar dados iniciais:', err);
+        }
     }
 
     async loadHomeContent() {
-        // Carregar certificações em destaque
         try {
+            // Carregar certificações em destaque
             const { data: certificacoes, error } = await this.supabase
                 .from('certificacoes')
                 .select('*')
@@ -337,10 +402,9 @@ class StudyCertApp {
             
             if (error) throw error;
             
-            // Atualizar grid de certificações
-            const certificationsGrid = document.querySelector('.certifications-grid');
-            if (certificationsGrid && certificacoes) {
-                certificationsGrid.innerHTML = certificacoes.map(cert => `
+            const grid = document.getElementById('featuredCertifications');
+            if (grid && certificacoes) {
+                grid.innerHTML = certificacoes.map(cert => `
                     <div class="cert-card">
                         <div class="cert-icon">
                             <i class="${cert.icon_name || 'fas fa-certificate'}"></i>
@@ -349,14 +413,14 @@ class StudyCertApp {
                             <span class="cert-level">${cert.nivel}</span>
                             <h3>${cert.nome}</h3>
                             <p>${cert.descricao?.substring(0, 100) || 'Certificação de TI'}...</p>
-                            <a href="#" class="btn btn-primary" onclick="app.studyCertification('${cert.id}')">Estudar</a>
+                            <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                         </div>
                     </div>
                 `).join('');
             }
             
         } catch (err) {
-            console.error('❌ Erro ao carregar certificações:', err);
+            console.error('❌ Erro ao carregar conteúdo da home:', err);
         }
     }
 
@@ -418,10 +482,10 @@ class StudyCertApp {
                             <p>${material.descricao?.substring(0, 100) || 'Material de estudo'}...</p>
                             <div class="material-meta">
                                 <span><i class="fas fa-user"></i> ${material.usuarios?.nome || 'Anônimo'}</span>
-                                <span><i class="far fa-eye"></i> ${material.visualizacoes}</span>
+                                <span><i class="far fa-eye"></i> ${material.visualizacoes || 0}</span>
                             </div>
-                            <a href="${material.caminho_arquivo || material.url_externa}" 
-                               target="_blank" 
+                            <a href="${material.caminho_arquivo || material.url_externa || '#'}" 
+                               ${material.caminho_arquivo || material.url_externa ? 'target="_blank"' : ''}
                                class="btn btn-primary"
                                onclick="app.incrementMaterialViews('${material.id}')">
                                 Acessar
@@ -436,17 +500,22 @@ class StudyCertApp {
         }
     }
 
-    async loadForumPosts() {
+    async loadForumPosts(category = null) {
         try {
-            const { data: posts, error } = await this.supabase
+            let query = this.supabase
                 .from('forum_posts')
                 .select(`
                     *,
-                    forum_categorias:nome,
                     usuarios:nome
                 `)
                 .order('created_at', { ascending: false })
                 .limit(20);
+            
+            if (category) {
+                // Implementar filtro por categoria
+            }
+            
+            const { data: posts, error } = await query;
             
             if (error) throw error;
             
@@ -464,9 +533,8 @@ class StudyCertApp {
                             <p>${post.conteudo?.substring(0, 150) || 'Sem conteúdo'}...</p>
                         </div>
                         <div class="post-footer">
-                            <span><i class="far fa-comment"></i> ${post.respostas} respostas</span>
-                            <span><i class="far fa-eye"></i> ${post.visualizacoes} visualizações</span>
-                            <span><i class="fas fa-tag"></i> ${post.forum_categorias?.nome || 'Geral'}</span>
+                            <span><i class="far fa-comment"></i> ${post.respostas || 0} respostas</span>
+                            <span><i class="far fa-eye"></i> ${post.visualizacoes || 0} visualizações</span>
                         </div>
                     </div>
                 `).join('');
@@ -483,8 +551,7 @@ class StudyCertApp {
                 .from('simulados')
                 .select(`
                     *,
-                    certificacoes:nome,
-                    usuarios:nome
+                    certificacoes:nome
                 `)
                 .eq('status', 'aprovado')
                 .order('created_at', { ascending: false });
@@ -492,28 +559,32 @@ class StudyCertApp {
             if (error) throw error;
             
             const container = document.getElementById('simuladosContent');
-            if (container && simulados) {
-                container.innerHTML = simulados.map(simulado => `
-                    <div class="simulado-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-file-alt"></i> ${simulado.nome}</h3>
+            if (container) {
+                if (simulados && simulados.length > 0) {
+                    container.innerHTML = simulados.map(simulado => `
+                        <div class="simulado-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-file-alt"></i> ${simulado.nome}</h3>
+                            </div>
+                            <div class="card-body">
+                                <span class="simulado-badge">${simulado.total_questoes || 0} questões</span>
+                                <p>${simulado.descricao?.substring(0, 100) || 'Simulado de certificação'}</p>
+                                <p><strong>Certificação:</strong> ${simulado.certificacoes?.nome || 'Geral'}</p>
+                                <p><strong>Tempo estimado:</strong> ${simulado.tempo_estimado_minutos || 60} minutos</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="${simulado.arquivo_url || '#'}" 
+                                   ${simulado.arquivo_url ? 'target="_blank"' : ''}
+                                   class="btn btn-primary"
+                                   onclick="app.incrementSimuladoViews('${simulado.id}')">
+                                    Iniciar Simulado
+                                </a>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <span class="simulado-badge">${simulado.total_questoes} questões</span>
-                            <p>${simulado.descricao?.substring(0, 100) || 'Simulado de certificação'}</p>
-                            <p><strong>Certificação:</strong> ${simulado.certificacoes?.nome || 'Geral'}</p>
-                            <p><strong>Tempo estimado:</strong> ${simulado.tempo_estimado_minutos} minutos</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="${simulado.arquivo_url}" 
-                               target="_blank" 
-                               class="btn btn-primary"
-                               onclick="app.incrementSimuladoViews('${simulado.id}')">
-                                Iniciar Simulado
-                            </a>
-                        </div>
-                    </div>
-                `).join('');
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p class="text-center">Nenhum simulado disponível no momento.</p>';
+                }
                 
                 // Adicionar card para upload
                 container.innerHTML += `
@@ -536,9 +607,8 @@ class StudyCertApp {
         }
     }
 
-    async loadSiteStats() {
+    async loadStats() {
         try {
-            // Obter estatísticas
             const [
                 { count: totalUsers },
                 { count: totalMaterials },
@@ -646,164 +716,35 @@ class StudyCertApp {
         }
     }
 
-    // ==================== FUNÇÕES AUXILIARES ====================
-    getMaterialIcon(tipo) {
-        const icons = {
-            pdf: 'fas fa-file-pdf pdf',
-            ppt: 'fas fa-file-powerpoint ppt',
-            doc: 'fas fa-file-word doc',
-            video: 'fas fa-file-video video',
-            zip: 'fas fa-file-archive zip',
-            link: 'fas fa-external-link-alt',
-            default: 'fas fa-file'
-        };
-        
-        return icons[tipo] || icons.default;
-    }
-
-    formatDate(dateString) {
-        if (!dateString) return '';
-        
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffMs = now - date;
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        
-        if (diffDays === 0) {
-            return 'Hoje';
-        } else if (diffDays === 1) {
-            return 'Ontem';
-        } else if (diffDays < 7) {
-            return `${diffDays} dias atrás`;
-        } else {
-            return date.toLocaleDateString('pt-BR');
-        }
-    }
-
-    async incrementMaterialViews(materialId) {
-        try {
-            const { error } = await this.supabase.rpc('increment_views', {
-                material_id: materialId
-            });
-            
-            if (error) throw error;
-            
-        } catch (err) {
-            console.error('❌ Erro ao incrementar visualizações:', err);
-        }
-    }
-
-    async incrementSimuladoViews(simuladoId) {
-        try {
-            const { error } = await this.supabase
-                .from('simulados')
-                .update({ visualizacoes: this.supabase.raw('visualizacoes + 1') })
-                .eq('id', simuladoId);
-            
-            if (error) throw error;
-            
-        } catch (err) {
-            console.error('❌ Erro ao incrementar visualizações do simulado:', err);
-        }
-    }
-
-    // ==================== FILTROS ====================
-    filterMaterials(category) {
-        const materials = document.querySelectorAll('.material-card');
-        
-        materials.forEach(material => {
-            const materialCategory = material.getAttribute('data-category');
-            
-            if (category === 'all' || materialCategory === category) {
-                material.style.display = 'block';
-            } else {
-                material.style.display = 'none';
-            }
-        });
-    }
-
-    // ==================== EVENT LISTENERS ====================
-    setupEventListeners() {
-        // Modal de autenticação
-        const modalAuth = document.getElementById('modalAuth');
-        if (modalAuth) {
-            modalAuth.addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) this.closeAuthModal();
-            });
-        }
-
-        // Modal de simulados
-        const modalSimulados = document.getElementById('modalSimulados');
-        if (modalSimulados) {
-            modalSimulados.addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) this.fecharModalSimulados();
-            });
-        }
-
-        // Tabs de autenticação
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.getAttribute('data-tab');
-                this.showAuthTab(tabName);
-            });
-        });
-
-        // Tecla ESC para fechar modais
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeAuthModal();
-                this.closeUploadModal();
-                this.fecharModalSimulados();
-                
-                // Fechar menu do usuário
-                const userMenu = document.querySelector('.user-menu');
-                if (userMenu) userMenu.remove();
-            }
-        });
-
-        // Listeners para formulários de login/registro
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.login();
-            });
-        }
-        
-        if (registerForm) {
-            registerForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.register();
-            });
-        }
-    }
-
-    // ==================== MÉTODOS PÚBLICOS (disponíveis no HTML) ====================
-    openLogin(e) {
-        if (e) e.preventDefault();
+    // ==================== AUTENTICAÇÃO - MODAL ====================
+    openLogin() {
         document.getElementById('modalAuth').classList.add('active');
         this.showAuthTab('login');
+        document.body.style.overflow = 'hidden';
     }
 
-    openRegister(e) {
-        if (e) e.preventDefault();
+    openRegister() {
         document.getElementById('modalAuth').classList.add('active');
         this.showAuthTab('register');
+        document.body.style.overflow = 'hidden';
     }
 
     closeAuthModal() {
         document.getElementById('modalAuth').classList.remove('active');
         this.clearAuthMessages();
+        document.body.style.overflow = 'auto';
     }
 
     showAuthTab(tab) {
         document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
         
-        document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
-        document.getElementById(`${tab}Form`).classList.add('active');
+        const selectedTab = document.querySelector(`.auth-tab[data-tab="${tab}"]`);
+        const selectedForm = document.getElementById(`${tab}Form`);
+        
+        if (selectedTab) selectedTab.classList.add('active');
+        if (selectedForm) selectedForm.classList.add('active');
+        
         this.clearAuthMessages();
     }
 
@@ -841,9 +782,14 @@ class StudyCertApp {
                 await this.loadUserProfile();
                 this.closeAuthModal();
                 this.updateAuthUI();
-                this.updateNavigation();
+                
+                // Limpar campos
                 document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
+                
+                // Recarregar conteúdo
+                await this.loadSectionContent('home');
+                
             }, 1500);
             
         } catch (error) {
@@ -879,10 +825,14 @@ class StudyCertApp {
             this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
             
             setTimeout(() => {
+                // Limpar campos
                 document.getElementById('registerName').value = '';
                 document.getElementById('registerEmail').value = '';
                 document.getElementById('registerPassword').value = '';
+                
+                // Mudar para aba de login
                 this.showAuthTab('login');
+                
             }, 3000);
             
         } catch (error) {
@@ -898,17 +848,10 @@ class StudyCertApp {
             return '❌ Este email já está cadastrado';
         } else if (error.message.includes('Email not confirmed')) {
             return '❌ Confirme seu email antes de fazer login';
+        } else if (error.message.includes('Password should be at least')) {
+            return '❌ A senha deve ter pelo menos 6 caracteres';
         } else {
             return `❌ Erro: ${error.message}`;
-        }
-    }
-
-    showMessage(elementId, message, type) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.innerHTML = message;
-            element.className = `message ${type}`;
-            element.style.display = 'block';
         }
     }
 
@@ -918,10 +861,6 @@ class StudyCertApp {
             this.currentUser = null;
             this.userProfile = null;
             this.updateAuthUI();
-            this.updateNavigation();
-            
-            const userProgress = document.getElementById('userProgress');
-            if (userProgress) userProgress.style.display = 'none';
             
             // Fechar menu do usuário se aberto
             const userMenu = document.querySelector('.user-menu');
@@ -930,26 +869,398 @@ class StudyCertApp {
             // Voltar para a página inicial
             this.showSection('home');
             
+            // Recarregar conteúdo
+            await this.loadHomeContent();
+            
         } catch (error) {
             console.error('❌ Erro ao fazer logout:', error);
         }
     }
 
-    abrirModalSimulados() {
-        const modal = document.getElementById('modalSimulados');
-        modal.classList.add('active');
+    // ==================== SIMULADOS - MODAL ====================
+    openSimuladosModal() {
+        document.getElementById('modalSimulados').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
-    fecharModalSimulados() {
-        const modal = document.getElementById('modalSimulados');
-        modal.classList.remove('active');
+    closeSimuladosModal() {
+        document.getElementById('modalSimulados').classList.remove('active');
         document.body.style.overflow = 'auto';
     }
 
+    openUploadModal() {
+        if (!this.currentUser) {
+            alert('Por favor, faça login para fazer upload de simulados.');
+            this.openLogin();
+            return;
+        }
+        
+        document.getElementById('modalUpload').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Carregar certificações para o select
+        this.loadCertificationsForUpload();
+    }
+
+    closeUploadModal() {
+        document.getElementById('modalUpload').classList.remove('active');
+        document.body.style.overflow = 'auto';
+        
+        // Limpar campos
+        document.getElementById('simuladoName').value = '';
+        document.getElementById('simuladoDesc').value = '';
+        document.getElementById('simuladoQuestions').value = '';
+        document.getElementById('simuladoTime').value = '';
+        document.getElementById('simuladoFile').value = '';
+    }
+
+    async loadCertificationsForUpload() {
+        try {
+            const { data: certificacoes, error } = await this.supabase
+                .from('certificacoes')
+                .select('id, nome')
+                .eq('ativo', true)
+                .order('nome');
+            
+            if (error) throw error;
+            
+            const select = document.getElementById('simuladoCert');
+            if (select && certificacoes) {
+                select.innerHTML = '<option value="">Selecione uma certificação</option>' +
+                    certificacoes.map(cert => `<option value="${cert.id}">${cert.nome}</option>`).join('');
+            }
+            
+        } catch (err) {
+            console.error('❌ Erro ao carregar certificações:', err);
+        }
+    }
+
+    async uploadSimulado() {
+        const name = document.getElementById('simuladoName').value;
+        const desc = document.getElementById('simuladoDesc').value;
+        const certId = document.getElementById('simuladoCert').value;
+        const questions = document.getElementById('simuladoQuestions').value;
+        const time = document.getElementById('simuladoTime').value;
+        const fileInput = document.getElementById('simuladoFile');
+        const file = fileInput.files[0];
+        
+        if (!name || !desc || !certId || !questions || !time || !file) {
+            this.showMessage('uploadMessage', 'Por favor, preencha todos os campos', 'error');
+            return;
+        }
+        
+        try {
+            // Upload do arquivo
+            const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+            
+            const { data: uploadData, error: uploadError } = await this.supabase.storage
+                .from('simulados')
+                .upload(fileName, file);
+            
+            if (uploadError) throw uploadError;
+            
+            // Obter URL pública
+            const { data: urlData } = this.supabase.storage
+                .from('simulados')
+                .getPublicUrl(fileName);
+            
+            // Salvar no banco de dados
+            const { data: dbData, error: dbError } = await this.supabase
+                .from('simulados')
+                .insert({
+                    nome: name,
+                    descricao: desc,
+                    certificacao_id: certId,
+                    total_questoes: parseInt(questions),
+                    tempo_estimado_minutos: parseInt(time),
+                    arquivo_url: urlData.publicUrl,
+                    usuario_id: this.currentUser.id,
+                    status: 'pendente'
+                });
+            
+            if (dbError) throw dbError;
+            
+            this.showMessage('uploadMessage', '✅ Simulado enviado com sucesso! Aguarde a aprovação.', 'success');
+            
+            setTimeout(() => {
+                this.closeUploadModal();
+                this.loadSimulados();
+            }, 2000);
+            
+        } catch (err) {
+            console.error('❌ Erro ao fazer upload do simulado:', err);
+            this.showMessage('uploadMessage', '❌ Erro ao enviar simulado. Tente novamente.', 'error');
+        }
+    }
+
+    // ==================== FUNÇÕES AUXILIARES ====================
+    showMessage(elementId, message, type) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.innerHTML = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+            
+            // Auto-esconder mensagens de sucesso
+            if (type === 'success') {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
+        }
+    }
+
+    getMaterialIcon(tipo) {
+        const icons = {
+            pdf: 'fas fa-file-pdf',
+            ppt: 'fas fa-file-powerpoint',
+            doc: 'fas fa-file-word',
+            video: 'fas fa-file-video',
+            zip: 'fas fa-file-archive',
+            link: 'fas fa-external-link-alt',
+            default: 'fas fa-file'
+        };
+        
+        return icons[tipo] || icons.default;
+    }
+
+    formatDate(dateString) {
+        if (!dateString) return '';
+        
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        
+        if (diffMins < 1) {
+            return 'Agora mesmo';
+        } else if (diffMins < 60) {
+            return `há ${diffMins} minuto${diffMins > 1 ? 's' : ''}`;
+        } else if (diffHours < 24) {
+            return `há ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+        } else if (diffDays === 1) {
+            return 'Ontem';
+        } else if (diffDays < 7) {
+            return `há ${diffDays} dias`;
+        } else {
+            return date.toLocaleDateString('pt-BR');
+        }
+    }
+
+    filterForumPosts(category) {
+        // Implementar filtro de posts por categoria
+        console.log('Filtrar posts por categoria:', category);
+        // Atualizar UI dos filtros
+        document.querySelectorAll('.category-list a').forEach(link => {
+            link.classList.remove('active');
+        });
+        const activeLink = document.querySelector(`.category-list a[data-category="${category}"]`);
+        if (activeLink) activeLink.classList.add('active');
+        
+        // Recarregar posts filtrados
+        this.loadForumPosts(category);
+    }
+
+    async incrementMaterialViews(materialId) {
+        try {
+            const { error } = await this.supabase.rpc('increment_views', {
+                material_id: materialId
+            });
+            
+            if (error) throw error;
+            
+        } catch (err) {
+            console.error('❌ Erro ao incrementar visualizações:', err);
+        }
+    }
+
+    async incrementSimuladoViews(simuladoId) {
+        try {
+            const { error } = await this.supabase
+                .from('simulados')
+                .update({ visualizacoes: this.supabase.raw('visualizacoes + 1') })
+                .eq('id', simuladoId);
+            
+            if (error) throw error;
+            
+        } catch (err) {
+            console.error('❌ Erro ao incrementar visualizações do simulado:', err);
+        }
+    }
+
     showGlobalError(message) {
-        console.error('Erro global:', message);
-        // Você pode implementar um sistema de notificação mais elaborado aqui
+        // Criar elemento de erro global
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'global-error';
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        errorDiv.innerHTML = `
+            <strong>Erro:</strong> ${message}
+            <button onclick="this.parentElement.remove()" style="margin-left: 10px; background: none; border: none; color: white; cursor: pointer;">×</button>
+        `;
+        
+        document.body.appendChild(errorDiv);
+        
+        // Remover automaticamente após 5 segundos
+        setTimeout(() => {
+            if (errorDiv.parentElement) {
+                errorDiv.remove();
+            }
+        }, 5000);
+    }
+
+    // ==================== MÉTODOS DO FÓRUM ====================
+    createNewPost() {
+        if (!this.currentUser) {
+            alert('Por favor, faça login para criar um novo post.');
+            this.openLogin();
+            return;
+        }
+        
+        // Criar modal para novo post
+        const modalHTML = `
+            <div class="modal-upload active" id="newPostModal">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-edit"></i> Nova Discussão</h3>
+                        <button class="fechar-modal" onclick="document.getElementById('newPostModal').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="newPostMessage" class="message"></div>
+                        <div class="form-group">
+                            <label for="postTitle">Título</label>
+                            <input type="text" id="postTitle" placeholder="Digite o título da discussão">
+                        </div>
+                        <div class="form-group">
+                            <label for="postCategory">Categoria</label>
+                            <select id="postCategory">
+                                <option value="">Selecione uma categoria</option>
+                                <option value="microsoft">Certificações Microsoft</option>
+                                <option value="aws">Certificações AWS</option>
+                                <option value="lpic">LPIC-1 e LPIC-2</option>
+                                <option value="itil">ITIL e Governança</option>
+                                <option value="security">Security & Cybersecurity</option>
+                                <option value="cloud">Cloud Computing</option>
+                                <option value="geral">Dúvidas Gerais</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="postContent">Conteúdo</label>
+                            <textarea id="postContent" placeholder="Descreva sua dúvida ou compartilhe sua experiência..." rows="8"></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="app.submitNewPost()">Publicar Discussão</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Remover modal anterior se existir
+        const existingModal = document.getElementById('newPostModal');
+        if (existingModal) existingModal.remove();
+        
+        // Adicionar novo modal
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.style.overflow = 'hidden';
+    }
+
+    async submitNewPost() {
+        const title = document.getElementById('postTitle').value;
+        const category = document.getElementById('postCategory').value;
+        const content = document.getElementById('postContent').value;
+        
+        if (!title || !category || !content) {
+            this.showMessage('newPostMessage', 'Por favor, preencha todos os campos', 'error');
+            return;
+        }
+        
+        try {
+            // Mapear categoria para ID (em produção, isso viria do banco)
+            const categoryMap = {
+                microsoft: '1',
+                aws: '2',
+                lpic: '3',
+                itil: '4',
+                security: '5',
+                cloud: '6',
+                geral: '7'
+            };
+            
+            const { data, error } = await this.supabase
+                .from('forum_posts')
+                .insert({
+                    titulo: title,
+                    conteudo: content,
+                    categoria_id: categoryMap[category] || '7',
+                    usuario_id: this.currentUser.id
+                })
+                .select();
+            
+            if (error) throw error;
+            
+            this.showMessage('newPostMessage', '✅ Discussão publicada com sucesso!', 'success');
+            
+            setTimeout(() => {
+                const modal = document.getElementById('newPostModal');
+                if (modal) modal.remove();
+                document.body.style.overflow = 'auto';
+                
+                // Recarregar posts
+                this.loadForumPosts();
+                
+            }, 2000);
+            
+        } catch (err) {
+            console.error('❌ Erro ao publicar post:', err);
+            this.showMessage('newPostMessage', '❌ Erro ao publicar discussão. Tente novamente.', 'error');
+        }
+    }
+
+    async viewForumPost(postId) {
+        // Implementar visualização detalhada do post
+        console.log('Visualizar post:', postId);
+        alert('Funcionalidade de visualização detalhada do post será implementada em breve.');
+    }
+
+    // ==================== MÉTODOS DO USUÁRIO ====================
+    showUserProfile() {
+        if (!this.currentUser) return;
+        alert('Funcionalidade de perfil do usuário será implementada em breve.');
+    }
+
+    showMyProgress() {
+        if (!this.currentUser) return;
+        this.showSection('home'); // Mostrar seção home onde está o progresso
+        setTimeout(() => {
+            const progressElement = document.getElementById('userProgress');
+            if (progressElement) {
+                progressElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 100);
+    }
+
+    showMyMaterials() {
+        if (!this.currentUser) return;
+        this.showSection('materiais');
+        alert('Funcionalidade de meus materiais será implementada em breve.');
+    }
+
+    showMyPosts() {
+        if (!this.currentUser) return;
+        this.showSection('forum');
+        alert('Funcionalidade de meus posts será implementada em breve.');
     }
 }
 
@@ -957,24 +1268,5 @@ class StudyCertApp {
 let app;
 document.addEventListener('DOMContentLoaded', () => {
     app = new StudyCertApp();
+    window.app = app; // Tornar acessível globalmente
 });
-
-// ==================== FUNÇÕES GLOBAIS ====================
-// Estas funções são acessíveis via onclick no HTML
-
-// Autenticação
-window.openLogin = (e) => app.openLogin(e);
-window.openRegister = (e) => app.openRegister(e);
-window.closeAuthModal = () => app.closeAuthModal();
-window.login = () => app.login();
-window.register = () => app.register();
-window.logout = () => app.logout();
-
-// Simulados
-window.abrirModalSimulados = () => app.abrirModalSimulados();
-window.fecharModalSimulados = () => app.fecharModalSimulados();
-window.openUploadModal = () => app.openUploadModal();
-
-// Outras funções
-window.createNewPost = () => app.createNewPost();
-window.forgotPassword = () => app.forgotPassword();
