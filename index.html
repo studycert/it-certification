@@ -29,7 +29,9 @@
                     </ul>
                 </nav>
                 <div class="auth-buttons" id="authButtons">
-                    <!-- Será preenchido dinamicamente via JavaScript -->
+                    <!-- Botões de autenticação - serão preenchidos pelo JavaScript -->
+                    <button class="btn btn-outline" onclick="openAuthModal('login')">Entrar</button>
+                    <button class="btn btn-primary" onclick="openAuthModal('register')">Cadastrar</button>
                 </div>
             </div>
         </div>
@@ -44,8 +46,8 @@
                 <p>Sua jornada começa aqui</p>
             </div>
             <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login">Entrar</div>
-                <div class="auth-tab" data-tab="register">Cadastrar</div>
+                <div class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">Entrar</div>
+                <div class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">Cadastrar</div>
             </div>
             
             <div id="loginForm" class="auth-form active">
@@ -59,6 +61,18 @@
                     <input type="password" id="loginPassword" placeholder="Sua senha">
                 </div>
                 <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
+                
+                <!-- Login com Google -->
+                <div class="social-auth">
+                    <div class="divider">
+                        <span>ou continue com</span>
+                    </div>
+                    <button class="btn-google" onclick="loginWithGoogle()">
+                        <i class="fab fa-google"></i>
+                        Entrar com Google
+                    </button>
+                </div>
+                
                 <div class="auth-footer">
                     <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
                 </div>
@@ -80,22 +94,6 @@
                 </div>
                 <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
             </div>
-            
-            <!-- Seção de Autenticação Social -->
-            <div class="social-auth" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                <div class="divider" style="text-align: center; margin-bottom: 20px; position: relative;">
-                    <span style="background: white; padding: 0 15px; color: #7f8c8d; font-size: 0.9rem;">
-                        ou entre com
-                    </span>
-                </div>
-                
-                <button class="btn btn-google" onclick="loginWithGoogle()" 
-                        style="width: 100%; background-color: #fff; color: #757575; border: 1px solid #ddd; 
-                               display: flex; align-items: center; justify-content: center; gap: 10px; 
-                               padding: 12px; font-weight: 600; margin-bottom: 10px;">
-                    <i class="fab fa-google" style="color: #DB4437;"></i> Continuar com Google
-                </button>
-            </div>
         </div>
     </div>
 
@@ -104,7 +102,7 @@
         <div class="container">
             <h2>Prepare-se para suas Certificações de TI</h2>
             <p>Encontre materiais de estudo, participe de discussões no fórum e teste seus conhecimentos com nossos simulados.</p>
-            <a href="#" class="btn btn-primary" onclick="openRegister()">Começar Agora</a>
+            <button class="btn btn-primary" onclick="openAuthModal('register')">Começar Agora</button>
         </div>
     </section>
 
@@ -134,7 +132,7 @@
                         <p>Participe de discussões, tire dúvidas e compartilhe conhecimento com outros profissionais de TI.</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" data-target="forum">Acessar Fórum</a>
+                        <button class="btn btn-primary" onclick="showSection('forum')">Acessar Fórum</button>
                     </div>
                 </div>
 
@@ -146,7 +144,7 @@
                         <p>Acesse guias, resumos, videoaulas e outros recursos para sua preparação.</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" data-target="materiais">Ver Materiais</a>
+                        <button class="btn btn-primary" onclick="showSection('materiais')">Ver Materiais</button>
                     </div>
                 </div>
 
@@ -158,7 +156,7 @@
                         <p>Teste seus conhecimentos com nossos simulados e acompanhe seu progresso.</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" data-target="simulados">Ver Simulados</a>
+                        <button class="btn btn-primary" onclick="showSection('simulados')">Ver Simulados</button>
                     </div>
                 </div>
             </div>
@@ -177,7 +175,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>Azure Fundamentals</h3>
                         <p>AZ-900: Conceitos fundamentais de nuvem e serviços Azure.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Azure Fundamentals')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -189,7 +187,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>AWS Cloud Practitioner</h3>
                         <p>Fundamentos da AWS e conceitos de computação em nuvem.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('AWS Cloud Practitioner')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -201,7 +199,7 @@
                         <span class="cert-level">Segurança</span>
                         <h3>Security+</h3>
                         <p>CompTIA Security+: Fundamentos de cybersecurity.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Security+')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -213,7 +211,7 @@
                         <span class="cert-level">Governança</span>
                         <h3>ITIL 4 Foundation</h3>
                         <p>Framework de gerenciamento de serviços de TI.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('ITIL 4 Foundation')">Estudar</a>
+                        <button class="btn btn-primary" onclick="showSection('materiais')">Estudar</button>
                     </div>
                 </div>
             </div>
@@ -237,7 +235,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>Azure Administrator</h3>
                         <p>AZ-104: Implementação, gerenciamento e monitoramento de ambientes Azure.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Azure Administrator')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -249,7 +247,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>AWS Solutions Architect</h3>
                         <p>SAA-C03: Projeto e implantação de sistemas escaláveis na AWS.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('AWS Solutions Architect')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -261,7 +259,7 @@
                         <span class="cert-level">Segurança</span>
                         <h3>Cybersecurity Analyst</h3>
                         <p>CySA+: Análise de ameaças e resposta a incidentes de segurança.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Cybersecurity Analyst')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -273,7 +271,7 @@
                         <span class="cert-level">Governança</span>
                         <h3>ITIL 4 Specialist</h3>
                         <p>Práticas avançadas de gerenciamento de serviços de TI.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('ITIL 4 Specialist')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -285,7 +283,7 @@
                         <span class="cert-level">Linux</span>
                         <h3>LPIC-1</h3>
                         <p>Certificação Linux Professional Institute - Nível 1.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('LPIC-1')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -297,7 +295,7 @@
                         <span class="cert-level">Linux</span>
                         <h3>LPIC-2</h3>
                         <p>Certificação Linux Professional Institute - Nível Avançado.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('LPIC-2')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -309,7 +307,7 @@
                         <span class="cert-level">Rede</span>
                         <h3>CCNA</h3>
                         <p>Cisco Certified Network Associate: Fundamentos de redes.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('CCNA')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
 
@@ -321,7 +319,7 @@
                         <span class="cert-level">Dados</span>
                         <h3>Data Fundamentals</h3>
                         <p>DP-900: Conceitos fundamentais de dados e analytics.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Data Fundamentals')">Estudar</a>
+                        <button class="btn btn-primary">Estudar</button>
                     </div>
                 </div>
             </div>
@@ -417,7 +415,7 @@
                     <div class="material-content">
                         <h3>Microsoft Azure</h3>
                         <p>Guias de estudo, resumos e recursos para certificações Azure.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Microsoft Azure')">Acessar</a>
+                        <button class="btn btn-primary">Acessar</button>
                     </div>
                 </div>
 
@@ -428,7 +426,7 @@
                     <div class="material-content">
                         <h3>Amazon AWS</h3>
                         <p>Material para Cloud Practitioner, Solutions Architect e outras.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Amazon AWS')">Acessar</a>
+                        <button class="btn btn-primary">Acessar</button>
                     </div>
                 </div>
 
@@ -439,7 +437,7 @@
                     <div class="material-content">
                         <h3>LPIC-1 e LPIC-2</h3>
                         <p>Recursos para certificações Linux Professional Institute.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('LPIC-1 e LPIC-2')">Acessar</a>
+                        <button class="btn btn-primary">Acessar</button>
                     </div>
                 </div>
 
@@ -450,7 +448,7 @@
                     <div class="material-content">
                         <h3>ITIL 4</h3>
                         <p>Guias, resumos e material para certificação ITIL.</p>
-                        <a href="materiais/itil4-materiais.html" class="btn btn-primary" onclick="goToStudyPage('ITIL 4 Materiais')">Acessar</a>
+                        <button class="btn btn-primary" onclick="window.location.href='materiais/itil4-materiais.html'">Acessar</button>
                     </div>
                 </div>
 
@@ -461,7 +459,7 @@
                     <div class="material-content">
                         <h3>Security+</h3>
                         <p>Material para preparação da certificação CompTIA Security+.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Security+ Materiais')">Acessar</a>
+                        <button class="btn btn-primary">Acessar</button>
                     </div>
                 </div>
 
@@ -472,7 +470,7 @@
                     <div class="material-content">
                         <h3>CCNA</h3>
                         <p>Recursos para Cisco Certified Network Associate.</p>
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('CCNA Materiais')">Acessar</a>
+                        <button class="btn btn-primary">Acessar</button>
                     </div>
                 </div>
             </div>
@@ -492,7 +490,7 @@
                         <p><strong>Duração:</strong> 6 horas</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('LPIC-1 Videoaulas')">Assistir</a>
+                        <button class="btn btn-primary">Assistir</button>
                     </div>
                 </div>
 
@@ -505,7 +503,7 @@
                         <p><strong>Duração:</strong> 5 horas</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('ITIL 4 Videoaulas')">Assistir</a>
+                        <button class="btn btn-primary">Assistir</button>
                     </div>
                 </div>
 
@@ -518,7 +516,7 @@
                         <p><strong>Duração:</strong> 12 horas</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" onclick="goToStudyPage('Security+ Videoaulas')">Assistir</a>
+                        <button class="btn btn-primary">Assistir</button>
                     </div>
                 </div>
             </div>
@@ -568,7 +566,7 @@
                         <p><strong>Tempo estimado:</strong> 90 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="simulados/simulado-lpic1.html" class="btn btn-primary">Iniciar Simulado</a>
+                        <button class="btn btn-primary" onclick="iniciarSimulado('LPIC-1')">Iniciar Simulado</button>
                     </div>
                 </div>
 
@@ -582,7 +580,7 @@
                         <p><strong>Tempo estimado:</strong> 90 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="simulados/simulado-security.html" class="btn btn-primary">Iniciar Simulado</a>
+                        <button class="btn btn-primary" onclick="iniciarSimulado('Security+')">Iniciar Simulado</button>
                     </div>
                 </div>
 
@@ -596,7 +594,7 @@
                         <p><strong>Tempo estimado:</strong> 90 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="simulados/simulado-aws.html" class="btn btn-primary">Iniciar Simulado</a>
+                        <button class="btn btn-primary" onclick="iniciarSimulado('AWS Cloud Practitioner')">Iniciar Simulado</button>
                     </div>
                 </div>
 
@@ -610,7 +608,7 @@
                         <p><strong>Tempo estimado:</strong> 60 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="simulados/simulado-azure.html" class="btn btn-primary">Iniciar Simulado</a>
+                        <button class="btn btn-primary" onclick="iniciarSimulado('Azure Fundamentals')">Iniciar Simulado</button>
                     </div>
                 </div>
 
@@ -624,7 +622,7 @@
                         <p><strong>Tempo estimado:</strong> 90 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="simulados/simulado-ccna.html" class="btn btn-primary">Iniciar Simulado</a>
+                        <button class="btn btn-primary" onclick="iniciarSimulado('CCNA')">Iniciar Simulado</button>
                     </div>
                 </div>
 
@@ -638,7 +636,7 @@
                         <p><strong>Tempo estimado:</strong> 45 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="simulados/simulado-data.html" class="btn btn-primary">Iniciar Simulado</a>
+                        <button class="btn btn-primary" onclick="iniciarSimulado('Data Fundamentals')">Iniciar Simulado</button>
                     </div>
                 </div>
 
@@ -652,7 +650,7 @@
                         <p><strong>Tempo estimado:</strong> 120 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="simulados/simulado-lpic2.html" class="btn btn-primary">Iniciar Simulado</a>
+                        <button class="btn btn-primary" onclick="iniciarSimulado('LPIC-2')">Iniciar Simulado</button>
                     </div>
                 </div>
 
@@ -666,7 +664,7 @@
                         <p><strong>Tempo estimado:</strong> 130 minutos</p>
                     </div>
                     <div class="card-footer">
-                        <a href="simulados/simulado-aws-solutions.html" class="btn btn-primary">Iniciar Simulado</a>
+                        <button class="btn btn-primary" onclick="iniciarSimulado('AWS Solutions Architect')">Iniciar Simulado</button>
                     </div>
                 </div>
 
@@ -811,22 +809,22 @@
                 <div class="footer-column">
                     <h3>Links Rápidos</h3>
                     <ul class="footer-links">
-                        <li><a href="#" data-target="home">Início</a></li>
-                        <li><a href="#" data-target="certificacoes">Certificações</a></li>
-                        <li><a href="#" data-target="forum">Fórum</a></li>
-                        <li><a href="#" data-target="materiais">Material de Estudo</a></li>
-                        <li><a href="#" data-target="simulados">Simulados</a></li>
+                        <li><a href="#" onclick="showSection('home')">Início</a></li>
+                        <li><a href="#" onclick="showSection('certificacoes')">Certificações</a></li>
+                        <li><a href="#" onclick="showSection('forum')">Fórum</a></li>
+                        <li><a href="#" onclick="showSection('materiais')">Material de Estudo</a></li>
+                        <li><a href="#" onclick="showSection('simulados')">Simulados</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
                     <h3>Certificações</h3>
                     <ul class="footer-links">
-                        <li><a href="#" data-target="certificacoes">Microsoft Azure</a></li>
-                        <li><a href="#" data-target="certificacoes">AWS</a></li>
-                        <li><a href="#" data-target="certificacoes">LPIC-1 e LPIC-2</a></li>
-                        <li><a href="#" data-target="certificacoes">ITIL 4</a></li>
-                        <li><a href="#" data-target="certificacoes">Security+</a></li>
+                        <li><a href="#" onclick="showSection('certificacoes')">Microsoft Azure</a></li>
+                        <li><a href="#" onclick="showSection('certificacoes')">AWS</a></li>
+                        <li><a href="#" onclick="showSection('certificacoes')">LPIC-1 e LPIC-2</a></li>
+                        <li><a href="#" onclick="showSection('certificacoes')">ITIL 4</a></li>
+                        <li><a href="#" onclick="showSection('certificacoes')">Security+</a></li>
                     </ul>
                 </div>
 
@@ -846,59 +844,217 @@
         </div>
     </footer>
 
+    <!-- Scripts essenciais inline para garantir funcionamento básico -->
     <script>
-        // Adicione esta função ao seu app.js também
-        async function loginWithGoogle() {
-            try {
-                const supabase = supabase.createClient(
-                    SUPABASE_CONFIG.url, 
-                    SUPABASE_CONFIG.anonKey
-                );
-                
-                // Detectar se está no GitHub Pages ou localhost
-                const isGitHubPages = window.location.hostname === 'studycert.github.io';
-                
-                // URL de redirecionamento baseada no ambiente
-                let redirectUrl;
-                
-                if (isGitHubPages) {
-                    // Para GitHub Pages
-                    redirectUrl = 'https://studycert.github.io/it-certification/auth-callback.html';
-                } else {
-                    // Para desenvolvimento local
-                    const port = window.location.port || '3000';
-                    redirectUrl = `http://localhost:${port}/auth-callback.html`;
-                }
-                
-                console.log('Redirecionando para:', redirectUrl);
-                
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: redirectUrl,
-                        queryParams: {
-                            access_type: 'offline',
-                            prompt: 'consent'
-                        }
+        // Funções básicas para navegação
+        function showSection(sectionId) {
+            // Esconde todas as seções
+            document.querySelectorAll('.main-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostra a seção selecionada
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Atualiza navegação ativa
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[data-target="${sectionId}"]`).classList.add('active');
+            
+            // Scroll para o topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Funções do modal de autenticação
+        function openAuthModal(tab = 'login') {
+            document.getElementById('modalAuth').classList.add('active');
+            switchAuthTab(tab);
+        }
+        
+        function closeAuthModal() {
+            document.getElementById('modalAuth').classList.remove('active');
+        }
+        
+        function switchAuthTab(tab) {
+            // Ativa a aba
+            document.querySelectorAll('.auth-tab').forEach(tabElement => {
+                tabElement.classList.remove('active');
+            });
+            document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
+            
+            // Mostra o formulário correspondente
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.getElementById(tab === 'login' ? 'loginForm' : 'registerForm').classList.add('active');
+        }
+        
+        // Funções do modal de simulados
+        function abrirModalSimulados() {
+            document.getElementById('modalSimulados').classList.add('active');
+        }
+        
+        function fecharModalSimulados() {
+            document.getElementById('modalSimulados').classList.remove('active');
+        }
+        
+        function iniciarSimulado(nome) {
+            alert(`Iniciando simulado: ${nome}\n\nEsta funcionalidade será implementada em breve!`);
+        }
+        
+        function openRegister() {
+            openAuthModal('register');
+        }
+        
+        // Navegação inicial
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configura navegação por links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-target');
+                    showSection(target);
+                });
+            });
+            
+            // Configura links do footer
+            document.querySelectorAll('footer a[data-target]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-target');
+                    showSection(target);
+                });
+            });
+            
+            // Fecha modal ao clicar fora
+            document.querySelectorAll('.modal-auth, .modal-simulados').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
                     }
                 });
+            });
+            
+            // Simula login básico
+            function login() {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
                 
-                if (error) {
-                    console.error('Erro no login com Google:', error);
-                    alert(`Erro: ${error.message}`);
+                if (!email || !password) {
+                    showMessage('loginMessage', 'Por favor, preencha todos os campos.', 'error');
                     return;
                 }
                 
-                // O Supabase retorna uma URL para redirecionamento
-                if (data?.url) {
-                    window.location.href = data.url;
+                showMessage('loginMessage', 'Login realizado com sucesso! Redirecionando...', 'success');
+                closeAuthModal();
+                
+                // Simula usuário logado
+                setTimeout(() => {
+                    document.getElementById('authButtons').innerHTML = `
+                        <div class="user-info">
+                            <div class="user-avatar">${email.charAt(0).toUpperCase()}</div>
+                            <span>${email}</span>
+                            <button class="btn btn-outline btn-sm" onclick="logout()">Sair</button>
+                        </div>
+                    `;
+                    document.getElementById('userProgress').style.display = 'block';
+                    document.getElementById('uploadArea').style.display = 'block';
+                    document.getElementById('progressFill').style.width = '65%';
+                    document.getElementById('progressText').textContent = '65% completo - Continue seus estudos!';
+                }, 1000);
+            }
+            
+            function register() {
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                
+                if (!name || !email || !password) {
+                    showMessage('registerMessage', 'Por favor, preencha todos os campos.', 'error');
+                    return;
                 }
                 
-            } catch (error) {
-                console.error('Erro no login com Google:', error);
-                alert('Erro ao conectar com Google. Tente novamente.');
+                if (password.length < 6) {
+                    showMessage('registerMessage', 'A senha deve ter pelo menos 6 caracteres.', 'error');
+                    return;
+                }
+                
+                showMessage('registerMessage', 'Cadastro realizado com sucesso! Faça login para continuar.', 'success');
+                setTimeout(() => {
+                    switchAuthTab('login');
+                }, 1500);
             }
-        }
+            
+            function logout() {
+                document.getElementById('authButtons').innerHTML = `
+                    <button class="btn btn-outline" onclick="openAuthModal('login')">Entrar</button>
+                    <button class="btn btn-primary" onclick="openAuthModal('register')">Cadastrar</button>
+                `;
+                document.getElementById('userProgress').style.display = 'none';
+                document.getElementById('uploadArea').style.display = 'none';
+            }
+            
+            function showMessage(elementId, message, type) {
+                const element = document.getElementById(elementId);
+                element.textContent = message;
+                element.className = `message ${type}`;
+                element.style.display = 'block';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
+            
+            function loginWithGoogle() {
+                // Em produção, isso redirecionaria para o auth do Google
+                showMessage('loginMessage', 'Redirecionando para autenticação com Google...', 'success');
+                setTimeout(() => {
+                    closeAuthModal();
+                    document.getElementById('authButtons').innerHTML = `
+                        <div class="user-info">
+                            <div class="user-avatar">G</div>
+                            <span>usuário@gmail.com</span>
+                            <button class="btn btn-outline btn-sm" onclick="logout()">Sair</button>
+                        </div>
+                    `;
+                    document.getElementById('userProgress').style.display = 'block';
+                    document.getElementById('uploadArea').style.display = 'block';
+                }, 1500);
+            }
+            
+            // Torna as funções globais
+            window.login = login;
+            window.register = register;
+            window.logout = logout;
+            window.loginWithGoogle = loginWithGoogle;
+            window.forgotPassword = function() {
+                alert('Funcionalidade de recuperação de senha em desenvolvimento.');
+            };
+            window.createNewPost = function() {
+                if (document.querySelector('.user-info')) {
+                    alert('Criar nova postagem - funcionalidade em desenvolvimento.');
+                } else {
+                    openAuthModal('login');
+                }
+            };
+            window.openUploadModal = function() {
+                if (document.querySelector('.user-info')) {
+                    alert('Modal de upload - funcionalidade em desenvolvimento.');
+                } else {
+                    openAuthModal('login');
+                }
+            };
+            window.uploadSimulado = function() {
+                if (document.querySelector('.user-info')) {
+                    document.getElementById('fileUpload').click();
+                } else {
+                    openAuthModal('login');
+                }
+            };
+        });
     </script>
 </body>
 </html>
