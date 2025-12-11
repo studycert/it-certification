@@ -36,52 +36,70 @@
     </header>
 
     <!-- Modal de Login/Cadastro -->
-    <div id="modalAuth" class="modal-auth">
-        <div class="auth-container">
-            <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
-            <div class="auth-header">
-                <h2>Study<span style="color: #3498db;">Cert</span></h2>
-                <p>Sua jornada começa aqui</p>
+<div id="modalAuth" class="modal-auth">
+    <div class="auth-container">
+        <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
+        <div class="auth-header">
+            <h2>Study<span style="color: #3498db;">Cert</span></h2>
+            <p>Sua jornada começa aqui</p>
+        </div>
+        <div class="auth-tabs">
+            <div class="auth-tab active" data-tab="login">Entrar</div>
+            <div class="auth-tab" data-tab="register">Cadastrar</div>
+        </div>
+        
+        <div id="loginForm" class="auth-form active">
+            <div id="loginMessage" class="message"></div>
+            <div class="form-group">
+                <label for="loginEmail">E-mail</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com">
             </div>
-            <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login">Entrar</div>
-                <div class="auth-tab" data-tab="register">Cadastrar</div>
+            <div class="form-group">
+                <label for="loginPassword">Senha</label>
+                <input type="password" id="loginPassword" placeholder="Sua senha">
             </div>
-            
-            <div id="loginForm" class="auth-form active">
-                <div id="loginMessage" class="message"></div>
-                <div class="form-group">
-                    <label for="loginEmail">E-mail</label>
-                    <input type="email" id="loginEmail" placeholder="seu@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Senha</label>
-                    <input type="password" id="loginPassword" placeholder="Sua senha">
-                </div>
-                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
-                <div class="auth-footer">
-                    <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
-                </div>
-            </div>
-            
-            <div id="registerForm" class="auth-form">
-                <div id="registerMessage" class="message"></div>
-                <div class="form-group">
-                    <label for="registerName">Nome Completo</label>
-                    <input type="text" id="registerName" placeholder="Seu nome completo">
-                </div>
-                <div class="form-group">
-                    <label for="registerEmail">E-mail</label>
-                    <input type="email" id="registerEmail" placeholder="seu@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Senha</label>
-                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
-                </div>
-                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
+            <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
+            <div class="auth-footer">
+                <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
             </div>
         </div>
+        
+        <div id="registerForm" class="auth-form">
+            <div id="registerMessage" class="message"></div>
+            <div class="form-group">
+                <label for="registerName">Nome Completo</label>
+                <input type="text" id="registerName" placeholder="Seu nome completo">
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">E-mail</label>
+                <input type="email" id="registerEmail" placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Senha</label>
+                <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
+            </div>
+            <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
+        </div>
+        
+        <!-- ADICIONE ESTA SEÇÃO AQUI -->
+        <div class="social-auth" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+            <div class="divider" style="text-align: center; margin-bottom: 20px; position: relative;">
+                <span style="background: white; padding: 0 15px; color: #7f8c8d; font-size: 0.9rem;">
+                    ou entre com
+                </span>
+            </div>
+            
+            <button class="btn btn-google" onclick="loginWithGoogle()" 
+                    style="width: 100%; background-color: #fff; color: #757575; border: 1px solid #ddd; 
+                           display: flex; align-items: center; justify-content: center; gap: 10px; 
+                           padding: 12px; font-weight: 600; margin-bottom: 10px;">
+                <i class="fab fa-google" style="color: #DB4437;"></i> Continuar com Google
+            </button>
+        </div>
+        <!-- FIM DA SEÇÃO SOCIAL -->
+        
     </div>
+</div>
 
     <!-- Hero Section -->
     <section class="hero">
