@@ -32,19 +32,63 @@ async function initApp() {
 // Adicione esta função para login com Google
 async function loginWithGoogle() {
     try {
-        const result = await authManager.signInWithGoogle();
+        const supabase = supabase.createClient(
+            SUPABASE_CONFIG.url, 
+            SUPABASE_CONFIG.anonKey
+        );
         
-        if (result.success && result.url) {
-            // Redirecionar para URL de autenticação do Google
-            window.location.href = result.url;
+        // Detectar se está no GitHub Pages ou localhost
+        const isGitHubPages = window.location.hostname === 'studycert.github.io';
+        
+        // URL de redirecionamento baseada no ambiente
+        let redirectUrl;
+        
+        if (isGitHubPages) {
+            // Para GitHub Pages
+            redirectUrl = 'https://studycert.github.io/it-certification/auth-callback.html';
         } else {
+            // Para desenvolvimento local
+            const port = window.location.port || '3000';
+            redirectUrl = `http://localhost:${port}/auth-callback.html`;
+        }
+        
+        console.log('Redirecionando para:', redirectUrl);
+        
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: redirectUrl,
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent'
+                }
+            }
+        });
+        
+        if (error) {
+            console.error('Erro no login com Google:', error);
             showMessage(
-                document.getElementById('loginMessage') || 
-                document.getElementById('registerMessage'),
-                'Erro ao iniciar login com Google: ' + (result.error || 'Erro desconhecido'),
+                document.getElementById('loginMessage'),
+                `Erro: ${error.message}`,
                 'error'
             );
+            return;
         }
+        
+        // O Supabase retorna uma URL para redirecionamento
+        if (data?.url) {
+            window.location.href = data.url;
+        }
+        
+    } catch (error) {
+        console.error('Erro no login com Google:', error);
+        showMessage(
+            document.getElementById('loginMessage'),
+            'Erro ao conectar com Google. Tente novamente.',
+            'error'
+        );
+    }
+
     } catch (error) {
         console.error('Erro no login com Google:', error);
         showMessage(
