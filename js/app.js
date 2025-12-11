@@ -1,186 +1,345 @@
-// app.js
-import { StudyCertAPI } from './api.js';
-import { AuthService } from './auth.js';
-import { checkDatabaseConnection } from './supabase_setup.js';
-
-class StudyCertApp {
-  constructor() {
-    this.init();
+// js/app.js
+document.addEventListener('DOMContentLoaded', function() {
+  // Configurar navegação
+  setupNavigation();
+  
+  // Configurar eventos dos formulários
+  setupAuthTabs();
+  
+  // Fechar modal ao clicar fora
+  setupModalClose();
+  
+  // Carregar dados iniciais
+  if (window.supabase) {
+    loadInitialData();
+  } else {
+    console.error('Supabase não inicializado');
   }
+});
 
-  async init() {
-    console.log('🚀 Iniciando StudyCert App...');
-    
-    // Verificar conexão
-    const connection = await checkDatabaseConnection();
-    if (!connection.connected) {
-      this.showError('Não foi possível conectar ao banco de dados');
-      return;
-    }
-
-    // Verificar autenticação
-    const user = await AuthService.getCurrentUser();
-    if (user) {
-      this.user = user;
-      this.userProfile = await AuthService.getUserProfile();
-      this.loadAuthenticatedContent();
-    } else {
-      this.loadPublicContent();
-    }
-
-    // Carregar dados iniciais
-    this.loadInitialData();
-  }
-
-  async loadInitialData() {
-    try {
-      // Carregar certificações
-      const { data: certificacoes, error: certError } = await StudyCertAPI.getCertificacoes();
-      if (!certError) {
-        this.renderCertificacoes(certificacoes);
-      }
-
-      // Carregar materiais populares
-      const { data: materiais, error: matError } = await StudyCertAPI.getMateriais({
-        limit: 6
+function setupNavigation() {
+  // Navegação entre seções
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = this.getAttribute('data-target');
+      
+      // Remover classe active de todos os links
+      document.querySelectorAll('.nav-link').forEach(l => {
+        l.classList.remove('active');
       });
-      if (!matError) {
-        this.renderMateriais(materiais);
+      
+      // Adicionar classe active ao link clicado
+      this.classList.add('active');
+      
+      // Esconder todos os conteúdos
+      document.querySelectorAll('.main-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Mostrar conteúdo selecionado
+      const targetContent = document.getElementById(target);
+      if (targetContent) {
+        targetContent.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Carregar dados específicos da seção
+        if (target === 'certificacoes') loadCertificacoes();
+        if (target === 'forum') loadForum();
+        if (target === 'materiais') loadMateriais();
+        if (target === 'simulados') loadSimulados();
       }
+    });
+  });
+  
+  // Links do footer também navegam
+  document.querySelectorAll('footer [data-target]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = this.getAttribute('data-target');
+      const navLink = document.querySelector(`.nav-link[data-target="${target}"]`);
+      if (navLink) navLink.click();
+    });
+  });
+}
 
-      // Carregar categorias do fórum
-      const { data: forumPosts, error: forumError } = await StudyCertAPI.getForumPosts();
-      if (!forumError) {
-        this.renderForumPosts(forumPosts);
+function setupAuthTabs() {
+  document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const tabName = this.getAttribute('data-tab');
+      
+      // Ativar tab
+      document.querySelectorAll('.auth-tab').forEach(t => {
+        t.classList.remove('active');
+      });
+      this.classList.add('active');
+      
+      // Mostrar formulário correspondente
+      document.querySelectorAll('.auth-form').forEach(form => {
+        form.classList.remove('active');
+      });
+      document.getElementById(`${tabName}Form`).classList.add('active');
+    });
+  });
+}
+
+function setupModalClose() {
+  const modal = document.getElementById('modalAuth');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeAuthModal();
       }
-
-    } catch (error) {
-      console.error('Erro ao carregar dados:', error);
-    }
-  }
-
-  renderCertificacoes(certificacoes) {
-    const container = document.getElementById('certificacoes-container');
-    if (!container) return;
-
-    container.innerHTML = certificacoes.map(cert => `
-      <div class="cert-card">
-        <div class="cert-icon">
-          <i class="${cert.icon_name || 'fas fa-certificate'}"></i>
-        </div>
-        <div class="cert-info">
-          <h3>${cert.nome}</h3>
-          <p class="cert-fornecedor">${cert.fornecedor}</p>
-          <p class="cert-nivel">Nível: ${cert.nivel}</p>
-          <p class="cert-dificuldade">Dificuldade: ${this.getDificuldadeLabel(cert.dificuldade)}</p>
-          <button class="btn btn-outline" onclick="app.verCertificacao('${cert.id}')">
-            Ver detalhes
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  renderMateriais(materiais) {
-    const container = document.getElementById('materiais-container');
-    if (!container) return;
-
-    container.innerHTML = materiais.map(material => `
-      <div class="material-card">
-        <div class="material-type ${material.tipo}">
-          <i class="${this.getMaterialIcon(material.tipo)}"></i>
-        </div>
-        <div class="material-info">
-          <h4>${material.titulo}</h4>
-          <p class="material-category">${material.categoria}</p>
-          <div class="material-stats">
-            <span><i class="fas fa-eye"></i> ${material.visualizacoes}</span>
-            <span><i class="fas fa-download"></i> ${material.downloads}</span>
-            <span><i class="fas fa-heart"></i> ${material.curtidas}</span>
-          </div>
-          <button class="btn btn-sm" onclick="app.verMaterial('${material.id}')">
-            Ver material
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  getMaterialIcon(tipo) {
-    const icons = {
-      'pdf': 'fas fa-file-pdf',
-      'ppt': 'fas fa-file-powerpoint',
-      'doc': 'fas fa-file-word',
-      'video': 'fas fa-video',
-      'zip': 'fas fa-file-archive',
-      'link': 'fas fa-link'
-    };
-    return icons[tipo] || 'fas fa-file';
-  }
-
-  getDificuldadeLabel(dificuldade) {
-    const labels = {
-      'facil': 'Fácil',
-      'intermediario': 'Intermediário',
-      'dificil': 'Difícil',
-      'avancado': 'Avançado'
-    };
-    return labels[dificuldade] || dificuldade;
-  }
-
-  async verMaterial(id) {
-    const { data: material, error } = await StudyCertAPI.getMaterialById(id);
-    if (error) {
-      this.showError('Erro ao carregar material');
-      return;
-    }
-
-    // Mostrar modal ou redirecionar
-    this.showMaterialModal(material);
-  }
-
-  showMaterialModal(material) {
-    // Implementar modal
-    console.log('Mostrando material:', material);
-  }
-
-  showError(message) {
-    // Implementar exibição de erro
-    console.error('Erro:', message);
-  }
-
-  loadAuthenticatedContent() {
-    // Carregar conteúdo para usuários logados
-    document.querySelectorAll('.auth-only').forEach(el => {
-      el.style.display = 'block';
-    });
-    document.querySelectorAll('.anon-only').forEach(el => {
-      el.style.display = 'none';
-    });
-
-    // Atualizar perfil
-    if (this.userProfile) {
-      const profileEl = document.getElementById('user-profile');
-      if (profileEl) {
-        profileEl.innerHTML = `
-          <img src="${this.userProfile.foto_url || 'default-avatar.png'}" 
-               alt="${this.userProfile.nome}" class="avatar">
-          <span>${this.userProfile.nome}</span>
-        `;
-      }
-    }
-  }
-
-  loadPublicContent() {
-    // Carregar conteúdo público
-    document.querySelectorAll('.auth-only').forEach(el => {
-      el.style.display = 'none';
-    });
-    document.querySelectorAll('.anon-only').forEach(el => {
-      el.style.display = 'block';
     });
   }
 }
 
-// Inicializar app
-window.app = new StudyCertApp();
+async function loadInitialData() {
+  // Verificar se usuário está logado
+  const user = localStorage.getItem('studyCertUser');
+  if (user) {
+    const userData = JSON.parse(user);
+    await loadUserProgress(userData.id);
+  }
+  
+  // Carregar certificações para a home
+  await loadCertificacoesHome();
+}
+
+async function loadUserProgress(userId) {
+  try {
+    const { data, error } = await window.supabase
+      .from('progresso_usuario')
+      .select(`
+        *,
+        certificacao:certificacoes(nome, nivel)
+      `)
+      .eq('usuario_id', userId)
+      .order('updated_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    if (data && data.length > 0) {
+      updateProgressUI(data);
+    }
+  } catch (error) {
+    console.error('Erro ao carregar progresso:', error);
+  }
+}
+
+function updateProgressUI(progressData) {
+  const progressElement = document.getElementById('userProgress');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  
+  if (!progressElement || !progressFill || !progressText) return;
+  
+  // Calcular progresso médio
+  const totalProgress = progressData.reduce((sum, item) => sum + item.progresso_percentual, 0);
+  const avgProgress = Math.round(totalProgress / progressData.length);
+  
+  // Atualizar UI
+  progressFill.style.width = `${avgProgress}%`;
+  progressText.textContent = `Progresso médio: ${avgProgress}% (${progressData.length} certificações)`;
+  progressElement.style.display = 'block';
+}
+
+async function loadCertificacoesHome() {
+  try {
+    const { data, error } = await window.supabase
+      .from('certificacoes')
+      .select('*')
+      .eq('ativo', true)
+      .order('popularidade', { ascending: false })
+      .limit(4);
+    
+    if (error) throw error;
+    
+    // Atualizar cards da home se existirem
+    updateHomeCertifications(data);
+  } catch (error) {
+    console.error('Erro ao carregar certificações:', error);
+  }
+}
+
+function updateHomeCertifications(certificacoes) {
+  // Esta função pode atualizar os cards da home com dados reais
+  // Por enquanto, mantemos os cards estáticos
+}
+
+async function loadCertificacoes() {
+  try {
+    const { data, error } = await window.supabase
+      .from('certificacoes')
+      .select('*')
+      .eq('ativo', true)
+      .order('categoria', { ascending: true })
+      .order('nome', { ascending: true });
+    
+    if (error) throw error;
+    
+    // Aqui você pode atualizar a seção de certificações com dados reais
+    console.log('Certificações carregadas:', data.length);
+  } catch (error) {
+    console.error('Erro ao carregar certificações:', error);
+  }
+}
+
+async function loadForum() {
+  try {
+    // Carregar categorias do fórum
+    const { data: categories, error: catError } = await window.supabase
+      .from('forum_categorias')
+      .select('*')
+      .eq('ativo', true)
+      .order('ordem', { ascending: true });
+    
+    if (catError) throw catError;
+    
+    // Carregar posts recentes
+    const { data: posts, error: postsError } = await window.supabase
+      .from('forum_posts')
+      .select(`
+        *,
+        usuario:usuarios(nome),
+        categoria:forum_categorias(nome)
+      `)
+      .order('created_at', { ascending: false })
+      .limit(10);
+    
+    if (postsError) throw postsError;
+    
+    updateForumUI(categories, posts);
+  } catch (error) {
+    console.error('Erro ao carregar fórum:', error);
+  }
+}
+
+function updateForumUI(categories, posts) {
+  // Atualizar lista de categorias
+  const categoriesList = document.getElementById('forumCategories');
+  if (categoriesList && categories) {
+    categoriesList.innerHTML = categories.map(cat => `
+      <li><a href="#">${cat.nome} <span class="category-count">${cat.total_posts || 0}</span></a></li>
+    `).join('');
+  }
+  
+  // Atualizar posts
+  const postsContainer = document.getElementById('forumPosts');
+  if (postsContainer && posts) {
+    postsContainer.innerHTML = posts.map(post => `
+      <div class="post">
+        <div class="post-header">
+          <a href="#" class="post-title">${post.titulo}</a>
+          <div class="post-meta">por ${post.usuario?.nome || 'Usuário'} • ${formatDate(post.created_at)}</div>
+        </div>
+        <div class="post-excerpt">
+          <p>${post.conteudo.substring(0, 150)}...</p>
+        </div>
+        <div class="post-footer">
+          <span><i class="far fa-comment"></i> ${post.respostas || 0} respostas</span>
+          <span><i class="far fa-eye"></i> ${post.visualizacoes || 0} visualizações</span>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 60) return `${diffMins} minutos atrás`;
+  if (diffHours < 24) return `${diffHours} horas atrás`;
+  if (diffDays < 7) return `${diffDays} dias atrás`;
+  
+  return date.toLocaleDateString('pt-BR');
+}
+
+async function loadMateriais() {
+  try {
+    const { data, error } = await window.supabase
+      .from('materiais')
+      .select(`
+        *,
+        usuario:usuarios(nome)
+      `)
+      .eq('status', 'aprovado')
+      .order('created_at', { ascending: false })
+      .limit(12);
+    
+    if (error) throw error;
+    
+    // Aqui você pode atualizar a seção de materiais
+    console.log('Materiais carregados:', data.length);
+  } catch (error) {
+    console.error('Erro ao carregar materiais:', error);
+  }
+}
+
+async function loadSimulados() {
+  try {
+    const { data, error } = await window.supabase
+      .from('simulados')
+      .select(`
+        *,
+        certificacao:certificacoes(nome, fornecedor)
+      `)
+      .eq('status', 'aprovado')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    // Aqui você pode atualizar a seção de simulados
+    console.log('Simulados carregados:', data.length);
+  } catch (error) {
+    console.error('Erro ao carregar simulados:', error);
+  }
+}
+
+// Funções dos simulados
+window.openUploadModal = function() {
+  const user = localStorage.getItem('studyCertUser');
+  if (!user) {
+    alert('Você precisa estar logado para enviar simulados');
+    openAuthModal('login');
+    return;
+  }
+  
+  // Mostrar área de upload
+  const uploadArea = document.getElementById('uploadArea');
+  if (uploadArea) uploadArea.style.display = 'block';
+};
+
+window.uploadSimulado = function() {
+  document.getElementById('fileUpload').click();
+};
+
+window.createNewPost = function() {
+  const user = localStorage.getItem('studyCertUser');
+  if (!user) {
+    alert('Você precisa estar logado para criar uma discussão');
+    openAuthModal('login');
+    return;
+  }
+  
+  // Aqui você pode implementar o modal para criar novo post
+  alert('Funcionalidade de criar nova discussão em desenvolvimento');
+};
+
+window.openRegister = function() {
+  openAuthModal('register');
+};
+
+// Funções do modal de simulados
+window.abrirModalSimulados = function() {
+  document.getElementById('modalSimulados').style.display = 'block';
+};
+
+window.fecharModalSimulados = function() {
+  document.getElementById('modalSimulados').style.display = 'none';
+};
