@@ -22,7 +22,6 @@ body {
     background-color: #f5f7fa;
     color: #333;
     line-height: 1.6;
-    overflow-x: hidden;
 }
 
 .container {
@@ -53,7 +52,6 @@ header {
     display: flex;
     align-items: center;
     gap: 10px;
-    cursor: pointer;
 }
 
 .logo i {
@@ -226,16 +224,10 @@ nav a:hover, nav a.active {
     display: none;
     padding: 3rem 0;
     min-height: 60vh;
-    animation: fadeIn 0.5s ease;
 }
 
 .main-content.active {
     display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }
 
 .section-title {
@@ -611,7 +603,6 @@ footer {
     background: var(--primary);
     color: white;
     padding: 3rem 0 1.5rem;
-    margin-top: auto;
 }
 
 .footer-content {
@@ -701,7 +692,6 @@ footer {
     align-items: center;
     opacity: 0;
     transition: opacity 0.3s ease;
-    padding: 20px;
 }
 
 .modal-auth.active {
@@ -778,11 +768,6 @@ footer {
     cursor: pointer;
     border-bottom: 3px solid transparent;
     font-weight: 600;
-    transition: all 0.3s;
-}
-
-.auth-tab:hover {
-    color: var(--secondary);
 }
 
 .auth-tab.active {
@@ -796,7 +781,6 @@ footer {
 
 .auth-form.active {
     display: block;
-    animation: fadeIn 0.5s ease;
 }
 
 .form-group {
@@ -833,70 +817,6 @@ footer {
 .auth-footer a {
     color: var(--secondary);
     text-decoration: none;
-    font-weight: 500;
-}
-
-.auth-footer a:hover {
-    text-decoration: underline;
-}
-
-/* Estilos para autenticação social */
-.social-auth {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
-
-.divider {
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    color: #7f8c8d;
-    font-size: 0.9rem;
-}
-
-.divider::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background-color: #eee;
-    z-index: -1;
-}
-
-.divider span {
-    background: white;
-    padding: 0 15px;
-}
-
-.btn-google {
-    width: 100%;
-    background-color: #fff;
-    color: #757575;
-    border: 1px solid #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 12px;
-    font-weight: 600;
-    transition: all 0.3s;
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 1rem;
-}
-
-.btn-google:hover {
-    background-color: #f8f9fa;
-    border-color: #ccc;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.fa-google {
-    color: #DB4437;
 }
 
 /* Mensagens de erro/sucesso */
@@ -906,7 +826,6 @@ footer {
     margin-bottom: 20px;
     text-align: center;
     display: none;
-    animation: fadeIn 0.3s ease;
 }
 
 .message.error {
@@ -1111,14 +1030,6 @@ footer {
     text-decoration: underline;
 }
 
-/* Botões de ação */
-.action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    justify-content: flex-end;
-}
-
 /* Responsividade */
 @media (max-width: 768px) {
     .header-content {
@@ -1161,113 +1072,5 @@ footer {
     
     .btn-sm {
         align-self: flex-end;
-        width: 100%;
-        text-align: center;
     }
-}
-
-@media (max-width: 576px) {
-    .auth-buttons {
-        flex-direction: column;
-        width: 100%;
-        gap: 0.5rem;
-    }
-    
-    .auth-buttons .btn {
-        width: 100%;
-        text-align: center;
-    }
-    
-    .btn-google {
-        padding: 10px;
-        font-size: 0.9rem;
-    }
-    
-    .footer-content {
-        grid-template-columns: 1fr;
-    }
-    
-    .modal-auth, .modal-simulados {
-        padding: 10px;
-    }
-    
-    .auth-container {
-        padding: 20px;
-        width: 95%;
-    }
-}
-
-/* Estilos para elementos interativos */
-.cursor-pointer {
-    cursor: pointer;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.visible {
-    display: block !important;
-}
-
-/* Animações adicionais */
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.pulse {
-    animation: pulse 2s infinite;
-}
-
-/* Scroll personalizado */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--secondary);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #2980b9;
-}
-
-/* Loading spinner */
-.spinner {
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--secondary);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-    display: none;
-}
-
-.spinner.active {
-    display: block;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
