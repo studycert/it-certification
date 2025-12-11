@@ -6,6 +6,7 @@
     <title>Autenticando - StudyCert</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Mesmo estilo anterior, mantido para consistência */
         * {
             margin: 0;
             padding: 0;
@@ -117,47 +118,73 @@
     </div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="js/config.js"></script>
     <script>
-        // Processar callback de autenticação
+        // Configurações do Supabase
+        const SUPABASE_URL = 'https://lkguubynwngnewucgewx.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_XIFYyZ49NHXHuDVbFSpWOA_Ovd1CEd3';
+
         async function handleAuthCallback() {
             try {
-                const supabase = supabase.createClient(
-                    SUPABASE_CONFIG.url,
-                    SUPABASE_CONFIG.anonKey
-                );
-
-                // Verificar se há um código de autenticação na URL
-                const { data, error } = await supabase.auth.getSession();
+                // Inicializar Supabase
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 
+                // Verificar se há um hash na URL (#access_token, #error, etc.)
+                const hash = window.location.hash.substring(1);
+                const params = new URLSearchParams(hash);
+                
+                // Verificar se há erro
+                const error = params.get('error');
                 if (error) {
-                    throw error;
+                    throw new Error(`Erro do Google: ${error}. Descrição: ${params.get('error_description')}`);
                 }
-
-                if (data.session) {
-                    // Login bem-sucedido
+                
+                // Tentar obter a sessão atual
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                
+                if (sessionError) {
+                    throw sessionError;
+                }
+                
+                if (session) {
+                    // Login bem-sucedido - redirecionar para a página principal
+                    console.log('Login bem-sucedido! Usuário:', session.user.email);
+                    
+                    // Redirecionar para a página principal após 1 segundo
                     setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
+                        // Redirecionar para a página principal
+                        const baseUrl = window.location.origin + window.location.pathname;
+                        const mainPage = baseUrl.replace('auth-callback.html', 'index.html');
+                        window.location.href = mainPage;
+                    }, 1000);
                 } else {
                     // Nenhuma sessão encontrada
                     document.getElementById('errorMessage').textContent = 
-                        'Autenticação falhou. Tente novamente.';
+                        'Autenticação falhou. Não foi possível criar uma sessão.';
                     document.getElementById('errorMessage').style.display = 'block';
                     
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = './index.html';
                     }, 3000);
                 }
             } catch (error) {
-                console.error('Erro no callback:', error);
-                document.getElementById('errorMessage').textContent = 
-                    `Erro: ${error.message}`;
+                console.error('Erro no callback de autenticação:', error);
+                
+                let errorMessage = 'Erro durante a autenticação.';
+                
+                if (error.message.includes('invalid_request')) {
+                    errorMessage = 'Solicitação inválida. Verifique as configurações do OAuth.';
+                } else if (error.message.includes('access_denied')) {
+                    errorMessage = 'Acesso negado. Você cancelou o login.';
+                } else if (error.message.includes('Google')) {
+                    errorMessage = error.message;
+                }
+                
+                document.getElementById('errorMessage').textContent = errorMessage;
                 document.getElementById('errorMessage').style.display = 'block';
                 
                 setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 3000);
+                    window.location.href = './index.html';
+                }, 5000);
             }
         }
 
