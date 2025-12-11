@@ -49,69 +49,39 @@
             </div>
             
             <div id="loginForm" class="auth-form active">
-    <div id="loginMessage" class="message"></div>
-    
-    <!-- Campos de email/senha (mantidos) -->
-    <div class="form-group">
-        <label for="loginEmail">E-mail</label>
-        <input type="email" id="loginEmail" placeholder="seu@email.com">
-    </div>
-    <div class="form-group">
-        <label for="loginPassword">Senha</label>
-        <input type="password" id="loginPassword" placeholder="Sua senha">
-    </div>
-    <button class="btn btn-primary" onclick="login()" style="width: 100%; margin-bottom: 15px;">
-        <i class="fas fa-sign-in-alt"></i> Entrar
-    </button>
-    
-    <!-- DIVISOR: "Ou entre com" -->
-    <div class="divider">
-        <span>Ou entre com</span>
-    </div>
-    
-    <!-- BOTÃO GOOGLE (NOVO) -->
-    <button class="btn-google" onclick="loginWithGoogle()">
-        <i class="fab fa-google"></i> Continuar com Google
-    </button>
-    
-    <!-- Link "Esqueceu senha" -->
-    <div class="auth-footer">
-        <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
-    </div>
-</div>
+                <div id="loginMessage" class="message"></div>
+                <div class="form-group">
+                    <label for="loginEmail">E-mail</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha">
+                </div>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
+                <div class="auth-footer">
+                    <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
+                </div>
+            </div>
             
             <div id="registerForm" class="auth-form">
-    <div id="registerMessage" class="message"></div>
-    
-    <!-- Campos existentes -->
-    <div class="form-group">
-        <label for="registerName">Nome Completo</label>
-        <input type="text" id="registerName" placeholder="Seu nome completo">
+                <div id="registerMessage" class="message"></div>
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
+                </div>
+                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="registerEmail">E-mail</label>
-        <input type="email" id="registerEmail" placeholder="seu@email.com">
-    </div>
-    <div class="form-group">
-        <label for="registerPassword">Senha</label>
-        <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
-    </div>
-    
-    <!-- Botão Criar Conta -->
-    <button class="btn btn-success" onclick="register()" style="width: 100%; margin-bottom: 15px;">
-        <i class="fas fa-user-plus"></i> Criar Conta
-    </button>
-    
-    <!-- DIVISOR: "Ou cadastre-se com" -->
-    <div class="divider">
-        <span>Ou cadastre-se com</span>
-    </div>
-    
-    <!-- BOTÃO GOOGLE (mesmo do login) -->
-    <button class="btn-google" onclick="loginWithGoogle()">
-        <i class="fab fa-google"></i> Continuar com Google
-    </button>
-</div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -819,12 +789,8 @@
                         <a href="#"><i class="fab fa-twitter"></i></a>
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="https://www.instagram.com/study.cert?igsh=MXZmeHRwM255aXMwZg==" target="_blank">
-                        <i class="fab fa-instagram"></i>
-                   
+                    </div>
                 </div>
-    </a>
-</div>
 
                 <div class="footer-column">
                     <h3>Links Rápidos</h3>
