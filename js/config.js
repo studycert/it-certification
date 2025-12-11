@@ -1,10 +1,7 @@
 // js/config.js
 const SUPABASE_CONFIG = {
-  URL: 'https://seu-id.supabase.co', // SUBSTITUA pelo seu Project URL
-  ANON_KEY: 'sua-chave-anon-publica' // SUBSTITUA pelo seu anon public key
+  URL: 'https://blnnwbrhrckqegaiparr.supabase.co', // SEU URL AQUI
+  ANON_KEY: 'sb_publishable_BRAGtPaTnBQAys82wQlwDA_ZorIxDDK' // SUA ANON KEY AQUI
 };
-
-// Exportar para uso global
 window.SUPABASE_CONFIG = SUPABASE_CONFIG;
-
 console.log('✅ Configuração do Supabase carregada');
