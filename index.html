@@ -829,5 +829,234 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Funções para autenticação
+        function openAuthModal(tab = 'login') {
+            const modal = document.getElementById('modalAuth');
+            modal.style.display = 'flex';
+            
+            // Ativar a aba correta
+            if (tab === 'login') {
+                showLoginForm();
+            } else {
+                showRegisterForm();
+            }
+        }
+
+        function closeAuthModal() {
+            document.getElementById('modalAuth').style.display = 'none';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').classList.add('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.querySelector('[data-tab="login"]').classList.add('active');
+            document.querySelector('[data-tab="register"]').classList.remove('active');
+        }
+
+        function showRegisterForm() {
+            document.getElementById('registerForm').classList.add('active');
+            document.getElementById('loginForm').classList.remove('active');
+            document.querySelector('[data-tab="register"]').classList.add('active');
+            document.querySelector('[data-tab="login"]').classList.remove('active');
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
+                return;
+            }
+            
+            showMessage('loginMessage', 'Tentando fazer login...', 'info');
+            
+            // Simulação de login bem-sucedido
+            setTimeout(() => {
+                showMessage('loginMessage', 'Login bem-sucedido! Redirecionando...', 'success');
+                updateAuthUI(true);
+                closeAuthModal();
+                
+                // Mostrar progresso do usuário
+                document.getElementById('userProgress').style.display = 'block';
+                document.getElementById('progressFill').style.width = '65%';
+                document.getElementById('progressText').textContent = '65% completo - 8 de 12 certificações estudadas';
+                
+                // Mostrar área de upload
+                document.getElementById('uploadArea').style.display = 'block';
+            }, 1000);
+        }
+
+        function register() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (!name || !email || !password) {
+                showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('registerMessage', 'A senha deve ter no mínimo 6 caracteres', 'error');
+                return;
+            }
+            
+            showMessage('registerMessage', 'Criando sua conta...', 'info');
+            
+            // Simulação de registro bem-sucedido
+            setTimeout(() => {
+                showMessage('registerMessage', 'Conta criada com sucesso! Você será logado automaticamente.', 'success');
+                
+                setTimeout(() => {
+                    updateAuthUI(true);
+                    closeAuthModal();
+                    showLoginForm();
+                }, 1500);
+            }, 1000);
+        }
+
+        function forgotPassword() {
+            const email = prompt('Digite seu e-mail para redefinir a senha:');
+            if (email) {
+                alert(`Instruções de redefinição de senha enviadas para ${email}`);
+            }
+        }
+
+        function openRegister() {
+            openAuthModal('register');
+        }
+
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'message ' + type;
+            element.style.display = 'block';
+        }
+
+        function updateAuthUI(isLoggedIn) {
+            const authButtons = document.getElementById('authButtons');
+            
+            if (isLoggedIn) {
+                authButtons.innerHTML = `
+                    <div class="user-menu">
+                        <span class="user-name">Usuário Teste</span>
+                        <button class="btn btn-outline" onclick="logout()">Sair</button>
+                    </div>
+                `;
+            } else {
+                authButtons.innerHTML = `
+                    <button class="btn btn-outline" onclick="openAuthModal('login')">Entrar</button>
+                    <button class="btn btn-primary" onclick="openAuthModal('register')">Cadastrar</button>
+                `;
+                
+                // Esconder progresso do usuário
+                document.getElementById('userProgress').style.display = 'none';
+                document.getElementById('uploadArea').style.display = 'none';
+            }
+        }
+
+        function logout() {
+            updateAuthUI(false);
+            alert('Você saiu da sua conta.');
+        }
+
+        // Inicializar botões de autenticação
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI(false);
+            
+            // Adicionar eventos às abas de autenticação
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabType = this.getAttribute('data-tab');
+                    if (tabType === 'login') {
+                        showLoginForm();
+                    } else {
+                        showRegisterForm();
+                    }
+                });
+            });
+            
+            // Adicionar eventos aos links de navegação
+            document.querySelectorAll('.nav-link, .footer-links a[data-target]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-target');
+                    showContent(target);
+                });
+            });
+            
+            // Adicionar eventos aos botões que têm data-target
+            document.querySelectorAll('a[data-target], button[data-target]').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (this.hasAttribute('data-target')) {
+                        e.preventDefault();
+                        const target = this.getAttribute('data-target');
+                        showContent(target);
+                    }
+                });
+            });
+            
+            // Fechar modal ao clicar fora
+            document.getElementById('modalAuth').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAuthModal();
+                }
+            });
+        });
+
+        // Funções para navegação entre conteúdos
+        function showContent(contentId) {
+            // Esconder todos os conteúdos
+            document.querySelectorAll('.main-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Mostrar o conteúdo selecionado
+            const targetContent = document.getElementById(contentId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+            
+            // Atualizar navegação ativa
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-target') === contentId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Funções para simulados
+        function abrirModalSimulados() {
+            document.getElementById('modalSimulados').style.display = 'block';
+        }
+
+        function fecharModalSimulados() {
+            document.getElementById('modalSimulados').style.display = 'none';
+        }
+
+        function openUploadModal() {
+            alert('Funcionalidade de upload em desenvolvimento. Em breve você poderá compartilhar seus próprios simulados!');
+            // Em uma implementação real, isso abriria um modal para upload de arquivos
+        }
+
+        function uploadSimulado() {
+            document.getElementById('fileUpload').click();
+        }
+
+        function createNewPost() {
+            alert('Funcionalidade de criação de posts em desenvolvimento. Em breve você poderá criar novas discussões no fórum!');
+        }
+
+        // Fechar modal de simulados ao clicar fora
+        document.getElementById('modalSimulados').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharModalSimulados();
+            }
+        });
+    </script>
 </body>
 </html>
