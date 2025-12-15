@@ -14,3 +14,5 @@ Open `index.html` in a web browser.
 
 ## License
 Educational use.
+![GitHub last commit](https://img.shields.io/github/last-commit/studycert/it-certification)
+![GitHub repo size](https://img.shields.io/github/repo-size/studycert/it-certification)
