@@ -16,3 +16,7 @@ Open `index.html` in a web browser.
 Educational use.
 ![GitHub last commit](https://img.shields.io/github/last-commit/studycert/it-certification)
 ![GitHub repo size](https://img.shields.io/github/repo-size/studycert/it-certification)
+![GitHub last commit](https://img.shields.io/github/last-commit/studycert/it-certification)
+![GitHub repo size](https://img.shields.io/github/repo-size/studycert/it-certification)
+![GitHub deployments](https://img.shields.io/github/deployments/studycert/it-certification/github-pages)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
