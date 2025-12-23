@@ -1,16 +1,4 @@
 /* Variáveis CSS */
-/* Teste de debug - remover depois */
-nav a {
-    border: 1px solid transparent;
-}
-
-nav a:hover {
-    border-color: yellow;
-}
-
-nav a.active {
-    border-color: red;
-}
 :root {
     --primary: #2c3e50;
     --secondary: #3498db;
