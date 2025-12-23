@@ -845,5 +845,80 @@
             </div>
         </div>
     </footer>
+        <!-- Footer -->
+    <footer>
+        <!-- ... footer content ... -->
+    </footer>
+
+    <!-- Script de Navegação -->
+    <script>
+        // Navegação entre seções
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecionar todos os links de navegação
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mainContents = document.querySelectorAll('.main-content');
+            
+            // Função para trocar de seção
+            function switchSection(targetId) {
+                // Remover classe active de todos os conteúdos
+                mainContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Adicionar classe active ao conteúdo alvo
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+                
+                // Remover classe active de todos os links
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Adicionar classe active ao link clicado
+                const activeLink = document.querySelector(`[data-target="${targetId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+            
+            // Adicionar event listeners aos links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    switchSection(targetId);
+                });
+            });
+            
+            // Adicionar event listeners aos botões "data-target" no footer
+            const footerLinks = document.querySelectorAll('.footer-links a[data-target]');
+            footerLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    switchSection(targetId);
+                });
+            });
+            
+            // Adicionar event listeners aos cards que têm links com data-target
+            const cardLinks = document.querySelectorAll('.card-footer a[data-target]');
+            cardLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    switchSection(targetId);
+                });
+            });
+            
+            // Inicializar a primeira seção (home) como ativa
+            if (navLinks.length > 0) {
+                switchSection('home');
+            }
+        });
+    </script>
+</body>
+</html>
 </body>
 </html>
