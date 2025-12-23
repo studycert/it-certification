@@ -8,6 +8,8 @@
     --light: #ecf0f1;
     --dark: #2c3e50;
     --gray: #95a5a6;
+    --secondary-light: #5dade2;  /* Adicionado para hover */
+    --secondary-lighter: #7bc1ff; /* Adicionado para efeitos sutis */
 }
 
 /* Reset e Base */
@@ -68,7 +70,7 @@ header {
     color: var(--secondary);
 }
 
-/* Navegação - CORRIGIDO */
+/* Navegação - CORRIGIDA COM HIERARQUIA VISUAL CLARA */
 nav ul {
     display: flex;
     list-style: none;
@@ -79,7 +81,7 @@ nav a {
     color: white;
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     position: relative;
@@ -95,23 +97,32 @@ nav a::after {
     left: 0;
     width: 0;
     height: 3px;
-    background-color: var(--secondary);
-    transition: width 0.3s ease;
     border-radius: 2px 2px 0 0;
+    transition: width 0.3s ease, background-color 0.3s ease;
 }
 
-nav a:hover::after,
+/* HOVER - Tom mais claro e suave */
+nav a:hover {
+    color: var(--secondary-light); /* #5dade2 - tom médio */
+    background-color: rgba(93, 173, 226, 0.1);
+}
+
+nav a:hover::after {
+    width: 100%;
+    background-color: var(--secondary-light); /* #5dade2 */
+}
+
+/* ACTIVE - Tom principal com mais destaque */
+nav a.active {
+    color: var(--secondary); /* #3498db - tom principal */
+    background-color: rgba(52, 152, 219, 0.2);
+    font-weight: 600; /* Negrito para destacar */
+}
+
 nav a.active::after {
     width: 100%;
-}
-
-nav a:hover, nav a.active {
-    color: var(--secondary);
-    background-color: rgba(52, 152, 219, 0.1);
-}
-
-nav a.active {
-    background-color: rgba(52, 152, 219, 0.2);
+    background-color: var(--secondary); /* #3498db */
+    height: 4px; /* Barra mais grossa no ativo */
 }
 
 .auth-buttons {
@@ -138,7 +149,7 @@ nav a.active {
     font-weight: bold;
 }
 
-/* Botões - Efeitos corrigidos */
+/* Botões - Efeitos corrigidos com hierarquia */
 .btn {
     padding: 0.5rem 1.5rem;
     border-radius: 4px;
@@ -172,22 +183,31 @@ nav a.active {
     color: white;
 }
 
+/* Hover mais escuro que o estado normal */
 .btn-outline:hover {
     background: white;
     color: var(--primary);
+    border-color: white;
 }
 
 .btn-primary:hover {
-    background: #2980b9;
+    background: #2980b9; /* Tom mais escuro que o normal */
     box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-primary.active {
+    background: var(--secondary); /* Tom normal */
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+    transform: translateY(0);
 }
 
 .btn-success:hover {
-    background: #219653;
+    background: #219653; /* Tom mais escuro */
 }
 
 .btn-warning:hover {
-    background: #e67e22;
+    background: #e67e22; /* Tom mais escuro */
 }
 
 .btn-sm {
@@ -201,6 +221,7 @@ nav a.active {
 
 .btn-sm:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
 }
 
 /* Hero Section */
@@ -329,10 +350,11 @@ nav a.active {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: color 0.3s;
 }
 
 .category-list a:hover {
-    color: var(--secondary);
+    color: var(--secondary-light); /* Tom mais claro para hover */
 }
 
 .category-count {
@@ -341,6 +363,11 @@ nav a.active {
     padding: 0.2rem 0.5rem;
     border-radius: 20px;
     font-size: 0.8rem;
+    transition: background-color 0.3s;
+}
+
+.category-list a:hover .category-count {
+    background-color: var(--secondary-light); /* Coordena com o hover */
 }
 
 .forum-posts {
@@ -370,10 +397,11 @@ nav a.active {
     font-weight: 600;
     color: var(--primary);
     text-decoration: none;
+    transition: color 0.3s;
 }
 
 .post-title:hover {
-    color: var(--secondary);
+    color: var(--secondary-light); /* Tom mais claro */
 }
 
 .post-meta {
@@ -478,7 +506,7 @@ nav a.active {
     justify-content: center;
     gap: 8px;
     padding: 10px 20px;
-    background: #3498db;
+    background: var(--secondary);
     color: white;
     border: none;
     border-radius: 6px;
@@ -490,8 +518,9 @@ nav a.active {
 }
 
 .show-simulados-btn:hover {
-    background: #2980b9;
+    background: #2980b9; /* Tom mais escuro */
     box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
+    transform: translateY(-2px);
 }
 
 .upload-area {
@@ -505,7 +534,7 @@ nav a.active {
 }
 
 .upload-area:hover {
-    border-color: var(--secondary);
+    border-color: var(--secondary-light); /* Tom mais claro no hover */
     background: #f8fafc;
 }
 
@@ -513,6 +542,11 @@ nav a.active {
     font-size: 3rem;
     color: var(--gray);
     margin-bottom: 1rem;
+    transition: color 0.3s;
+}
+
+.upload-area:hover i {
+    color: var(--secondary-light);
 }
 
 .upload-area h3 {
@@ -575,6 +609,11 @@ nav a.active {
     border-radius: 20px;
     font-size: 0.8rem;
     margin-bottom: 1rem;
+    transition: background-color 0.3s;
+}
+
+.cert-card:hover .cert-level {
+    background-color: var(--secondary-light); /* Coordena com hover do card */
 }
 
 /* Progresso do usuário */
@@ -600,6 +639,10 @@ nav a.active {
     border-radius: 5px;
     width: 0%;
     transition: width 1s ease;
+}
+
+.progress-fill:hover {
+    background-color: var(--secondary-light); /* Tom mais claro no hover */
 }
 
 /* Footer */
@@ -648,7 +691,7 @@ footer {
 }
 
 .footer-links a:hover {
-    color: var(--secondary);
+    color: var(--secondary-light); /* Tom mais claro */
 }
 
 .social-links {
@@ -670,7 +713,7 @@ footer {
 }
 
 .social-links a:hover {
-    background: var(--secondary);
+    background: var(--secondary-light); /* Tom mais claro */
     transform: translateY(-3px);
 }
 
@@ -772,10 +815,15 @@ footer {
     cursor: pointer;
     border-bottom: 3px solid transparent;
     font-weight: 600;
+    transition: all 0.3s;
+}
+
+.auth-tab:hover {
+    color: var(--secondary-light); /* Tom mais claro no hover */
 }
 
 .auth-tab.active {
-    color: var(--secondary);
+    color: var(--secondary); /* Tom principal no ativo */
     border-bottom-color: var(--secondary);
 }
 
@@ -821,6 +869,11 @@ footer {
 .auth-footer a {
     color: var(--secondary);
     text-decoration: none;
+    transition: color 0.3s;
+}
+
+.auth-footer a:hover {
+    color: var(--secondary-light); /* Tom mais claro no hover */
 }
 
 /* Mensagens de erro/sucesso */
@@ -1028,9 +1081,11 @@ footer {
 .form-group a {
     color: var(--secondary);
     text-decoration: none;
+    transition: color 0.3s;
 }
 
 .form-group a:hover {
+    color: var(--secondary-light);
     text-decoration: underline;
 }
 
@@ -1045,6 +1100,11 @@ footer {
         flex-wrap: wrap;
         justify-content: center;
         gap: 1rem;
+    }
+
+    nav a {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
     }
 
     .forum-container {
@@ -1077,4 +1137,19 @@ footer {
     .btn-sm {
         align-self: flex-end;
     }
+}
+
+/* Animações para hover mais suaves */
+* {
+    scroll-behavior: smooth;
+}
+
+/* Efeito de foco para acessibilidade */
+nav a:focus,
+.btn:focus,
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: 2px solid var(--secondary-light);
+    outline-offset: 2px;
 }
