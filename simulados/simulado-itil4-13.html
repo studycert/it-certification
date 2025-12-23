@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado 13 – ITIL 4 Foundation – PMG Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 10px;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header h1 {
+            font-size: 1.4em;
+            font-weight: 500;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .header .subtitle {
+            font-size: 0.85em;
+            opacity: 0.8;
+            line-height: 1.2;
+        }
+
+        .academy-badge {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .exam-info {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .timer {
+            font-size: 1em;
+            font-weight: 600;
+            color: #e74c3c;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .progress {
+            font-size: 0.9em;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            min-height: 500px;
+        }
+
+        .question-section {
+            padding: 20px 15px;
+            background: white;
+            order: 2;
+        }
+
+        .question-number {
+            color: #3498db;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1em;
+            line-height: 1.4;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #3498db;
+            white-space: pre-line;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9em;
+            line-height: 1.3;
+            display: flex;
+            align-items: flex-start;
+            background: white;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            background: #f8fafc;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background: #ebf5fb;
+        }
+
+        .option.correct {
+            border-color: #27ae60;
+            background: #f0f9f4;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: #fef0f0;
+        }
+
+        .option.locked {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option.locked:hover {
+            border-color: #e0e0e0;
+            background: white;
+        }
+
+        .option-label {
+            display: inline-block;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            background: #3498db;
+            color: white;
+            text-align: center;
+            line-height: 22px;
+            margin-right: 10px;
+            font-weight: 600;
+            font-size: 0.8em;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .option.locked .option-label {
+            background: #95a5a6;
+        }
+
+        .option-text {
+            flex-grow: 1;
+            white-space: pre-line;
+        }
+
+        .feedback-container {
+            margin: 12px 0;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        .feedback-correct {
+            background: #f0f9f4;
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+
+        .feedback-incorrect {
+            background: #fef0f0;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: nowrap;
+        }
+
+        .btn {
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.75em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            flex: 1;
+            background: white;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            border-color: #95a5a6;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+            border-color: #f39c12;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+
+        .btn-purple {
+            background: #9b59b6;
+            color: white;
+            border-color: #9b59b6;
+        }
+
+        .btn-teal {
+            background: #1abc9c;
+            color: white;
+            border-color: #1abc9c;
+        }
+
+        .btn-orange {
+            background: #e67e22;
+            color: white;
+            border-color: #e67e22;
+        }
+
+        .navigation-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            order: 1;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.8em;
+            min-height: 35px;
+        }
+
+        .grid-item:hover {
+            border-color: #3498db;
+            background: #f8fafc;
+        }
+
+        .grid-item.current {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .grid-item.answered {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .grid-item.marked {
+            background: #f39c12;
+            color: white;
+            border-color: #f39c12;
+        }
+
+        .grid-item.locked {
+            background: #95a5a6;
+            color: white;
+            border-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .start-screen {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.5em;
+            font-weight: 500;
+        }
+
+        .start-screen p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            line-height: 1.4;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .results-screen {
+            padding: 30px 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-weight: 500;
+        }
+
+        .score-display {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin: 15px 0;
+            color: #3498db;
+        }
+
+        .score-text {
+            font-size: 1em;
+            margin-bottom: 25px;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        .results-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .answers-screen {
+            padding: 20px 15px;
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .answers-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 500;
+        }
+
+        .answer-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            border-left: 3px solid #3498db;
+        }
+
+        .answer-question {
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            white-space: pre-line;
+            font-size: 0.9em;
+        }
+
+        .answer-explanation {
+            color: #7f8c8d;
+            line-height: 1.3;
+            margin-top: 6px;
+            padding: 6px;
+            background: white;
+            border-radius: 4px;
+            border-left: 2px solid #3498db;
+            display: none;
+            font-size: 0.85em;
+        }
+
+        .explanation-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 6px;
+            font-size: 0.8em;
+        }
+
+        .explanation-show {
+            display: block !important;
+        }
+
+        .full-report-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 15px auto;
+            display: block;
+            font-size: 0.9em;
+        }
+
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 0.9em;
+        }
+
+        .correct-answer {
+            color: #27ae60;
+            font-weight: 600;
+            margin: 4px 0;
+            font-size: 0.9em;
+        }
+
+        .incorrect-answer {
+            color: #e74c3c;
+            font-weight: 600;
+            margin: 4px 0;
+            font-size: 0.9em;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .container {
+                margin: 0;
+            }
+            
+            .header {
+                padding: 24px;
+                min-height: auto;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header .subtitle {
+                font-size: 0.95em;
+            }
+            
+            .academy-badge {
+                top: 10px;
+                right: 20px;
+                padding: 4px 12px;
+                font-size: 0.8em;
+            }
+            
+            .exam-info {
+                padding: 16px 24px;
+            }
+            
+            .timer {
+                font-size: 1.2em;
+                padding: 6px 12px;
+            }
+            
+            .progress {
+                font-size: 1em;
+            }
+            
+            .content {
+                grid-template-columns: 1fr 250px;
+                min-height: 600px;
+            }
+            
+            .question-section {
+                padding: 24px;
+                order: 1;
+            }
+            
+            .navigation-section {
+                border-left: 1px solid #e9ecef;
+                border-bottom: none;
+                order: 2;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(8, 1fr);
+                gap: 6px;
+            }
+            
+            .grid-item {
+                font-size: 0.85em;
+            }
+            
+            .question-text {
+                font-size: 1.1em;
+            }
+            
+            .btn {
+                font-size: 0.8em;
+                padding: 10px 12px;
+            }
+            
+            .btn-row {
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-row {
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                min-width: calc(25% - 5px);
+                font-size: 0.7em;
+                padding: 6px 8px;
+            }
+            
+            .header h1 {
+                font-size: 1.2em;
+            }
+            
+            .header .subtitle {
+                font-size: 0.8em;
+            }
+            
+            .academy-badge {
+                font-size: 0.65em;
+                padding: 2px 6px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .btn {
+                font-size: 0.65em;
+                padding: 5px 6px;
+            }
+            
+            .question-text {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            
+            .option {
+                padding: 10px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="academy-badge">PMG Academy</div>
+            <h1>ITIL 4 Foundation</h1>
+            <div class="subtitle">Simulado 13 - 103 Questões</div>
+        </div>
+
+        <!-- Tela de Início -->
+        <div class="start-screen" id="start-screen">
+            <h2>Simulado 13 - ITIL 4 Foundation</h2>
+            <p>Teste seus conhecimentos com 103 questões baseadas nos exercícios dos módulos 2 a 16. Prepare-se para a certificação de forma prática e eficiente.</p>
+            <p><strong>⚠️ ATENÇÃO:</strong> Após selecionar uma resposta, você não poderá alterá-la!</p>
+            <button class="btn btn-primary" id="start-btn" style="padding: 12px 24px; font-size: 1em; margin-top: 10px;">
+                🚀 Iniciar Simulado
+            </button>
+        </div>
+
+        <!-- Área do Questionário -->
+        <div id="exam-area" style="display: none;">
+            <div class="exam-info">
+                <div class="progress">Questão <span id="current-question">1</span> de <span id="total-questions">103</span></div>
+                <div class="timer" id="timer">90:00</div>
+            </div>
+
+            <div class="content">
+                <div class="question-section">
+                    <div class="question-number" id="question-number">Questão 1</div>
+                    <div class="question-text" id="question-text"></div>
+                    
+                    <div class="options" id="options-container"></div>
+                    
+                    <div class="feedback-container" id="feedback"></div>
+
+                    <div class="controls">
+                        <div class="btn-row">
+                            <button class="btn btn-secondary" id="prev-btn">
+                                ⬅️ Anterior
+                            </button>
+                            <button class="btn btn-warning" id="mark-btn">
+                                📌 Marcar
+                            </button>
+                            <button class="btn btn-info" id="explanation-btn">
+                                💡 Explicação
+                            </button>
+                            <button class="btn btn-primary" id="next-btn">
+                                Próxima ➡️
+                            </button>
+                        </div>
+                        <div class="btn-row" id="finish-btn-row" style="display: none;">
+                            <button class="btn btn-success" id="finish-btn" style="flex: 1;">
+                                ✅ Finalizar Simulado
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-section">
+                    <div class="question-grid" id="question-grid"></div>
+                    <button class="btn btn-danger" id="reset-btn" style="margin-top: 10px;">
+                        🔄 Reiniciar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div class="results-screen" id="results-screen">
+            <h2>Simulado Finalizado 🎉</h2>
+            <div class="score-display" id="score-display">0/103</div>
+            <div class="score-text" id="score-text"></div>
+            <div class="results-controls">
+                <button class="btn btn-purple" id="review-btn">
+                    📊 Ver Relatório
+                </button>
+                <button class="btn btn-teal" id="restart-btn">
+                    🔄 Novo Simulado
+                </button>
+                <button class="btn btn-orange" id="full-report-btn">
+                    📋 Relatório Completo
+                </button>
+            </div>
+        </div>
+
+        <!-- Tela de Respostas -->
+        <div class="answers-screen" id="answers-screen">
+            <h2>📋 Relatório de Questões</h2>
+            <div id="answers-container"></div>
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn btn-secondary" id="back-to-results">
+                    ⬅️ Voltar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array com as 103 questões do Simulado 13 (baseadas no PDF)
+        const questions = [
+            {
+                number: 1,
+                text: "Assinale a alternativa que relaciona corretamente o número da etapa com sua descrição no modelo de Melhoria Contínua:",
+                options: [
+                    "Etapa 7: 'Como mantemos o impulso?'",
+                    "Etapa 5: 'Onde estamos agora?'",
+                    "Etapa 1: 'Nós chegamos lá?'",
+                    "Etapa 3: 'Agir?'"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Etapa 7: 'Como mantemos o impulso?')\n\nA etapa 3 do modelo de melhoria contínua é "Agir", que corresponde à etapa 7 no modelo ITIL: "Como mantemos o impulso?".\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: A etapa 5 é "Onde estamos agora?"\n• C: A etapa 1 é "Qual é a visão?"\n• D: A etapa 2 é "Onde queremos chegar?" (não é uma etapa oficial do modelo ITIL)`
+            },
+            {
+                number: 2,
+                text: "Assinale a alternativa que representa os riscos de pular a etapa 'Como mantemos o impulso?'",
+                options: [
+                    "Pode-se ter a percepção de que as iniciativas de melhoria são atividades isoladas e não refletem no valor da organização",
+                    "Os objetivos previamente acordados podem deixar de ser relevantes",
+                    "Podem ocorrer obstáculos no caminho",
+                    "A execução da melhoria pode falhar, minando a confiança"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Pode-se ter a percepção de que as iniciativas de melhoria são atividades isoladas e não refletem no valor da organização)\n\nPular a etapa de manter o impulso faz com que as melhorias pareçam atividades pontuais, desconectadas do valor organizacional contínuo.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Embora possa ocorrer, não é o risco principal\n• C: Obstáculos podem ocorrer independentemente\n• D: A falha na execução é um risco geral, não específico desta etapa`
+            },
+            {
+                number: 3,
+                text: "Assinale a alternativa que representa uma ou mais abordagens para melhoria contínua dentre:\nI – Lean;\nII – Agile;\nIII – DevOps;\nIV – CXL.",
+                options: [
+                    "Apenas I, II e III estão corretas",
+                    "I, II e IV estão corretas",
+                    "II e IV estão corretas",
+                    "Todas as alternativas estão corretas"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Apenas I, II e III estão corretas)\n\nLean, Agile e DevOps são abordagens reconhecidas para melhoria contínua. CXL não é uma abordagem padrão.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: CXL não é uma abordagem de melhoria contínua\n• C: CXL não é uma abordagem de melhoria contínua\n• D: CXL não é uma abordagem de melhoria contínua`
+            },
+            {
+                number: 4,
+                text: "Assinale a alternativa que apresenta a definição da melhoria contínua:",
+                options: [
+                    "O conjunto de passos necessários para se ter um produto ou serviço. Abrange desde o estado de matérias-primas até a entrega do produto e satisfação do cliente",
+                    "Método que permite à empresa organizar todos os seus processos, observando os elos e como cada um deles pode gerar valor ao cliente",
+                    "Prática que alinha as práticas e os serviços de uma organização com as necessidades de negócio em constante mudança",
+                    "Um sistema de entrega iterativa que mantém o produto sempre em estado de funcionalidade"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Prática que alinha as práticas e os serviços de uma organização com as necessidades de negócio em constante mudança)\n\nA melhoria contínua é uma prática que garante o alinhamento constante entre serviços e necessidades de negócio.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Descreve uma cadeia de valor, não melhoria contínua\n• B: Descreve gestão de processos\n• D: Descreve entrega contínua`
+            },
+            {
+                number: 5,
+                text: "Em relação ao modelo da Melhoria Contínua, assinale a alternativa INCORRETA:",
+                options: [
+                    "O modelo oferece uma abordagem iterativa",
+                    "Semelhante ao Ciclo de Deming (PDCA)",
+                    "O escopo e os passos são sempre iguais",
+                    "Funciona em etapas"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (O escopo e os passos são sempre iguais)\n\nO modelo de melhoria contínua é adaptável e iterativo; o escopo e passos podem variar conforme o contexto.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, D: São características verdadeiras do modelo`
+            },
+            {
+                number: 6,
+                text: "Assinale a alternativa INCORRETA sobre a melhoria contínua:",
+                options: [
+                    "Sua origem é das disciplinas da administração de negócios",
+                    "Pode ser aplicada em apenas alguns níveis e áreas da organização",
+                    "Pode trazer riscos à organização quando não aplicada",
+                    "Contempla o desenvolvimento de métodos e técnicas"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Pode ser aplicada em apenas alguns níveis e áreas da organização)\n\nA melhoria contínua deve ser aplicada em todos os níveis e áreas, não apenas em alguns.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A: Origina-se da administração\n• C: A falta de melhoria contínua traz riscos\n• D: Inclui desenvolvimento de métodos e técnicas`
+            },
+            {
+                number: 7,
+                text: "Sobre a etapa 'Qual é a visão?' assinale a alternativa correta:",
+                options: [
+                    "O foco é traduzir os objetivos e visão organizacional em que seja compreendido",
+                    "Transforma a visão em metas objetivas e mensuráveis",
+                    "Reforça e aperfeiçoa o método de trabalho bem-sucedido",
+                    "O foco é desenvolver uma rota e um plano para enfrentar os desafios"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (O foco é traduzir os objetivos e visão organizacional em que seja compreendido)\n\nEsta etapa foca em comunicar a visão de forma clara e compreensível para todos.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Refere-se à etapa de planejamento detalhado\n• C: Refere-se a etapas posteriores de implementação\n• D: Refere-se à etapa "Como chegaremos lá?"`
+            },
+            {
+                number: 8,
+                text: "O propósito principal do gerenciamento de incidente é:",
+                options: [
+                    "Identificar as causas reais e potenciais dos incidentes",
+                    "Minimizar o impacto negativo dos incidentes",
+                    "Fornecer informação que ajuda a melhorar a rotina de testes de incidentes na transferência de conhecimento",
+                    "Identificar defeitos em produtos como parte da cadeia de valor"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Minimizar o impacto negativo dos incidentes)\n\nO objetivo principal é restaurar o serviço o mais rápido possível, minimizando impacto nos negócios.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: É objetivo do gerenciamento de problemas\n• C: É um benefício secundário\n• D: Relaciona-se a qualidade, não incidentes`
+            },
+            {
+                number: 9,
+                text: "Os incidentes podem ser diagnosticados e resolvidos por pessoas em muitos grupos diferentes, dependendo da complexidade e do tipo. Em relação às partes e o processo de resolução de incidentes, assinale a alternativa correta:",
+                options: [
+                    "Grupos temporários podem ser uma alternativa viável para incidentes simples, de fácil resolução",
+                    "Incidentes mais complexos, usualmente, serão escalados para solução pelo gestor de projetos",
+                    "Alguns incidentes podem ser resolvidos pelos próprios usuários, através da funcionalidade de autosserviço (self-help)",
+                    "Escalar incidentes para fornecedores e parceiros nunca é recomendado"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Alguns incidentes podem ser resolvidos pelos próprios usuários, através da funcionalidade de autosserviço (self-help))\n\nFuncionalidades de autoatendimento permitem que usuários resolvam incidentes simples sem intervenção da central de serviços.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Grupos temporários são para incidentes complexos\n• B: São escalados para equipes técnicas especializadas\n• D: A escalação para fornecedores pode ser necessária`
+            },
+            {
+                number: 10,
+                text: "Assinale a alternativa que apresenta a definição de Incidente:",
+                options: [
+                    "A causa, ou potencial causa, de um ou mais problemas",
+                    "Um problema que foi analisado, mas ainda não resolvido",
+                    "Uma falha ou vulnerabilidade que pode causar problemas",
+                    "Uma interrupção não planejada do serviço, ou uma redução da qualidade do serviço"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Uma interrupção não planejada do serviço, ou uma redução da qualidade do serviço)\n\nEsta é a definição oficial de incidente no ITIL 4.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Define problema\n• B: Define erro conhecido\n• C: Define erro`
+            },
+            {
+                number: 11,
+                text: "Sobre o gerenciamento de incidentes, assinale a alternativa INCORRETA:",
+                options: [
+                    "Deve existir um processo formal para registrar e gerenciar incidentes",
+                    "O processo formal de registro e gerenciamento de incidentes inclui procedimentos bem detalhados sobre como diagnosticar, investigar e resolver incidentes",
+                    "Os roteiros (scripts) são amplamente usados para coletar informações dos usuários durante o contato inicial",
+                    "A investigação de incidentes mais complexos, geralmente, exige mais conhecimento e experiência, do que procedimentos formais"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (O processo formal de registro e gerenciamento de incidentes inclui procedimentos bem detalhados sobre como diagnosticar, investigar e resolver incidentes)\n\nO processo de gerenciamento de incidentes não inclui procedimentos detalhados de diagnóstico; isso fica a cargo das equipes técnicas.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A: É necessário processo formal\n• C: Scripts são usados na coleta inicial\n• D: Incidentes complexos exigem expertise`
+            },
+            {
+                number: 12,
+                text: "Em relação à resolução e registro dos incidentes, assinale a alternativa correta:",
+                options: [
+                    "Os incidentes são priorizados segundo a ordem de ocorrência (data)",
+                    "Todo incidente deve ser registrado",
+                    "Incidentes de baixo impacto exigem mais recursos e mais coordenação",
+                    "Todo incidente deve consumir a mesma quantidade de recursos"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Todo incidente deve ser registrado)\n\nTodos os incidentes, independente da gravidade, devem ser registrados para rastreabilidade e análise.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: São priorizados por impacto e urgência\n• C: Incidentes de baixo impacto exigem menos recursos\n• D: O consumo de recursos varia conforme o incidente`
+            },
+            {
+                number: 13,
+                text: "O gerenciamento de incidente pode ter um enorme impacto:",
+                options: [
+                    "Na recompensa dos funcionários",
+                    "No planejamento e na fase de testes",
+                    "Na satisfação dos fornecedores",
+                    "Na satisfação do cliente e usuário"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Na satisfação do cliente e usuário)\n\nA eficiência no tratamento de incidentes impacta diretamente na experiência e satisfação dos clientes e usuários.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, C: Embora possa ter algum impacto, não é o principal`
+            },
+            {
+                number: 14,
+                text: "Em relação à contribuição do gerenciamento de incidentes para a cadeia de valor, assinale a alternativa INCORRETA:",
+                options: [
+                    "Incidentes não são visíveis para usuários e clientes",
+                    "Registros de incidentes representam entradas importantes para as atividades de melhoria",
+                    "Incidentes podem ocorrer em ambiente de teste",
+                    "Incidentes oferecem uma contribuição significativa para atividade de suporte"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Incidentes não são visíveis para usuários e clientes)\n\nIncidentes são visíveis para usuários e clientes quando afetam os serviços que utilizam.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• B: Registros alimentam a melhoria contínua\n• C: Incidentes podem ocorrer em qualquer ambiente\n• D: São parte central do suporte`
+            },
+            {
+                number: 15,
+                text: "O propósito principal do gerenciamento de problema é:",
+                options: [
+                    "Gerar informação e documentação de soluções de contorno e erros conhecidos",
+                    "Identificar, avaliar e controlar os riscos utilizando ferramentas e técnicas",
+                    "Reduzir a probabilidade e impacto dos incidentes e identificar as causas reais e potenciais dos incidentes",
+                    "Organizar uma lista de problemas para uso do gerenciamento de incidentes"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Reduzir a probabilidade e impacto dos incidentes e identificar as causas reais e potenciais dos incidentes)\n\nO gerenciamento de problemas foca na causa raiz para prevenir incidentes futuros.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: É uma atividade, não o propósito principal\n• B: É função do gerenciamento de riscos\n• D: É um resultado, não o propósito`
+            },
+            {
+                number: 16,
+                text: "Assinale a alternativa que apresenta a definição de Problema:",
+                options: [
+                    "A causa, ou potencial causa, de um ou mais incidentes",
+                    "Um incidente que foi analisado, mas ainda não resolvido",
+                    "Uma falha ou vulnerabilidade que pode causar incidentes",
+                    "Uma interrupção não planejada do serviço, ou uma redução da qualidade do serviço"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (A causa, ou potencial causa, de um ou mais incidentes)\n\nProblema é a causa ou possível causa de um ou mais incidentes.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Descreve erro conhecido\n• C: Descreve erro\n• D: Descreve incidente`
+            },
+            {
+                number: 17,
+                text: "Assinale a alternativa INCORRETA sobre o Controle de Problema:",
+                options: [
+                    "Nessa fase, os problemas são priorizados",
+                    "Analisar e tratar todos os problemas não é essencial nem esperado",
+                    "Esta etapa ocorre depois da identificação do problema e do Controle de erro",
+                    "Os problemas são classificados de acordo com sua urgência e impacto"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Esta etapa ocorre depois da identificação do problema e do Controle de erro)\n\nO controle de problema ocorre após a identificação, mas antes do controle de erro.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, D: São características do controle de problema`
+            },
+            {
+                number: 18,
+                text: "Assinale a alternativa que representa a definição de Erro Conhecido:",
+                options: [
+                    "A causa, ou potencial causa, de um ou mais incidentes",
+                    "Um problema que foi analisado, mas ainda não resolvido",
+                    "Uma falha ou vulnerabilidade que pode causar incidentes",
+                    "Uma interrupção não planejada do serviço, ou uma redução da qualidade do serviço"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Um problema que foi analisado, mas ainda não resolvido)\n\nErro conhecido é um problema com causa identificada, mas sem solução definitiva ainda.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Define problema\n• C: Define erro\n• D: Define incidente`
+            },
+            {
+                number: 19,
+                text: "Sobre a solução de contorno, assinale a alternativa INCORRETA",
+                options: [
+                    "A solução de contorno nunca deve se tornar uma solução permanente",
+                    "As soluções de contorno podem ser documentadas nos registros de problema",
+                    "Quando um problema não puder ser resolvido rapidamente, busca-se uma solução de contorno",
+                    "A efetividade de uma solução de contorno deve ser avaliada toda vez que for usada, e melhorada quando for o caso"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (A solução de contorno nunca deve se tornar uma solução permanente)\n\nSoluções de contorno podem se tornar permanentes se não for viável ou econômico implementar solução definitiva.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• B, C, D: São características corretas de soluções de contorno`
+            },
+            {
+                number: 20,
+                text: "A fase de Controle de Erros tem várias funções, sobre essas funções, assinale a alternativa INCORRETA:",
+                options: [
+                    "Ela busca corrigir definitivamente o problema",
+                    "Solicita uma Requisição de Mudanças",
+                    "Identifica potenciais soluções permanentes, sem implementar soluções e sem a necessidade de mudança/liberação",
+                    "Usa as atividades de identificação dos componentes com falha"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Identifica potenciais soluções permanentes, sem implementar soluções e sem a necessidade de mudança/liberação)\n\nO controle de erro pode implementar soluções através de requisições de mudança.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, D: São funções do controle de erro`
+            },
+            {
+                number: 21,
+                text: "O controle de problema deve considerar as seguintes causas, EXCETO:",
+                options: [
+                    "Causas contribuem para a falha",
+                    "Causas da insatisfação do cliente",
+                    "Causas afetam a duração do incidente",
+                    "Causas que levam à recorrência do incidente"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Causas da insatisfação do cliente)\n\nO controle de problema foca em causas técnicas, não diretamente na satisfação do cliente.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, C, D: São causas consideradas no controle de problema`
+            },
+            {
+                number: 22,
+                text: "Assinale a alternativa que apresenta a definição da prática de gerenciamento de mudanças:",
+                options: [
+                    "Prática que suporta a qualidade acordada de um serviço por meio do tratamento de todas as requisições de serviço predefinidas e iniciadas pelos usuários de maneira eficaz e fácil de usar",
+                    "Prática que estabelece e reforça vínculos entre uma organização e as respectivas partes interessadas em níveis estratégicos e táticos",
+                    "Prática que define metas claras e baseadas no negócio para o desempenho dos serviços, permitindo que a entrega de um serviço seja devidamente avaliada, monitorada e gerenciada com relação a essas metas",
+                    "Prática que garante que os riscos sejam devidamente avaliados, autoriza o prosseguimento das mudanças e gerencia o calendário de mudanças para maximizar o número de mudanças bem-sucedidas de serviços e produtos"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Prática que garante que os riscos sejam devidamente avaliados, autoriza o prosseguimento das mudanças e gerencia o calendário de mudanças para maximizar o número de mudanças bem-sucedidas de serviços e produtos)\n\nEsta é a definição oficial do gerenciamento de mudanças no ITIL 4.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Define gerenciamento de requisições de serviço\n• B: Define gerenciamento de relacionamento\n• C: Define gerenciamento de nível de serviço`
+            },
+            {
+                number: 23,
+                text: "O que são mudanças emergenciais?",
+                options: [
+                    "Mudanças inseridas em uma programação de mudanças (change schedule)",
+                    "Mudanças lentas que devem ser priorizadas sobre todas as outras",
+                    "Mudanças que precisam ser implementadas o mais breve possível",
+                    "Mudanças de baixo risco"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Mudanças que precisam ser implementadas o mais breve possível)\n\nMudanças emergenciais são implementadas rapidamente para resolver situações críticas.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Descreve mudanças normais agendadas\n• B: Não é característica de emergenciais\n• D: Mudanças emergenciais geralmente têm alto risco`
+            },
+            {
+                number: 24,
+                text: "O que são mudanças normais?",
+                options: [
+                    "Mudanças de baixo risco, iniciadas por requisições de serviço",
+                    "Mudanças iniciadas por requisição de mudança (change request), manualmente ou automatizada",
+                    "Uma mudança não-automatizada com a integração e implantação contínuas",
+                    "Mudanças que não precisam ser agendadas, avaliadas ou autorizadas, seguindo um processo definido"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Mudanças iniciadas por requisição de mudança (change request), manualmente ou automatizada)\n\nMudanças normais seguem o processo formal de requisição, avaliação e autorização.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Descreve mudanças padrão\n• C: Não é definição oficial\n• D: Descreve mudanças padrão`
+            },
+            {
+                number: 25,
+                text: "O que são mudanças padrão?",
+                options: [
+                    "São mudanças de alto risco",
+                    "São mudanças pouco conhecidas e documentadas",
+                    "Mudanças que necessitam de autorização adicional simples para implementação",
+                    "Mudanças que, com frequência, são iniciadas como requisições de serviço, mas também podem representar mudanças operacionais"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Mudanças que, com frequência, são iniciadas como requisições de serviço, mas também podem representar mudanças operacionais)\n\nMudanças padrão são pré-aprovadas, de baixo risco, com processo simplificado.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Mudanças padrão são de baixo risco\n• B: São bem documentadas e conhecidas\n• C: Não precisam de autorização adicional`
+            },
+            {
+                number: 26,
+                text: "Assinale a alternativa INCORRETA sobre a contribuição da habilitação de mudança para a cadeia de valor:",
+                options: [
+                    "Informar clientes e usuários de mudanças é uma ação desaconselhada",
+                    "Muitas melhorias exigem mudanças que podem ser avaliadas e autorizadas",
+                    "Muitas mudanças são iniciadas como resultado de serviços novos ou modificados",
+                    "Mudanças em portfólios de produto e serviço, políticas e práticas que exigem certo nível de controle"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Informar clientes e usuários de mudanças é uma ação desaconselhada)\n\nÉ importante informar clientes e usuários sobre mudanças que os afetam.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• B, C, D: São contribuições corretas`
+            },
+            {
+                number: 27,
+                text: "Do que trata o gerenciamento de mudanças?",
+                options: [
+                    "Prevenir os incidentes através da definição de mudança nas raízes de suas causas",
+                    "Buscar o equilíbrio entre os efeitos benéficos das mudanças e o esforço de proteção contra os seus efeitos adversos",
+                    "Garantir a melhoria contínua",
+                    "Enfrentar o conservadorismo e os velhos modos da alta gestão"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Buscar o equilíbrio entre os efeitos benéficos das mudanças e o esforço de proteção contra os seus efeitos adversos)\n\nO gerenciamento de mudanças equilibra a necessidade de mudança com a estabilidade dos serviços.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: É função do gerenciamento de problemas\n• C: É uma prática separada\n• D: Não é o foco principal`
+            },
+            {
+                number: 28,
+                text: "Como é a avaliação de mudanças?",
+                options: [
+                    "Um ticket é submetido à central de serviços, autorizado pelo gerente de mudanças e então é definida uma equipe específica para tratar da mudança",
+                    "Autorizada pelo Gestor de Projetos, então avaliada por uma equipe e colocada na esteira",
+                    "Avaliada por pessoas capazes de compreender riscos e benefícios esperados, então autorizada pela Autoridade de Mudança e então implementadas",
+                    "Autorizada pela Central de Serviços, avaliada pela Central de Serviços e implementada pela equipe de desenvolvimento"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Avaliada por pessoas capazes de compreender riscos e benefícios esperados, então autorizada pela Autoridade de Mudança e então implementadas)\n\nA avaliação envolve análise de riscos/benefícios e autorização pela Autoridade de Mudança apropriada.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, D: Não seguem o processo formal ITIL`
+            },
+            {
+                number: 29,
+                text: "Assinale a alternativa que não representa um tipo de requisição de serviço",
+                options: [
+                    "Uma solicitação de substituição de um cartucho de tinta e impressora",
+                    "A troca do sistema operacional de um servidor em produção",
+                    "Uma reclamação sobre uma nova interface",
+                    "Um pedido de ajuda sobre como criar um documento"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (A troca do sistema operacional de um servidor em produção)\n\nEsta é uma mudança, não uma requisição de serviço padrão.\n\n🚫 POR QUE AS OUTRAS SÃO REQUISIÇÕES:\n• A, C, D: São exemplos de requisições de serviço`
+            },
+            {
+                number: 30,
+                text: "O que é uma requisição?",
+                options: [
+                    "A solicitação de um usuário, ou seu representante autorizado, que inicia uma ação de serviço acordada como parte regular da entrega de serviço",
+                    "Um catálogo com todos os produtos e serviços oferecidos pela organização do ponto de vista técnico e do usuário",
+                    "Um pedido de mudança, ou RDM. Trata-se de uma solicitação formal com detalhes da mudança solicitada, um responsável, datas e outros itens",
+                    "A capacidade das funções necessárias para a conclusão de um serviço ou produto requerido"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (A solicitação de um usuário, ou seu representante autorizado, que inicia uma ação de serviço acordada como parte regular da entrega de serviço)\n\nEsta é a definição oficial de requisição de serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Descreve catálogo de serviços\n• C: Descreve requisição de mudança\n• D: Não é definição de requisição`
+            },
+            {
+                number: 31,
+                text: "Assinale a alternativa que representa uma orientação geral do gerenciamento de requisição de serviço:",
+                options: [
+                    "Automatizar demais as requisições de serviço e seus procedimentos para atendimento é desaconselhável",
+                    "A requisição de um serviço depende da documentação prévia do recurso e o mínimo de automação",
+                    "Estabelecer as expectativas dos usuários quanto ao prazo de atendimento",
+                    "Estabelecer políticas para garantir que as requisições possam ser atendidas sempre com o máximo possível de aprovação"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Estabelecer as expectativas dos usuários quanto ao prazo de atendimento)\n\nÉ importante definir expectativas claras sobre prazos de atendimento.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: A automação é recomendada para eficiência\n• B: A documentação é importante, mas não depende apenas dela\n• D: Aprovação excessiva pode atrasar o atendimento`
+            },
+            {
+                number: 32,
+                text: "Assinale a alternativa que apresenta a definição de Gerenciamento de Requisição de Serviço:",
+                options: [
+                    "Prática que estabelece e reforça vínculos entre uma requisição de serviço e as respectivas partes interessadas em níveis estratégicos e táticos",
+                    "Prática que garante que as requisições de serviço sejam devidamente avaliadas, autoriza o prosseguimento das mudanças e gerencia o calendário de serviços para maximizar o número de serviços bem-sucedidos",
+                    "Prática que suporta a qualidade acordada de um serviço por meio do tratamento de todas as requisições de serviço predefinidas e iniciadas pelos usuários de maneira eficaz e fácil de usar",
+                    "Prática que define metas claras e baseadas no negócio para o desempenho dos serviços, permitindo que a entrega de um serviço seja devidamente avaliada, monitorada e gerenciada com relação a essas metas"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Prática que suporta a qualidade acordada de um serviço por meio do tratamento de todas as requisições de serviço predefinidas e iniciadas pelos usuários de maneira eficaz e fácil de usar)\n\nEsta é a definição oficial do gerenciamento de requisições de serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Define gerenciamento de relacionamento\n• B: Define gerenciamento de mudanças\n• D: Define gerenciamento de nível de serviço`
+            },
+            {
+                number: 33,
+                text: "O gerenciamento de requisição de serviço depende de alguns itens. Assinale a alternativa que NÃO representa um deles:",
+                options: [
+                    "Processos",
+                    "Procedimentos muito bem desenhados",
+                    "Procedimentos que podem funcionar através de ferramentas de automação",
+                    "Responsáveis por cada item e categoria de itens de requisição"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Responsáveis por cada item e categoria de itens de requisição)\n\nO gerenciamento de requisições não exige responsáveis específicos para cada item.\n\n🚫 POR QUE AS OUTRAS SÃO NECESSÁRIAS:\n• A, B, C: São elementos essenciais para o gerenciamento de requisições`
+            },
+            {
+                number: 34,
+                text: "Assinale a alternativa incorreta sobre o gerenciamento de requisição de serviço",
+                options: [
+                    "Os fluxos podem ser bem simples ou bem complexos",
+                    "Algumas requisições exigem autorização",
+                    "Os passos para requisição podem ser muito bem conhecidos, ou totalmente desconhecidos",
+                    "As requisições de serviços podem seguir esse procedimento: iniciação, aprovação, cumprimento, gerenciamento"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Os passos para requisição podem ser muito bem conhecidos, ou totalmente desconhecidos)\n\nOs passos para requisições são normalmente bem definidos e conhecidos.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, D: São características corretas do gerenciamento de requisições`
+            },
+            {
+                number: 35,
+                text: "Sobre as requisições de serviço, assinale a alternativa incorreta:",
+                options: [
+                    "As requisições de serviço compõem uma parte normal da entrega de um serviço",
+                    "Representam uma falha ou degradação",
+                    "Podem ser solicitadas por representantes autorizados do usuário",
+                    "Pode ser um feedback"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Representam uma falha ou degradação)\n\nFalhas ou degradações são incidentes, não requisições de serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, C, D: São características das requisições de serviço`
+            },
+            {
+                number: 36,
+                text: "O que é gerenciamento de relacionamento?",
+                options: [
+                    "Prática que tem o objetivo de tornar possível o atendimento dos requisitos relacionados à capacidade e desempenho do ambiente de TI dentro de um acordo de serviço e a um custo viável",
+                    "Prática que estabelece e reforça vínculos entre uma organização e as respectivas partes interessadas em níveis estratégicos e táticos",
+                    "Prática que define metas claras e baseadas no negócio para o desempenho dos serviços, permitindo que a entrega de um serviço seja devidamente avaliada, monitorada e gerenciada com relação a essas metas",
+                    "Prática responsável pela determinação e controle dos valores financeiros gastos com os fornecedores, a fim de manter o funcionamento das atividades do negócio"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Prática que estabelece e reforça vínculos entre uma organização e as respectivas partes interessadas em níveis estratégicos e táticos)\n\nEsta é a definição oficial do gerenciamento de relacionamento.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Define gerenciamento de capacidade\n• C: Define gerenciamento de nível de serviço\n• D: Define gerenciamento financeiro`
+            },
+            {
+                number: 37,
+                text: "O que é nível de serviços?",
+                options: [
+                    "A classificação dos diferentes meios de entregar valor aos clientes, facilitando os resultados que os clientes querem alcançar sem ter que assumir custos e riscos",
+                    "Qualquer bem tangível ou intangível utilizado para prestar determinado serviço",
+                    "Uma ou mais métricas que definem a qualidade de serviço prevista ou atingida",
+                    "A capacidade e recursos necessários para entregar um serviço específico"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Uma ou mais métricas que definem a qualidade de serviço prevista ou atingida)\n\nNível de serviço são métricas que definem a qualidade esperada ou alcançada.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Descreve tipos de serviços\n• B: Descreve ativos\n• D: Descreve capacidade`
+            },
+            {
+                number: 38,
+                text: "O que é gerenciamento de fornecedor?",
+                options: [
+                    "Processo usado para manter sistemas computacionais, servidores e softwares em um estado desejado, consistentemente",
+                    "Prática que define metas claras e baseadas no negócio para o desempenho dos serviços, permitindo que a entrega de um serviço seja devidamente avaliada, monitorada e gerenciada com relação a essas metas",
+                    "Prática que estabelece e reforça vínculos entre uma organização e as respectivas partes interessadas em níveis estratégicos e táticos",
+                    "Prática que garante que os fornecedores de uma organização e seus níveis de desempenho são gerenciados adequadamente para oferecer suporte a produtos e serviços de qualidade contínua"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Prática que garante que os fornecedores de uma organização e seus níveis de desempenho são gerenciados adequadamente para oferecer suporte a produtos e serviços de qualidade contínua)\n\nEsta é a definição oficial do gerenciamento de fornecedores.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Define configuração\n• B: Define gerenciamento de nível de serviço\n• C: Define gerenciamento de relacionamento`
+            },
+            {
+                number: 39,
+                text: "O GRN e o GNS possuem grandes diferenças, entre elas:",
+                options: [
+                    "O propósito do GRN é manter relacionamento e identificar necessidades e o do GNS é negociar ANS e garantir os processos de GNS",
+                    "O foco do GRN é ser tático e operacional e o GNS é ser estratégico e tático",
+                    "As principais medidas do GRN são alcançar os níveis acordados, e as do GNS são a satisfação do cliente",
+                    "Ambos são similares"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (O propósito do GRN é manter relacionamento e identificar necessidades e o do GNS é negociar ANS e garantir os processos de GNS)\n\nGRN (Gerenciamento de Relacionamento) foca no relacionamento; GNS (Gerenciamento de Nível de Serviço) foca em acordos e garantia.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Ambos têm aspectos táticos e estratégicos\n• C: As medidas estão invertidas\n• D: São práticas distintas`
+            },
+            {
+                number: 40,
+                text: "Assinale a alternativa que não representa um tipo de relacionamento com fornecedores:",
+                options: [
+                    "Terceirização",
+                    "Parceria",
+                    "Consultoria",
+                    "Multi-sourcing"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Consultoria)\n\nConsultoria é um serviço, não um tipo de relacionamento com fornecedores.\n\n🚫 POR QUE AS OUTRAS SÃO TIPOS DE RELACIONAMENTO:\n• A, B, D: São formas de relacionamento com fornecedores`
+            },
+            {
+                number: 41,
+                text: "Para um acordo de nível de serviço (ANS) ser bem-sucedido, ele deve:",
+                options: [
+                    "Ser redigido de forma complexa, de modo a conter todos as informações possíveis sobre o acordo e evitar problemas futuros",
+                    "Envolver apenas o provedores e clientes",
+                    "Priorizar as necessidades do usuário",
+                    "Estar relacionado a resultados específicos"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Estar relacionado a resultados específicos)\n\nUm ANS deve estar focado em resultados mensuráveis e específicos.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Deve ser claro, não complexo\n• B: Deve envolver todas as partes relevantes\n• C: Deve priorizar necessidades do negócio, não apenas do usuário`
+            },
+            {
+                number: 42,
+                text: "O que é gerenciamento de nível de serviço?",
+                options: [
+                    "Prática que define metas claras e baseadas no negócio para o desempenho dos serviços, permitindo que a entrega de um serviço seja devidamente avaliada, monitorada e gerenciada com relação a essas metas",
+                    "Prática que tem o objetivo de tornar possível o atendimento dos requisitos relacionados à capacidade e desempenho do ambiente de TI dentro de um acordo de serviço e a um custo viável",
+                    "Conjunto de ações que são tomadas no sentido de reconhecer as necessidades que a empresa precisa atender, seja de seu público interno ou externo",
+                    "Processo usado para manter sistemas computacionais, servidores e softwares em um estado desejado, consistentemente"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Prática que define metas claras e baseadas no negócio para o desempenho dos serviços, permitindo que a entrega de um serviço seja devidamente avaliada, monitorada e gerenciada com relação a essas metas)\n\nEsta é a definição oficial do gerenciamento de nível de serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Define gerenciamento de capacidade\n• C: Define gerenciamento de relacionamento\n• D: Define configuração`
+            },
+            {
+                number: 43,
+                text: "Assinale a alternativa que NÃO trata de uma atividade da prática de gerenciamento de Disponibilidade:",
+                options: [
+                    "Negociar e acordar metas alcançáveis para disponibilidade",
+                    "Projetar infraestrutura e aplicativos que possam fornecer os níveis de disponibilidade necessários",
+                    "Executar projetos de infraestrutura e aplicativos que forneçam níveis de disponibilidade necessários",
+                    "Garantir que os serviços e componentes sejam capazes de coletar os dados necessários para medir a disponibilidade"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Executar projetos de infraestrutura e aplicativos que forneçam níveis de disponibilidade necessários)\n\nA execução de projetos é uma atividade de construção, não de gerenciamento de disponibilidade.\n\n🚫 POR QUE AS OUTRAS SÃO ATIVIDADES:\n• A, B, D: São atividades do gerenciamento de disponibilidade`
+            },
+            {
+                number: 44,
+                text: "O que é um ativo?",
+                options: [
+                    "Um produto ou serviço listado no catálogo de serviços",
+                    "Um recurso necessário para a capacidade de compor um serviço específico",
+                    "Qualquer componente de valor financeiro que possa contribuir para a entrega de um produto ou serviço",
+                    "Todas as alternativas acima"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Qualquer componente de valor financeiro que possa contribuir para a entrega de um produto ou serviço)\n\nEsta é a definição de ativo no contexto de gerenciamento de serviços.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Descreve item do catálogo\n• B: Descreve recurso, não necessariamente ativo\n• D: Nem todas são corretas`
+            },
+            {
+                number: 45,
+                text: "O que significa capacidade?",
+                options: [
+                    "Capacidade apresentada por uma organização, pessoa, processo, aplicativo, item de configuração ou serviço de TI de executar uma determinada atividade.",
+                    "Medida do que é alcançado ou entregue por um sistema, pessoa, equipe, prática ou serviço",
+                    "Capacidade de um serviço de TI ou de outro item de configuração de executar sua função acordada quando necessário",
+                    "Realização dos procedimentos de implantação de qualquer componente de serviço em qualquer ambiente"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Capacidade apresentada por uma organização, pessoa, processo, aplicativo, item de configuração ou serviço de TI de executar uma determinada atividade.)\n\nEsta é a definição de capacidade no ITIL 4.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Descreve desempenho\n• C: Descreve disponibilidade\n• D: Descreve implantação`
+            },
+            {
+                number: 46,
+                text: "O que é um evento?",
+                options: [
+                    "Um conjunto de atividades que transformam entradas em saídas",
+                    "Uma reunião de duração fixa, regularidade e objetivos definidos dentro do projeto",
+                    "Um recurso organizacional projetado para realizar um trabalho ou atingir um objetivo",
+                    "Qualquer mudança de estado que tenha relevância para gerenciamento de um serviço ou de outro item de configuração"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Qualquer mudança de estado que tenha relevância para gerenciamento de um serviço ou de outro item de configuração)\n\nEsta é a definição oficial de evento no ITIL 4.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Define processo\n• B: Define reunião\n• C: Define recurso`
+            },
+            {
+                number: 47,
+                text: "Do que trata o gerenciamento da segurança da informação?",
+                options: [
+                    "Riscos à confidencialidade das informações",
+                    "Riscos à integridade das informações",
+                    "Autenticação das informações",
+                    "Todas as alternativas acima"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Todas as alternativas acima)\n\nO gerenciamento da segurança da informação trata de confidencialidade, integridade e disponibilidade (CIA).\n\n🚫 POR QUE AS OUTRAS ESTÃO INCOMPLETAS:\n• A, B, C: São partes, mas não cobrem tudo`
+            },
+            {
+                number: 48,
+                text: "O que é uma liberação?",
+                options: [
+                    "A entrega final de um produto ou serviço ao fim de um projeto",
+                    "A versão de um serviço ou outro item de configuração, ou de um conjunto de itens de configuração, disponibilizada para uso",
+                    "A entrega da documentação acerca de determinada especificação sobre um produto ao cliente",
+                    "O lançamento de um produto no mercado"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (A versão de um serviço ou outro item de configuração, ou de um conjunto de itens de configuração, disponibilizada para uso)\n\nEsta é a definição oficial de liberação.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, C, D: Não são definições oficiais de liberação`
+            },
+            {
+                number: 49,
+                text: "O que é um item de configuração?",
+                options: [
+                    "Qualquer componente que precisa ser gerenciado a fim de entregar um serviço de TI",
+                    "Qualquer componente de valor financeiro que possa contribuir para a entrega de um produto ou serviço",
+                    "Um item do catálogo de serviços e produtos disponíveis em uma organização",
+                    "Todas as alternativas acima"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Qualquer componente que precisa ser gerenciado a fim de entregar um serviço de TI)\n\nItem de configuração é qualquer componente gerenciado para entrega de serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Define ativo\n• C: Define item do catálogo\n• D: Nem todas são corretas`
+            },
+            {
+                number: 50,
+                text: "Assinale a alternativa INCORRETA:",
+                options: [
+                    "Toda organização é uma organização de serviços, salvo a execução",
+                    "Todos os serviços, cada vez mais, dependem da tecnologia",
+                    "Mesmo oferecendo produtos, a empresa é uma organização de serviços, salvo raras exceções",
+                    "Consumidores podem ser externos ou internos, mas fornecedores são sempre externos"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Consumidores podem ser externos ou internos, mas fornecedores são sempre externos)\n\nFornecedores podem ser internos ou externos à organização.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, C: São afirmações verdadeiras sobre organizações de serviços`
+            },
+            {
+                number: 51,
+                text: "Sobre Governança de TI, assinale a alternativa incorreta:",
+                options: [
+                    "A governança representa as visões dos proprietários ou daqueles que representam uma organização",
+                    "É o foco diretivo que define a direção da organização",
+                    "Sua proposta é complexa e seus direcionamentos devem ser rigidamente seguidos, com pouco espaço para a implementação de políticas",
+                    "Governança é diferente de Gerenciamento"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Sua proposta é complexa e seus direcionamentos devem ser rigidamente seguidos, com pouco espaço para a implementação de políticas)\n\nA governança permite espaço para políticas e adaptações.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, D: São características corretas da governança`
+            },
+            {
+                number: 52,
+                text: "A definição que mais se adequa à ideia de organização é:",
+                options: [
+                    "Uma única pessoa com atuação na produção de produção de tecnologia da informação",
+                    "Uma pessoa ou grupo de pessoas com funções próprias, responsabilidade, autoridade e relacionamentos para atingir seus objetivos",
+                    "Exclusivamente um provedor de serviços administrado por um grupo de pessoas",
+                    "Uma empresa de desenvolvimento de software"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Uma pessoa ou grupo de pessoas com funções próprias, responsabilidade, autoridade e relacionamentos para atingir seus objetivos)\n\nEsta é a definição geral de organização.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, C, D: São exemplos específicos, não definições gerais`
+            },
+            {
+                number: 53,
+                text: "Em relação às partes interessadas, assinale a alternativa INCORRETA:",
+                options: [
+                    "Acionistas desejam aperfeiçoar a estrutura de governança de TI para agilizar entregas",
+                    "O consumidor de serviço espera obter benefícios e otimizar custos e riscos",
+                    "O provedor de serviço busca gerar lucro, desenvolver o negócio e melhorar a imagem",
+                    "Funcionários do provedor de serviço desejam receber incentivos financeiros e não-financeiros; desenvolver-se profissionalmente e ter senso de propósito"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Acionistas desejam aperfeiçoar a estrutura de governança de TI para agilizar entregas)\n\nAcionistas focam em retorno e riscos, não em agilizar entregas específicas.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• B, C, D: São expectativas corretas das partes interessadas`
+            },
+            {
+                number: 54,
+                text: "As alternativas a seguir são necessárias para se ter governança de TI, EXCETO:",
+                options: [
+                    "Criar e dar manutenção para estrutura de governança",
+                    "Entrega contínua",
+                    "Garantir a proposta de valor",
+                    "Criar transparência às partes interessadas"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Entrega contínua)\n\nEntrega contínua é uma prática de desenvolvimento, não um requisito de governança.\n\n🚫 POR QUE AS OUTRAS SÃO NECESSÁRIAS:\n• A, C, D: São elementos essenciais da governança`
+            },
+            {
+                number: 55,
+                text: "Assinale a alternativa que corresponde ao papel do prestador de serviços nos riscos:",
+                options: [
+                    "Deve gerenciar o nível de risco específico, em nome do consumidor",
+                    "Avalia se a redução de risco é suficiente para consumo do serviço e aceitação da proposta de valor",
+                    "Esclarece os resultados desejados",
+                    "Garante que o consumidor tenha acesso aos recursos necessários para as relações de serviço como provisão e consumo"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Deve gerenciar o nível de risco específico, em nome do consumidor)\n\nO provedor gerencia riscos associados ao serviço em benefício do consumidor.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: É papel do consumidor\n• C: É parte da definição de requisitos\n• D: É parte do provisionamento`
+            },
+            {
+                number: 56,
+                text: "Um serviço somente gera valor para o cliente quando uma ou mais das seguintes situações ocorre:\nI – Aumenta Performance;\nII – Diminui Variação;\nIII – Aumenta o prazo de entrega;\nIV – Reduz limitações.",
+                options: [
+                    "Apenas I, II e III estão corretas",
+                    "I, II e IV estão corretas",
+                    "II e IV estão corretas",
+                    "Todas as alternativas estão corretas"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (I, II e IV estão corretas)\n\nAumentar performance, diminuir variação e reduzir limitações geram valor. Aumentar prazo não gera valor.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, C, D: Incluem III, que é incorreta`
+            },
+            {
+                number: 57,
+                text: "Sobre a utilidade e garantia, assinale a alternativa INCORRETA:",
+                options: [
+                    "Utilidade trata do que é entregue e dita o quanto isto é útil",
+                    "Garantia trata de como é entregue e dita o benefício do serviço",
+                    "Utilidade trata da redução da variação da performance",
+                    "Garantia trata do atendimento às especificações"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Utilidade trata da redução da variação da performance)\n\nA redução da variação é parte da garantia, não da utilidade.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, D: São definições corretas de utilidade e garantia`
+            },
+            {
+                number: 58,
+                text: "Assinale a alternativa INCORRETA:",
+                options: [
+                    "Alcançar os resultados desejados requer recursos, implicando em custos e um certo risco",
+                    "Os resultados do cliente podem influenciar e serem influenciados por outros elementos",
+                    "O serviço deve criar valor sem transferir para o cliente os riscos e custos específicos",
+                    "Os efeitos negativos e positivos em uma relação de serviço são frequentemente incontroláveis"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Os efeitos negativos e positivos em uma relação de serviço são frequentemente incontroláveis)\n\nOs efeitos podem ser gerenciados através de práticas adequadas.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, C: São princípios da criação de valor`
+            },
+            {
+                number: 59,
+                text: "Assinale a alternativa que melhor representa a definição de 'valor'.",
+                options: [
+                    "Capacidade de gerar lucro",
+                    "Memória afetiva ou pessoal atrelada a algo",
+                    "Benefício, utilidade e importância percebida em algo",
+                    "Característica atingida somente através do consenso geral, como a moeda vigente em um território"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Benefício, utilidade e importância percebida em algo)\n\nEsta é a definição de valor no contexto de serviços.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, D: São aspectos limitados do conceito de valor`
+            },
+            {
+                number: 60,
+                text: "O valor de um serviço pode ser definido através das seguintes alternativas, EXCETO:",
+                options: [
+                    "O nível em que ele atende às expectativas de um cliente",
+                    "Quanto o cliente consegue articular suas necessidades",
+                    "Quanto o cliente está disposto a pagar pelo serviço",
+                    "Quanto o cliente está disposto a assumir problemas, vulnerabilidades, ameaças e perigos"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Quanto o cliente consegue articular suas necessidades)\n\nA articulação das necessidades não define o valor; a satisfação delas sim.\n\n🚫 POR QUE AS OUTRAS DEFINEM VALOR:\n• A, C, D: São formas de medir o valor percebido`
+            },
+            {
+                number: 61,
+                text: "A avaliação de um serviço deve levar em consideração:",
+                options: [
+                    "Impacto dos custos e riscos na utilidade e na garantia",
+                    "Velocidade máxima em que pode ser feito",
+                    "Apenas os lucros que podem ser obtidos, apesar dos custos e riscos",
+                    "A ética de trabalho do consumidor"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Impacto dos custos e riscos na utilidade e na garantia)\n\nA avaliação considera como custos e riscos afetam a utilidade e garantia do serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B, C, D: Não são os fatores principais de avaliação`
+            },
+            {
+                number: 62,
+                text: "Assinale a alternativa que apresenta um dos principais componentes do SVS ITIL:",
+                options: [
+                    "APIs",
+                    "Melhoria contínua",
+                    "Agilidade",
+                    "Entrega iterativa"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Melhoria contínua)\n\nA melhoria contínua é um dos componentes centrais do Sistema de Valor de Serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, C, D: Não são componentes do SVS`
+            },
+            {
+                number: 63,
+                text: "Assinale a alternativa que apresenta a definição correta de Sistema de Valor de Serviços:",
+                options: [
+                    "Conjunto de passos necessários para se ter um produto ou serviço, abrangendo desde o estado de matérias-primas até a entrega do produto e satisfação do cliente",
+                    "Modelo que representa o modo como todos os componentes e atividades de uma organização funcionam em conjunto para facilitar a criação de valor",
+                    "Uma unidade organizacional para esclarecimento de dúvidas, solicitação de serviços, entre outros processos relacionados",
+                    "Método que permite à empresa organizar todos os seus processos, observando os elos e como cada um deles pode gerar valor ao cliente"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Modelo que representa o modo como todos os componentes e atividades de uma organização funcionam em conjunto para facilitar a criação de valor)\n\nEsta é a definição oficial do Sistema de Valor de Serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Descreve cadeia de valor\n• C: Descreve central de serviços\n• D: Descreve gestão de processos`
+            },
+            {
+                number: 64,
+                text: "Porque silos são problemas para uma organização?",
+                options: [
+                    "Porque é difícil trabalhar de forma eficaz e eficiente estando isolado",
+                    "Porque diminui a resistência a mudanças",
+                    "Porque uma visão compartilhada pode gerar conflitos de opinião",
+                    "Porque o planejamento das equipes torna-se mais resiliente"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Porque é difícil trabalhar de forma eficaz e eficiente estando isolado)\n\nSilos impedem colaboração e fluxo de trabalho eficiente.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Silos aumentam resistência a mudanças\n• C: Visão compartilhada reduz conflitos\n• D: Silos dificultam o planejamento integrado`
+            },
+            {
+                number: 65,
+                text: "Assinale a alternativa que NÃO representa uma parte do Sistema de Valor de Serviço ITIL:",
+                options: [
+                    "Cadeia de valor de serviço",
+                    "Oportunidade/demanda",
+                    "Melhoria contínua",
+                    "Planejamento"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Planejamento)\n\nPlanejamento é uma atividade da cadeia de valor, não um componente separado do SVS.\n\n🚫 POR QUE AS OUTRAS SÃO PARTES DO SVS:\n• A, B, C: São componentes do SVS`
+            },
+            {
+                number: 66,
+                text: "O resultado do SVS é:",
+                options: [
+                    "Rapidez",
+                    "Demanda",
+                    "Valor",
+                    "Desenvolvimento de software enxuto"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Valor)\n\nO resultado do Sistema de Valor de Serviço é a criação de valor.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, D: Não são os resultados primários do SVS`
+            },
+            {
+                number: 67,
+                text: "Em relação às oportunidades e demandas no Sistema de Valor do Serviço ITIL, assinale a alternativa INCORRETA:",
+                options: [
+                    "Oportunidade e demanda disparam as atividades do SVS que levam à criação do valor",
+                    "Uma organização não aceita, automaticamente, todas as oportunidades e nem satisfaz todas as demandas",
+                    "Oportunidades e demandas são entradas provenientes de fontes internas e externas",
+                    "Oportunidade é a necessidade ou desejo das partes interessadas internas e externas por produtos e serviços"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Oportunidade é a necessidade ou desejo das partes interessadas internas e externas por produtos e serviços)\n\nEsta definição se aplica a demanda, não a oportunidade.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, C: São afirmações verdadeiras sobre oportunidades e demandas`
+            },
+            {
+                number: 68,
+                text: "Assinale a alternativa que representa uma das saídas do Sistema de Valor de Serviço ITIL:",
+                options: [
+                    "Valor para a organização",
+                    "Demanda",
+                    "Recursos da organização",
+                    "Melhoria contínua"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Valor para a organização)\n\nValor é a saída principal do SVS.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Demanda é entrada\n• C: Recursos são componentes\n• D: Melhoria contínua é componente`
+            },
+            {
+                number: 69,
+                text: "Assinale a alternativa que NÃO apresenta uma das atividades da cadeia de valor de serviços:",
+                options: [
+                    "Planejar",
+                    "Engajar",
+                    "Revisar",
+                    "Melhorar"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Revisar)\n\nRevisar não é uma atividade da cadeia de valor; as atividades são: Planejar, Melhorar, Engajar, Desenho e Transição, Obtenção/Construção, Entrega e Suporte.\n\n🚫 POR QUE AS OUTRAS SÃO ATIVIDADES:\n• A, B, D: São atividades da cadeia de valor`
+            },
+            {
+                number: 70,
+                text: "A atividade 'planejar' necessita de insumos oriundos de outras atividades da cadeia de valor. Assinale a alternativa que apresenta um exemplo dessas entradas.",
+                options: [
+                    "Demandas e oportunidades da atividade 'engajar'",
+                    "Um portfólio de produto e serviço fornecido pela atividade 'planejar'",
+                    "Oportunidades de cooperação e feedback fornecidos por parceiros e fornecedores",
+                    "Requisitos e especificações fornecidos pela atividade 'desenho e transição'"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Demandas e oportunidades da atividade 'engajar')\n\nA atividade 'planejar' recebe demandas e oportunidades consolidadas por 'engajar'.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: É saída, não entrada\n• C: São entradas externas\n• D: São entradas para 'obtenção e construção'`
+            },
+            {
+                number: 71,
+                text: "Fluxo de valor é:",
+                options: [
+                    "A combinações específicas de atividades e práticas",
+                    "A informação de desempenho e oportunidades de melhoria fornecidas por todas as atividades da cadeia de valor",
+                    "Produtos, serviços, demanda e valor",
+                    "As práticas ao longo de todas as atividades da cadeia de valor e das quatro dimensões do gerenciamento de serviço"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (A combinações específicas de atividades e práticas)\n\nFluxo de valor é uma combinação específica de atividades e práticas para criar valor.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Descreve feedback\n• C: São elementos, não definição\n• D: É uma descrição muito ampla, não a definição de fluxo de valor`
+            },
+            {
+                number: 72,
+                text: "Para executar uma certa tarefa, ou responder a uma situação em particular, as organizações:",
+                options: [
+                    "Aceleram o desenvolvimento",
+                    "Fazem reuniões diárias",
+                    "Criam fluxos de valor",
+                    "Utilizam o método Kanban"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Criam fluxos de valor)\n\nAs organizações criam fluxos de valor específicos para tarefas ou situações.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, D: São métodos específicos, não a abordagem geral`
+            },
+            {
+                number: 73,
+                text: "Assinale a alternativa que apresenta um exemplo de entradas da atividade de 'obtenção e construção':",
+                options: [
+                    "Conhecimento e informação sobre produtos e serviços novos e modificados provenientes das atividades 'desenho e transição' e 'obtenção/construção'",
+                    "Feedback das partes interessadas fornecido pela atividade 'engajar'",
+                    "Componentes de serviço provenientes da atividade 'obtenção/construção'",
+                    "Conhecimento e informação sobre produtos e serviços, novos e modificados, provenientes da atividade 'desenho e transição'"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Conhecimento e informação sobre produtos e serviços, novos e modificados, provenientes da atividade 'desenho e transição')\n\n'Obtenção e construção' recebe conhecimento da atividade 'desenho e transição'.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Inclui saída da própria atividade\n• B: É entrada para 'planejar'\n• C: É saída, não entrada`
+            },
+            {
+                number: 74,
+                text: "Assinale a alternativa que melhor representa uma entrada diretamente relacionada ao início da construção ou obtenção de novos serviços ou componentes na atividade de Obtenção e Construção.",
+                options: [
+                    "Demandas e oportunidades da atividade 'engajar'",
+                    "Solicitações de iniciação de mudança ou de projeto fornecidas pela atividade 'engajar'",
+                    "Informações sobre desempenho da cadeia de valor da atividade 'melhorar'",
+                    "Relatórios sobre a situação da melhoria fornecidos pela atividade 'melhorar'"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Solicitações de iniciação de mudança ou de projeto fornecidas pela atividade 'engajar')\n\nSolicitações formais iniciam a atividade de obtenção e construção.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: São entradas para 'planejar'\n• C, D: São entradas para 'melhorar'`
+            },
+            {
+                number: 75,
+                text: "A atividade chamada 'Engajar' pode utilizar várias práticas, assinale a alternativa que NÃO representa uma delas:",
+                options: [
+                    "Gerenciamento de fornecedores",
+                    "Gerenciamento de central de serviço",
+                    "Gerenciamento de requisição de serviço",
+                    "Gerenciamento de liberação"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Gerenciamento de liberação)\n\nGerenciamento de liberação não é usado diretamente pela atividade 'engajar'.\n\n🚫 POR QUE AS OUTRAS SÃO PRÁTICAS USADAS:\n• A, B, C: São práticas utilizadas pela atividade 'engajar'`
+            },
+            {
+                number: 76,
+                text: "Um princípio orientador é, entre outras coisas:",
+                options: [
+                    "Uma sugestão que pode ser seguida ou não",
+                    "Específico para alguns tipos de trabalho",
+                    "Um ponto de partida e uma recomendação",
+                    "Dependente das mudanças nos objetivos e estratégias da empresa"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Um ponto de partida e uma recomendação)\n\nPrincípios orientadores são recomendações universais que servem como ponto de partida.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: São mais que sugestões\n• B: São universais\n• D: São independentes de mudanças específicas`
+            },
+            {
+                number: 77,
+                text: "O ciclo de feedback, ou feedback loop, é uma técnica que consiste em:",
+                options: [
+                    "Uso das saídas de uma parte de um sistema como entradas para essa mesma parte de sistema. Antes, durante e depois de cada interação",
+                    "Desenho de serviço, transição de serviço, estratégia de serviço e operação de serviço, respectivamente",
+                    "Identificação das práticas e serviços de sucesso, passando pela determinação e aprimoração de serviços e práticas existentes",
+                    "Endereçamento, direta ou indiretamente, do valor para o cliente e a organização e suas partes interessadas"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Uso das saídas de uma parte de um sistema como entradas para essa mesma parte de sistema. Antes, durante e depois de cada interação)\n\nCiclo de feedback é usar saídas como entradas para a mesma parte do sistema.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Descreve ciclo de vida do serviço\n• C: Descreve melhoria contínua\n• D: É muito genérico`
+            },
+            {
+                number: 78,
+                text: "Falando sobre o terceiro princípio, o ecossistema dos negócios muda constantemente, portanto:",
+                options: [
+                    "É necessário agilidade",
+                    "A gestão de incidentes deve se adaptar",
+                    "É essencial feedback em todos os instantes e níveis",
+                    "É necessário entender e explicar tudo, promovendo análise minuciosa das mudanças"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (É essencial feedback em todos os instantes e níveis)\n\nFeedback contínuo é essencial para se adaptar a mudanças constantes.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, D: São importantes, mas não o foco do terceiro princípio`
+            },
+            {
+                number: 79,
+                text: "Qual das alternativas a seguir NÃO se trata de um princípio orientador da ITIL?",
+                options: [
+                    "Foco no valor",
+                    "Pensar e trabalhar rapidamente",
+                    "Otimizar e automatizar",
+                    "Progredir iterativamente com feedback"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Pensar e trabalhar rapidamente)\n\nO princípio correto é "Pensar e trabalhar holisticamente".\n\n🚫 POR QUE AS OUTRAS SÃO PRINCÍPIOS:\n• A, C, D: São princípios orientadores do ITIL 4`
+            },
+            {
+                number: 80,
+                text: "Sobre o princípio 2: 'começar de onde você está.' Assinale a alternativa INCORRETA:",
+                options: [
+                    "O estado atual deve ser investigado e avaliado de forma direta",
+                    "É preciso ter em mente que tudo sempre merece esforço de melhoria",
+                    "Não é uma boa atitude achar que nada pode ser aproveitado",
+                    "É essencial investir na avaliação e priorização do que pode ser aperfeiçoado"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (É preciso ter em mente que tudo sempre merece esforço de melhoria)\n\nNem tudo sempre merece esforço; deve-se priorizar com base em valor.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A: É necessário avaliar o estado atual\n• C: É incorreto desconsiderar tudo o que já existe\n• D: Priorização é fundamental para melhoria eficiente`
+            },
+            {
+                number: 81,
+                text: "Sobre a criação de valor, complete a frase: O provedor de serviços sempre deve determinar quem é o ______ e ______.",
+                options: [
+                    "Consumidor; as partes interessadas",
+                    "Líder de equipe; os desenvolvedores",
+                    "Consumidor; os desenvolvedores",
+                    "Usuário; product manager"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Consumidor; as partes interessadas)\n\nO provedor deve identificar consumidores e todas as partes interessadas relevantes.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B, C, D: Não capturam completamente as partes envolvidas`
+            },
+            {
+                number: 82,
+                text: "Segundo o princípio 3, qual das alternativas a seguir NÃO reflete o papel do feedback?",
+                options: [
+                    "Compreensão da percepção de valor criado",
+                    "Eficiência e eficácia da governança",
+                    "Possibilidade de maior flexibilidade e qualidade",
+                    "Aumento do engajamento da equipe"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Aumento do engajamento da equipe)\n\nEmbora o feedback possa impactar o engajamento, não é seu papel principal.\n\n🚫 POR QUE AS OUTRAS REFLETEM O PAPEL DO FEEDBACK:\n• A, B, C: São funções importantes do feedback`
+            },
+            {
+                number: 83,
+                text: "O que significa 'pensar e trabalhar holisticamente'?",
+                options: [
+                    "Compreender que cada parte do sistema é única e deve ser compreendida separadamente",
+                    "Compreender que nenhum serviço, prática, processo, departamento ou fornecedor existe de forma isolada",
+                    "O trabalho segmentado e coordenado por especialistas beneficia a redução de erros",
+                    "Em um sistema complexo, devemos engajar a equipe e implantar uma cultura de ética e transparência, facilitando a identificação e adaptação de problemas rapidamente"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Compreender que nenhum serviço, prática, processo, departamento ou fornecedor existe de forma isolada)\n\nPensar holisticamente é entender interconexões e interdependências.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: É o oposto de holístico\n• C, D: São benefícios, não a definição`
+            },
+            {
+                number: 84,
+                text: "Pouca visibilidade pode gerar:",
+                options: [
+                    "Risco de percepção equivocada de que um trabalho não é prioritário",
+                    "Aumento de espaço para criatividade",
+                    "Engajamento da equipe",
+                    "Risco aumentar decisões eficientes"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Risco de percepção equivocada de que um trabalho não é prioritário)\n\nPouca visibilidade leva a percepções erradas sobre prioridades e valor.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B, C: Visibilidade aumenta criatividade e engajamento\n• D: Visibilidade melhora decisões`
+            },
+            {
+                number: 85,
+                text: "Complete a frase: 'Dependendo do ______ e ______, as expectativas quanto ao nível e tipo de colaboração podem variar significativamente.'",
+                options: [
+                    "Software; do cliente",
+                    "Time; do líder de equipe",
+                    "Serviço; da relação entre provedor e consumidor",
+                    "Serviço; do framework"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Serviço; da relação entre provedor e consumidor)\n\nColaboração varia conforme o tipo de serviço e a relação específica.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, D: Não capturam completamente os fatores`
+            },
+            {
+                number: 86,
+                text: "'Otimizar e automatizar' é um importante princípio. Porém, para tanto, há uma ordem de ações que deve ser levada em conta para não que não se obtenha resultados indesejados. Essa ordem é:",
+                options: [
+                    "Mapear os processos padronizados e repetitivos -> automatizar a partir daí",
+                    "Mapear os processos padronizados e repetitivos -> automatizar a partir daí -> simplificar o que for possível",
+                    "Mapear os processos padronizados e repetitivos -> simplificar o que for possível -> automatizar a partir daí",
+                    "Simplificar o que for possível -> Mapear os processos padronizados e repetitivos -> automatizar a partir daí"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Mapear os processos padronizados e repetitivos -> simplificar o que for possível -> automatizar a partir daí)\n\nPrimeiro mapeie, depois simplifique, então automatize para não automatizar ineficiências.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: Pode levar à automação de processos ineficientes\n• B: A automação deve vir após a simplificação\n• D: A simplificação requer primeiro o mapeamento`
+            },
+            {
+                number: 87,
+                text: "Sobre o princípio 4, assinale a alternativa INCORRETA:",
+                options: [
+                    "Pessoas certas nos papéis certos aceitam melhor os esforços",
+                    "Fontes inesperadas oferecem melhores informações para tomada de decisão",
+                    "Os silos geralmente acontecem quando funções ou unidades de negócio se sentem incapazes de colaborar",
+                    "Os silos geralmente acontecem quando funções ou unidades de negócio buscam atender a uma parte específica da organização"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Fontes inesperadas oferecem melhores informações para tomada de decisão)\n\nFontes inesperadas não necessariamente oferecem melhores informações.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A: A escolha certa de pessoas é fundamental\n• C, D: Descrevem causas de formação de silos`
+            },
+            {
+                number: 88,
+                text: "Assinale a alternativa que NÃO se trata da aplicação do princípio 'manter de forma simples e prática':",
+                options: [
+                    "Garantir valor: toda atividade deve contribuir para a criação de valor",
+                    "Respeitar o tempo das pessoas: evitar processos complicados e burocráticos",
+                    "Fazer menos coisas, mas de uma forma melhor",
+                    "A execução, ainda que complexa, deve ser repetida múltiplas vezes até que progressivamente fique mais simples"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (A execução, ainda que complexa, deve ser repetida múltiplas vezes até que progressivamente fique mais simples)\n\nO princípio é simplificar primeiro, não repetir processos complexos.\n\n🚫 POR QUE AS OUTRAS SÃO APLICAÇÕES DO PRINCÍPIO:\n• A, B, C: São formas de aplicar o princípio de simplicidade`
+            },
+            {
+                number: 89,
+                text: "Qual dos frameworks a seguir colabora para a eliminação de silos?",
+                options: [
+                    "DevOps",
+                    "Scrum",
+                    "ISO 20000",
+                    "Nenhum dos frameworks acima"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (DevOps)\n\nDevOps promove colaboração entre desenvolvimento e operações, eliminando silos.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: Scrum é um framework ágil para gerenciamento de projetos, mas não foca especificamente na eliminação de silos organizacionais\n• C: ISO 20000 é um padrão para gerenciamento de serviços, mas não é um framework de colaboração\n• D: A opção "Nenhum dos frameworks acima" está incorreta porque DevOps é um framework que colabora para eliminar silos`
+            },
+            {
+                number: 90,
+                text: "Assinale a alternativa que representa um elemento essencial da dimensão Organizações e Pessoas:",
+                options: [
+                    "Empregados do provedor de serviço",
+                    "Frameworks de gerenciamento de pessoas",
+                    "Fluxos de valor",
+                    "Apps"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Empregados do provedor de serviço)\n\nPessoas são elementos centrais desta dimensão.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• B: São ferramentas, não elementos essenciais\n• C: Pertence à dimensão Fluxos de Valor\n• D: Pertence à dimensão Informação e Tecnologia`
+            },
+            {
+                number: 91,
+                text: "Quanto à cooperação na dimensão Parceiros e Fornecedores, assinale a alternativa correta:",
+                options: [
+                    "As formas de cooperação entre as organizações são fixas e têm fronteiras rígidas",
+                    "As organizações não devem concentrar sua atenção no desenvolvimento de algumas poucas competências específicas e utilizar parceiros e fornecedores para as demais",
+                    "As organizações podem atuar de diferentes formas, como consumidores ou prestadoras de serviços, por exemplo",
+                    "Usar parceiros e fornecedores o mínimo possível é uma atitude arriscada que deve ser evitada"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (As organizações podem atuar de diferentes formas, como consumidores ou prestadoras de serviços, por exemplo)\n\nAs organizações podem ter múltiplos papéis em ecossistemas de serviço.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A: As formas de cooperação são flexíveis\n• B: Focar em competências centrais e usar parceiros é uma estratégia válida\n• D: Usar parceiros pode ser benéfico`
+            },
+            {
+                number: 92,
+                text: "O que um 'aaS' fornece?",
+                options: [
+                    "Gestão de problemas efetivo",
+                    "Gerenciamento de múltiplos fornecedores",
+                    "Comunicação efetiva",
+                    "Recursos técnicos de infraestrutura"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Recursos técnicos de infraestrutura)\n\n'aaS' (as a Service) fornece recursos técnicos como serviço (IaaS, PaaS, SaaS).\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, C: Não são o foco principal de 'aaS'`
+            },
+            {
+                number: 93,
+                text: "A arquitetura da informação dos serviços deve ser compreendida e continuamente otimizada, considerando os seguinte critérios:",
+                options: [
+                    "Estimativas de esforço",
+                    "Disponibilidade e confiabilidade, entre outros",
+                    "Qualidade das reuniões",
+                    "Precisão e capacidade dos colaboradores"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Disponibilidade e confiabilidade, entre outros)\n\nA arquitetura da informação deve considerar atributos de qualidade como disponibilidade e confiabilidade.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, C, D: Não são critérios principais para arquitetura da informação`
+            },
+            {
+                number: 94,
+                text: "Assinale a alternativa que não representa uma das quatro dimensões do gerenciamento de serviço:",
+                options: [
+                    "Organizações e pessoas",
+                    "Parceiros e fornecedores",
+                    "Informação e tecnologia",
+                    "Equipes e frameworks"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Equipes e frameworks)\n\nAs quatro dimensões são: Organizações e pessoas, Parceiros e fornecedores, Informação e tecnologia, Fluxos de valor e processos.\n\n🚫 POR QUE AS OUTRAS SÃO DIMENSÕES:\n• A, B, C: São três das quatro dimensões`
+            },
+            {
+                number: 95,
+                text: "Quanto às quatro dimensões, assinale a alternativa INCORRETA:",
+                options: [
+                    "Para alcançar os resultados desejados e ser eficaz, nenhuma das dimensões devem ser negligenciadas",
+                    "As dimensões vêm do princípio Pensar e Trabalhar Holisticamente, por isso todas as dimensões são críticas",
+                    "Os resultados necessários provém da abordagem isolada de cada dimensão",
+                    "As 4 dimensões representam perspectivas relevantes para todo o sistema de valor do serviço, incluindo a cadeia toda e todas as práticas ITIL"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Os resultados necessários provém da abordagem isolada de cada dimensão)\n\nAs dimensões devem ser consideradas em conjunto, não isoladamente.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, D: São afirmações verdadeiras sobre as dimensões`
+            },
+            {
+                number: 96,
+                text: "Assinale a alternativa INCORRETA quanto à dimensão Fluxo de Valor e Processos:",
+                options: [
+                    "Uma questão importante nessa dimensão é compreender quais informações são gerenciadas pelos serviços",
+                    "Nos Fluxos de Valor e processos você deve definir as atividades, controles, procedimentos e fluxos de trabalho",
+                    "Essa dimensão concentra-se em quais atividades a organização assume",
+                    "Um fluxo de valor é uma série de etapas para criar e entregar produtos e serviços"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Uma questão importante nessa dimensão é compreender quais informações são gerenciadas pelos serviços)\n\nGestão de informações pertence à dimensão Informação e Tecnologia.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• B, C, D: São características da dimensão Fluxo de Valor e Processos`
+            },
+            {
+                number: 97,
+                text: "Assinale a alternativa INCORRETA sobre a Central de Serviço:",
+                options: [
+                    "Independentemente da eficiência da central de serviço, sempre haverá problemas que precisam de escalação e apoio de outras equipes",
+                    "As equipes de suporte e desenvolvimento precisam trabalhar em estreita colaboração com a central de serviço",
+                    "Deve ser bastante técnica",
+                    "Tem influência na experiência do usuário"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Deve ser bastante técnica)\n\nA central de serviço precisa de habilidades de comunicação e resolução, não apenas técnicas.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• A, B, D: São afirmações verdadeiras sobre a central de serviço`
+            },
+            {
+                number: 98,
+                text: "Assinale a alternativa que NÃO apresenta uma habilidade importante da Central de Serviço:",
+                options: [
+                    "Empatia",
+                    "Desenvolvimento das ferramentas usadas para auto-atendimento",
+                    "Compreensão e diagnóstico eficazes do incidente",
+                    "Capacidade de tomar medidas apropriadas para resolução"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Desenvolvimento das ferramentas usadas para auto-atendimento)\n\nDesenvolver ferramentas não é uma habilidade da central de serviço; é tarefa de outras equipes.\n\n🚫 POR QUE AS OUTRAS SÃO HABILIDADES IMPORTANTES:\n• A, C, D: São habilidades essenciais para a central de serviço`
+            },
+            {
+                number: 99,
+                text: "Assinale o canal de acesso que mais reduz trabalho de baixo nível e aumenta a produtividade da Central de Serviços por automatizar triagem e resolução de solicitações repetitivas.",
+                options: [
+                    "Contato por e-mail",
+                    "Contato por chamadas telefônicas",
+                    "Contato por mensagens de texto",
+                    "Contatos por chatbots"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Contatos por chatbots)\n\nChatbots automatizam triagem e resolução de solicitações repetitivas, reduzindo trabalho manual.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, C: Exigem intervenção humana e são menos eficientes`
+            },
+            {
+                number: 100,
+                text: "Assinale a alternativa que NÃO representa uma contribuição da Central de Serviço para as atividades da cadeia de valor:",
+                options: [
+                    "Melhorar",
+                    "Engajar",
+                    "Desenho e Transição",
+                    "Gerenciamento de fornecedores"
+                ],
+                correct: 3,
+                explanation: `✅ RESPOSTA CORRETA: D (Gerenciamento de fornecedores)\n\nA central de serviço não contribui diretamente para o gerenciamento de fornecedores.\n\n🚫 POR QUE AS OUTRAS SÃO CONTRIBUIÇÕES:\n• A, B, C: São atividades onde a central de serviço contribui`
+            },
+            {
+                number: 101,
+                text: "Assinale a alternativa que melhor completa a seguinte frase. 'A Central de Serviço oferece um caminho claro para que os usuários possam, principalmente'.",
+                options: [
+                    "Fazer sugestões e avaliar serviços",
+                    "Reportar problemas e encaminhar perguntas",
+                    "Participar de testes das soluções desenvolvidas",
+                    "Entrar em contato com o RH para solicitar a demissão de um funcionário"
+                ],
+                correct: 1,
+                explanation: `✅ RESPOSTA CORRETA: B (Reportar problemas e encaminhar perguntas)\n\nA central de serviço é o ponto de contato principal para problemas e perguntas.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, C, D: Não são as funções principais da central de serviço`
+            },
+            {
+                number: 102,
+                text: "Qual é o propósito de uma central de serviços?",
+                options: [
+                    "Organizar e decidir os serviços que serão aprimorados na fase de desenvolvimento",
+                    "Decidir o melhor fluxo de valor para os serviços da empresa",
+                    "Capturar as demandas por resolução de incidentes e requisições de serviço",
+                    "Planejar o gerenciamento de problemas, exclusivamente"
+                ],
+                correct: 2,
+                explanation: `✅ RESPOSTA CORRETA: C (Capturar as demandas por resolução de incidentes e requisições de serviço)\n\nO propósito principal é capturar e gerenciar incidentes e requisições.\n\n🚫 POR QUE AS OUTRAS ESTÃO ERRADAS:\n• A, B, D: São funções de outras práticas ou atividades`
+            },
+            {
+                number: 103,
+                text: "Assinale a alternativa INCORRETA em relação ao impacto das tecnologias de automação nas Centrais de Serviço:",
+                options: [
+                    "Aumento do contato telefônico",
+                    "Redução do trabalho em nível mais baixo",
+                    "Aumento do foco na excelência da experiência do usuário",
+                    "Aumento da produtividade da equipe"
+                ],
+                correct: 0,
+                explanation: `✅ RESPOSTA CORRETA: A (Aumento do contato telefônico)\n\nA automação reduz o contato telefônico, não aumenta.\n\n🚫 POR QUE AS OUTRAS ESTÃO CORRETAS:\n• B, C, D: São impactos positivos da automação`
+            }
+        ];
+
+        // Variáveis de estado
+        let currentQuestion = 0;
+        let userAnswers = Array(questions.length).fill(null);
+        let markedQuestions = Array(questions.length).fill(false);
+        let timeLeft = 90 * 60; // 90 minutos
+        let timerInterval;
+        let examFinished = false;
+
+        // Elementos DOM
+        const elements = {
+            startScreen: document.getElementById('start-screen'),
+            examArea: document.getElementById('exam-area'),
+            resultsScreen: document.getElementById('results-screen'),
+            answersScreen: document.getElementById('answers-screen'),
+            questionNumber: document.getElementById('question-number'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            currentQuestion: document.getElementById('current-question'),
+            totalQuestions: document.getElementById('total-questions'),
+            timer: document.getElementById('timer'),
+            questionGrid: document.getElementById('question-grid'),
+            feedback: document.getElementById('feedback'),
+            finishBtnRow: document.getElementById('finish-btn-row')
+        };
+
+        // Inicialização
+        function init() {
+            document.getElementById('start-btn').addEventListener('click', startExam);
+            document.getElementById('prev-btn').addEventListener('click', () => navigate(-1));
+            document.getElementById('next-btn').addEventListener('click', () => navigate(1));
+            document.getElementById('finish-btn').addEventListener('click', finishExam);
+            document.getElementById('reset-btn').addEventListener('click', resetExam);
+            document.getElementById('mark-btn').addEventListener('click', toggleMark);
+            document.getElementById('explanation-btn').addEventListener('click', showExplanation);
+            document.getElementById('review-btn').addEventListener('click', showAnsweredQuestions);
+            document.getElementById('restart-btn').addEventListener('click', resetExam);
+            document.getElementById('back-to-results').addEventListener('click', () => {
+                elements.answersScreen.style.display = 'none';
+                elements.resultsScreen.style.display = 'block';
+            });
+            document.getElementById('full-report-btn').addEventListener('click', showFullReport);
+
+            elements.totalQuestions.textContent = questions.length;
+            createQuestionGrid();
+        }
+
+        function startExam() {
+            elements.startScreen.style.display = 'none';
+            elements.examArea.style.display = 'block';
+            loadQuestion(0);
+            startTimer();
+        }
+
+        function createQuestionGrid() {
+            elements.questionGrid.innerHTML = '';
+            questions.forEach((_, index) => {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                item.textContent = index + 1;
+                item.addEventListener('click', () => loadQuestion(index));
+                elements.questionGrid.appendChild(item);
+            });
+            updateNavigation();
+        }
+
+        function loadQuestion(index) {
+            if (examFinished) return;
+            
+            currentQuestion = index;
+            const question = questions[index];
+            
+            elements.questionNumber.textContent = `Questão ${question.number}`;
+            elements.questionText.textContent = question.text;
+            elements.currentQuestion.textContent = question.number;
+            
+            elements.optionsContainer.innerHTML = '';
+            question.options.forEach((option, i) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                
+                const label = document.createElement('div');
+                label.className = 'option-label';
+                label.textContent = String.fromCharCode(65 + i);
+                
+                const text = document.createElement('div');
+                text.className = 'option-text';
+                text.textContent = option;
+                
+                optionElement.appendChild(label);
+                optionElement.appendChild(text);
+                
+                if (userAnswers[index] === i) {
+                    optionElement.classList.add('selected');
+                }
+                
+                if (userAnswers[index] !== null) {
+                    optionElement.style.pointerEvents = 'none';
+                    if (i === question.correct) {
+                        optionElement.classList.add('correct');
+                    } else if (i === userAnswers[index] && userAnswers[index] !== question.correct) {
+                        optionElement.classList.add('incorrect');
+                    }
+                } else {
+                    optionElement.addEventListener('click', () => selectOption(i));
+                }
+                
+                elements.optionsContainer.appendChild(optionElement);
+            });
+            
+            updateNavigation();
+            updateMarkButton();
+            updateFinishButton();
+            
+            if (userAnswers[index] !== null) {
+                showFeedback(index);
+            } else {
+                elements.feedback.style.display = 'none';
+            }
+        }
+
+        function updateFinishButton() {
+            if (currentQuestion === questions.length - 1) {
+                elements.finishBtnRow.style.display = 'flex';
+            } else {
+                elements.finishBtnRow.style.display = 'none';
+            }
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestion] = optionIndex;
+            showFeedback(currentQuestion);
+            updateNavigation();
+            updateFinishButton();
+            
+            const options = elements.optionsContainer.querySelectorAll('.option');
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+
+            updateQuestionGrid();
+        }
+
+        function showFeedback(index) {
+            const question = questions[index];
+            const userAnswer = userAnswers[index];
+            const isCorrect = userAnswer === question.correct;
+            
+            const options = elements.optionsContainer.querySelectorAll('.option');
+            options.forEach((option, i) => {
+                option.classList.remove('correct', 'incorrect', 'selected');
+                if (i === userAnswer) {
+                    option.classList.add('selected');
+                }
+                if (i === question.correct) {
+                    option.classList.add('correct');
+                } else if (i === userAnswer && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            elements.feedback.textContent = isCorrect ? '✅ CORRETO' : '❌ INCORRETO';
+            elements.feedback.className = `feedback-container ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+            elements.feedback.style.display = 'block';
+        }
+
+        function showExplanation() {
+            const question = questions[currentQuestion];
+            const userAnswer = userAnswers[currentQuestion];
+            
+            if (userAnswer === null) {
+                alert('⚠️ Selecione uma resposta antes de ver a explicação.');
+                return;
+            }
+            
+            const isCorrect = userAnswer === question.correct;
+            let explanationMessage = `📝 EXPLICAÇÃO DA QUESTÃO ${question.number}\n\n`;
+            
+            if (isCorrect) {
+                explanationMessage += `🎉 Parabéns! Você acertou!\n\n`;
+            } else {
+                explanationMessage += `💡 Resposta correta: ${String.fromCharCode(65 + question.correct)}\n\n`;
+            }
+            
+            explanationMessage += `${question.explanation}`;
+            
+            alert(explanationMessage);
+        }
+
+        function showAnsweredQuestions() {
+            elements.resultsScreen.style.display = 'none';
+            elements.answersScreen.style.display = 'block';
+            
+            const container = document.getElementById('answers-container');
+            container.innerHTML = '';
+            
+            let answeredCount = 0;
+            
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                
+                if (userAnswer !== null) {
+                    answeredCount++;
+                    const isCorrect = userAnswer === question.correct;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'answer-item';
+                    item.innerHTML = `
+                        <div class="answer-question"><strong>🔍 Questão ${question.number}:</strong><br>${question.text}</div>
+                        <div class="${isCorrect ? 'correct-answer' : 'incorrect-answer'}">
+                            📝 Sua resposta: ${String.fromCharCode(65 + userAnswer)} - ${question.options[userAnswer]}
+                        </div>
+                        <div class="correct-answer">
+                            ✅ Correta: ${String.fromCharCode(65 + question.correct)} - ${question.options[question.correct]}
+                        </div>
+                        <button class="explanation-btn" onclick="toggleExplanation(${index})">
+                            💡 Ver Explicação
+                        </button>
+                        <div class="answer-explanation" id="explanation-${index}">
+                            <strong>🎯 Explicação:</strong><br>${question.explanation}
+                        </div>
+                    `;
+                    container.appendChild(item);
+                }
+            });
+            
+            if (answeredCount === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #7f8c8d;">Nenhuma questão foi respondida.</p>';
+            }
+        }
+
+        function showFullReport() {
+            const BOM = '\uFEFF';
+            let report = BOM + "📊 RELATÓRIO COMPLETO DO SIMULADO 13 - ITIL 4 - PMG ACADEMY\n\n";
+            report += "=".repeat(60) + "\n\n";
+            
+            const score = userAnswers.reduce((acc, answer, index) => 
+                answer === questions[index].correct ? acc + 1 : acc, 0);
+            const percentage = (score / questions.length) * 100;
+            
+            report += `RESULTADO FINAL: ${score}/${questions.length} (${percentage.toFixed(1)}%)\n\n`;
+            report += "=".repeat(60) + "\n\n";
+            
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correct;
+                
+                report += `🔍 QUESTÃO ${question.number}\n`;
+                report += `${question.text}\n\n`;
+                report += `SUA RESPOSTA: ${userAnswer !== null ? 
+                    `${String.fromCharCode(65 + userAnswer)} - ${question.options[userAnswer]}` : 
+                    '❌ NÃO RESPONDIDA'}\n`;
+                report += `RESPOSTA CORRETA: ${String.fromCharCode(65 + question.correct)} - ${question.options[question.correct]}\n`;
+                report += `STATUS: ${isCorrect ? '✅ CORRETO' : '❌ INCORRETO'}\n\n`;
+                report += `💡 EXPLICAÇÃO:\n${question.explanation}\n\n`;
+                report += "=".repeat(60) + "\n\n";
+            });
+            
+            const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio-simulado13-itil-pmg-academy-${new Date().toLocaleDateString('pt-BR')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function toggleMark() {
+            markedQuestions[currentQuestion] = !markedQuestions[currentQuestion];
+            updateQuestionGrid();
+            updateMarkButton();
+        }
+
+        function updateMarkButton() {
+            const btn = document.getElementById('mark-btn');
+            if (markedQuestions[currentQuestion]) {
+                btn.innerHTML = '📌 Marcada';
+                btn.classList.remove('btn-warning');
+                btn.classList.add('btn-orange');
+            } else {
+                btn.innerHTML = '📌 Marcar';
+                btn.classList.remove('btn-orange');
+                btn.classList.add('btn-warning');
+            }
+        }
+
+        function updateQuestionGrid() {
+            const items = elements.questionGrid.querySelectorAll('.grid-item');
+            items.forEach((item, index) => {
+                item.classList.remove('current', 'answered', 'marked');
+                if (index === currentQuestion) item.classList.add('current');
+                if (userAnswers[index] !== null) item.classList.add('answered');
+                if (markedQuestions[index]) item.classList.add('marked');
+            });
+        }
+
+        function updateNavigation() {
+            updateQuestionGrid();
+            
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').disabled = currentQuestion === questions.length - 1;
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.innerHTML = 'Última ➡️';
+            } else {
+                nextBtn.innerHTML = 'Próxima ➡️';
+            }
+        }
+
+        function navigate(direction) {
+            const newIndex = currentQuestion + direction;
+            if (newIndex >= 0 && newIndex < questions.length) {
+                loadQuestion(newIndex);
+            }
+        }
+
+        function startTimer() {
+            updateTimer();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft <= 0) finishExam();
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            elements.timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft < 300) {
+                elements.timer.style.color = '#e74c3c';
+                elements.timer.style.animation = 'pulse 1s infinite';
+            }
+        }
+
+        function finishExam() {
+            const unanswered = userAnswers.filter(answer => answer === null).length;
+            
+            if (unanswered > 0) {
+                if (!confirm(`⚠️ Você tem ${unanswered} questão(ões) não respondida(s). Deseja finalizar mesmo assim?`)) {
+                    return;
+                }
+            }
+            
+            examFinished = true;
+            clearInterval(timerInterval);
+            
+            const score = userAnswers.reduce((acc, answer, index) => 
+                answer === questions[index].correct ? acc + 1 : acc, 0);
+            const percentage = (score / questions.length) * 100;
+            
+            showResults(score, percentage);
+        }
+
+        function showResults(score, percentage) {
+            elements.examArea.style.display = 'none';
+            elements.resultsScreen.style.display = 'block';
+            
+            document.getElementById('score-display').textContent = `${score}/${questions.length}`;
+            
+            let message = '';
+            let color = '#3498db';
+            let emoji = '😊';
+            
+            if (percentage >= 85) {
+                message = 'Excelente! Domínio completo dos conceitos ITIL! 🎉';
+                color = '#27ae60';
+                emoji = '🏆';
+            } else if (percentage >= 70) {
+                message = 'Bom trabalho! No caminho certo para certificação! 👍';
+                emoji = '⭐';
+            } else if (percentage >= 65) {
+                message = 'Pontuação mínima atingida. Recomendamos mais estudo. 📚';
+                color = '#f39c12';
+                emoji = '📖';
+            } else {
+                message = 'Continue estudando! Reveja os conceitos ITIL. 💪';
+                color = '#e74c3c';
+                emoji = '🎯';
+            }
+            
+            document.getElementById('score-display').style.color = color;
+            document.getElementById('score-text').textContent = `${percentage.toFixed(1)}% de acertos. ${emoji} ${message}`;
+        }
+
+        function resetExam() {
+            if (confirm('🔄 Reiniciar simulado? Todo o progresso atual será perdido.')) {
+                currentQuestion = 0;
+                userAnswers = Array(questions.length).fill(null);
+                markedQuestions = Array(questions.length).fill(false);
+                timeLeft = 90 * 60;
+                examFinished = false;
+                
+                elements.resultsScreen.style.display = 'none';
+                elements.answersScreen.style.display = 'none';
+                elements.examArea.style.display = 'none';
+                elements.startScreen.style.display = 'block';
+                
+                clearInterval(timerInterval);
+                elements.timer.textContent = '90:00';
+                elements.timer.style.color = '#e74c3c';
+                elements.timer.style.animation = 'none';
+                
+                createQuestionGrid();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        window.toggleExplanation = function(index) {
+            const explanation = document.getElementById(`explanation-${index}`);
+            explanation.classList.toggle('explanation-show');
+        };
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { opacity: 1; }
+                50% { opacity: 0.5; }
+                100% { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
