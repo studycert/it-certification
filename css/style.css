@@ -8,8 +8,8 @@
     --light: #ecf0f1;
     --dark: #2c3e50;
     --gray: #95a5a6;
-    --secondary-light: #5dade2;  /* Adicionado para hover */
-    --secondary-lighter: #7bc1ff; /* Adicionado para efeitos sutis */
+    --secondary-light: #5dade2;
+    --secondary-lighter: #7bc1ff;
 }
 
 /* Reset e Base */
@@ -70,7 +70,7 @@ header {
     color: var(--secondary);
 }
 
-/* Navegação - CORRIGIDA COM HIERARQUIA VISUAL CLARA */
+/* Navegação - Marcador Lateral Moderno */
 nav ul {
     display: flex;
     list-style: none;
@@ -81,48 +81,49 @@ nav a {
     color: white;
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.3s ease;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
     position: relative;
-    overflow: hidden;
-    background-color: transparent;
 }
 
-/* Efeito de barra azul na parte inferior */
-nav a::after {
+/* HOVER - Efeito sutil de elevação */
+nav a:hover {
+    color: #5dade2;
+    background-color: rgba(93, 173, 226, 0.08);
+    transform: translateY(-2px);
+}
+
+/* ACTIVE - Marcador lateral azul */
+nav a.active {
+    color: #3498db;
+    font-weight: 600;
+    background-color: rgba(52, 152, 219, 0.15);
+}
+
+/* Marcador lateral para item ativo */
+nav a.active::before {
     content: '';
     position: absolute;
-    bottom: 0;
     left: 0;
-    width: 0;
-    height: 3px;
-    border-radius: 2px 2px 0 0;
-    transition: width 0.3s ease, background-color 0.3s ease;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70%;
+    width: 4px;
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    border-radius: 0 3px 3px 0;
+    animation: slideInLeft 0.3s ease-out;
 }
 
-/* HOVER - Tom mais claro e suave */
-nav a:hover {
-    color: var(--secondary-light); /* #5dade2 - tom médio */
-    background-color: rgba(93, 173, 226, 0.1);
-}
-
-nav a:hover::after {
-    width: 100%;
-    background-color: var(--secondary-light); /* #5dade2 */
-}
-
-/* ACTIVE - Tom principal com mais destaque */
-nav a.active {
-    color: var(--secondary); /* #3498db - tom principal */
-    background-color: rgba(52, 152, 219, 0.2);
-    font-weight: 600; /* Negrito para destacar */
-}
-
-nav a.active::after {
-    width: 100%;
-    background-color: var(--secondary); /* #3498db */
-    height: 4px; /* Barra mais grossa no ativo */
+@keyframes slideInLeft {
+    from {
+        transform: translateY(-50%) translateX(-15px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(-50%) translateX(0);
+        opacity: 1;
+    }
 }
 
 .auth-buttons {
@@ -149,7 +150,7 @@ nav a.active::after {
     font-weight: bold;
 }
 
-/* Botões - Efeitos corrigidos com hierarquia */
+/* Botões */
 .btn {
     padding: 0.5rem 1.5rem;
     border-radius: 4px;
@@ -183,31 +184,22 @@ nav a.active::after {
     color: white;
 }
 
-/* Hover mais escuro que o estado normal */
 .btn-outline:hover {
     background: white;
     color: var(--primary);
-    border-color: white;
 }
 
 .btn-primary:hover {
-    background: #2980b9; /* Tom mais escuro que o normal */
+    background: #2980b9;
     box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
-    transform: translateY(-2px);
-}
-
-.btn-primary.active {
-    background: var(--secondary); /* Tom normal */
-    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
-    transform: translateY(0);
 }
 
 .btn-success:hover {
-    background: #219653; /* Tom mais escuro */
+    background: #219653;
 }
 
 .btn-warning:hover {
-    background: #e67e22; /* Tom mais escuro */
+    background: #e67e22;
 }
 
 .btn-sm {
@@ -221,7 +213,6 @@ nav a.active::after {
 
 .btn-sm:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transform: translateY(-2px);
 }
 
 /* Hero Section */
@@ -354,7 +345,7 @@ nav a.active::after {
 }
 
 .category-list a:hover {
-    color: var(--secondary-light); /* Tom mais claro para hover */
+    color: var(--secondary-light);
 }
 
 .category-count {
@@ -363,11 +354,6 @@ nav a.active::after {
     padding: 0.2rem 0.5rem;
     border-radius: 20px;
     font-size: 0.8rem;
-    transition: background-color 0.3s;
-}
-
-.category-list a:hover .category-count {
-    background-color: var(--secondary-light); /* Coordena com o hover */
 }
 
 .forum-posts {
@@ -401,7 +387,7 @@ nav a.active::after {
 }
 
 .post-title:hover {
-    color: var(--secondary-light); /* Tom mais claro */
+    color: var(--secondary-light);
 }
 
 .post-meta {
@@ -518,9 +504,8 @@ nav a.active::after {
 }
 
 .show-simulados-btn:hover {
-    background: #2980b9; /* Tom mais escuro */
+    background: #2980b9;
     box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
-    transform: translateY(-2px);
 }
 
 .upload-area {
@@ -534,7 +519,7 @@ nav a.active::after {
 }
 
 .upload-area:hover {
-    border-color: var(--secondary-light); /* Tom mais claro no hover */
+    border-color: var(--secondary-light);
     background: #f8fafc;
 }
 
@@ -542,11 +527,6 @@ nav a.active::after {
     font-size: 3rem;
     color: var(--gray);
     margin-bottom: 1rem;
-    transition: color 0.3s;
-}
-
-.upload-area:hover i {
-    color: var(--secondary-light);
 }
 
 .upload-area h3 {
@@ -609,11 +589,6 @@ nav a.active::after {
     border-radius: 20px;
     font-size: 0.8rem;
     margin-bottom: 1rem;
-    transition: background-color 0.3s;
-}
-
-.cert-card:hover .cert-level {
-    background-color: var(--secondary-light); /* Coordena com hover do card */
 }
 
 /* Progresso do usuário */
@@ -639,10 +614,6 @@ nav a.active::after {
     border-radius: 5px;
     width: 0%;
     transition: width 1s ease;
-}
-
-.progress-fill:hover {
-    background-color: var(--secondary-light); /* Tom mais claro no hover */
 }
 
 /* Footer */
@@ -691,7 +662,7 @@ footer {
 }
 
 .footer-links a:hover {
-    color: var(--secondary-light); /* Tom mais claro */
+    color: var(--secondary-light);
 }
 
 .social-links {
@@ -713,7 +684,7 @@ footer {
 }
 
 .social-links a:hover {
-    background: var(--secondary-light); /* Tom mais claro */
+    background: var(--secondary-light);
     transform: translateY(-3px);
 }
 
@@ -819,11 +790,11 @@ footer {
 }
 
 .auth-tab:hover {
-    color: var(--secondary-light); /* Tom mais claro no hover */
+    color: var(--secondary-light);
 }
 
 .auth-tab.active {
-    color: var(--secondary); /* Tom principal no ativo */
+    color: var(--secondary);
     border-bottom-color: var(--secondary);
 }
 
@@ -873,7 +844,7 @@ footer {
 }
 
 .auth-footer a:hover {
-    color: var(--secondary-light); /* Tom mais claro no hover */
+    color: var(--secondary-light);
 }
 
 /* Mensagens de erro/sucesso */
@@ -1103,7 +1074,7 @@ footer {
     }
 
     nav a {
-        padding: 0.4rem 0.8rem;
+        padding: 0.5rem 0.8rem;
         font-size: 0.9rem;
     }
 
@@ -1137,19 +1108,4 @@ footer {
     .btn-sm {
         align-self: flex-end;
     }
-}
-
-/* Animações para hover mais suaves */
-* {
-    scroll-behavior: smooth;
-}
-
-/* Efeito de foco para acessibilidade */
-nav a:focus,
-.btn:focus,
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    outline: 2px solid var(--secondary-light);
-    outline-offset: 2px;
 }
