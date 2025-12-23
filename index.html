@@ -17,8 +17,47 @@
                 <div class="logo">
                     <i class="fas fa-graduation-cap"></i>
                     <h1>Study<span>Cert</span></h1>
+                    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
                 </div>
-                <nav>
+                
+                <!-- Menu Mobile -->
+                <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+                <div class="mobile-menu" id="mobileMenu">
+                    <button class="close-menu" id="closeMenu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="mobile-logo">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h2>Study<span>Cert</span></h2>
+                    </div>
+                    <nav class="mobile-nav">
+                        <ul>
+                            <li><a href="#" class="nav-link active" data-target="home">
+                                <i class="fas fa-home"></i> Início
+                            </a></li>
+                            <li><a href="#" class="nav-link" data-target="certificacoes">
+                                <i class="fas fa-certificate"></i> Certificações
+                            </a></li>
+                            <li><a href="#" class="nav-link" data-target="forum">
+                                <i class="fas fa-comments"></i> Fórum
+                            </a></li>
+                            <li><a href="#" class="nav-link" data-target="materiais">
+                                <i class="fas fa-book"></i> Material de Estudo
+                            </a></li>
+                            <li><a href="#" class="nav-link" data-target="simulados">
+                                <i class="fas fa-file-alt"></i> Simulados
+                            </a></li>
+                        </ul>
+                    </nav>
+                    <div class="mobile-auth" id="mobileAuthButtons">
+                        <!-- Será preenchido dinamicamente via JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="desktop-nav">
                     <ul>
                         <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
                         <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
@@ -27,6 +66,7 @@
                         <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
                     </ul>
                 </nav>
+                
                 <div class="auth-buttons" id="authButtons">
                     <!-- Será preenchido dinamicamente via JavaScript -->
                 </div>
@@ -845,13 +885,34 @@
         </div>
     </footer>
 
-    <!-- Script de Navegação -->
+    <!-- Script de Navegação e Menu Mobile -->
     <script>
         // Navegação entre seções
         document.addEventListener('DOMContentLoaded', function() {
             // Selecionar todos os links de navegação
             const navLinks = document.querySelectorAll('.nav-link');
             const mainContents = document.querySelectorAll('.main-content');
+            
+            // Elementos do menu mobile
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const closeMenu = document.getElementById('closeMenu');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav .nav-link');
+            
+            // Função para abrir menu mobile
+            function openMobileMenu() {
+                mobileMenu.classList.add('active');
+                mobileMenuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Função para fechar menu mobile
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
             
             // Função para trocar de seção
             function switchSection(targetId) {
@@ -871,20 +932,32 @@
                     console.error('Seção não encontrada:', targetId);
                 }
                 
-                // Remover classe active de todos os links
+                // Remover classe active de todos os links (desktop e mobile)
                 navLinks.forEach(link => {
                     link.classList.remove('active');
                 });
                 
-                // Adicionar classe active ao link clicado
-                const activeLink = document.querySelector(`[data-target="${targetId}"]`);
+                mobileNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Adicionar classe active ao link clicado (desktop)
+                const activeLink = document.querySelector(`.desktop-nav [data-target="${targetId}"]`);
                 if (activeLink) {
                     activeLink.classList.add('active');
-                    console.log('Link ativado:', targetId);
                 }
+                
+                // Adicionar classe active ao link clicado (mobile)
+                const activeMobileLink = document.querySelector(`.mobile-nav [data-target="${targetId}"]`);
+                if (activeMobileLink) {
+                    activeMobileLink.classList.add('active');
+                }
+                
+                // Fechar menu mobile após clicar em um link
+                closeMobileMenu();
             }
             
-            // Adicionar event listeners aos links
+            // Adicionar event listeners aos links desktop
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -893,6 +966,27 @@
                     console.log('Link clicado:', this.textContent, 'target:', targetId);
                     switchSection(targetId);
                 });
+            });
+            
+            // Adicionar event listeners aos links mobile
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    switchSection(targetId);
+                });
+            });
+            
+            // Event listeners para menu mobile
+            menuToggle.addEventListener('click', openMobileMenu);
+            closeMenu.addEventListener('click', closeMobileMenu);
+            mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+            
+            // Fechar menu ao pressionar ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
             });
             
             // Adicionar event listeners aos botões "data-target" no footer
