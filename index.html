@@ -8,39 +8,6 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    <style>
-        /* Efeitos de hover melhorados para evitar conflito com active */
-        .nav-link {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            width: 0;
-            height: 3px;
-            background-color: #3498db;
-            transition: all 0.3s ease;
-            border-radius: 2px;
-            transform: translateX(-50%);
-        }
-        
-        .nav-link:hover::after {
-            width: 80%;
-        }
-        
-        .nav-link.active::after {
-            width: 100%;
-        }
-        
-        /* Garantir que o efeito hover não mude a cor do texto quando ativo */
-        .nav-link.active:hover {
-            color: var(--secondary);
-        }
-    </style>
 </head>
 <body>
     <!-- Header -->
@@ -68,7 +35,7 @@
     </header>
 
     <!-- Modal de Login/Cadastro -->
-    <div id="modalAuth" class="modal-auth" style="display: none;">
+    <div id="modalAuth" class="modal-auth">
         <div class="auth-container">
             <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
             <div class="auth-header">
@@ -193,7 +160,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>Azure Fundamentals</h3>
                         <p>AZ-900: Conceitos fundamentais de nuvem e serviços Azure.</p>
-                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
+                        <a href="#" class="btn btn-primary">Estudar</a>
                     </div>
                 </div>
 
@@ -205,7 +172,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>AWS Cloud Practitioner</h3>
                         <p>Fundamentos da AWS e conceitos de computação em nuvem.</p>
-                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
+                        <a href="#" class="btn btn-primary">Estudar</a>
                     </div>
                 </div>
 
@@ -217,7 +184,7 @@
                         <span class="cert-level">Segurança</span>
                         <h3>Security+</h3>
                         <p>CompTIA Security+: Fundamentos de cybersecurity.</p>
-                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
+                        <a href="#" class="btn btn-primary">Estudar</a>
                     </div>
                 </div>
 
@@ -229,7 +196,7 @@
                         <span class="cert-level">Governança</span>
                         <h3>ITIL 4 Foundation</h3>
                         <p>Framework de gerenciamento de serviços de TI.</p>
-                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
+                        <a href="#" class="btn btn-primary">Estudar</a>
                     </div>
                 </div>
             </div>
@@ -702,7 +669,7 @@
     </section>
 
     <!-- Modal da Lista de Simulados -->
-    <div id="modalSimulados" class="modal-simulados" style="display: none;">
+    <div id="modalSimulados" class="modal-simulados">
         <div class="modal-container">
             <div class="modal-header">
                 <h3><i class="fas fa-file-alt"></i> Simulados ITIL 4 Foundation</h3>
@@ -878,248 +845,92 @@
         </div>
     </footer>
 
-    <!-- Script de Navegação Corrigido -->
+    <!-- Script de Navegação -->
     <script>
-        // Navegação entre seções - Versão corrigida
+        // Navegação entre seções
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar o sistema de navegação
-            initNavigationSystem();
-            
-            // Inicializar os event listeners
-            initNavigationEventListeners();
-            
-            // Garantir que apenas a seção home esteja ativa inicialmente
-            ensureOnlyHomeActive();
-        });
-        
-        function initNavigationSystem() {
-            console.log('Inicializando sistema de navegação...');
-            
-            // Configurar todas as seções inicialmente
-            const mainContents = document.querySelectorAll('.main-content');
-            mainContents.forEach(content => {
-                if (!content.classList.contains('active')) {
-                    content.style.display = 'none';
-                } else {
-                    content.style.display = 'block';
-                }
-            });
-        }
-        
-        function initNavigationEventListeners() {
-            // Event listeners para links de navegação principal
+            // Selecionar todos os links de navegação
             const navLinks = document.querySelectorAll('.nav-link');
+            const mainContents = document.querySelectorAll('.main-content');
+            
+            // Função para trocar de seção
+            function switchSection(targetId) {
+                console.log('Trocando para seção:', targetId);
+                
+                // Remover classe active de todos os conteúdos
+                mainContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Adicionar classe active ao conteúdo alvo
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                    console.log('Seção ativada:', targetId);
+                } else {
+                    console.error('Seção não encontrada:', targetId);
+                }
+                
+                // Remover classe active de todos os links
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Adicionar classe active ao link clicado
+                const activeLink = document.querySelector(`[data-target="${targetId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    console.log('Link ativado:', targetId);
+                }
+            }
+            
+            // Adicionar event listeners aos links
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     const targetId = this.getAttribute('data-target');
-                    console.log('Navegação clicada:', this.textContent, '->', targetId);
-                    switchToSection(targetId);
-                });
-                
-                // Remover event listeners de hover que causam conflito
-                link.addEventListener('mouseenter', function() {
-                    // Apenas aplicar efeito visual se não estiver ativo
-                    if (!this.classList.contains('active')) {
-                        this.style.color = '#3498db';
-                    }
-                });
-                
-                link.addEventListener('mouseleave', function() {
-                    // Restaurar cor original se não estiver ativo
-                    if (!this.classList.contains('active')) {
-                        this.style.color = 'white';
-                    }
+                    console.log('Link clicado:', this.textContent, 'target:', targetId);
+                    switchSection(targetId);
                 });
             });
             
-            // Event listeners para links no footer
+            // Adicionar event listeners aos botões "data-target" no footer
             const footerLinks = document.querySelectorAll('.footer-links a[data-target]');
             footerLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('data-target');
-                    switchToSection(targetId);
+                    switchSection(targetId);
                 });
             });
             
-            // Event listeners para botões nos cards
-            const cardLinks = document.querySelectorAll('.card-footer a[data-target], .cert-content a[data-target]');
+            // Adicionar event listeners aos cards que têm links com data-target
+            const cardLinks = document.querySelectorAll('.card-footer a[data-target]');
             cardLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('data-target');
-                    switchToSection(targetId);
+                    switchSection(targetId);
                 });
             });
-        }
-        
-        function ensureOnlyHomeActive() {
-            // Remover classe active de todos os links exceto home
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                if (link.getAttribute('data-target') !== 'home') {
-                    link.classList.remove('active');
-                    link.style.color = 'white';
-                } else {
-                    link.classList.add('active');
-                    link.style.color = '#3498db';
+            
+            // Inicializar a primeira seção (home) como ativa
+            if (navLinks.length > 0) {
+                // Verificar se já há uma seção ativa
+                const activeSection = document.querySelector('.main-content.active');
+                if (!activeSection) {
+                    switchSection('home');
                 }
-            });
-            
-            // Garantir que apenas a seção home esteja visível
-            const mainContents = document.querySelectorAll('.main-content');
-            mainContents.forEach(content => {
-                if (content.id !== 'home') {
-                    content.style.display = 'none';
-                    content.classList.remove('active');
-                } else {
-                    content.style.display = 'block';
-                    content.classList.add('active');
-                }
-            });
-        }
-        
-        function switchToSection(targetId) {
-            console.log('Alternando para seção:', targetId);
-            
-            // Validar target
-            if (!targetId) {
-                console.error('ID da seção não especificado');
-                return;
             }
             
-            // Obter elemento alvo
-            const targetSection = document.getElementById(targetId);
-            if (!targetSection) {
-                console.error('Seção não encontrada:', targetId);
-                return;
-            }
-            
-            // Obter todas as seções
-            const allSections = document.querySelectorAll('.main-content');
-            
-            // Esconder todas as seções
-            allSections.forEach(section => {
-                section.style.display = 'none';
-                section.classList.remove('active');
-            });
-            
-            // Mostrar e ativar a seção alvo
-            targetSection.style.display = 'block';
-            setTimeout(() => {
-                targetSection.classList.add('active');
-            }, 10);
-            
-            // Atualizar links de navegação
-            updateActiveNavigationLink(targetId);
-            
-            // Rolar suavemente para o topo da seção
-            window.scrollTo({
-                top: targetSection.offsetTop - 80,
-                behavior: 'smooth'
-            });
-            
-            console.log('Seção ativada:', targetId);
-        }
-        
-        function updateActiveNavigationLink(activeId) {
-            // Atualizar links do menu principal
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                // Remover classe active de todos
-                link.classList.remove('active');
-                link.style.color = 'white';
-                
-                // Adicionar classe active apenas ao link correto
-                if (link.getAttribute('data-target') === activeId) {
-                    link.classList.add('active');
-                    link.style.color = '#3498db';
-                }
-            });
-        }
-        
-        // Funções para autenticação (placeholder)
-        function openAuthModal() {
-            document.getElementById('modalAuth').style.display = 'flex';
-        }
-        
-        function closeAuthModal() {
-            document.getElementById('modalAuth').style.display = 'none';
-        }
-        
-        function openRegister() {
-            openAuthModal();
-            switchAuthTab('register');
-        }
-        
-        function switchAuthTab(tabName) {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const loginTab = document.querySelector('[data-tab="login"]');
-            const registerTab = document.querySelector('[data-tab="register"]');
-            
-            if (tabName === 'login') {
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
-                loginTab.classList.add('active');
-                registerTab.classList.remove('active');
-            } else {
-                loginForm.classList.remove('active');
-                registerForm.classList.add('active');
-                loginTab.classList.remove('active');
-                registerTab.classList.add('active');
-            }
-        }
-        
-        function abrirModalSimulados() {
-            document.getElementById('modalSimulados').style.display = 'flex';
-        }
-        
-        function fecharModalSimulados() {
-            document.getElementById('modalSimulados').style.display = 'none';
-        }
-        
-        // Fechar modal ao clicar fora
-        window.onclick = function(event) {
-            const modalAuth = document.getElementById('modalAuth');
-            const modalSimulados = document.getElementById('modalSimulados');
-            
-            if (event.target == modalAuth) {
-                modalAuth.style.display = 'none';
-            }
-            if (event.target == modalSimulados) {
-                modalSimulados.style.display = 'none';
-            }
-        }
-        
-        // Funções placeholder para autenticação
-        function login() {
-            alert('Funcionalidade de login será implementada!');
-            closeAuthModal();
-        }
-        
-        function register() {
-            alert('Funcionalidade de cadastro será implementada!');
-            closeAuthModal();
-        }
-        
-        function forgotPassword() {
-            alert('Funcionalidade de recuperação de senha será implementada!');
-        }
-        
-        function createNewPost() {
-            alert('Funcionalidade de criar nova discussão será implementada!');
-        }
-        
-        function uploadSimulado() {
-            alert('Funcionalidade de upload de simulado será implementada!');
-        }
-        
-        function openUploadModal() {
-            alert('Funcionalidade de upload de simulado será implementada!');
-        }
+            // Debug: log dos elementos encontrados
+            console.log('Links de navegação:', navLinks.length);
+            console.log('Seções de conteúdo:', mainContents.length);
+        });
     </script>
+    
+    <!-- Script do app.js sem defer para carregar depois do nosso script -->
+    <script src="js/app.js"></script>
 </body>
 </html>
