@@ -87,22 +87,31 @@ nav a {
     background-color: transparent;
 }
 
-/* Removido o efeito ::before que causa o bug */
-nav a::before {
-    display: none;
+/* Efeito de barra azul na parte inferior */
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: var(--secondary);
+    transition: width 0.3s ease;
+    border-radius: 2px 2px 0 0;
 }
 
-/* Novo efeito simplificado */
+nav a:hover::after,
+nav a.active::after {
+    width: 100%;
+}
+
 nav a:hover, nav a.active {
     color: var(--secondary);
-    background-color: rgba(52, 152, 219, 0.15);
-    transform: none;
+    background-color: rgba(52, 152, 219, 0.1);
 }
 
-/* Mantém o destaque para o link ativo */
 nav a.active {
-    background-color: rgba(52, 152, 219, 0.25);
-    border-bottom: 2px solid var(--secondary);
+    background-color: rgba(52, 152, 219, 0.2);
 }
 
 .auth-buttons {
@@ -129,7 +138,7 @@ nav a.active {
     font-weight: bold;
 }
 
-/* Botões - Efeitos modificados */
+/* Botões - Efeitos corrigidos */
 .btn {
     padding: 0.5rem 1.5rem;
     border-radius: 4px;
@@ -166,23 +175,19 @@ nav a.active {
 .btn-outline:hover {
     background: white;
     color: var(--primary);
-    transform: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .btn-primary:hover {
-    background: #267bb5;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    background: #2980b9;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
 }
 
 .btn-success:hover {
-    background: #22954f;
-    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+    background: #219653;
 }
 
 .btn-warning:hover {
     background: #e67e22;
-    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
 }
 
 .btn-sm {
@@ -195,7 +200,7 @@ nav a.active {
 }
 
 .btn-sm:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 /* Hero Section */
@@ -485,7 +490,7 @@ nav a.active {
 }
 
 .show-simulados-btn:hover {
-    background: #267bb5;
+    background: #2980b9;
     box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
 }
 
@@ -666,8 +671,7 @@ footer {
 
 .social-links a:hover {
     background: var(--secondary);
-    transform: none;
-    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    transform: translateY(-3px);
 }
 
 .copyright {
@@ -742,7 +746,6 @@ footer {
 .close-auth-modal:hover {
     background: #f1f1f1;
     color: #333;
-    transform: none;
 }
 
 .auth-header {
@@ -912,7 +915,7 @@ footer {
 
 .fechar-modal:hover {
     background: rgba(255, 255, 255, 0.3);
-    transform: none;
+    transform: rotate(90deg);
 }
 
 .modal-body {
@@ -931,7 +934,7 @@ footer {
 
 .simulado-item-modal:hover {
     background-color: #f8f9fa;
-    transform: none;
+    transform: translateX(5px);
 }
 
 .simulado-item-modal:last-child {
