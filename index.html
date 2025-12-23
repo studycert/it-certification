@@ -18,40 +18,15 @@
                     <i class="fas fa-graduation-cap"></i>
                     <h1>Study<span>Cert</span></h1>
                 </div>
-                
-                <!-- Menu para Desktop -->
-                <nav class="desktop-nav">
+                <nav>
                     <ul>
-                        <li><a href="#" class="nav-link active" data-target="home"><i class="fas fa-home nav-icon"></i> Início</a></li>
-                        <li><a href="#" class="nav-link" data-target="certificacoes"><i class="fas fa-certificate nav-icon"></i> Certificações</a></li>
-                        <li><a href="#" class="nav-link" data-target="forum"><i class="fas fa-comments nav-icon"></i> Fórum</a></li>
-                        <li><a href="#" class="nav-link" data-target="materiais"><i class="fas fa-book nav-icon"></i> Material</a></li>
-                        <li><a href="#" class="nav-link" data-target="simulados"><i class="fas fa-file-alt nav-icon"></i> Simulados</a></li>
+                        <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
+                        <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
+                        <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
+                        <li><a href="#" class="nav-link" data-target="materiais">Material de Estudo</a></li>
+                        <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
                     </ul>
                 </nav>
-                
-                <!-- Botão Hamburguer para Mobile -->
-                <button class="menu-toggle" id="menuToggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                
-                <!-- Dropdown Menu -->
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <ul>
-                        <li><a href="#" class="nav-link active" data-target="home"><i class="fas fa-home nav-icon"></i> Início</a></li>
-                        <li><a href="#" class="nav-link" data-target="certificacoes"><i class="fas fa-certificate nav-icon"></i> Certificações</a></li>
-                        <li><a href="#" class="nav-link" data-target="forum"><i class="fas fa-comments nav-icon"></i> Fórum</a></li>
-                        <li><a href="#" class="nav-link" data-target="materiais"><i class="fas fa-book nav-icon"></i> Material de Estudo</a></li>
-                        <li><a href="#" class="nav-link" data-target="simulados"><i class="fas fa-file-alt nav-icon"></i> Simulados</a></li>
-                        <li class="separator"></li>
-                        <li><a href="#" class="nav-link" data-target="home"><i class="fas fa-user nav-icon"></i> Meu Perfil</a></li>
-                        <li><a href="#" class="nav-link" data-target="home"><i class="fas fa-cog nav-icon"></i> Configurações</a></li>
-                        <li><a href="#" class="nav-link" data-target="home"><i class="fas fa-question-circle nav-icon"></i> Ajuda</a></li>
-                    </ul>
-                </div>
-                
                 <div class="auth-buttons" id="authButtons">
                     <!-- Será preenchido dinamicamente via JavaScript -->
                 </div>
@@ -870,43 +845,18 @@
         </div>
     </footer>
 
-    <!-- Script do Dropdown -->
+    <!-- Script de Navegação -->
     <script>
-        // Menu Toggle Functionality
+        // Navegação entre seções
         document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            
-            if (menuToggle && dropdownMenu) {
-                // Toggle dropdown menu
-                menuToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    this.classList.toggle('active');
-                    dropdownMenu.classList.toggle('active');
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-                        menuToggle.classList.remove('active');
-                        dropdownMenu.classList.remove('active');
-                    }
-                });
-                
-                // Close dropdown when clicking on a link
-                dropdownMenu.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A') {
-                        menuToggle.classList.remove('active');
-                        this.classList.remove('active');
-                    }
-                });
-            }
-            
-            // Navegação entre seções
+            // Selecionar todos os links de navegação
             const navLinks = document.querySelectorAll('.nav-link');
             const mainContents = document.querySelectorAll('.main-content');
             
+            // Função para trocar de seção
             function switchSection(targetId) {
+                console.log('Trocando para seção:', targetId);
+                
                 // Remover classe active de todos os conteúdos
                 mainContents.forEach(content => {
                     content.classList.remove('active');
@@ -916,6 +866,9 @@
                 const targetContent = document.getElementById(targetId);
                 if (targetContent) {
                     targetContent.classList.add('active');
+                    console.log('Seção ativada:', targetId);
+                } else {
+                    console.error('Seção não encontrada:', targetId);
                 }
                 
                 // Remover classe active de todos os links
@@ -923,18 +876,11 @@
                     link.classList.remove('active');
                 });
                 
-                // Adicionar classe active ao link clicado em ambos os menus
-                const activeLinks = document.querySelectorAll(`[data-target="${targetId}"]`);
-                activeLinks.forEach(link => {
-                    link.classList.add('active');
-                });
-                
-                // Fechar dropdown no mobile
-                if (window.innerWidth <= 768) {
-                    if (menuToggle && dropdownMenu) {
-                        menuToggle.classList.remove('active');
-                        dropdownMenu.classList.remove('active');
-                    }
+                // Adicionar classe active ao link clicado
+                const activeLink = document.querySelector(`[data-target="${targetId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    console.log('Link ativado:', targetId);
                 }
             }
             
@@ -942,7 +888,9 @@
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const targetId = this.getAttribute('data-target');
+                    console.log('Link clicado:', this.textContent, 'target:', targetId);
                     switchSection(targetId);
                 });
             });
@@ -969,28 +917,20 @@
             
             // Inicializar a primeira seção (home) como ativa
             if (navLinks.length > 0) {
+                // Verificar se já há uma seção ativa
                 const activeSection = document.querySelector('.main-content.active');
                 if (!activeSection) {
                     switchSection('home');
                 }
             }
-        });
-        
-        // Fechar dropdown ao redimensionar a janela
-        window.addEventListener('resize', function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const dropdownMenu = document.getElementById('dropdownMenu');
             
-            if (menuToggle && dropdownMenu) {
-                if (window.innerWidth > 768) {
-                    menuToggle.classList.remove('active');
-                    dropdownMenu.classList.remove('active');
-                }
-            }
+            // Debug: log dos elementos encontrados
+            console.log('Links de navegação:', navLinks.length);
+            console.log('Seções de conteúdo:', mainContents.length);
         });
     </script>
     
-    <!-- Script do app.js sem defer para carregar depois do nosso script -->
+    <!-- Script do app.js -->
     <script src="js/app.js"></script>
 </body>
 </html>
