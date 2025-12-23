@@ -104,7 +104,7 @@ nav a:hover::before {
 
 nav a:hover, nav a.active {
     color: var(--secondary);
-    transform: translateY(-1px);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .auth-buttons {
@@ -131,7 +131,7 @@ nav a:hover, nav a.active {
     font-weight: bold;
 }
 
-/* Botões */
+/* Botões - Efeitos modificados */
 .btn {
     padding: 0.5rem 1.5rem;
     border-radius: 4px;
@@ -168,20 +168,23 @@ nav a:hover, nav a.active {
 .btn-outline:hover {
     background: white;
     color: var(--primary);
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .btn-primary:hover {
-    background: #2980b9;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    background: #267bb5;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
 
 .btn-success:hover {
-    background: #219653;
+    background: #22954f;
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
 }
 
 .btn-warning:hover {
     background: #e67e22;
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
 }
 
 .btn-sm {
@@ -194,8 +197,7 @@ nav a:hover, nav a.active {
 }
 
 .btn-sm:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 /* Hero Section */
@@ -485,8 +487,7 @@ nav a:hover, nav a.active {
 }
 
 .show-simulados-btn:hover {
-    background: #2980b9;
-    transform: translateY(-2px);
+    background: #267bb5;
     box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
 }
 
@@ -667,7 +668,8 @@ footer {
 
 .social-links a:hover {
     background: var(--secondary);
-    transform: translateY(-3px);
+    transform: none;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
 }
 
 .copyright {
@@ -742,6 +744,7 @@ footer {
 .close-auth-modal:hover {
     background: #f1f1f1;
     color: #333;
+    transform: none;
 }
 
 .auth-header {
@@ -911,7 +914,7 @@ footer {
 
 .fechar-modal:hover {
     background: rgba(255, 255, 255, 0.3);
-    transform: rotate(90deg);
+    transform: none;
 }
 
 .modal-body {
@@ -930,7 +933,7 @@ footer {
 
 .simulado-item-modal:hover {
     background-color: #f8f9fa;
-    transform: translateX(5px);
+    transform: none;
 }
 
 .simulado-item-modal:last-child {
