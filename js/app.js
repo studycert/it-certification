@@ -21,9 +21,6 @@ class StudyCertApp {
                 throw new Error('Configuração do Supabase não encontrada');
             }
             
-            // Carregar navegação
-            this.loadNavigation();
-            
             // Verificar autenticação
             await this.checkAuth();
             
@@ -40,34 +37,94 @@ class StudyCertApp {
     }
 
     // ==================== NAVEGAÇÃO ====================
-    loadNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link, .footer-links a[data-target], .btn[data-target]');
-        const mainContents = document.querySelectorAll('.main-content');
+    setupEventListeners() {
+        // Navegação principal - corrigindo o seletor
+        const navLinks = document.querySelectorAll('header .nav-link, .footer-links a[data-target], .card-footer a[data-target]');
         
         navLinks.forEach(link => {
+            // Remover event listener anterior se existir
+            link.removeEventListener('click', this.handleNavClick);
+            
+            // Adicionar novo event listener
             link.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 const targetId = link.getAttribute('data-target');
+                console.log('Navegação: clicou em', link.textContent, '->', targetId);
                 this.showSection(targetId);
             });
+        });
+
+        // Modal de autenticação
+        const modalAuth = document.getElementById('modalAuth');
+        if (modalAuth) {
+            modalAuth.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) this.closeAuthModal();
+            });
+        }
+
+        // Modal de simulados
+        const modalSimulados = document.getElementById('modalSimulados');
+        if (modalSimulados) {
+            modalSimulados.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) this.fecharModalSimulados();
+            });
+        }
+
+        // Tabs de autenticação
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                this.showAuthTab(tabName);
+            });
+        });
+
+        // Tecla ESC para fechar modais
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeAuthModal();
+                this.closeUploadModal();
+                this.fecharModalSimulados();
+            }
         });
     }
 
     showSection(sectionId) {
-        // Remover active de todos
-        document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
-        document.querySelectorAll('.main-content').forEach(content => content.classList.remove('active'));
+        console.log('Mostrando seção:', sectionId);
         
-        // Adicionar active ao clicado
-        const activeLink = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
-        if (activeLink) activeLink.classList.add('active');
+        // 1. Remover active de todas as seções de conteúdo
+        const mainContents = document.querySelectorAll('.main-content');
+        mainContents.forEach(content => {
+            content.classList.remove('active');
+        });
         
-        // Mostrar seção correspondente
+        // 2. Mostrar a seção alvo
         const targetSection = document.getElementById(sectionId);
         if (targetSection) {
             targetSection.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            console.log('✅ Seção ativada:', sectionId);
+        } else {
+            console.error('❌ Seção não encontrada:', sectionId);
         }
+        
+        // 3. Atualizar navegação ativa
+        // Primeiro remover 'active' de TODOS os links de navegação
+        const allNavLinks = document.querySelectorAll('.nav-link');
+        allNavLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Depois adicionar 'active' apenas ao link correto
+        const activeNavLink = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
+        if (activeNavLink) {
+            activeNavLink.classList.add('active');
+            console.log('✅ Navegação ativada para:', sectionId);
+        } else {
+            console.warn('⚠️ Link de navegação não encontrado para:', sectionId);
+        }
+        
+        // Rolagem suave para o topo
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ==================== AUTENTICAÇÃO ====================
@@ -546,42 +603,6 @@ class StudyCertApp {
         }
     }
 
-    // ==================== EVENT LISTENERS ====================
-    setupEventListeners() {
-        // Modal de autenticação
-        const modalAuth = document.getElementById('modalAuth');
-        if (modalAuth) {
-            modalAuth.addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) this.closeAuthModal();
-            });
-        }
-
-        // Modal de simulados
-        const modalSimulados = document.getElementById('modalSimulados');
-        if (modalSimulados) {
-            modalSimulados.addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) this.fecharModalSimulados();
-            });
-        }
-
-        // Tabs de autenticação
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.getAttribute('data-tab');
-                this.showAuthTab(tabName);
-            });
-        });
-
-        // Tecla ESC para fechar modais
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeAuthModal();
-                this.closeUploadModal();
-                this.fecharModalSimulados();
-            }
-        });
-    }
-
     // ==================== FUNÇÕES AUXILIARES ====================
     createNewPost() {
         if (!this.currentUser) {
@@ -628,3 +649,6 @@ window.openUploadModal = () => app.openUploadModal();
 // Outras funções
 window.createNewPost = () => app.createNewPost();
 window.forgotPassword = () => app.forgotPassword();
+
+// Exportar app para acesso global
+window.app = app;
