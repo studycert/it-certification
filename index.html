@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    <script src="js/app.js" defer></script>
 </head>
 <body>
     <!-- Header -->
@@ -845,10 +844,6 @@
             </div>
         </div>
     </footer>
-        <!-- Footer -->
-    <footer>
-        <!-- ... footer content ... -->
-    </footer>
 
     <!-- Script de Navegação -->
     <script>
@@ -860,6 +855,8 @@
             
             // Função para trocar de seção
             function switchSection(targetId) {
+                console.log('Trocando para seção:', targetId);
+                
                 // Remover classe active de todos os conteúdos
                 mainContents.forEach(content => {
                     content.classList.remove('active');
@@ -869,6 +866,9 @@
                 const targetContent = document.getElementById(targetId);
                 if (targetContent) {
                     targetContent.classList.add('active');
+                    console.log('Seção ativada:', targetId);
+                } else {
+                    console.error('Seção não encontrada:', targetId);
                 }
                 
                 // Remover classe active de todos os links
@@ -880,6 +880,7 @@
                 const activeLink = document.querySelector(`[data-target="${targetId}"]`);
                 if (activeLink) {
                     activeLink.classList.add('active');
+                    console.log('Link ativado:', targetId);
                 }
             }
             
@@ -887,7 +888,9 @@
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const targetId = this.getAttribute('data-target');
+                    console.log('Link clicado:', this.textContent, 'target:', targetId);
                     switchSection(targetId);
                 });
             });
@@ -914,11 +917,20 @@
             
             // Inicializar a primeira seção (home) como ativa
             if (navLinks.length > 0) {
-                switchSection('home');
+                // Verificar se já há uma seção ativa
+                const activeSection = document.querySelector('.main-content.active');
+                if (!activeSection) {
+                    switchSection('home');
+                }
             }
+            
+            // Debug: log dos elementos encontrados
+            console.log('Links de navegação:', navLinks.length);
+            console.log('Seções de conteúdo:', mainContents.length);
         });
     </script>
-</body>
-</html>
+    
+    <!-- Script do app.js sem defer para carregar depois do nosso script -->
+    <script src="js/app.js"></script>
 </body>
 </html>
