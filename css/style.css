@@ -68,7 +68,7 @@ header {
     color: var(--secondary);
 }
 
-/* Navegação */
+/* Navegação - CORRIGIDO */
 nav ul {
     display: flex;
     list-style: none;
@@ -87,24 +87,22 @@ nav a {
     background-color: transparent;
 }
 
+/* Removido o efeito ::before que causa o bug */
 nav a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s;
+    display: none;
 }
 
-nav a:hover::before {
-    left: 100%;
-}
-
+/* Novo efeito simplificado */
 nav a:hover, nav a.active {
     color: var(--secondary);
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(52, 152, 219, 0.15);
+    transform: none;
+}
+
+/* Mantém o destaque para o link ativo */
+nav a.active {
+    background-color: rgba(52, 152, 219, 0.25);
+    border-bottom: 2px solid var(--secondary);
 }
 
 .auth-buttons {
