@@ -57,7 +57,7 @@
                     <label for="loginPassword">Senha</label>
                     <input type="password" id="loginPassword" placeholder="Sua senha">
                 </div>
-                <button class="btn btn-primary" onclick="login()" style="width: 100%; padding: 12px; font-size: 16px;">Entrar</button>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
                 <div class="auth-footer">
                     <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
                 </div>
@@ -77,7 +77,7 @@
                     <label for="registerPassword">Senha</label>
                     <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
                 </div>
-                <button class="btn btn-success" onclick="register()" style="width: 100%; padding: 12px; font-size: 16px;">Criar Conta</button>
+                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
             </div>
         </div>
     </div>
@@ -87,7 +87,7 @@
         <div class="container">
             <h2>Prepare-se para suas Certificações de TI</h2>
             <p>Encontre materiais de estudo, participe de discussões no fórum e teste seus conhecimentos com nossos simulados.</p>
-            <a href="#" class="btn btn-primary" onclick="openRegister()" style="padding: 12px 30px; font-size: 18px;">Começar Agora</a>
+            <a href="#" class="btn btn-primary" onclick="openRegister()">Começar Agora</a>
         </div>
     </section>
 
@@ -930,7 +930,7 @@
         });
     </script>
     
-    <!-- Script do app.js -->
+    <!-- Script do app.js sem defer para carregar depois do nosso script -->
     <script src="js/app.js"></script>
 </body>
 </html>
