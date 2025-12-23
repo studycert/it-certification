@@ -9,94 +9,36 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <style>
-        /* Efeitos de transição suave */
-        .main-content {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            display: none;
-        }
-        
-        .main-content.active {
-            opacity: 1;
-            transform: translateY(0);
-            display: block;
-            animation: fadeIn 0.5s ease forwards;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
+        /* Efeitos de hover melhorados para evitar conflito com active */
         .nav-link {
             position: relative;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
         }
         
         .nav-link::after {
             content: '';
             position: absolute;
             bottom: -5px;
-            left: 0;
+            left: 50%;
             width: 0;
             height: 3px;
             background-color: #3498db;
-            transition: width 0.3s ease;
+            transition: all 0.3s ease;
             border-radius: 2px;
+            transform: translateX(-50%);
         }
         
-        .nav-link:hover::after,
+        .nav-link:hover::after {
+            width: 80%;
+        }
+        
         .nav-link.active::after {
             width: 100%;
         }
         
-        /* Efeito de hover nos cards */
-        .card, .cert-card, .material-card, .simulado-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card:hover, .cert-card:hover, .material-card:hover, .simulado-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Botões com efeito */
-        .btn {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        /* Modal com efeito de escala */
-        .modal-auth, .modal-simulados {
-            animation: modalFadeIn 0.3s ease;
-        }
-        
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        /* Garantir que o efeito hover não mude a cor do texto quando ativo */
+        .nav-link.active:hover {
+            color: var(--secondary);
         }
     </style>
 </head>
@@ -936,21 +878,21 @@
         </div>
     </footer>
 
-    <!-- Script de Navegação Aprimorado -->
+    <!-- Script de Navegação Corrigido -->
     <script>
-        // Navegação entre seções - Sistema aprimorado
+        // Navegação entre seções - Versão corrigida
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializar o sistema de navegação
-            initNavigation();
+            initNavigationSystem();
             
-            // Inicializar event listeners
-            initEventListeners();
+            // Inicializar os event listeners
+            initNavigationEventListeners();
             
-            // Garantir que a seção inicial esteja visível
-            ensureInitialSectionVisible();
+            // Garantir que apenas a seção home esteja ativa inicialmente
+            ensureOnlyHomeActive();
         });
         
-        function initNavigation() {
+        function initNavigationSystem() {
             console.log('Inicializando sistema de navegação...');
             
             // Configurar todas as seções inicialmente
@@ -958,14 +900,14 @@
             mainContents.forEach(content => {
                 if (!content.classList.contains('active')) {
                     content.style.display = 'none';
+                } else {
+                    content.style.display = 'block';
                 }
             });
-            
-            console.log('Navegação inicializada. Seções encontradas:', mainContents.length);
         }
         
-        function initEventListeners() {
-            // Event listeners para links de navegação
+        function initNavigationEventListeners() {
+            // Event listeners para links de navegação principal
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -973,7 +915,22 @@
                     e.stopPropagation();
                     const targetId = this.getAttribute('data-target');
                     console.log('Navegação clicada:', this.textContent, '->', targetId);
-                    switchSection(targetId);
+                    switchToSection(targetId);
+                });
+                
+                // Remover event listeners de hover que causam conflito
+                link.addEventListener('mouseenter', function() {
+                    // Apenas aplicar efeito visual se não estiver ativo
+                    if (!this.classList.contains('active')) {
+                        this.style.color = '#3498db';
+                    }
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    // Restaurar cor original se não estiver ativo
+                    if (!this.classList.contains('active')) {
+                        this.style.color = 'white';
+                    }
                 });
             });
             
@@ -983,7 +940,7 @@
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('data-target');
-                    switchSection(targetId);
+                    switchToSection(targetId);
                 });
             });
             
@@ -993,44 +950,38 @@
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('data-target');
-                    switchSection(targetId);
+                    switchToSection(targetId);
                 });
+            });
+        }
+        
+        function ensureOnlyHomeActive() {
+            // Remover classe active de todos os links exceto home
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-target') !== 'home') {
+                    link.classList.remove('active');
+                    link.style.color = 'white';
+                } else {
+                    link.classList.add('active');
+                    link.style.color = '#3498db';
+                }
             });
             
-            // Event listeners para tabs de autenticação
-            const authTabs = document.querySelectorAll('.auth-tab');
-            authTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.getAttribute('data-tab');
-                    switchAuthTab(tabName);
-                });
+            // Garantir que apenas a seção home esteja visível
+            const mainContents = document.querySelectorAll('.main-content');
+            mainContents.forEach(content => {
+                if (content.id !== 'home') {
+                    content.style.display = 'none';
+                    content.classList.remove('active');
+                } else {
+                    content.style.display = 'block';
+                    content.classList.add('active');
+                }
             });
         }
         
-        function ensureInitialSectionVisible() {
-            // Verificar se há uma seção ativa
-            const activeSection = document.querySelector('.main-content.active');
-            if (!activeSection) {
-                // Ativar a seção inicial
-                switchSection('home');
-            } else {
-                // Garantir que apenas a seção ativa esteja visível
-                const mainContents = document.querySelectorAll('.main-content');
-                mainContents.forEach(content => {
-                    if (content !== activeSection) {
-                        content.style.display = 'none';
-                    } else {
-                        content.style.display = 'block';
-                        // Adicionar classe active para animação
-                        setTimeout(() => {
-                            content.classList.add('active');
-                        }, 10);
-                    }
-                });
-            }
-        }
-        
-        function switchSection(targetId) {
+        function switchToSection(targetId) {
             console.log('Alternando para seção:', targetId);
             
             // Validar target
@@ -1049,25 +1000,20 @@
             // Obter todas as seções
             const allSections = document.querySelectorAll('.main-content');
             
-            // Animar saída da seção atual
-            const currentSection = document.querySelector('.main-content.active');
-            if (currentSection) {
-                currentSection.classList.remove('active');
-                // Adicionar atraso antes de esconder
-                setTimeout(() => {
-                    currentSection.style.display = 'none';
-                }, 300); // Tempo da animação CSS
-            }
+            // Esconder todas as seções
+            allSections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
             
-            // Ativar nova seção
+            // Mostrar e ativar a seção alvo
             targetSection.style.display = 'block';
-            // Pequeno atraso para aplicar a animação
             setTimeout(() => {
                 targetSection.classList.add('active');
             }, 10);
             
             // Atualizar links de navegação
-            updateNavigationLinks(targetId);
+            updateActiveNavigationLink(targetId);
             
             // Rolar suavemente para o topo da seção
             window.scrollTo({
@@ -1078,18 +1024,36 @@
             console.log('Seção ativada:', targetId);
         }
         
-        function updateNavigationLinks(activeId) {
+        function updateActiveNavigationLink(activeId) {
             // Atualizar links do menu principal
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
+                // Remover classe active de todos
                 link.classList.remove('active');
+                link.style.color = 'white';
+                
+                // Adicionar classe active apenas ao link correto
                 if (link.getAttribute('data-target') === activeId) {
                     link.classList.add('active');
+                    link.style.color = '#3498db';
                 }
             });
         }
         
-        // Funções para autenticação
+        // Funções para autenticação (placeholder)
+        function openAuthModal() {
+            document.getElementById('modalAuth').style.display = 'flex';
+        }
+        
+        function closeAuthModal() {
+            document.getElementById('modalAuth').style.display = 'none';
+        }
+        
+        function openRegister() {
+            openAuthModal();
+            switchAuthTab('register');
+        }
+        
         function switchAuthTab(tabName) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
@@ -1107,20 +1071,6 @@
                 loginTab.classList.remove('active');
                 registerTab.classList.add('active');
             }
-        }
-        
-        // Funções para modais
-        function openAuthModal() {
-            document.getElementById('modalAuth').style.display = 'flex';
-        }
-        
-        function closeAuthModal() {
-            document.getElementById('modalAuth').style.display = 'none';
-        }
-        
-        function openRegister() {
-            openAuthModal();
-            switchAuthTab('register');
         }
         
         function abrirModalSimulados() {
