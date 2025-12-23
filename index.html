@@ -8,6 +8,97 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
+    <style>
+        /* Efeitos de transição suave */
+        .main-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            display: none;
+        }
+        
+        .main-content.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: #3498db;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Efeito de hover nos cards */
+        .card, .cert-card, .material-card, .simulado-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover, .cert-card:hover, .material-card:hover, .simulado-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Botões com efeito */
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Modal com efeito de escala */
+        .modal-auth, .modal-simulados {
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -35,7 +126,7 @@
     </header>
 
     <!-- Modal de Login/Cadastro -->
-    <div id="modalAuth" class="modal-auth">
+    <div id="modalAuth" class="modal-auth" style="display: none;">
         <div class="auth-container">
             <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
             <div class="auth-header">
@@ -160,7 +251,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>Azure Fundamentals</h3>
                         <p>AZ-900: Conceitos fundamentais de nuvem e serviços Azure.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                     </div>
                 </div>
 
@@ -172,7 +263,7 @@
                         <span class="cert-level">Cloud</span>
                         <h3>AWS Cloud Practitioner</h3>
                         <p>Fundamentos da AWS e conceitos de computação em nuvem.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                     </div>
                 </div>
 
@@ -184,7 +275,7 @@
                         <span class="cert-level">Segurança</span>
                         <h3>Security+</h3>
                         <p>CompTIA Security+: Fundamentos de cybersecurity.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                     </div>
                 </div>
 
@@ -196,7 +287,7 @@
                         <span class="cert-level">Governança</span>
                         <h3>ITIL 4 Foundation</h3>
                         <p>Framework de gerenciamento de serviços de TI.</p>
-                        <a href="#" class="btn btn-primary">Estudar</a>
+                        <a href="#" class="btn btn-primary" data-target="certificacoes">Estudar</a>
                     </div>
                 </div>
             </div>
@@ -669,7 +760,7 @@
     </section>
 
     <!-- Modal da Lista de Simulados -->
-    <div id="modalSimulados" class="modal-simulados">
+    <div id="modalSimulados" class="modal-simulados" style="display: none;">
         <div class="modal-container">
             <div class="modal-header">
                 <h3><i class="fas fa-file-alt"></i> Simulados ITIL 4 Foundation</h3>
@@ -845,57 +936,48 @@
         </div>
     </footer>
 
-    <!-- Script de Navegação -->
+    <!-- Script de Navegação Aprimorado -->
     <script>
-        // Navegação entre seções
+        // Navegação entre seções - Sistema aprimorado
         document.addEventListener('DOMContentLoaded', function() {
-            // Selecionar todos os links de navegação
-            const navLinks = document.querySelectorAll('.nav-link');
+            // Inicializar o sistema de navegação
+            initNavigation();
+            
+            // Inicializar event listeners
+            initEventListeners();
+            
+            // Garantir que a seção inicial esteja visível
+            ensureInitialSectionVisible();
+        });
+        
+        function initNavigation() {
+            console.log('Inicializando sistema de navegação...');
+            
+            // Configurar todas as seções inicialmente
             const mainContents = document.querySelectorAll('.main-content');
-            
-            // Função para trocar de seção
-            function switchSection(targetId) {
-                console.log('Trocando para seção:', targetId);
-                
-                // Remover classe active de todos os conteúdos
-                mainContents.forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Adicionar classe active ao conteúdo alvo
-                const targetContent = document.getElementById(targetId);
-                if (targetContent) {
-                    targetContent.classList.add('active');
-                    console.log('Seção ativada:', targetId);
-                } else {
-                    console.error('Seção não encontrada:', targetId);
+            mainContents.forEach(content => {
+                if (!content.classList.contains('active')) {
+                    content.style.display = 'none';
                 }
-                
-                // Remover classe active de todos os links
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                });
-                
-                // Adicionar classe active ao link clicado
-                const activeLink = document.querySelector(`[data-target="${targetId}"]`);
-                if (activeLink) {
-                    activeLink.classList.add('active');
-                    console.log('Link ativado:', targetId);
-                }
-            }
+            });
             
-            // Adicionar event listeners aos links
+            console.log('Navegação inicializada. Seções encontradas:', mainContents.length);
+        }
+        
+        function initEventListeners() {
+            // Event listeners para links de navegação
+            const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     const targetId = this.getAttribute('data-target');
-                    console.log('Link clicado:', this.textContent, 'target:', targetId);
+                    console.log('Navegação clicada:', this.textContent, '->', targetId);
                     switchSection(targetId);
                 });
             });
             
-            // Adicionar event listeners aos botões "data-target" no footer
+            // Event listeners para links no footer
             const footerLinks = document.querySelectorAll('.footer-links a[data-target]');
             footerLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -905,8 +987,8 @@
                 });
             });
             
-            // Adicionar event listeners aos cards que têm links com data-target
-            const cardLinks = document.querySelectorAll('.card-footer a[data-target]');
+            // Event listeners para botões nos cards
+            const cardLinks = document.querySelectorAll('.card-footer a[data-target], .cert-content a[data-target]');
             cardLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -915,22 +997,179 @@
                 });
             });
             
-            // Inicializar a primeira seção (home) como ativa
-            if (navLinks.length > 0) {
-                // Verificar se já há uma seção ativa
-                const activeSection = document.querySelector('.main-content.active');
-                if (!activeSection) {
-                    switchSection('home');
-                }
+            // Event listeners para tabs de autenticação
+            const authTabs = document.querySelectorAll('.auth-tab');
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    switchAuthTab(tabName);
+                });
+            });
+        }
+        
+        function ensureInitialSectionVisible() {
+            // Verificar se há uma seção ativa
+            const activeSection = document.querySelector('.main-content.active');
+            if (!activeSection) {
+                // Ativar a seção inicial
+                switchSection('home');
+            } else {
+                // Garantir que apenas a seção ativa esteja visível
+                const mainContents = document.querySelectorAll('.main-content');
+                mainContents.forEach(content => {
+                    if (content !== activeSection) {
+                        content.style.display = 'none';
+                    } else {
+                        content.style.display = 'block';
+                        // Adicionar classe active para animação
+                        setTimeout(() => {
+                            content.classList.add('active');
+                        }, 10);
+                    }
+                });
+            }
+        }
+        
+        function switchSection(targetId) {
+            console.log('Alternando para seção:', targetId);
+            
+            // Validar target
+            if (!targetId) {
+                console.error('ID da seção não especificado');
+                return;
             }
             
-            // Debug: log dos elementos encontrados
-            console.log('Links de navegação:', navLinks.length);
-            console.log('Seções de conteúdo:', mainContents.length);
-        });
+            // Obter elemento alvo
+            const targetSection = document.getElementById(targetId);
+            if (!targetSection) {
+                console.error('Seção não encontrada:', targetId);
+                return;
+            }
+            
+            // Obter todas as seções
+            const allSections = document.querySelectorAll('.main-content');
+            
+            // Animar saída da seção atual
+            const currentSection = document.querySelector('.main-content.active');
+            if (currentSection) {
+                currentSection.classList.remove('active');
+                // Adicionar atraso antes de esconder
+                setTimeout(() => {
+                    currentSection.style.display = 'none';
+                }, 300); // Tempo da animação CSS
+            }
+            
+            // Ativar nova seção
+            targetSection.style.display = 'block';
+            // Pequeno atraso para aplicar a animação
+            setTimeout(() => {
+                targetSection.classList.add('active');
+            }, 10);
+            
+            // Atualizar links de navegação
+            updateNavigationLinks(targetId);
+            
+            // Rolar suavemente para o topo da seção
+            window.scrollTo({
+                top: targetSection.offsetTop - 80,
+                behavior: 'smooth'
+            });
+            
+            console.log('Seção ativada:', targetId);
+        }
+        
+        function updateNavigationLinks(activeId) {
+            // Atualizar links do menu principal
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-target') === activeId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Funções para autenticação
+        function switchAuthTab(tabName) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginTab = document.querySelector('[data-tab="login"]');
+            const registerTab = document.querySelector('[data-tab="register"]');
+            
+            if (tabName === 'login') {
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+            } else {
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+            }
+        }
+        
+        // Funções para modais
+        function openAuthModal() {
+            document.getElementById('modalAuth').style.display = 'flex';
+        }
+        
+        function closeAuthModal() {
+            document.getElementById('modalAuth').style.display = 'none';
+        }
+        
+        function openRegister() {
+            openAuthModal();
+            switchAuthTab('register');
+        }
+        
+        function abrirModalSimulados() {
+            document.getElementById('modalSimulados').style.display = 'flex';
+        }
+        
+        function fecharModalSimulados() {
+            document.getElementById('modalSimulados').style.display = 'none';
+        }
+        
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modalAuth = document.getElementById('modalAuth');
+            const modalSimulados = document.getElementById('modalSimulados');
+            
+            if (event.target == modalAuth) {
+                modalAuth.style.display = 'none';
+            }
+            if (event.target == modalSimulados) {
+                modalSimulados.style.display = 'none';
+            }
+        }
+        
+        // Funções placeholder para autenticação
+        function login() {
+            alert('Funcionalidade de login será implementada!');
+            closeAuthModal();
+        }
+        
+        function register() {
+            alert('Funcionalidade de cadastro será implementada!');
+            closeAuthModal();
+        }
+        
+        function forgotPassword() {
+            alert('Funcionalidade de recuperação de senha será implementada!');
+        }
+        
+        function createNewPost() {
+            alert('Funcionalidade de criar nova discussão será implementada!');
+        }
+        
+        function uploadSimulado() {
+            alert('Funcionalidade de upload de simulado será implementada!');
+        }
+        
+        function openUploadModal() {
+            alert('Funcionalidade de upload de simulado será implementada!');
+        }
     </script>
-    
-    <!-- Script do app.js sem defer para carregar depois do nosso script -->
-    <script src="js/app.js"></script>
 </body>
 </html>
