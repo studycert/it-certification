@@ -1,14 +1,12 @@
-// ========== MENU HAMBURGUER - VERSÃO SIMPLIFICADA ==========
+// Menu hambúrguer SIMPLES
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
-        // Abrir/fechar menu
         menuToggle.addEventListener('click', function() {
             mainNav.classList.toggle('active');
             
-            // Mudar ícone
             const icon = this.querySelector('i');
             if (mainNav.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
@@ -16,33 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
-            }
-        });
-        
-        // Fechar menu ao clicar em um link
-        const navLinks = mainNav.querySelectorAll('a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                if (window.innerWidth <= 992) {
-                    mainNav.classList.remove('active');
-                    const icon = menuToggle.querySelector('i');
-                    if (icon) {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                }
-            });
-        });
-        
-        // Fechar menu ao redimensionar para desktop
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                mainNav.classList.remove('active');
-                const icon = menuToggle.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
             }
         });
     }
