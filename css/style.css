@@ -1,4 +1,4 @@
-/* ========== SOLUÇÃO DEFINITIVA ========== */
+/* ========== MENU HAMBURGUER SIMPLES ========== */
 .menu-toggle {
     display: none;
     background: transparent;
@@ -6,104 +6,92 @@
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
-    width: 44px;
-    height: 44px;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    margin: 0;
+    padding: 10px;
+    z-index: 1001;
 }
 
-/* Menu Mobile */
+/* MOBILE */
 @media (max-width: 992px) {
-    /* 1. REORDENA usando order property */
+    /* Mostra botão hambúrguer */
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+    
+    /* Ajusta o header */
     .header-content {
+        position: relative;
+        min-height: 70px;
         display: flex;
         align-items: center;
-        gap: 15px;
     }
     
-    /* Logo primeiro */
+    /* Ajusta logo */
     .logo {
-        order: 1;
-        flex: 1;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
     }
     
-    /* Navegação normal escondida em mobile */
-    nav {
-        display: none;
-    }
-    
-    /* Botões auth segundo */
+    /* Ajusta auth buttons */
     .auth-buttons {
-        order: 2;
+        position: absolute;
+        right: 70px; /* Deixa espaço para o botão hambúrguer */
+        top: 50%;
+        transform: translateY(-50%);
         display: flex !important;
-        gap: 8px;
-        margin-left: auto; /* Empurra para a direita */
+        gap: 10px;
     }
     
     .auth-buttons .btn {
         padding: 6px 12px;
         font-size: 0.85rem;
-        white-space: nowrap;
     }
     
-    /* Botão hambúrguer TERCEIRO (último) */
-    .menu-toggle {
-        order: 3;
-        display: flex;
-        margin-left: 5px;
+    /* Esconde navegação normal em mobile */
+    nav {
+        display: none !important;
     }
     
-    /* Menu mobile (aparece quando ativo) */
-    .mobile-menu {
-        display: none;
-        order: 4;
-        width: 100%;
+    /* Mostra menu quando ativo - posiciona ABSOLUTO */
+    nav.active {
+        display: block !important;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
         background: var(--primary);
         padding: 1rem 0;
-        margin-top: 15px;
-        border-top: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
     }
     
-    .mobile-menu.active {
-        display: block;
-        animation: slideDown 0.3s ease;
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .mobile-menu ul {
+    nav.active ul {
         flex-direction: column;
         width: 100%;
         padding: 0;
-        gap: 0;
     }
     
-    .mobile-menu li {
+    nav.active li {
         width: 100%;
-        list-style: none;
     }
     
-    .mobile-menu a {
+    nav.active a {
         display: block;
         padding: 1rem 1.5rem;
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
-        text-align: left;
+    }
+    
+    nav.active a:hover {
+        background: rgba(255,255,255,0.1);
     }
 }
 
-/* Desktop */
+/* DESKTOP */
 @media (min-width: 993px) {
     .menu-toggle {
         display: none !important;
