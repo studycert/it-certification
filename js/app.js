@@ -1,19 +1,58 @@
-// Menu hambúrguer SIMPLES
+// Menu hambúrguer
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
+        // Criar menu mobile
+        const mobileMenu = document.createElement('div');
+        mobileMenu.className = 'mobile-menu';
+        mobileMenu.innerHTML = mainNav.innerHTML;
+        
+        // Adicionar após o header content
+        menuToggle.parentNode.appendChild(mobileMenu);
+        
+        // Esconder navegação normal em mobile
+        if (window.innerWidth <= 992) {
+            mainNav.style.display = 'none';
+        }
+        
+        // Toggle menu
         menuToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
             
             const icon = this.querySelector('i');
-            if (mainNav.classList.contains('active')) {
+            if (mobileMenu.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
             } else {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Fechar menu ao clicar em link
+        mobileMenu.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && window.innerWidth <= 992) {
+                mobileMenu.classList.remove('active');
+                const icon = menuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Ajustar ao redimensionar
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) {
+                mobileMenu.classList.remove('active');
+                mainNav.style.display = 'flex';
+                mobileMenu.style.display = 'none';
+                const icon = menuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            } else {
+                mainNav.style.display = 'none';
+                mobileMenu.style.display = 'block';
             }
         });
     }
