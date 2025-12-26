@@ -1,60 +1,53 @@
-// Menu hambúrguer
+// Menu hambúrguer - CÓDIGO MÍNIMO
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
-        // Criar menu mobile
-        const mobileMenu = document.createElement('div');
-        mobileMenu.className = 'mobile-menu';
-        mobileMenu.innerHTML = mainNav.innerHTML;
+        console.log('Menu encontrado, configurando...');
         
-        // Adicionar após o header content
-        menuToggle.parentNode.appendChild(mobileMenu);
-        
-        // Esconder navegação normal em mobile
-        if (window.innerWidth <= 992) {
-            mainNav.style.display = 'none';
-        }
-        
-        // Toggle menu
         menuToggle.addEventListener('click', function() {
-            mobileMenu.classList.toggle('active');
+            console.log('Botão clicado!');
+            mainNav.classList.toggle('active');
             
+            // Muda o ícone
             const icon = this.querySelector('i');
-            if (mobileMenu.classList.contains('active')) {
+            if (mainNav.classList.contains('active')) {
+                console.log('Abrindo menu');
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
             } else {
+                console.log('Fechando menu');
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
         });
         
-        // Fechar menu ao clicar em link
-        mobileMenu.addEventListener('click', function(e) {
+        // Fechar menu ao clicar em link (mobile)
+        mainNav.addEventListener('click', function(e) {
             if (e.target.tagName === 'A' && window.innerWidth <= 992) {
-                mobileMenu.classList.remove('active');
+                mainNav.classList.remove('active');
                 const icon = menuToggle.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
             }
         });
         
         // Ajustar ao redimensionar
         window.addEventListener('resize', function() {
             if (window.innerWidth > 992) {
-                mobileMenu.classList.remove('active');
-                mainNav.style.display = 'flex';
-                mobileMenu.style.display = 'none';
+                mainNav.classList.remove('active');
                 const icon = menuToggle.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            } else {
-                mainNav.style.display = 'none';
-                mobileMenu.style.display = 'block';
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
             }
         });
+    } else {
+        console.error('Elementos não encontrados!');
     }
 });
 // App principal - StudyCert
