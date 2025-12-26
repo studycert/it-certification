@@ -1,4 +1,4 @@
-// Menu hamburguer - CÓDIGO SIMPLES E FUNCIONAL
+// ========== MENU HAMBURGUER - VERSÃO SIMPLIFICADA ==========
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Abrir/fechar menu
         menuToggle.addEventListener('click', function() {
             mainNav.classList.toggle('active');
+            
             // Mudar ícone
             const icon = this.querySelector('i');
             if (mainNav.classList.contains('active')) {
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Fechar menu ao clicar em um link (mobile)
+        // Fechar menu ao clicar em um link
         const navLinks = mainNav.querySelectorAll('a');
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
