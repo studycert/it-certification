@@ -17,14 +17,8 @@
                 <div class="logo">
                     <i class="fas fa-graduation-cap"></i>
                     <h1>Study<span>Cert</span></h1>
-                    <!-- Botão hamburguer para mobile -->
-                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
-                        <i class="fas fa-bars"></i>
-                    </button>
                 </div>
-                
-                <!-- Navegação Desktop (visível em telas maiores) -->
-                <nav class="desktop-nav">
+                <nav>
                     <ul>
                         <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
                         <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
@@ -33,37 +27,9 @@
                         <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
                     </ul>
                 </nav>
-                
                 <div class="auth-buttons" id="authButtons">
                     <!-- Será preenchido dinamicamente via JavaScript -->
                 </div>
-            </div>
-            
-            <!-- Navegação Mobile (visível apenas quando ativada) -->
-            <div class="mobile-nav-container" id="mobileNavContainer">
-                <nav class="mobile-nav">
-                    <ul>
-                        <li><a href="#" class="nav-link active" data-target="home">
-                            <i class="fas fa-home"></i> Início
-                        </a></li>
-                        <li><a href="#" class="nav-link" data-target="certificacoes">
-                            <i class="fas fa-certificate"></i> Certificações
-                        </a></li>
-                        <li><a href="#" class="nav-link" data-target="forum">
-                            <i class="fas fa-comments"></i> Fórum
-                        </a></li>
-                        <li><a href="#" class="nav-link" data-target="materiais">
-                            <i class="fas fa-book"></i> Material de Estudo
-                        </a></li>
-                        <li><a href="#" class="nav-link" data-target="simulados">
-                            <i class="fas fa-file-alt"></i> Simulados
-                        </a></li>
-                    </ul>
-                    <!-- Botões de autenticação mobile -->
-                    <div class="mobile-auth-buttons" id="mobileAuthButtons">
-                        <!-- Preenchido dinamicamente -->
-                    </div>
-                </nav>
             </div>
         </div>
     </header>
@@ -91,7 +57,7 @@
                     <label for="loginPassword">Senha</label>
                     <input type="password" id="loginPassword" placeholder="Sua senha">
                 </div>
-                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%; padding: 12px; font-size: 16px;">Entrar</button>
                 <div class="auth-footer">
                     <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
                 </div>
@@ -111,7 +77,7 @@
                     <label for="registerPassword">Senha</label>
                     <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
                 </div>
-                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
+                <button class="btn btn-success" onclick="register()" style="width: 100%; padding: 12px; font-size: 16px;">Criar Conta</button>
             </div>
         </div>
     </div>
@@ -121,7 +87,7 @@
         <div class="container">
             <h2>Prepare-se para suas Certificações de TI</h2>
             <p>Encontre materiais de estudo, participe de discussões no fórum e teste seus conhecimentos com nossos simulados.</p>
-            <a href="#" class="btn btn-primary" onclick="openRegister()">Começar Agora</a>
+            <a href="#" class="btn btn-primary" onclick="openRegister()" style="padding: 12px 30px; font-size: 18px;">Começar Agora</a>
         </div>
     </section>
 
@@ -879,32 +845,18 @@
         </div>
     </footer>
 
-    <!-- Script de Navegação e Menu Mobile -->
+    <!-- Script de Navegação -->
     <script>
+        // Navegação entre seções
         document.addEventListener('DOMContentLoaded', function() {
-            // Elementos do menu mobile
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileNavContainer = document.getElementById('mobileNavContainer');
-            const mobileNavLinks = mobileNavContainer.querySelectorAll('.nav-link');
-            
-            // Navegação desktop original
-            const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
+            // Selecionar todos os links de navegação
+            const navLinks = document.querySelectorAll('.nav-link');
             const mainContents = document.querySelectorAll('.main-content');
             
-            // Função para alternar menu mobile
-            function toggleMobileMenu() {
-                mobileNavContainer.classList.toggle('active');
-                document.body.style.overflow = mobileNavContainer.classList.contains('active') ? 'hidden' : '';
-            }
-            
-            // Função para fechar menu mobile
-            function closeMobileMenu() {
-                mobileNavContainer.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-            
-            // Função para trocar de seção (mantida do original)
+            // Função para trocar de seção
             function switchSection(targetId) {
+                console.log('Trocando para seção:', targetId);
+                
                 // Remover classe active de todos os conteúdos
                 mainContents.forEach(content => {
                     content.classList.remove('active');
@@ -914,57 +866,38 @@
                 const targetContent = document.getElementById(targetId);
                 if (targetContent) {
                     targetContent.classList.add('active');
+                    console.log('Seção ativada:', targetId);
+                } else {
+                    console.error('Seção não encontrada:', targetId);
                 }
                 
-                // Remover classe active de todos os links (desktop e mobile)
+                // Remover classe active de todos os links
                 navLinks.forEach(link => {
                     link.classList.remove('active');
                 });
                 
-                mobileNavLinks.forEach(link => {
-                    link.classList.remove('active');
-                });
-                
-                // Adicionar classe active ao link clicado (desktop)
-                const activeDesktopLink = document.querySelector(`.desktop-nav [data-target="${targetId}"]`);
-                if (activeDesktopLink) {
-                    activeDesktopLink.classList.add('active');
+                // Adicionar classe active ao link clicado
+                const activeLink = document.querySelector(`[data-target="${targetId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    console.log('Link ativado:', targetId);
                 }
-                
-                // Adicionar classe active ao link clicado (mobile)
-                const activeMobileLink = document.querySelector(`.mobile-nav [data-target="${targetId}"]`);
-                if (activeMobileLink) {
-                    activeMobileLink.classList.add('active');
-                }
-                
-                // Fechar menu mobile
-                closeMobileMenu();
             }
             
-            // Event listeners para menu mobile
-            mobileMenuToggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleMobileMenu();
+            // Adicionar event listeners aos links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const targetId = this.getAttribute('data-target');
+                    console.log('Link clicado:', this.textContent, 'target:', targetId);
+                    switchSection(targetId);
+                });
             });
             
-            // Fechar menu ao clicar fora
-            document.addEventListener('click', function(e) {
-                if (mobileNavContainer.classList.contains('active') && 
-                    !mobileNavContainer.contains(e.target) && 
-                    e.target !== mobileMenuToggle) {
-                    closeMobileMenu();
-                }
-            });
-            
-            // Fechar menu ao pressionar ESC
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && mobileNavContainer.classList.contains('active')) {
-                    closeMobileMenu();
-                }
-            });
-            
-            // Navegação mobile
-            mobileNavLinks.forEach(link => {
+            // Adicionar event listeners aos botões "data-target" no footer
+            const footerLinks = document.querySelectorAll('.footer-links a[data-target]');
+            footerLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('data-target');
@@ -972,11 +905,11 @@
                 });
             });
             
-            // Navegação desktop (mantida do original)
-            navLinks.forEach(link => {
+            // Adicionar event listeners aos cards que têm links com data-target
+            const cardLinks = document.querySelectorAll('.card-footer a[data-target]');
+            cardLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    e.stopPropagation();
                     const targetId = this.getAttribute('data-target');
                     switchSection(targetId);
                 });
@@ -984,31 +917,20 @@
             
             // Inicializar a primeira seção (home) como ativa
             if (navLinks.length > 0) {
+                // Verificar se já há uma seção ativa
                 const activeSection = document.querySelector('.main-content.active');
                 if (!activeSection) {
                     switchSection('home');
                 }
             }
             
-            // Atualizar botões de autenticação no mobile (opcional)
-            function updateMobileAuthButtons() {
-                const authButtons = document.getElementById('authButtons');
-                const mobileAuthButtons = document.getElementById('mobileAuthButtons');
-                if (authButtons && mobileAuthButtons) {
-                    mobileAuthButtons.innerHTML = authButtons.innerHTML;
-                }
-            }
-            
-            // Observar mudanças nos botões de autenticação
-            const observer = new MutationObserver(updateMobileAuthButtons);
-            const authButtonsElement = document.getElementById('authButtons');
-            if (authButtonsElement) {
-                observer.observe(authButtonsElement, { childList: true, subtree: true });
-            }
+            // Debug: log dos elementos encontrados
+            console.log('Links de navegação:', navLinks.length);
+            console.log('Seções de conteúdo:', mainContents.length);
         });
     </script>
     
-    <!-- Script do app.js -->
+    <!-- Script do app.js sem defer para carregar depois do nosso script -->
     <script src="js/app.js"></script>
 </body>
 </html>
