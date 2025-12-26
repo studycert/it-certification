@@ -1,13 +1,14 @@
-// Menu hamburguer para mobile
+// Menu hamburguer - CÓDIGO SIMPLES E FUNCIONAL
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
+        // Abrir/fechar menu
         menuToggle.addEventListener('click', function() {
             mainNav.classList.toggle('active');
-            // Alternar ícone entre barras e X
-            const icon = menuToggle.querySelector('i');
+            // Mudar ícone
+            const icon = this.querySelector('i');
             if (mainNav.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
@@ -17,15 +18,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Fechar menu ao clicar em um link
+        // Fechar menu ao clicar em um link (mobile)
         const navLinks = mainNav.querySelectorAll('a');
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
                 if (window.innerWidth <= 992) {
                     mainNav.classList.remove('active');
                     const icon = menuToggle.querySelector('i');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
                 }
             });
         });
@@ -35,8 +38,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.innerWidth > 992) {
                 mainNav.classList.remove('active');
                 const icon = menuToggle.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
             }
         });
     }
