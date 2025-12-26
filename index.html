@@ -12,29 +12,34 @@
 </head>
 <body>
     <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h1>Study<span>Cert</span></h1>
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
-                        <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
-                        <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
-                        <li><a href="#" class="nav-link" data-target="materiais">Material de Estudo</a></li>
-                        <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
-                    </ul>
-                </nav>
-                <div class="auth-buttons" id="authButtons">
-                    <!-- Será preenchido dinamicamente via JavaScript -->
-                </div>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>Study<span>Cert</span></h1>
+            </div>
+            
+            <!-- BOTÃO HAMBURGUER AQUI -->
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
+                    <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
+                    <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
+                    <li><a href="#" class="nav-link" data-target="materiais">Material de Estudo</a></li>
+                    <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons" id="authButtons">
+                <!-- Será preenchido dinamicamente via JavaScript -->
             </div>
         </div>
-    </header>
-
+    </div>
+</header>
     <!-- Modal de Login/Cadastro -->
     <div id="modalAuth" class="modal-auth">
         <div class="auth-container">
