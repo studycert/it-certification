@@ -1,46 +1,23 @@
-/* ========== MENU HAMBURGUER - VERSÃO FIXA ========== */
-.menu-toggle {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
-    padding: 0;
-    margin: 0;
-}
-
-.menu-toggle:hover {
-    color: var(--secondary);
-}
-
-/* Menu Mobile */
+/* ========== SOLUÇÃO ALTERNATIVA SIMPLES ========== */
 @media (max-width: 992px) {
-    /* REORDENA OS ELEMENTOS NO HEADER */
     .header-content {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        grid-template-areas: 
-            "logo auth menu";
+        display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 15px;
+        justify-content: space-between;
+        gap: 10px;
     }
     
     .logo {
-        grid-area: logo;
-        justify-self: start;
+        order: 1;
+        flex: 1;
+        min-width: 0;
     }
     
     .auth-buttons {
-        grid-area: auth;
-        justify-self: end;
+        order: 2;
         display: flex !important;
-        gap: 10px;
+        gap: 8px;
         margin: 0;
     }
     
@@ -51,39 +28,23 @@
     }
     
     .menu-toggle {
-        grid-area: menu;
-        justify-self: end;
+        order: 3;
         display: flex;
-        margin: 0;
+        margin-left: 10px;
     }
     
-    /* Esconde nav normal */
     nav {
+        order: 4;
         display: none;
         width: 100%;
+        margin-top: 15px;
     }
     
-    /* Mostra menu quando ativo */
     nav.active {
         display: block;
-        grid-column: 1 / -1;
-        grid-row: 2;
         background: var(--primary);
         padding: 1rem 0;
-        margin-top: 15px;
         border-top: 1px solid rgba(255,255,255,0.1);
-        animation: slideDown 0.3s ease;
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
     }
     
     nav.active ul {
@@ -104,98 +65,10 @@
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
         text-align: left;
-        border-radius: 0;
     }
     
-    nav.active a:hover,
-    nav.active a.active {
+    nav.active a:hover {
         background: rgba(52, 152, 219, 0.2);
-        color: var(--secondary);
-    }
-    
-    nav.active a::after {
-        display: none;
-    }
-}
-
-/* Ajustes para telas menores */
-@media (max-width: 768px) {
-    .header-content {
-        gap: 10px;
-    }
-    
-    .logo h1 {
-        font-size: 1.5rem;
-    }
-    
-    .auth-buttons {
-        gap: 8px;
-    }
-    
-    .auth-buttons .btn {
-        padding: 5px 10px;
-        font-size: 0.8rem;
-    }
-    
-    .menu-toggle {
-        font-size: 1.3rem;
-        width: 40px;
-        height: 40px;
-    }
-}
-
-@media (max-width: 600px) {
-    .logo h1 {
-        font-size: 1.3rem;
-    }
-    
-    .auth-buttons .btn {
-        padding: 4px 8px;
-        font-size: 0.75rem;
-    }
-    
-    .menu-toggle {
-        font-size: 1.2rem;
-        width: 36px;
-        height: 36px;
-    }
-}
-
-/* Para telas muito pequenas */
-@media (max-width: 480px) {
-    .header-content {
-        grid-template-columns: auto auto auto;
-        gap: 8px;
-    }
-    
-    .logo h1 {
-        font-size: 1.2rem;
-    }
-    
-    .auth-buttons {
-        gap: 5px;
-    }
-    
-    .auth-buttons .btn {
-        padding: 3px 6px;
-        font-size: 0.7rem;
-    }
-}
-
-/* Para telas maiores que 992px */
-@media (min-width: 993px) {
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    .header-content {
-        display: flex !important;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    nav {
-        display: flex !important;
     }
 }
 /* Variáveis CSS */
