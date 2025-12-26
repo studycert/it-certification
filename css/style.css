@@ -1,47 +1,116 @@
-/* ========== SOLUÇÃO GRID SIMPLES ========== */
+/* ========== SOLUÇÃO DEFINITIVA ========== */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+/* Menu Mobile */
 @media (max-width: 992px) {
+    /* 1. REORDENA usando order property */
     .header-content {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        grid-template-areas: "logo auth menu";
+        display: flex;
         align-items: center;
         gap: 15px;
-        padding: 0 15px;
-        height: 70px;
     }
     
+    /* Logo primeiro */
     .logo {
-        grid-area: logo;
-        justify-self: start;
+        order: 1;
+        flex: 1;
     }
     
+    /* Navegação normal escondida em mobile */
+    nav {
+        display: none;
+    }
+    
+    /* Botões auth segundo */
     .auth-buttons {
-        grid-area: auth;
-        justify-self: end;
+        order: 2;
         display: flex !important;
-        gap: 10px;
-        margin: 0;
+        gap: 8px;
+        margin-left: auto; /* Empurra para a direita */
     }
     
+    .auth-buttons .btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+    
+    /* Botão hambúrguer TERCEIRO (último) */
     .menu-toggle {
-        grid-area: menu;
-        justify-self: end;
+        order: 3;
         display: flex;
-        margin: 0;
+        margin-left: 5px;
+    }
+    
+    /* Menu mobile (aparece quando ativo) */
+    .mobile-menu {
+        display: none;
+        order: 4;
+        width: 100%;
+        background: var(--primary);
+        padding: 1rem 0;
+        margin-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .mobile-menu.active {
+        display: block;
+        animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .mobile-menu ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+        gap: 0;
+    }
+    
+    .mobile-menu li {
+        width: 100%;
+        list-style: none;
+    }
+    
+    .mobile-menu a {
+        display: block;
+        padding: 1rem 1.5rem;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        text-align: left;
+    }
+}
+
+/* Desktop */
+@media (min-width: 993px) {
+    .menu-toggle {
+        display: none !important;
     }
     
     nav {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        display: none;
-        margin-top: 10px;
-    }
-    
-    nav.active {
-        display: block;
-        background: var(--primary);
-        padding: 1rem 0;
-        border-top: 1px solid rgba(255,255,255,0.1);
+        display: flex !important;
     }
 }
 /* Variáveis CSS */
