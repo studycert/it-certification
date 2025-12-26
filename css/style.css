@@ -1259,5 +1259,68 @@ html {
     cursor: pointer;
     padding: 0.5rem;
 }
+/* FORÇAR MODO CLARO - REMOVER QUALQUER DARK MODE */
+body {
+    background-color: #f5f7fa !important;
+    color: #333 !important;
+}
+
+.card,
+.forum-categories,
+.forum-posts,
+.material-card,
+.simulado-card,
+.cert-card,
+.user-progress,
+.material-card,
+.auth-container,
+.modal-container {
+    background-color: white !important;
+    color: #333 !important;
+}
+
+.card-header {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+.card-footer {
+    background-color: #f8f9fa !important;
+    border-top: 1px solid #eee !important;
+    color: #333 !important;
+}
+
+/* Garantir que textos não fiquem claros */
+p, h1, h2, h3, h4, h5, h6, span, div, a, li {
+    color: inherit !important;
+}
+
+/* Modal de Login */
+.auth-container {
+    background-color: white !important;
+    color: #333 !important;
+}
+
+.auth-header h2 {
+    color: var(--primary) !important;
+}
+
+.auth-tab {
+    color: #333 !important;
+}
+
+.auth-tab.active {
+    color: var(--secondary) !important;
+}
+
+.form-group label {
+    color: #555 !important;
+}
+
+.form-group input {
+    background-color: white !important;
+    color: #333 !important;
+    border: 2px solid #e1e1e1 !important;
+}
 
 }
