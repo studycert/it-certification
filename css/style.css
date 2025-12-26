@@ -46,6 +46,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
 
 .logo {
@@ -68,7 +69,28 @@ header {
     color: var(--secondary);
 }
 
-/* Navegação */
+/* Menu Hamburguer */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Navegação Desktop */
 nav {
     display: flex;
     align-items: center;
@@ -91,7 +113,7 @@ nav a {
     background-color: transparent;
 }
 
-/* Novo efeito para os botões da navegação - corrigido */
+/* Efeito dos botões da navegação - CORRIGIDO */
 nav a::after {
     content: '';
     position: absolute;
@@ -119,110 +141,28 @@ nav a.active {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-[file name]: style.css
-/* Adicione/atualize estas regras no CSS */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
 
-/* Menu Hamburguer */
-.menu-toggle {
-    display: none;
-    background: transparent;
-    border: none;
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
+}
+
+.user-avatar {
     width: 40px;
     height: 40px;
+    border-radius: 50%;
+    background: var(--secondary);
+    display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1001;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-}
-
-.menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.menu-toggle.active i {
-    transform: rotate(180deg);
-}
-
-/* Navegação Mobile */
-nav {
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 1rem;
-}
-
-/* Responsividade - Menu Hamburguer */
-@media (max-width: 992px) {
-    .menu-toggle {
-        display: flex;
-    }
-    
-    nav {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--primary);
-        flex-direction: column;
-        padding: 0;
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        z-index: 999;
-    }
-    
-    nav.active {
-        max-height: 500px;
-        opacity: 1;
-        visibility: visible;
-        padding: 1rem 0;
-        border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    nav ul {
-        flex-direction: column;
-        width: 100%;
-        padding: 0;
-    }
-    
-    nav li {
-        width: 100%;
-    }
-    
-    nav a {
-        display: block;
-        padding: 0.8rem 1.5rem;
-        border-radius: 0;
-        text-align: left;
-        width: 100%;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    nav a:hover,
-    nav a.active {
-        background: rgba(52, 152, 219, 0.2);
-        color: var(--secondary);
-    }
-    
-    nav a::after {
-        display: none;
-    }
-    
-    .header-content {
-        position: relative;
-    }
+    font-weight: bold;
 }
 
 /* Botões */
@@ -1124,45 +1064,63 @@ footer {
     text-decoration: underline;
 }
 
-/* RESPONSIVIDADE - Menu Hamburguer */
-@media (max-width: 1024px) {
-    .header-content {
-        flex-wrap: wrap;
-    }
-    
+/* ==================== RESPONSIVIDADE ==================== */
+
+/* Menu Hamburguer para Mobile */
+@media (max-width: 992px) {
     .menu-toggle {
         display: flex;
     }
     
     nav {
-        order: 3;
-        width: 100%;
-        margin-top: 1rem;
-        display: none;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        flex-direction: column;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 999;
     }
     
     nav.active {
-        display: block;
+        max-height: 500px;
+        opacity: 1;
+        visibility: visible;
+        padding: 1rem 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
     
     nav ul {
         flex-direction: column;
-        gap: 0.5rem;
-        background: rgba(44, 62, 80, 0.95);
-        border-radius: 8px;
-        padding: 1rem;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        width: 100%;
+        padding: 0;
+        gap: 0;
+    }
+    
+    nav li {
+        width: 100%;
     }
     
     nav a {
         display: block;
-        padding: 0.8rem 1rem;
-        border-radius: 4px;
-        transition: all 0.3s;
+        padding: 1rem 1.5rem;
+        border-radius: 0;
+        text-align: left;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     
-    nav a:hover {
-        background-color: rgba(52, 152, 219, 0.2);
+    nav a:hover,
+    nav a.active {
+        background: rgba(52, 152, 219, 0.2);
+        color: var(--secondary);
     }
     
     nav a::after {
@@ -1171,6 +1129,11 @@ footer {
     
     .auth-buttons {
         margin-left: auto;
+        margin-right: 15px;
+    }
+    
+    .header-content {
+        flex-wrap: nowrap;
     }
 }
 
@@ -1248,5 +1211,14 @@ footer {
     .btn {
         padding: 0.4rem 1rem;
         font-size: 0.9rem;
+    }
+    
+    .auth-buttons {
+        gap: 0.5rem;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
     }
 }
