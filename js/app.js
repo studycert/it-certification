@@ -1,13 +1,20 @@
+[file name]: app.js
+[file content begin]
 // Menu hamburguer para mobile
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
+        // Criar elemento de ícone Font Awesome
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-bars';
+        menuToggle.appendChild(icon);
+        
         menuToggle.addEventListener('click', function() {
             mainNav.classList.toggle('active');
+            
             // Alternar ícone entre barras e X
-            const icon = menuToggle.querySelector('i');
             if (mainNav.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
@@ -23,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', function() {
                 if (window.innerWidth <= 992) {
                     mainNav.classList.remove('active');
-                    const icon = menuToggle.querySelector('i');
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
                 }
@@ -34,13 +40,25 @@ document.addEventListener('DOMContentLoaded', function() {
         window.addEventListener('resize', function() {
             if (window.innerWidth > 992) {
                 mainNav.classList.remove('active');
-                const icon = menuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Fechar menu ao clicar fora
+        document.addEventListener('click', function(event) {
+            const isClickInsideNav = mainNav.contains(event.target);
+            const isClickOnToggle = menuToggle.contains(event.target);
+            
+            if (!isClickInsideNav && !isClickOnToggle && mainNav.classList.contains('active')) {
+                mainNav.classList.remove('active');
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
         });
     }
 });
+
 // App principal - StudyCert
 class StudyCertApp {
     constructor() {
@@ -113,6 +131,20 @@ class StudyCertApp {
         if (targetSection) {
             targetSection.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Fechar menu hambúrguer em mobile
+            if (window.innerWidth <= 992) {
+                const menuToggle = document.getElementById('menuToggle');
+                const mainNav = document.getElementById('mainNav');
+                if (menuToggle && mainNav && mainNav.classList.contains('active')) {
+                    mainNav.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
         }
     }
 
@@ -777,4 +809,5 @@ window.createNewPost = () => app.createNewPost();
 window.forgotPassword = () => app.forgotPassword();
 
 // Variável global para a instância do app (para debugging)
-window.StudyCertApp = app;
+window.app = app;
+[file content end]
