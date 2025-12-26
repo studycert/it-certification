@@ -2,42 +2,78 @@
 .menu-toggle {
     display: none;
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: none;
     color: white;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     cursor: pointer;
     width: 44px;
     height: 44px;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
-    transition: all 0.3s ease;
     z-index: 1001;
-    margin-left: 20px; /* Espaço entre logo e botão */
+    position: absolute; /* Posicionamento absoluto */
+    right: 20px; /* Distância da direita */
+    top: 50%; /* Centraliza verticalmente */
+    transform: translateY(-50%); /* Ajuste para centralizar */
 }
 
 .menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--secondary);
+    color: var(--secondary);
 }
 
 /* Menu Mobile */
 @media (max-width: 992px) {
-    /* Oculta a navegação normal em mobile */
+    /* Esconde nav normal em mobile */
     nav {
         display: none;
     }
     
+    /* Mostra botão hambúrguer */
     .menu-toggle {
         display: flex;
-        margin-left: 15px; /* Espaço controlado entre logo e botão */
     }
     
-    /* Mostra o nav quando ativo (menu aberto) */
+    /* Ajusta o header para mobile */
+    .header-content {
+        position: relative; /* Para posicionamento absoluto do botão */
+        min-height: 60px; /* Altura mínima para o header */
+    }
+    
+    /* Posiciona logo */
+    .logo {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    /* Posiciona auth buttons à direita (se estiverem visíveis) */
+    .auth-buttons {
+        position: absolute;
+        right: 70px; /* Deixa espaço para o botão hambúrguer */
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        gap: 10px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    /* Ajusta botão hambúrguer */
+    .menu-toggle {
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    /* Estilo do menu quando aberto */
     nav.active {
         display: block;
         position: fixed;
-        top: 70px;
+        top: 70px; /* Abaixo do header */
         left: 0;
         right: 0;
         background: var(--primary);
@@ -90,46 +126,32 @@
     nav.active a::after {
         display: none;
     }
-    
-    /* Ajusta o header para mobile */
-    .header-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between; /* Logo à esquerda, botão à direita */
-    }
-    
-    /* Mantém auth buttons visíveis ou oculta - escolha uma opção: */
-    
-    /* OPÇÃO 1: Esconde auth buttons em mobile */
-    .auth-buttons {
-        display: none;
-    }
-    
-    /* OPÇÃO 2: Mostra auth buttons em mobile (descomente abaixo) */
-    /*
-    .auth-buttons {
-        display: flex;
-        margin-left: auto;
-        gap: 10px;
-    }
-    .auth-buttons .btn {
-        padding: 8px 12px;
-        font-size: 0.9rem;
-    }
-    */
 }
 
-/* Para telas menores, ajusta espaçamento */
+/* Ajustes para telas menores */
 @media (max-width: 768px) {
     .menu-toggle {
+        font-size: 1.3rem;
         width: 40px;
         height: 40px;
-        font-size: 1.1rem;
-        margin-left: 10px;
+        right: 15px;
+    }
+    
+    .logo {
+        left: 15px;
     }
     
     .logo h1 {
         font-size: 1.5rem;
+    }
+    
+    .auth-buttons {
+        right: 60px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
     }
     
     nav.active {
@@ -138,15 +160,40 @@
 }
 
 @media (max-width: 480px) {
+    .menu-toggle {
+        font-size: 1.2rem;
+        width: 36px;
+        height: 36px;
+        right: 10px;
+    }
+    
+    .logo {
+        left: 10px;
+    }
+    
     .logo h1 {
         font-size: 1.3rem;
     }
     
+    .auth-buttons {
+        right: 50px;
+        gap: 5px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Para telas maiores que 992px, esconde o botão */
+@media (min-width: 993px) {
     .menu-toggle {
-        width: 36px;
-        height: 36px;
-        font-size: 1rem;
-        margin-left: 8px;
+        display: none !important;
+    }
+    
+    nav {
+        display: flex !important;
     }
 }
 /* Variáveis CSS */
