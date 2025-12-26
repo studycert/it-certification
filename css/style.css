@@ -46,7 +46,6 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
 }
 
 .logo {
@@ -69,37 +68,11 @@ header {
     color: var(--secondary);
 }
 
-/* Menu Hamburguer */
-.menu-toggle {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-}
-
-.menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* Navegação Desktop */
-nav {
-    display: flex;
-    align-items: center;
-}
-
+/* Navegação */
 nav ul {
     display: flex;
     list-style: none;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 nav a {
@@ -110,35 +83,28 @@ nav a {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     position: relative;
+    overflow: hidden;
     background-color: transparent;
 }
 
-/* Efeito dos botões da navegação - CORRIGIDO */
-nav a::after {
+nav a::before {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background-color: var(--secondary);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s;
 }
 
-nav a:hover::after,
-nav a.active::after {
-    width: 80%;
+nav a:hover::before {
+    left: 100%;
 }
 
-nav a:hover {
+nav a:hover, nav a.active {
     color: var(--secondary);
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-nav a.active {
-    color: var(--secondary);
-    background-color: rgba(255, 255, 255, 0.05);
+    transform: translateY(-1px);
 }
 
 .auth-buttons {
@@ -1064,80 +1030,19 @@ footer {
     text-decoration: underline;
 }
 
-/* ==================== RESPONSIVIDADE ==================== */
-
-/* Menu Hamburguer para Mobile */
-@media (max-width: 992px) {
-    .menu-toggle {
-        display: flex;
-    }
-    
-    nav {
-        position: fixed;
-        top: 70px;
-        left: 0;
-        right: 0;
-        background: var(--primary);
-        flex-direction: column;
-        padding: 0;
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        z-index: 999;
-    }
-    
-    nav.active {
-        max-height: 500px;
-        opacity: 1;
-        visibility: visible;
-        padding: 1rem 0;
-        border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    nav ul {
-        flex-direction: column;
-        width: 100%;
-        padding: 0;
-        gap: 0;
-    }
-    
-    nav li {
-        width: 100%;
-    }
-    
-    nav a {
-        display: block;
-        padding: 1rem 1.5rem;
-        border-radius: 0;
-        text-align: left;
-        width: 100%;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    nav a:hover,
-    nav a.active {
-        background: rgba(52, 152, 219, 0.2);
-        color: var(--secondary);
-    }
-    
-    nav a::after {
-        display: none;
-    }
-    
-    .auth-buttons {
-        margin-left: auto;
-        margin-right: 15px;
-    }
-    
-    .header-content {
-        flex-wrap: nowrap;
-    }
-}
-
+/* Responsividade */
 @media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
     .forum-container {
         grid-template-columns: 1fr;
     }
@@ -1167,58 +1072,5 @@ footer {
     
     .btn-sm {
         align-self: flex-end;
-    }
-    
-    .cards-container,
-    .certifications-grid,
-    .materials-grid,
-    .simulados-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .footer-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo h1 {
-        font-size: 1.5rem;
-    }
-    
-    .hero h2 {
-        font-size: 1.8rem;
-    }
-    
-    .hero p {
-        font-size: 0.9rem;
-    }
-    
-    .section-title h2 {
-        font-size: 1.5rem;
-    }
-    
-    .auth-container {
-        padding: 20px;
-        margin: 0 10px;
-    }
-    
-    .modal-container {
-        margin: 0 10px;
-    }
-    
-    .btn {
-        padding: 0.4rem 1rem;
-        font-size: 0.9rem;
-    }
-    
-    .auth-buttons {
-        gap: 0.5rem;
-    }
-    
-    .auth-buttons .btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
     }
 }
