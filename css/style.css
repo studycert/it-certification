@@ -46,15 +46,12 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
 }
 
 .logo {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-shrink: 0;
 }
 
 .logo i {
@@ -71,68 +68,30 @@ header {
     color: var(--secondary);
 }
 
-/* Menu Hamburguer para Mobile */
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    z-index: 1001;
-}
-
-.menu-toggle:hover {
-    color: var(--secondary);
-}
-
-/* Navegação - Efeito Mais Elegante */
+/* Navegação */
 nav {
-    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
 }
 
 nav ul {
     display: flex;
     list-style: none;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    transition: all 0.3s ease;
+    gap: 1rem;
 }
 
 nav a {
     color: white;
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.3s ease;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
+    transition: all 0.3s;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
     position: relative;
-    overflow: hidden;
     background-color: transparent;
-    font-size: 0.95rem;
-    display: block;
-    border: 1px solid transparent;
 }
 
-/* Efeito de fundo suave ao passar o mouse */
-nav a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Efeito para o item ativo */
-nav a.active {
-    background-color: var(--secondary);
-    color: white;
-    border-color: var(--secondary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-/* Linha inferior sutil para hover */
+/* Novo efeito para os botões da navegação - corrigido */
 nav a::after {
     content: '';
     position: absolute;
@@ -140,25 +99,65 @@ nav a::after {
     left: 50%;
     width: 0;
     height: 2px;
-    background: var(--secondary);
+    background-color: var(--secondary);
     transition: all 0.3s ease;
     transform: translateX(-50%);
 }
 
-nav a:hover::after {
+nav a:hover::after,
+nav a.active::after {
     width: 80%;
 }
 
-nav a.active::after {
-    width: 80%;
-    background: white;
+nav a:hover {
+    color: var(--secondary);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+nav a.active {
+    color: var(--secondary);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Menu Hamburguer */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
 }
 
 .auth-buttons {
     display: flex;
-    gap: 0.8rem;
+    gap: 1rem;
     align-items: center;
-    flex-wrap: wrap;
 }
 
 .user-info {
@@ -190,12 +189,6 @@ nav a.active::after {
     text-decoration: none;
     display: inline-block;
     text-align: center;
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    touch-action: manipulation;
 }
 
 .btn-outline {
@@ -1084,73 +1077,67 @@ footer {
     text-decoration: underline;
 }
 
-/* Responsividade */
-@media (max-width: 992px) {
+/* RESPONSIVIDADE - Menu Hamburguer */
+@media (max-width: 1024px) {
+    .header-content {
+        flex-wrap: wrap;
+    }
+    
     .menu-toggle {
-        display: block;
+        display: flex;
     }
     
     nav {
-        display: none;
-        width: 100%;
         order: 3;
+        width: 100%;
         margin-top: 1rem;
-        background: rgba(44, 62, 80, 0.95);
-        border-radius: 8px;
-        padding: 1rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        display: none;
     }
     
     nav.active {
         display: block;
-        animation: fadeIn 0.3s ease;
-    }
-    
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
     }
     
     nav ul {
         flex-direction: column;
         gap: 0.5rem;
+        background: rgba(44, 62, 80, 0.95);
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     
     nav a {
+        display: block;
         padding: 0.8rem 1rem;
-        text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        transition: all 0.3s;
     }
     
-    .header-content {
-        flex-direction: row;
-        justify-content: space-between;
+    nav a:hover {
+        background-color: rgba(52, 152, 219, 0.2);
     }
     
-    .logo {
-        width: auto;
+    nav a::after {
+        display: none;
     }
     
     .auth-buttons {
-        width: auto;
+        margin-left: auto;
     }
-    
+}
+
+@media (max-width: 768px) {
+    .forum-container {
+        grid-template-columns: 1fr;
+    }
+
     .hero h2 {
         font-size: 2rem;
     }
-    
+
     .hero p {
         font-size: 1rem;
-    }
-    
-    .forum-container {
-        grid-template-columns: 1fr;
     }
     
     .modal-container {
@@ -1171,81 +1158,6 @@ footer {
     .btn-sm {
         align-self: flex-end;
     }
-}
-
-/* Para tablets */
-@media (min-width: 768px) and (max-width: 992px) {
-    nav {
-        display: block !important;
-    }
-    
-    nav ul {
-        flex-direction: row;
-    }
-    
-    .header-content {
-        flex-direction: row;
-        flex-wrap: nowrap;
-    }
-    
-    .logo {
-        width: auto;
-    }
-    
-    nav {
-        width: auto;
-        flex-grow: 1;
-        margin: 0 1rem;
-    }
-    
-    nav ul {
-        justify-content: center;
-    }
-    
-    .auth-buttons {
-        width: auto;
-    }
-}
-
-/* Para telas muito pequenas (celulares) */
-@media (max-width: 576px) {
-    .logo h1 {
-        font-size: 1.5rem;
-    }
-    
-    .logo i {
-        font-size: 1.7rem;
-    }
-    
-    nav a {
-        padding: 0.7rem;
-        font-size: 0.9rem;
-    }
-    
-    .auth-buttons {
-        flex-direction: column;
-        width: 100%;
-        margin-top: 1rem;
-        order: 4;
-    }
-    
-    .auth-buttons .btn {
-        width: 100%;
-        max-width: 200px;
-        margin: 0.2rem 0;
-    }
-    
-    .hero h2 {
-        font-size: 1.8rem;
-    }
-    
-    .hero p {
-        font-size: 0.95rem;
-    }
-    
-    .section-title h2 {
-        font-size: 1.6rem;
-    }
     
     .cards-container,
     .certifications-grid,
@@ -1254,55 +1166,40 @@ footer {
         grid-template-columns: 1fr;
     }
     
-    .header-content {
-        flex-wrap: wrap;
-    }
-    
-    .logo, .menu-toggle, .auth-buttons {
-        order: initial;
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
     }
 }
 
-/* Para evitar quebra de layout em telas muito pequenas */
-@media (max-width: 400px) {
-    .logo {
-        flex-direction: column;
-        gap: 5px;
-        text-align: center;
-    }
-    
-    nav a {
-        padding: 0.6rem;
-        font-size: 0.85rem;
-    }
-    
-    .hero {
-        padding: 3rem 0;
-    }
-    
-    .hero h2 {
+@media (max-width: 480px) {
+    .logo h1 {
         font-size: 1.5rem;
     }
     
-    .auth-buttons {
-        flex-direction: column;
-        align-items: center;
+    .hero h2 {
+        font-size: 1.8rem;
     }
     
-    .auth-buttons .btn {
-        width: 100%;
-        max-width: 180px;
+    .hero p {
+        font-size: 0.9rem;
     }
-}
-
-/* Efeito smooth scroll para toda a página */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Evitar zoom em inputs no iOS */
-@media (max-width: 768px) {
-    input, select, textarea {
-        font-size: 16px !important;
+    
+    .section-title h2 {
+        font-size: 1.5rem;
+    }
+    
+    .auth-container {
+        padding: 20px;
+        margin: 0 10px;
+    }
+    
+    .modal-container {
+        margin: 0 10px;
+    }
+    
+    .btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
     }
 }
