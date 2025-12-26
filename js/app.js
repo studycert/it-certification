@@ -1,33 +1,19 @@
-[file name]: app.js
-[file content begin]
-// Menu hamburguer para mobile - VERSÃO SIMPLIFICADA E FUNCIONAL
+// Menu hamburguer para mobile
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
-        console.log('✅ Elementos do menu encontrados, configurando...');
-        
-        menuToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            console.log('Menu toggle clicado');
-            
-            // Alternar classes
+        menuToggle.addEventListener('click', function() {
             mainNav.classList.toggle('active');
-            menuToggle.classList.toggle('active');
-            
-            // Alternar ícone
+            // Alternar ícone entre barras e X
             const icon = menuToggle.querySelector('i');
             if (mainNav.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
-                console.log('Menu ABERTO');
             } else {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
-                console.log('Menu FECHADO');
             }
         });
         
@@ -36,10 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
                 if (window.innerWidth <= 992) {
-                    console.log('Link clicado, fechando menu...');
                     mainNav.classList.remove('active');
-                    menuToggle.classList.remove('active');
-                    
                     const icon = menuToggle.querySelector('i');
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
@@ -47,51 +30,17 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Fechar menu ao clicar fora (apenas em mobile)
-        document.addEventListener('click', function(event) {
-            if (window.innerWidth <= 992) {
-                const isClickInsideNav = mainNav.contains(event.target);
-                const isClickOnToggle = menuToggle.contains(event.target);
-                
-                if (!isClickInsideNav && !isClickOnToggle && mainNav.classList.contains('active')) {
-                    console.log('Clique fora do menu, fechando...');
-                    mainNav.classList.remove('active');
-                    menuToggle.classList.remove('active');
-                    
-                    const icon = menuToggle.querySelector('i');
-                    if (icon) {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                }
-            }
-        });
-        
         // Fechar menu ao redimensionar para desktop
         window.addEventListener('resize', function() {
-            if (window.innerWidth > 992 && mainNav.classList.contains('active')) {
-                console.log('Redimensionado para desktop, fechando menu...');
+            if (window.innerWidth > 992) {
                 mainNav.classList.remove('active');
-                menuToggle.classList.remove('active');
-                
                 const icon = menuToggle.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
             }
         });
-    } else {
-        console.error('❌ Elementos do menu não encontrados!');
-        console.log('menuToggle:', menuToggle);
-        console.log('mainNav:', mainNav);
     }
 });
-
-// O RESTANTE DO SEU CÓDIGO StudyCertApp CONTINUA AQUI...
-// Não vou reescrever tudo para não ficar muito longo
-// Mas garanta que o código acima seja o PRIMEIRO no arquivo app.js
-
 // App principal - StudyCert
 class StudyCertApp {
     constructor() {
@@ -164,21 +113,6 @@ class StudyCertApp {
         if (targetSection) {
             targetSection.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Fechar menu hambúrguer em mobile
-            if (window.innerWidth <= 992) {
-                const menuToggle = document.getElementById('menuToggle');
-                const mainNav = document.getElementById('mainNav');
-                if (menuToggle && mainNav && mainNav.classList.contains('active')) {
-                    mainNav.classList.remove('active');
-                    menuToggle.classList.remove('active');
-                    const icon = menuToggle.querySelector('i');
-                    if (icon) {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                }
-            }
         }
     }
 
@@ -843,4 +777,4 @@ window.createNewPost = () => app.createNewPost();
 window.forgotPassword = () => app.forgotPassword();
 
 // Variável global para a instância do app (para debugging)
-window.app = app;
+window.StudyCertApp = app;
