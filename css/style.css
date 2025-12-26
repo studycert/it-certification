@@ -13,7 +13,7 @@
     border-radius: 6px;
     transition: all 0.3s ease;
     z-index: 1001;
-    margin-left: auto; /* Isso empurra para a direita */
+    margin-left: 20px; /* Espaço entre logo e botão */
 }
 
 .menu-toggle:hover {
@@ -23,55 +23,56 @@
 
 /* Menu Mobile */
 @media (max-width: 992px) {
+    /* Oculta a navegação normal em mobile */
+    nav {
+        display: none;
+    }
+    
     .menu-toggle {
         display: flex;
-        margin-left: auto; /* Mantém à direita */
-        order: 2; /* Coloca depois da logo */
+        margin-left: 15px; /* Espaço controlado entre logo e botão */
     }
     
-    .logo {
-        order: 1; /* Logo primeiro */
-        margin-right: auto; /* Empurra tudo para a direita */
-    }
-    
-    nav {
+    /* Mostra o nav quando ativo (menu aberto) */
+    nav.active {
+        display: block;
         position: fixed;
         top: 70px;
         left: 0;
         right: 0;
         background: var(--primary);
-        flex-direction: column;
-        padding: 0;
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.4s ease;
+        padding: 1rem 0;
+        max-height: 400px;
+        overflow-y: auto;
         box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         z-index: 1000;
-        order: 3; /* Menu depois do botão */
+        animation: slideDown 0.3s ease;
     }
     
-    nav.active {
-        max-height: 400px;
-        opacity: 1;
-        visibility: visible;
-        padding: 1rem 0;
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
-    nav ul {
+    nav.active ul {
         flex-direction: column;
         width: 100%;
         padding: 0;
         gap: 0;
     }
     
-    nav li {
+    nav.active li {
         width: 100%;
         list-style: none;
     }
     
-    nav a {
+    nav.active a {
         display: block;
         padding: 1rem 1.5rem;
         width: 100%;
@@ -80,61 +81,63 @@
         border-radius: 0;
     }
     
-    nav a:hover,
-    nav a.active {
+    nav.active a:hover,
+    nav.active a.active {
         background: rgba(52, 152, 219, 0.2);
         color: var(--secondary);
     }
     
-    nav a::after {
+    nav.active a::after {
         display: none;
     }
     
+    /* Ajusta o header para mobile */
     .header-content {
-        position: relative;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
+        justify-content: space-between; /* Logo à esquerda, botão à direita */
     }
     
+    /* Mantém auth buttons visíveis ou oculta - escolha uma opção: */
+    
+    /* OPÇÃO 1: Esconde auth buttons em mobile */
     .auth-buttons {
-        display: none; /* Esconde os botões de auth em mobile */
+        display: none;
     }
     
-    /* Se quiser mostrar os botões de auth em mobile, use este código:
+    /* OPÇÃO 2: Mostra auth buttons em mobile (descomente abaixo) */
+    /*
     .auth-buttons {
-        order: 4;
-        width: 100%;
-        justify-content: center;
-        margin-top: 1rem;
         display: flex;
+        margin-left: auto;
+        gap: 10px;
+    }
+    .auth-buttons .btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
     }
     */
 }
 
+/* Para telas menores, ajusta espaçamento */
 @media (max-width: 768px) {
     .menu-toggle {
         width: 40px;
         height: 40px;
         font-size: 1.1rem;
+        margin-left: 10px;
     }
     
     .logo h1 {
         font-size: 1.5rem;
     }
     
-    nav {
+    nav.active {
         top: 65px;
     }
 }
 
-/* Ajuste para telas muito pequenas */
 @media (max-width: 480px) {
-    .logo {
-        flex: 1;
-    }
-    
     .logo h1 {
         font-size: 1.3rem;
     }
@@ -143,11 +146,7 @@
         width: 36px;
         height: 36px;
         font-size: 1rem;
-        margin-left: 10px; /* Pequeno espaço entre logo e botão */
-    }
-    
-    .header-content {
-        padding: 0 10px;
+        margin-left: 8px;
     }
 }
 /* Variáveis CSS */
