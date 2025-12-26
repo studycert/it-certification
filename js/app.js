@@ -1,26 +1,28 @@
-[file name]: app.js
-[file content begin]
-// Menu hamburguer para mobile
+// Menu hamburguer para mobile - VERSÃO CORRIGIDA
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
-        // Criar elemento de ícone Font Awesome
-        const icon = document.createElement('i');
-        icon.className = 'fas fa-bars';
-        menuToggle.appendChild(icon);
+        console.log('✅ Menu hambúrguer encontrado, configurando...');
         
-        menuToggle.addEventListener('click', function() {
+        menuToggle.addEventListener('click', function(e) {
+            e.stopPropagation(); // Previne que o clique se propague
+            
+            console.log('Menu toggle clicado');
             mainNav.classList.toggle('active');
+            menuToggle.classList.toggle('active');
             
             // Alternar ícone entre barras e X
+            const icon = menuToggle.querySelector('i');
             if (mainNav.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
+                console.log('Menu aberto');
             } else {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
+                console.log('Menu fechado');
             }
         });
         
@@ -29,33 +31,50 @@ document.addEventListener('DOMContentLoaded', function() {
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
                 if (window.innerWidth <= 992) {
+                    console.log('Link clicado, fechando menu...');
                     mainNav.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
                 }
             });
         });
         
-        // Fechar menu ao redimensionar para desktop
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                mainNav.classList.remove('active');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+        // Fechar menu ao clicar fora (apenas em mobile)
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 992) {
+                const isClickInsideNav = mainNav.contains(event.target);
+                const isClickOnToggle = menuToggle.contains(event.target);
+                
+                if (!isClickInsideNav && !isClickOnToggle && mainNav.classList.contains('active')) {
+                    console.log('Clique fora do menu, fechando...');
+                    mainNav.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
             }
         });
         
-        // Fechar menu ao clicar fora
-        document.addEventListener('click', function(event) {
-            const isClickInsideNav = mainNav.contains(event.target);
-            const isClickOnToggle = menuToggle.contains(event.target);
-            
-            if (!isClickInsideNav && !isClickOnToggle && mainNav.classList.contains('active')) {
-                mainNav.classList.remove('active');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+        // Fechar menu ao redimensionar para desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) {
+                if (mainNav.classList.contains('active')) {
+                    console.log('Redimensionado para desktop, fechando menu...');
+                    mainNav.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
             }
         });
+    } else {
+        console.error('❌ Elementos do menu não encontrados');
+        console.log('menuToggle:', menuToggle);
+        console.log('mainNav:', mainNav);
     }
 });
 
@@ -138,6 +157,7 @@ class StudyCertApp {
                 const mainNav = document.getElementById('mainNav');
                 if (menuToggle && mainNav && mainNav.classList.contains('active')) {
                     mainNav.classList.remove('active');
+                    menuToggle.classList.remove('active');
                     const icon = menuToggle.querySelector('i');
                     if (icon) {
                         icon.classList.remove('fa-times');
@@ -810,4 +830,3 @@ window.forgotPassword = () => app.forgotPassword();
 
 // Variável global para a instância do app (para debugging)
 window.app = app;
-[file content end]
