@@ -71,12 +71,33 @@ header {
     color: var(--secondary);
 }
 
+/* Menu Hamburguer para Mobile */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.menu-toggle:hover {
+    color: var(--secondary);
+}
+
 /* Navegação - Efeito Mais Elegante */
+nav {
+    transition: all 0.3s ease;
+}
+
 nav ul {
     display: flex;
     list-style: none;
     gap: 0.5rem;
     flex-wrap: wrap;
+    transition: all 0.3s ease;
 }
 
 nav a {
@@ -1065,46 +1086,59 @@ footer {
 
 /* Responsividade */
 @media (max-width: 992px) {
-    .header-content {
-        flex-direction: column;
-        gap: 1.2rem;
-        padding: 1rem 0;
-    }
-    
-    .logo {
-        width: 100%;
-        justify-content: center;
+    .menu-toggle {
+        display: block;
     }
     
     nav {
+        display: none;
         width: 100%;
-        overflow-x: auto;
-        padding-bottom: 5px;
+        order: 3;
+        margin-top: 1rem;
+        background: rgba(44, 62, 80, 0.95);
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    nav.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     nav ul {
-        justify-content: center;
-        gap: 0.4rem;
-        padding: 0.5rem 0;
-        flex-wrap: nowrap;
-        min-width: max-content;
+        flex-direction: column;
+        gap: 0.5rem;
     }
     
     nav a {
-        padding: 0.5rem 0.9rem;
-        font-size: 0.9rem;
-        white-space: nowrap;
+        padding: 0.8rem 1rem;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .header-content {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .logo {
+        width: auto;
     }
     
     .auth-buttons {
-        width: 100%;
-        justify-content: center;
-        gap: 0.6rem;
-    }
-    
-    .btn {
-        padding: 0.5rem 1.2rem;
-        font-size: 0.9rem;
+        width: auto;
     }
     
     .hero h2 {
@@ -1141,6 +1175,14 @@ footer {
 
 /* Para tablets */
 @media (min-width: 768px) and (max-width: 992px) {
+    nav {
+        display: block !important;
+    }
+    
+    nav ul {
+        flex-direction: row;
+    }
+    
     .header-content {
         flex-direction: row;
         flex-wrap: nowrap;
@@ -1176,13 +1218,15 @@ footer {
     }
     
     nav a {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
+        padding: 0.7rem;
+        font-size: 0.9rem;
     }
     
     .auth-buttons {
         flex-direction: column;
         width: 100%;
+        margin-top: 1rem;
+        order: 4;
     }
     
     .auth-buttons .btn {
@@ -1209,6 +1253,14 @@ footer {
     .simulados-container {
         grid-template-columns: 1fr;
     }
+    
+    .header-content {
+        flex-wrap: wrap;
+    }
+    
+    .logo, .menu-toggle, .auth-buttons {
+        order: initial;
+    }
 }
 
 /* Para evitar quebra de layout em telas muito pequenas */
@@ -1219,13 +1271,9 @@ footer {
         text-align: center;
     }
     
-    nav ul {
-        gap: 0.3rem;
-    }
-    
     nav a {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.8rem;
+        padding: 0.6rem;
+        font-size: 0.85rem;
     }
     
     .hero {
@@ -1234,6 +1282,16 @@ footer {
     
     .hero h2 {
         font-size: 1.5rem;
+    }
+    
+    .auth-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .auth-buttons .btn {
+        width: 100%;
+        max-width: 180px;
     }
 }
 
@@ -1247,80 +1305,4 @@ html {
     input, select, textarea {
         font-size: 16px !important;
     }
-}
-
-/* Menu hamburguer para mobile (opcional futuro) */
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-}
-/* FORÇAR MODO CLARO - REMOVER QUALQUER DARK MODE */
-body {
-    background-color: #f5f7fa !important;
-    color: #333 !important;
-}
-
-.card,
-.forum-categories,
-.forum-posts,
-.material-card,
-.simulado-card,
-.cert-card,
-.user-progress,
-.material-card,
-.auth-container,
-.modal-container {
-    background-color: white !important;
-    color: #333 !important;
-}
-
-.card-header {
-    background-color: var(--primary) !important;
-    color: white !important;
-}
-
-.card-footer {
-    background-color: #f8f9fa !important;
-    border-top: 1px solid #eee !important;
-    color: #333 !important;
-}
-
-/* Garantir que textos não fiquem claros */
-p, h1, h2, h3, h4, h5, h6, span, div, a, li {
-    color: inherit !important;
-}
-
-/* Modal de Login */
-.auth-container {
-    background-color: white !important;
-    color: #333 !important;
-}
-
-.auth-header h2 {
-    color: var(--primary) !important;
-}
-
-.auth-tab {
-    color: #333 !important;
-}
-
-.auth-tab.active {
-    color: var(--secondary) !important;
-}
-
-.form-group label {
-    color: #555 !important;
-}
-
-.form-group input {
-    background-color: white !important;
-    color: #333 !important;
-    border: 2px solid #e1e1e1 !important;
-}
-
 }
