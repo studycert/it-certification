@@ -46,12 +46,15 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .logo {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .logo i {
@@ -68,49 +71,73 @@ header {
     color: var(--secondary);
 }
 
-/* Navegação */
+/* Navegação - Efeito Mais Elegante */
 nav ul {
     display: flex;
     list-style: none;
-    gap: 1.5rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 nav a {
     color: white;
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.3s;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    transition: all 0.3s ease;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
     position: relative;
     overflow: hidden;
     background-color: transparent;
+    font-size: 0.95rem;
+    display: block;
+    border: 1px solid transparent;
 }
 
-nav a::before {
+/* Efeito de fundo suave ao passar o mouse */
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Efeito para o item ativo */
+nav a.active {
+    background-color: var(--secondary);
+    color: white;
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* Linha inferior sutil para hover */
+nav a::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--secondary);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
 }
 
-nav a:hover::before {
-    left: 100%;
+nav a:hover::after {
+    width: 80%;
 }
 
-nav a:hover, nav a.active {
-    color: var(--secondary);
-    transform: translateY(-1px);
+nav a.active::after {
+    width: 80%;
+    background: white;
 }
 
 .auth-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .user-info {
@@ -142,6 +169,12 @@ nav a:hover, nav a.active {
     text-decoration: none;
     display: inline-block;
     text-align: center;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
 }
 
 .btn-outline {
@@ -1031,28 +1064,59 @@ footer {
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .header-content {
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.2rem;
+        padding: 1rem 0;
     }
-
-    nav ul {
-        flex-wrap: wrap;
+    
+    .logo {
+        width: 100%;
         justify-content: center;
-        gap: 1rem;
     }
-
-    .forum-container {
-        grid-template-columns: 1fr;
+    
+    nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 5px;
     }
-
+    
+    nav ul {
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0;
+        flex-wrap: nowrap;
+        min-width: max-content;
+    }
+    
+    nav a {
+        padding: 0.5rem 0.9rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .auth-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 0.6rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
     .hero h2 {
         font-size: 2rem;
     }
-
+    
     .hero p {
         font-size: 1rem;
+    }
+    
+    .forum-container {
+        grid-template-columns: 1fr;
     }
     
     .modal-container {
@@ -1072,5 +1136,154 @@ footer {
     
     .btn-sm {
         align-self: flex-end;
+    }
+}
+
+/* Para tablets */
+@media (min-width: 768px) and (max-width: 992px) {
+    .header-content {
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+    
+    .logo {
+        width: auto;
+    }
+    
+    nav {
+        width: auto;
+        flex-grow: 1;
+        margin: 0 1rem;
+    }
+    
+    nav ul {
+        justify-content: center;
+    }
+    
+    .auth-buttons {
+        width: auto;
+    }
+}
+
+/* Para telas muito pequenas (celulares) */
+@media (max-width: 576px) {
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .logo i {
+        font-size: 1.7rem;
+    }
+    
+    nav a {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+    
+    .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .auth-buttons .btn {
+        width: 100%;
+        max-width: 200px;
+        margin: 0.2rem 0;
+    }
+    
+    .hero h2 {
+        font-size: 1.8rem;
+    }
+    
+    .hero p {
+        font-size: 0.95rem;
+    }
+    
+    .section-title h2 {
+        font-size: 1.6rem;
+    }
+    
+    .cards-container,
+    .certifications-grid,
+    .materials-grid,
+    .simulados-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Para evitar quebra de layout em telas muito pequenas */
+@media (max-width: 400px) {
+    .logo {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+    
+    nav ul {
+        gap: 0.3rem;
+    }
+    
+    nav a {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+    
+    .hero {
+        padding: 3rem 0;
+    }
+    
+    .hero h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Efeito smooth scroll para toda a página */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Evitar zoom em inputs no iOS */
+@media (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* Menu hamburguer para mobile (opcional futuro) */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* Adicionando suporte para dark mode opcional */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a1a1a;
+        color: #f0f0f0;
+    }
+    
+    .card,
+    .forum-categories,
+    .forum-posts,
+    .material-card,
+    .simulado-card,
+    .cert-card,
+    .user-progress {
+        background-color: #2d2d2d;
+        color: #f0f0f0;
+    }
+    
+    .card-header {
+        background-color: #3d3d3d;
+    }
+    
+    .card-footer {
+        background-color: #252525;
+        border-top: 1px solid #444;
     }
 }
