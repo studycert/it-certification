@@ -1,4 +1,4 @@
-/* ========== MENU HAMBURGUER ========== */
+/* ========== MENU HAMBURGUER - VERSÃO FIXA ========== */
 .menu-toggle {
     display: none;
     background: transparent;
@@ -11,10 +11,8 @@
     align-items: center;
     justify-content: center;
     z-index: 1001;
-    position: absolute; /* Posicionamento absoluto */
-    right: 20px; /* Distância da direita */
-    top: 50%; /* Centraliza verticalmente */
-    transform: translateY(-50%); /* Ajuste para centralizar */
+    padding: 0;
+    margin: 0;
 }
 
 .menu-toggle:hover {
@@ -23,65 +21,57 @@
 
 /* Menu Mobile */
 @media (max-width: 992px) {
-    /* Esconde nav normal em mobile */
-    nav {
-        display: none;
-    }
-    
-    /* Mostra botão hambúrguer */
-    .menu-toggle {
-        display: flex;
-    }
-    
-    /* Ajusta o header para mobile */
+    /* REORDENA OS ELEMENTOS NO HEADER */
     .header-content {
-        position: relative; /* Para posicionamento absoluto do botão */
-        min-height: 60px; /* Altura mínima para o header */
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-areas: 
+            "logo auth menu";
+        align-items: center;
+        gap: 15px;
     }
     
-    /* Posiciona logo */
     .logo {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        grid-area: logo;
+        justify-self: start;
     }
     
-    /* Posiciona auth buttons à direita (se estiverem visíveis) */
     .auth-buttons {
-        position: absolute;
-        right: 70px; /* Deixa espaço para o botão hambúrguer */
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
+        grid-area: auth;
+        justify-self: end;
+        display: flex !important;
         gap: 10px;
+        margin: 0;
     }
     
     .auth-buttons .btn {
         padding: 6px 12px;
         font-size: 0.85rem;
+        white-space: nowrap;
     }
     
-    /* Ajusta botão hambúrguer */
     .menu-toggle {
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        grid-area: menu;
+        justify-self: end;
+        display: flex;
+        margin: 0;
     }
     
-    /* Estilo do menu quando aberto */
+    /* Esconde nav normal */
+    nav {
+        display: none;
+        width: 100%;
+    }
+    
+    /* Mostra menu quando ativo */
     nav.active {
         display: block;
-        position: fixed;
-        top: 70px; /* Abaixo do header */
-        left: 0;
-        right: 0;
+        grid-column: 1 / -1;
+        grid-row: 2;
         background: var(--primary);
         padding: 1rem 0;
-        max-height: 400px;
-        overflow-y: auto;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        z-index: 1000;
+        margin-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
         animation: slideDown 0.3s ease;
     }
     
@@ -130,15 +120,8 @@
 
 /* Ajustes para telas menores */
 @media (max-width: 768px) {
-    .menu-toggle {
-        font-size: 1.3rem;
-        width: 40px;
-        height: 40px;
-        right: 15px;
-    }
-    
-    .logo {
-        left: 15px;
+    .header-content {
+        gap: 10px;
     }
     
     .logo h1 {
@@ -146,7 +129,7 @@
     }
     
     .auth-buttons {
-        right: 60px;
+        gap: 8px;
     }
     
     .auth-buttons .btn {
@@ -154,42 +137,61 @@
         font-size: 0.8rem;
     }
     
-    nav.active {
-        top: 65px;
+    .menu-toggle {
+        font-size: 1.3rem;
+        width: 40px;
+        height: 40px;
     }
 }
 
-@media (max-width: 480px) {
-    .menu-toggle {
-        font-size: 1.2rem;
-        width: 36px;
-        height: 36px;
-        right: 10px;
-    }
-    
-    .logo {
-        left: 10px;
-    }
-    
+@media (max-width: 600px) {
     .logo h1 {
         font-size: 1.3rem;
-    }
-    
-    .auth-buttons {
-        right: 50px;
-        gap: 5px;
     }
     
     .auth-buttons .btn {
         padding: 4px 8px;
         font-size: 0.75rem;
     }
+    
+    .menu-toggle {
+        font-size: 1.2rem;
+        width: 36px;
+        height: 36px;
+    }
 }
 
-/* Para telas maiores que 992px, esconde o botão */
+/* Para telas muito pequenas */
+@media (max-width: 480px) {
+    .header-content {
+        grid-template-columns: auto auto auto;
+        gap: 8px;
+    }
+    
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .auth-buttons {
+        gap: 5px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 3px 6px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Para telas maiores que 992px */
 @media (min-width: 993px) {
     .menu-toggle {
         display: none !important;
+    }
+    
+    .header-content {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
     }
     
     nav {
