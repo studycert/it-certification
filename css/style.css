@@ -1,3 +1,81 @@
+/* ========== MENU HAMBURGUER ========== */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
+
+/* Menu Mobile */
+@media (max-width: 992px) {
+    .menu-toggle {
+        display: flex;
+        order: 2;
+        margin-left: auto;
+    }
+    
+    nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        flex-direction: column;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 999;
+    }
+    
+    nav.active {
+        max-height: 500px;
+        opacity: 1;
+        padding: 1rem 0;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+    
+    nav li {
+        width: 100%;
+    }
+    
+    nav a {
+        display: block;
+        padding: 0.8rem 1.5rem;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    nav a:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .header-content {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .auth-buttons {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+}
 /* Variáveis CSS */
 :root {
     --primary: #2c3e50;
