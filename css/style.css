@@ -1260,30 +1260,4 @@ html {
     padding: 0.5rem;
 }
 
-/* Adicionando suporte para dark mode opcional */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: #1a1a1a;
-        color: #f0f0f0;
-    }
-    
-    .card,
-    .forum-categories,
-    .forum-posts,
-    .material-card,
-    .simulado-card,
-    .cert-card,
-    .user-progress {
-        background-color: #2d2d2d;
-        color: #f0f0f0;
-    }
-    
-    .card-header {
-        background-color: #3d3d3d;
-    }
-    
-    .card-footer {
-        background-color: #252525;
-        border-top: 1px solid #444;
-    }
 }
