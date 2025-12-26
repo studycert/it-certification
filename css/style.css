@@ -1,206 +1,47 @@
-/* ========== SOLUÇÃO FLEXBOX PARA TOPO ========== */
-.menu-toggle {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    margin: 0;
-}
-
-.menu-toggle:hover {
-    color: var(--secondary);
-}
-
-/* Menu Mobile - VERSÃO FLEXBOX TOPO */
+/* ========== SOLUÇÃO GRID SIMPLES ========== */
 @media (max-width: 992px) {
-    /* CONFIGURAÇÃO DO HEADER */
     .header-content {
-        display: flex;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-areas: "logo auth menu";
         align-items: center;
-        justify-content: space-between;
-        flex-wrap: nowrap;
-        gap: 10px;
-        height: 70px; /* Altura fixa para alinhamento */
+        gap: 15px;
+        padding: 0 15px;
+        height: 70px;
     }
     
-    /* LOGO - esquerda */
     .logo {
-        flex: 0 0 auto;
-        order: 1;
+        grid-area: logo;
+        justify-self: start;
     }
     
-    /* AUTH BUTTONS - centro-direita */
     .auth-buttons {
-        flex: 0 0 auto;
-        order: 2;
+        grid-area: auth;
+        justify-self: end;
         display: flex !important;
-        gap: 8px;
-        margin-left: auto; /* Empurra para a direita */
+        gap: 10px;
+        margin: 0;
     }
     
-    .auth-buttons .btn {
-        padding: 6px 12px;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        height: 36px;
-        line-height: 24px;
-    }
-    
-    /* MENU TOGGLE - extrema direita */
     .menu-toggle {
-        flex: 0 0 auto;
-        order: 3;
+        grid-area: menu;
+        justify-self: end;
         display: flex;
-        margin-left: 5px;
+        margin: 0;
     }
     
-    /* NAV - oculto por padrão */
     nav {
+        grid-column: 1 / -1;
+        grid-row: 2;
         display: none;
-        order: 4;
-        width: 100%;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
+        margin-top: 10px;
+    }
+    
+    nav.active {
+        display: block;
         background: var(--primary);
-        z-index: 1000;
-    }
-    
-    /* NAV - quando ativo */
-    nav.active {
-        display: block;
         padding: 1rem 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        animation: slideDown 0.3s ease;
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    nav.active ul {
-        flex-direction: column;
-        width: 100%;
-        padding: 0;
-        gap: 0;
-    }
-    
-    nav.active li {
-        width: 100%;
-        list-style: none;
-    }
-    
-    nav.active a {
-        display: block;
-        padding: 1rem 1.5rem;
-        width: 100%;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        text-align: left;
-    }
-    
-    nav.active a:hover {
-        background: rgba(52, 152, 219, 0.2);
-    }
-}
-
-/* Ajustes para telas menores */
-@media (max-width: 768px) {
-    .header-content {
-        height: 65px;
-        padding: 0 10px;
-    }
-    
-    .logo h1 {
-        font-size: 1.5rem;
-    }
-    
-    .auth-buttons .btn {
-        padding: 5px 10px;
-        font-size: 0.8rem;
-        height: 34px;
-    }
-    
-    .menu-toggle {
-        font-size: 1.3rem;
-        width: 40px;
-        height: 40px;
-    }
-    
-    nav.active {
-        top: 65px;
-    }
-}
-
-@media (max-width: 600px) {
-    .logo h1 {
-        font-size: 1.3rem;
-    }
-    
-    .auth-buttons {
-        gap: 5px;
-    }
-    
-    .auth-buttons .btn {
-        padding: 4px 8px;
-        font-size: 0.75rem;
-        height: 32px;
-    }
-    
-    .menu-toggle {
-        font-size: 1.2rem;
-        width: 36px;
-        height: 36px;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo h1 {
-        font-size: 1.1rem;
-    }
-    
-    .auth-buttons .btn {
-        padding: 3px 6px;
-        font-size: 0.7rem;
-        height: 30px;
-    }
-    
-    .menu-toggle {
-        font-size: 1.1rem;
-        width: 34px;
-        height: 34px;
-    }
-}
-
-/* Desktop - esconde botão hambúrguer */
-@media (min-width: 993px) {
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    .header-content {
-        display: flex !important;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    nav {
-        display: flex !important;
-        position: static !important;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
 }
 /* Variáveis CSS */
