@@ -1,28 +1,33 @@
-// Menu hamburguer para mobile - VERSÃO CORRIGIDA
+[file name]: app.js
+[file content begin]
+// Menu hamburguer para mobile - VERSÃO SIMPLIFICADA E FUNCIONAL
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
-        console.log('✅ Menu hambúrguer encontrado, configurando...');
+        console.log('✅ Elementos do menu encontrados, configurando...');
         
         menuToggle.addEventListener('click', function(e) {
-            e.stopPropagation(); // Previne que o clique se propague
+            e.preventDefault();
+            e.stopPropagation();
             
             console.log('Menu toggle clicado');
+            
+            // Alternar classes
             mainNav.classList.toggle('active');
             menuToggle.classList.toggle('active');
             
-            // Alternar ícone entre barras e X
+            // Alternar ícone
             const icon = menuToggle.querySelector('i');
             if (mainNav.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
-                console.log('Menu aberto');
+                console.log('Menu ABERTO');
             } else {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
-                console.log('Menu fechado');
+                console.log('Menu FECHADO');
             }
         });
         
@@ -34,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Link clicado, fechando menu...');
                     mainNav.classList.remove('active');
                     menuToggle.classList.remove('active');
+                    
                     const icon = menuToggle.querySelector('i');
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
@@ -51,32 +57,40 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Clique fora do menu, fechando...');
                     mainNav.classList.remove('active');
                     menuToggle.classList.remove('active');
+                    
                     const icon = menuToggle.querySelector('i');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
                 }
             }
         });
         
         // Fechar menu ao redimensionar para desktop
         window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                if (mainNav.classList.contains('active')) {
-                    console.log('Redimensionado para desktop, fechando menu...');
-                    mainNav.classList.remove('active');
-                    menuToggle.classList.remove('active');
-                    const icon = menuToggle.querySelector('i');
+            if (window.innerWidth > 992 && mainNav.classList.contains('active')) {
+                console.log('Redimensionado para desktop, fechando menu...');
+                mainNav.classList.remove('active');
+                menuToggle.classList.remove('active');
+                
+                const icon = menuToggle.querySelector('i');
+                if (icon) {
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
                 }
             }
         });
     } else {
-        console.error('❌ Elementos do menu não encontrados');
+        console.error('❌ Elementos do menu não encontrados!');
         console.log('menuToggle:', menuToggle);
         console.log('mainNav:', mainNav);
     }
 });
+
+// O RESTANTE DO SEU CÓDIGO StudyCertApp CONTINUA AQUI...
+// Não vou reescrever tudo para não ficar muito longo
+// Mas garanta que o código acima seja o PRIMEIRO no arquivo app.js
 
 // App principal - StudyCert
 class StudyCertApp {
