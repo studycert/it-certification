@@ -130,6 +130,23 @@
         order: 3; /* No desktop fica depois da navegação */
     }
 }
+/* Para telas muito pequenas */
+@media (max-width: 480px) {
+    .auth-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .auth-buttons .btn {
+        width: 100%;
+        text-align: center;
+        padding: 8px 12px;
+    }
+    
+    .menu-toggle {
+        align-self: center;
+    }
+}
 /* Variáveis CSS */
 :root {
     --primary: #2c3e50;
