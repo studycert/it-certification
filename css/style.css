@@ -110,96 +110,64 @@
         min-height: 70px;
         padding: 0 15px;
         position: relative;
+/* HEADER MOBILE - GARANTINDO ALINHAMENTO */
+@media (max-width: 992px) {
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        padding: 0 10px;
+        min-height: 70px;
     }
-    
-    /* Logo - ocupa espaço necessário */
+
     .logo {
-        flex: 0 0 auto;
-        margin-right: 10px;
+        flex-shrink: 0;
+        max-width: 150px; /* Ajuste conforme necessário */
     }
-    
-    /* Botões de autenticação - centralizados */
+
+    .logo h1 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .auth-buttons {
         display: flex !important;
-        gap: 8px;
-        flex: 0 0 auto;
+        flex-shrink: 0;
+        margin: 0 10px;
+    }
+
+    .auth-buttons .btn {
+        white-space: nowrap;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+
+    .menu-toggle {
+        flex-shrink: 0;
         margin: 0;
     }
-    
-    .auth-buttons .btn {
-        padding: 6px 12px;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Botão hambúrguer - lado direito */
-    .menu-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: transparent;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 8px;
-        width: 44px;
-        height: 44px;
-        border-radius: 4px;
-        transition: all 0.3s;
-        flex: 0 0 auto;
-        margin-left: 10px;
-    }
-    
-    .menu-toggle:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Menu de navegação (escondido por padrão) */
-    nav {
-        display: none !important;
-    }
-    
-    /* Menu ativo */
-    nav.active {
-        display: block !important;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
-        background: var(--primary);
-        z-index: 1000;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    
-    nav.active ul {
-        flex-direction: column;
-        padding: 1rem 0;
-    }
-    
-    nav.active li {
-        width: 100%;
-    }
-    
-    nav.active a {
-        display: block;
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-}
 
-/* DESKTOP */
-@media (min-width: 993px) {
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    .auth-buttons {
-        order: 0;
+    /* Se a tela for muito pequena, ajustar o padding e margens */
+    @media (max-width: 480px) {
+        .header-content {
+            padding: 0 5px;
+        }
+
+        .auth-buttons {
+            margin: 0 5px;
+        }
+
+        .auth-buttons .btn {
+            padding: 5px 8px;
+            font-size: 0.75rem;
+        }
+
+        .logo h1 {
+            font-size: 1.2rem;
+        }
     }
 }
 /* Variáveis CSS */
