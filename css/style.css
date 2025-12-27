@@ -15,9 +15,8 @@
     /* Mostra botão hambúrguer */
     .menu-toggle {
         display: block;
-        position: absolute;
-        right: 20px;
-        top: 20px;
+        position: relative; /* Alterado de absolute para relative */
+        order: 3; /* Coloca como terceiro elemento */
     }
     
     /* Ajusta o header */
@@ -26,57 +25,78 @@
         min-height: 70px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 10px 0;
     }
     
     /* Ajusta logo */
     .logo {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        position: relative; /* Alterado de absolute para relative */
+        left: auto; /* Remove posicionamento absoluto */
+        top: auto;
+        transform: none;
+        order: 1; /* Primeiro elemento */
+        flex: 1;
     }
     
     /* Ajusta auth buttons */
     .auth-buttons {
-        position: absolute;
-        right: 70px; /* Deixa espaço para o botão hambúrguer */
-        top: 50%;
-        transform: translateY(-50%);
+        position: relative; /* Alterado de absolute para relative */
+        right: auto; /* Remove posicionamento absoluto */
+        top: auto;
+        transform: none;
+        order: 2; /* Segundo elemento */
         display: flex !important;
-        gap: 10px;
+        gap: 8px;
+        margin-left: auto; /* Empurra para a direita */
     }
     
     .auth-buttons .btn {
         padding: 6px 12px;
         font-size: 0.85rem;
+        white-space: nowrap;
+    }
+    
+    /* Menu hambúrguer fica à direita dos auth buttons */
+    .menu-toggle {
+        order: 3; /* Terceiro elemento */
+        margin-left: 10px;
     }
     
     /* Esconde navegação normal em mobile */
     nav {
         display: none !important;
+        order: 4; /* Quarto elemento - vai para baixo */
+        width: 100%; /* Ocupa toda largura */
     }
     
-    /* Mostra menu quando ativo - posiciona ABSOLUTO */
+    /* Mostra menu quando ativo */
     nav.active {
         display: block !important;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
         background: var(--primary);
-        padding: 1rem 0;
+        padding: 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         z-index: 1000;
+        margin-top: 10px;
+        border-radius: 8px;
+        overflow: hidden;
     }
     
     nav.active ul {
         flex-direction: column;
         width: 100%;
         padding: 0;
+        margin: 0;
     }
     
     nav.active li {
         width: 100%;
+        margin: 0;
     }
     
     nav.active a {
@@ -84,10 +104,15 @@
         padding: 1rem 1.5rem;
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
+        text-align: left;
     }
     
     nav.active a:hover {
         background: rgba(255,255,255,0.1);
+    }
+    
+    nav.active a:last-child {
+        border-bottom: none;
     }
 }
 
@@ -99,6 +124,10 @@
     
     nav {
         display: flex !important;
+    }
+    
+    .auth-buttons {
+        order: 3; /* No desktop fica depois da navegação */
     }
 }
 /* Variáveis CSS */
