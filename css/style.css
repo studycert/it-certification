@@ -1,62 +1,52 @@
-/* ========== MENU HAMBURGUER SIMPLES ========== */
-.menu-toggle {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 1001;
-}
-
 /* MOBILE */
 @media (max-width: 992px) {
-    /* Mostra botão hambúrguer */
-    .menu-toggle {
-        display: block;
-        position: absolute;
-        right: 20px;
-        top: 20px;
-    }
-    
-    /* Ajusta o header */
+    /* Usamos grid para alinhar logo, auth-buttons e menu-toggle */
     .header-content {
         position: relative;
         min-height: 70px;
-        display: flex;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
         align-items: center;
+        gap: 20px;
     }
-    
-    /* Ajusta logo */
+
+    /* Logo na primeira coluna */
     .logo {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        grid-column: 1;
+        position: static;
+        transform: none;
     }
-    
-    /* Ajusta auth buttons */
+
+    /* Auth buttons na segunda coluna (centro) */
     .auth-buttons {
-        position: absolute;
-        right: 70px; /* Deixa espaço para o botão hambúrguer */
-        top: 50%;
-        transform: translateY(-50%);
+        grid-column: 2;
         display: flex !important;
         gap: 10px;
+        justify-content: center;
+        position: static;
+        transform: none;
     }
-    
-    .auth-buttons .btn {
-        padding: 6px 12px;
-        font-size: 0.85rem;
+
+    /* Botão hambúrguer na terceira coluna (direita) */
+    .menu-toggle {
+        grid-column: 3;
+        display: block;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 10px;
+        z-index: 1001;
+        position: static;
     }
-    
+
     /* Esconde navegação normal em mobile */
     nav {
         display: none !important;
     }
-    
-    /* Mostra menu quando ativo - posiciona ABSOLUTO */
+
+    /* Mostra menu quando ativo - posiciona ABSOLUTO abaixo do header */
     nav.active {
         display: block !important;
         position: absolute;
@@ -68,39 +58,29 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         z-index: 1000;
     }
-    
+
     nav.active ul {
         flex-direction: column;
         width: 100%;
         padding: 0;
     }
-    
+
     nav.active li {
         width: 100%;
     }
-    
+
     nav.active a {
         display: block;
         padding: 1rem 1.5rem;
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    
+
     nav.active a:hover {
         background: rgba(255,255,255,0.1);
     }
 }
 
-/* DESKTOP */
-@media (min-width: 993px) {
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    nav {
-        display: flex !important;
-    }
-}
 /* Variáveis CSS */
 :root {
     --primary: #2c3e50;
