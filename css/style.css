@@ -1,4 +1,4 @@
-/* ========== MENU HAMBURGUER SIMPLES ========== */
+/* ========== MENU HAMBURGUER CORRIGIDO ========== */
 .menu-toggle {
     display: none;
     background: transparent;
@@ -6,78 +6,73 @@
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
-    padding: 10px;
+    padding: 8px;
     z-index: 1001;
+    margin-left: 10px;
 }
 
 /* MOBILE */
 @media (max-width: 992px) {
-    /* Mostra botão hambúrguer */
-    .menu-toggle {
-        display: block;
-        position: relative; /* Alterado de absolute para relative */
-        order: 3; /* Coloca como terceiro elemento */
+    /* Container do header reorganizado */
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+        padding: 15px 0;
+        position: relative;
     }
     
-    /* Ajusta o header */
-    .header-content {
-        position: relative;
-        min-height: 70px;
+    /* Logo à esquerda */
+    .logo {
+        flex: 0 0 auto;
+        margin-right: auto;
+    }
+    
+    /* Container para botões de auth + hambúrguer */
+    .header-right {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        padding: 10px 0;
+        gap: 10px;
+        flex: 0 0 auto;
     }
     
-    /* Ajusta logo */
-    .logo {
-        position: relative; /* Alterado de absolute para relative */
-        left: auto; /* Remove posicionamento absoluto */
-        top: auto;
-        transform: none;
-        order: 1; /* Primeiro elemento */
-        flex: 1;
+    /* Mostra botão hambúrguer */
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
     }
     
-    /* Ajusta auth buttons */
+    /* Botões de autenticação */
     .auth-buttons {
-        position: relative; /* Alterado de absolute para relative */
-        right: auto; /* Remove posicionamento absoluto */
-        top: auto;
-        transform: none;
-        order: 2; /* Segundo elemento */
         display: flex !important;
         gap: 8px;
-        margin-left: auto; /* Empurra para a direita */
+        flex: 0 0 auto;
     }
     
     .auth-buttons .btn {
-        padding: 6px 12px;
+        padding: 8px 12px;
         font-size: 0.85rem;
         white-space: nowrap;
-    }
-    
-    /* Menu hambúrguer fica à direita dos auth buttons */
-    .menu-toggle {
-        order: 3; /* Terceiro elemento */
-        margin-left: 10px;
     }
     
     /* Esconde navegação normal em mobile */
     nav {
         display: none !important;
-        order: 4; /* Quarto elemento - vai para baixo */
-        width: 100%; /* Ocupa toda largura */
+        width: 100%;
+        order: 3;
     }
     
-    /* Mostra menu quando ativo */
+    /* Mostra menu quando ativo - abaixo de tudo */
     nav.active {
         display: block !important;
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
         background: var(--primary);
         padding: 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -104,7 +99,6 @@
         padding: 1rem 1.5rem;
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
-        text-align: left;
     }
     
     nav.active a:hover {
@@ -126,11 +120,13 @@
         display: flex !important;
     }
     
-    .auth-buttons {
-        order: 3; /* No desktop fica depois da navegação */
+    /* No desktop, esconde o container header-right */
+    .header-right {
+        display: none;
     }
 }
-/* Para telas muito pequenas */
+
+/* Para telas muito pequenas (celulares pequenos) */
 @media (max-width: 480px) {
     .auth-buttons {
         flex-direction: column;
@@ -138,13 +134,14 @@
     }
     
     .auth-buttons .btn {
-        width: 100%;
+        width: 100px;
         text-align: center;
-        padding: 8px 12px;
+        padding: 8px;
     }
     
     .menu-toggle {
-        align-self: center;
+        width: 40px;
+        height: 40px;
     }
 }
 /* Variáveis CSS */
