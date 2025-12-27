@@ -1,80 +1,170 @@
+/* ========== MENU HAMBURGUER - CORREÇÕES PARA ALINHAMENTO ========== */
 /* MOBILE */
 @media (max-width: 992px) {
-    /* Ajusta o header */
+    /* Header mobile com layout flex */
     .header-content {
         position: relative;
         min-height: 70px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        padding: 0 15px;
+        flex-wrap: nowrap;
+        gap: 10px;
     }
-
-    /* Ajusta logo */
+    
+    /* Logo - ocupa espaço flexível */
     .logo {
         position: static;
         transform: none;
+        flex-shrink: 0;
+        flex-grow: 0;
+        margin-right: auto; /* Empurra o resto para direita */
     }
-
-    /* Ajusta auth buttons para ficar à direita */
-    .auth-buttons {
-        display: flex !important;
-        gap: 10px;
-        margin-left: auto;
-    }
-
-    /* Botão hambúrguer à direita, após os auth buttons */
+    
+    /* Botão hambúrguer */
     .menu-toggle {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background: transparent;
         border: none;
         color: white;
         font-size: 1.5rem;
         cursor: pointer;
-        padding: 10px;
+        padding: 8px;
         z-index: 1001;
-        margin-left: 10px;
+        width: 44px;
+        height: 44px;
+        border-radius: 4px;
+        transition: all 0.3s;
+        flex-shrink: 0;
+        order: 3; /* Coloca como último item */
     }
-
+    
+    .menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Auth buttons - lado direito antes do hambúrguer */
+    .auth-buttons {
+        display: flex !important;
+        gap: 8px;
+        align-items: center;
+        flex-shrink: 0;
+        order: 2; /* Coloca como segundo item */
+        margin: 0; /* Remove margens anteriores */
+    }
+    
+    .auth-buttons .btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ajuste para telas muito pequenas */
+    @media (max-width: 480px) {
+        .auth-buttons .btn {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.4rem;
+        }
+        
+        .logo i {
+            font-size: 1.6rem;
+        }
+    }
+    
     /* Esconde navegação normal em mobile */
     nav {
         display: none !important;
     }
-
-    /* Mostra menu quando ativo - posiciona ABSOLUTO */
+    
+    /* Menu ativo - sobrepõe o conteúdo */
     nav.active {
         display: block !important;
-        position: absolute;
+        position: fixed;
         top: 70px;
         left: 0;
         right: 0;
+        bottom: 0;
         background: var(--primary);
-        padding: 1rem 0;
+        padding: 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         z-index: 1000;
+        overflow-y: auto;
+        animation: slideDown 0.3s ease-out;
     }
-
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
     nav.active ul {
         flex-direction: column;
         width: 100%;
         padding: 0;
+        margin: 0;
     }
-
+    
     nav.active li {
         width: 100%;
     }
-
+    
     nav.active a {
-        display: block;
+        display: flex;
+        align-items: center;
         padding: 1rem 1.5rem;
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1rem;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s;
     }
-
-    nav.active a:hover {
+    
+    nav.active a:hover,
+    nav.active a.active {
         background: rgba(255,255,255,0.1);
+        color: var(--secondary);
+        padding-left: 2rem;
+    }
+    
+    nav.active a i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
     }
 }
 
+/* DESKTOP - mantém como estava */
+@media (min-width: 993px) {
+    .menu-toggle {
+        display: none !important;
+    }
+    
+    nav {
+        display: flex !important;
+    }
+    
+    .auth-buttons {
+        order: 0; /* Volta à ordem normal */
+    }
+}
 /* Variáveis CSS */
 :root {
     --primary: #2c3e50;
