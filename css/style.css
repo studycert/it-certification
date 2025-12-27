@@ -1,35 +1,29 @@
 /* MOBILE */
 @media (max-width: 992px) {
-    /* Usamos grid para alinhar logo, auth-buttons e menu-toggle */
+    /* Ajusta o header */
     .header-content {
         position: relative;
         min-height: 70px;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
+        display: flex;
         align-items: center;
-        gap: 20px;
+        justify-content: space-between;
     }
 
-    /* Logo na primeira coluna */
+    /* Ajusta logo */
     .logo {
-        grid-column: 1;
         position: static;
         transform: none;
     }
 
-    /* Auth buttons na segunda coluna (centro) */
+    /* Ajusta auth buttons para ficar à direita */
     .auth-buttons {
-        grid-column: 2;
         display: flex !important;
         gap: 10px;
-        justify-content: center;
-        position: static;
-        transform: none;
+        margin-left: auto;
     }
 
-    /* Botão hambúrguer na terceira coluna (direita) */
+    /* Botão hambúrguer à direita, após os auth buttons */
     .menu-toggle {
-        grid-column: 3;
         display: block;
         background: transparent;
         border: none;
@@ -38,7 +32,7 @@
         cursor: pointer;
         padding: 10px;
         z-index: 1001;
-        position: static;
+        margin-left: 10px;
     }
 
     /* Esconde navegação normal em mobile */
@@ -46,7 +40,7 @@
         display: none !important;
     }
 
-    /* Mostra menu quando ativo - posiciona ABSOLUTO abaixo do header */
+    /* Mostra menu quando ativo - posiciona ABSOLUTO */
     nav.active {
         display: block !important;
         position: absolute;
