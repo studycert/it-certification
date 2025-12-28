@@ -1,3 +1,34 @@
+// Função para atualizar os botões de autenticação
+function updateAuthButtons() {
+    const authButtons = document.getElementById('authButtons');
+    if (!authButtons) return;
+    
+    const user = getCurrentUser(); // Sua função para verificar usuário logado
+    
+    if (user) {
+        // Usuário logado - mostrar info do usuário
+        const firstName = user.name ? user.name.split(' ')[0] : user.email.split('@')[0];
+        authButtons.innerHTML = `
+            <div class="user-info">
+                <div class="user-avatar">${firstName.charAt(0).toUpperCase()}</div>
+                <span>${firstName}</span>
+                <button class="btn btn-sm btn-outline" onclick="logout()">Sair</button>
+            </div>
+        `;
+    } else {
+        // Usuário não logado - mostrar botões de login/cadastro
+        authButtons.innerHTML = `
+            <button class="btn btn-outline" onclick="openAuthModal('login')">Entrar</button>
+            <button class="btn btn-primary" onclick="openAuthModal('register')">Cadastrar</button>
+        `;
+    }
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    updateAuthButtons();
+    // Resto do seu código de inicialização...
+});
 // Menu hambúrguer - CÓDIGO MÍNIMO
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
