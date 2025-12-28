@@ -81,7 +81,7 @@ header {
 }
 
 /* ============================
-   NAVEGAÇÃO DESKTOP - EFEITO ELEGANTE COM TRANSPARÊNCIA
+   NAVEGAÇÃO DESKTOP - EFEITOS DIFERENCIADOS
    ============================ */
 nav {
     display: flex;
@@ -106,7 +106,7 @@ nav a {
     overflow: hidden;
 }
 
-/* Efeito de fundo sutil ao passar o mouse */
+/* Efeito de fundo sutil ao passar o mouse (HOVER) */
 nav a::before {
     content: '';
     position: absolute;
@@ -121,7 +121,7 @@ nav a::before {
     z-index: -1;
 }
 
-/* Barra inferior para o link ativo */
+/* Barra inferior para o link ativo (SELECIONADO) */
 nav a::after {
     content: '';
     position: absolute;
@@ -129,46 +129,49 @@ nav a::after {
     left: 50%;
     width: 0;
     height: 3px;
-    background-color: var(--secondary);
+    background-color: var(--accent); /* Diferente do hover */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(-50%);
     border-radius: 3px 3px 0 0;
 }
 
-/* Efeito hover - fundo com transparência suave */
+/* ============================
+   EFEITO HOVER (passar o mouse) - AZUL SUAVE
+   ============================ */
 nav a:hover::before {
     opacity: 0.15;
 }
 
-/* Link ativo - mais intenso */
-nav a.active::before {
-    opacity: 0.25;
-}
-
-/* Barra cresce no hover e ativo */
-nav a:hover::after,
-nav a.active::after {
-    width: 80%;
-}
-
-/* Texto muda de cor suavemente */
-nav a:hover,
-nav a.active {
+nav a:hover {
     color: white;
     transform: translateY(-2px);
 }
 
-/* Efeito de "brilho" sutil nos cantos */
+/* ============================
+   EFEITO ATIVO (selecionado) - BARRA LARANJA
+   ============================ */
+nav a.active::after {
+    width: 80%;
+    background-color: var(--accent); /* Laranja/vermelho */
+}
+
+nav a.active {
+    color: white;
+    font-weight: 600;
+    background-color: rgba(231, 76, 60, 0.1); /* Fundo muito sutil */
+}
+
+/* Efeito de "brilho" sutil nos cantos apenas no hover */
 nav a:hover {
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
 }
 
 nav a.active {
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
 }
 
 /* ============================
-   MOBILE - EFEITO MAIS SIMPLES
+   MOBILE - EFEITOS SIMPLIFICADOS
    ============================ */
 @media (max-width: 992px) {
     nav.active a {
@@ -184,28 +187,38 @@ nav a.active {
         opacity: 0.1;
     }
     
-    nav.active a.active::before {
-        opacity: 0.2;
-    }
-    
     nav.active a::after {
         height: 2px;
         bottom: 0;
         width: 0;
     }
     
-    nav.active a:hover::after,
+    /* Hover no mobile - deslocamento */
+    nav.active a:hover::after {
+        width: 60%;
+        left: 20px;
+        transform: translateX(0);
+        background-color: var(--secondary); /* Azul no mobile */
+    }
+    
+    /* Ativo no mobile - barra e fundo */
     nav.active a.active::after {
         width: 60%;
         left: 20px;
         transform: translateX(0);
+        background-color: var(--accent); /* Laranja no mobile */
     }
     
-    nav.active a:hover,
-    nav.active a.active {
+    nav.active a:hover {
         color: white;
         transform: translateX(5px);
         background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    nav.active a.active {
+        color: white;
+        transform: translateX(5px);
+        background-color: rgba(231, 76, 60, 0.1);
     }
 }
 /* ============================
