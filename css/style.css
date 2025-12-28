@@ -181,28 +181,20 @@ nav a:hover, nav a.active {
     
     /* Ajusta o header */
     .header-content {
-        padding-right: 60px; /* Espaço para o botão hambúrguer */
-        justify-content: flex-start;
-    }
-    
-    /* Logo ocupa espaço disponível */
-    .logo {
-        flex: 1;
+        padding-right: 60px;
     }
     
     /* Auth buttons ao lado do hambúrguer */
     .auth-buttons {
         position: absolute;
-        right: 70px; /* Espaço entre auth buttons e hambúrguer */
+        right: 70px;
         top: 50%;
         transform: translateY(-50%);
     }
     
-    /* Botões menores em mobile */
     .auth-buttons .btn {
         padding: 6px 12px;
         font-size: 0.85rem;
-        min-width: auto;
     }
     
     /* Esconde navegação normal em mobile */
@@ -216,15 +208,11 @@ nav a:hover, nav a.active {
         padding: 1rem 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         z-index: 1000;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
     }
     
     /* Mostra menu quando ativo */
     nav.active {
         display: block !important;
-        max-height: 500px;
     }
     
     nav.active ul {
@@ -242,7 +230,6 @@ nav a:hover, nav a.active {
         padding: 1rem 1.5rem;
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
-        text-align: left;
     }
     
     nav.active a:hover {
@@ -252,20 +239,21 @@ nav a:hover, nav a.active {
 
 /* DESKTOP (a partir de 993px) */
 @media (min-width: 993px) {
-    /* Esconde hambúrguer */
     .menu-toggle {
         display: none !important;
     }
     
-    /* Garante que navegação está visível */
     nav {
         display: flex !important;
     }
     
-    /* Auth buttons na posição normal */
+    /* IMPORTANTE: Garante que auth buttons fiquem visíveis */
     .auth-buttons {
-        position: static;
-        transform: none;
+        display: flex !important;
+        position: static !important;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
 }
 
