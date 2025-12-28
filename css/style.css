@@ -1333,6 +1333,44 @@ nav a,
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+/* ===========================================
+   CORREÇÃO PARA TEXTO EM BOTÕES SELECIONADOS
+   =========================================== */
+
+/* Força cor branca no texto de botões ativos/selecionados */
+nav a.active {
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Para garantir que o hover não sobreponha o active */
+nav a.active:hover {
+    color: white !important;
+    background-color: #3498db !important; /* Mantém a mesma cor do active */
+}
+
+/* Especificamente para o estado ativo no header */
+header nav a.active {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* Melhora o contraste do texto */
+nav a {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+nav a:hover {
+    color: white !important;
+}
+
+/* ============================
+   GARANTE VISIBILIDADE DOS BOTÕES
+   ============================ */
+#authButtons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 }
 
