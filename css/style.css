@@ -38,7 +38,7 @@ body {
 }
 
 /* ============================
-   HEADER PRINCIPAL
+   HEADER - DESKTOP
    ============================ */
 header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
@@ -138,7 +138,7 @@ nav a:hover, nav a.active {
     white-space: nowrap;
 }
 
-/* Botão Hambúrguer */
+/* Botão Hambúrguer - INICIALMENTE ESCONDIDO */
 .menu-toggle {
     display: none;
     background: transparent;
@@ -155,7 +155,7 @@ nav a:hover, nav a.active {
 }
 
 /* ============================
-   HERO SECTION (SEM BARRA)
+   HERO SECTION
    ============================ */
 .hero {
     background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
@@ -179,26 +179,23 @@ nav a:hover, nav a.active {
 }
 
 /* ============================
-   LAYOUT MOBILE (até 992px)
+   MOBILE (até 992px)
    ============================ */
 @media (max-width: 992px) {
+    /* HEADER MOBILE */
     .header-content {
         padding: 0.5rem 0;
         min-height: 50px;
     }
     
-    /* Esconde a navegação normal no mobile */
-    nav {
-        display: none !important;
+    /* Logo à esquerda */
+    .logo {
+        flex: 1;
     }
     
-    /* Mostra botão hambúrguer no mobile */
-    .menu-toggle {
-        display: flex;
-    }
-    
-    /* Botões lado a lado no mobile */
+    /* MOSTRA botões Entrar/Cadastrar no mobile */
     .auth-buttons {
+        display: flex !important;
         margin-left: auto;
         margin-right: 10px;
         gap: 0.5rem;
@@ -207,6 +204,17 @@ nav a:hover, nav a.active {
     .auth-buttons .btn {
         padding: 0.3rem 0.8rem;
         font-size: 0.8rem;
+    }
+    
+    /* MOSTRA botão hambúrguer */
+    .menu-toggle {
+        display: flex;
+        order: 3;
+    }
+    
+    /* Esconde navegação desktop */
+    nav {
+        display: none !important;
     }
     
     /* Menu hambúrguer quando ativo */
@@ -243,7 +251,7 @@ nav a:hover, nav a.active {
         background: rgba(255,255,255,0.1);
     }
     
-    /* Hero ajustado para mobile */
+    /* Hero mobile */
     .hero {
         padding: 2rem 0;
     }
@@ -260,97 +268,7 @@ nav a:hover, nav a.active {
 }
 
 /* ============================
-   LAYOUT DESKTOP (acima de 992px)
-   ============================ */
-@media (min-width: 993px) {
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    nav {
-        display: flex !important;
-    }
-}
-
-/* ============================
-   REMOVE BARRAS/LINHAS
-   ============================ */
-header::after,
-.hero::before {
-    display: none;
-}
-
-/* ============================
-   LAYOUT MOBILE (até 992px)
-   ============================ */
-@media (max-width: 992px) {
-    .header-content {
-        padding: 0.5rem 0;
-        height: 60px;
-        position: relative;
-    }
-    
-    /* Esconde a navegação normal no mobile */
-    nav {
-        display: none !important;
-    }
-    
-    /* Mostra botão hambúrguer no mobile */
-    .menu-toggle {
-        display: flex;
-        order: 3; /* Fica à direita */
-    }
-    
-    /* Ajusta auth buttons para ficar antes do hambúrguer */
-    .auth-buttons {
-        order: 2;
-        margin-left: auto;
-        margin-right: 10px;
-    }
-    
-    .auth-buttons .btn {
-        padding: 6px 12px;
-        font-size: 0.85rem;
-        white-space: nowrap;
-    }
-    
-    /* Menu hambúrguer quando ativo */
-    nav.active {
-        display: block !important;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        background: var(--primary);
-        padding: 1rem 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 1000;
-    }
-    
-    nav.active ul {
-        flex-direction: column;
-        width: 100%;
-        padding: 0;
-    }
-    
-    nav.active li {
-        width: 100%;
-    }
-    
-    nav.active a {
-        display: block;
-        padding: 1rem 1.5rem;
-        width: 100%;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    nav.active a:hover {
-        background: rgba(255,255,255,0.1);
-    }
-}
-
-/* ============================
-   LAYOUT DESKTOP (acima de 992px)
+   DESKTOP (acima de 992px)
    ============================ */
 @media (min-width: 993px) {
     .menu-toggle {
@@ -429,30 +347,6 @@ header::after,
 .btn-sm:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* ============================
-   SEÇÃO HERO
-   ============================ */
-.hero {
-    background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    padding: 4rem 0;
-    text-align: center;
-    margin-top: 0;
-}
-
-.hero h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.hero p {
-    font-size: 1.2rem;
-    max-width: 700px;
-    margin: 0 auto 2rem;
 }
 
 /* ============================
@@ -1208,24 +1102,30 @@ footer {
 }
 
 /* ============================
-   RESPONSIVIDADE ADICIONAL
+   RESPONSIVIDADE
    ============================ */
 @media (max-width: 768px) {
-    .header-content {
-        height: 60px;
-        padding: 0.5rem 0;
+    /* Força os botões a aparecerem */
+    .auth-buttons {
+        display: flex !important;
+        gap: 0.3rem;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
     }
     
     .hero {
-        padding: 2.5rem 0;
+        padding: 1.5rem 0;
     }
     
     .hero h2 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
     
     .hero p {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     
     .forum-container {
@@ -1271,4 +1171,14 @@ footer {
     background: #efe;
     color: #2a7;
     border: 1px solid #cfc;
+}
+
+/* ============================
+   GARANTE VISIBILIDADE DOS BOTÕES
+   ============================ */
+/* IMPORTANTE: Força os botões a aparecerem sempre */
+#authButtons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
