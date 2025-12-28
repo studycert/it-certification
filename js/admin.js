@@ -83,22 +83,75 @@ class AdminPanel {
     }
 
     async verificarPermissoesAdmin() {
-        // Aqui você pode implementar uma verificação mais robusta
-        // Por exemplo, verificar em uma tabela de administradores
+    try {
+        console.log('🔍 Verificando se usuário é admin...');
+        console.log('👤 ID do usuário:', this.currentUser.id);
+        console.log('📧 Email:', this.currentUser.email);
         
-        // Por enquanto, vamos permitir acesso a qualquer usuário logado
-        // mas você pode restringir para emails específicos
+        // TESTE 1: Verificar usando a função RPC do Supabase
+        const { data: isAdmin, error } = await this.supabase
+            .rpc('is_admin', { user_id: this.currentUser.id });
         
-        const adminEmails = ['admin@studycert.com', 'suporte@studycert.com'];
+        console.log('📊 Resultado da função is_admin:', isAdmin);
         
-        if (!adminEmails.includes(this.currentUser.email)) {
-            this.showToast('Acesso não autorizado. Redirecionando...', 'warning');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 3000);
-            throw new Error('Acesso não autorizado');
+        if (error) {
+            console.warn('⚠️ Erro na função RPC, tentando método alternativo...', error);
+            
+            // TESTE 2: Consultar diretamente a tabela admin_usuarios
+            const { data: adminData, error: queryError } = await this.supabase
+                .from('admin_usuarios')
+                .select('*')
+                .eq('id', this.currentUser.id);
+            
+            console.log('📋 Dados da tabela admin_usuarios:', adminData);
+            
+            if (queryError) {
+                console.error('❌ Erro na consulta direta:', queryError);
+            }
+            
+            // Se encontrou na tabela, é admin
+            if (adminData && adminData.length > 0) {
+                console.log('✅ Usuário é admin (encontrado na tabela)');
+                return; // Usuário é admin, pode continuar
+            }
+            
+        } else if (isAdmin === true) {
+            console.log('✅ Usuário é admin (função retornou true)');
+            return; // Usuário é admin, pode continuar
         }
+        
+        // TESTE 3: Verificação temporária pelo email (APENAS PARA DEBUG)
+        // REMOVA ESTE BLOCO DEPOIS DE CONFIGURAR CORRETAMENTE
+        const adminEmailsDebug = [
+            'admin@studycert.com', 
+            'suporte@studycert.com',
+            'andre.martins05@gmail.com' // ADICIONE SEU EMAIL AQUI TEMPORARIAMENTE
+        ];
+        
+        if (adminEmailsDebug.includes(this.currentUser.email)) {
+            console.warn('⚠️ Acesso permitido por email (MODO DEBUG)');
+            return; // Permite acesso temporariamente
+        }
+        
+        // Se chegou aqui, não é admin
+        console.log('❌ Usuário NÃO é admin - Acesso negado');
+        this.showToast('Acesso não autorizado. Você não possui permissões de administrador.', 'error');
+        
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+        throw new Error('Acesso não autorizado - usuário não é administrador');
+        
+    } catch (err) {
+        console.error('❌ Erro na verificação de admin:', err);
+        this.showToast('Erro ao verificar permissões. Redirecionando...', 'error');
+        
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 2000);
+        throw err;
     }
+}
 
     carregarInterface() {
         // Atualizar informações do perfil
