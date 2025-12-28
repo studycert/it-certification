@@ -1,4 +1,4 @@
-/* ========== MENU HAMBURGUER E BOTÕES CORRIGIDOS ========== */
+/* ========== MENU HAMBURGUER SIMPLES ========== */
 .menu-toggle {
     display: none;
     background: transparent;
@@ -6,130 +6,77 @@
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
+    padding: 10px;
     z-index: 1001;
 }
 
-/* DESKTOP - ACIMA DE 992px (PRIMEIRO) */
-@media (min-width: 993px) {
-    /* Esconde botão hambúrguer no desktop */
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    /* Mostra navegação normal no desktop */
-    nav {
-        display: flex !important;
-        flex: 1;
-        justify-content: center;
-    }
-    
-    /* Botões de autenticação no desktop */
-    .auth-buttons {
-        display: flex !important;
-        gap: 1rem;
-        align-items: center;
-    }
-    
-    /* Esconde o container header-right no desktop */
-    .header-right {
-        display: none !important;
-    }
-    
-    /* Estrutura do header no desktop */
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .logo {
-        flex: 0 0 auto;
-    }
-    
-    nav {
-        flex: 1;
-        justify-content: center;
-    }
-}
-
-/* MOBILE - ABAIXO DE 992px */
+/* MOBILE */
 @media (max-width: 992px) {
-    /* Container do header reorganizado */
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 0;
-        position: relative;
-    }
-    
-    /* Logo à esquerda */
-    .logo {
-        flex: 0 0 auto;
-    }
-    
-    /* Container para botões de auth + hambúrguer no mobile */
-    .header-right {
-        display: flex !important; /* IMPORTANTE: Mostra no mobile */
-        align-items: center;
-        gap: 15px;
-        flex: 0 0 auto;
-    }
-    
-    /* Mostra botão hambúrguer no mobile */
+    /* Mostra botão hambúrguer */
     .menu-toggle {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 20px;
     }
     
-    /* Botões de autenticação no mobile */
+    /* Ajusta o header */
+    .header-content {
+        position: relative;
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ajusta logo */
+    .logo {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    /* Ajusta auth buttons */
     .auth-buttons {
+        position: absolute;
+        right: 70px; /* Deixa espaço para o botão hambúrguer */
+        top: 50%;
+        transform: translateY(-50%);
         display: flex !important;
-        gap: 8px;
+        gap: 10px;
     }
     
     .auth-buttons .btn {
-        padding: 8px 15px;
-        font-size: 0.9rem;
-        white-space: nowrap;
-        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.85rem;
     }
     
     /* Esconde navegação normal em mobile */
     nav {
         display: none !important;
-        width: 100%;
     }
     
-    /* Mostra menu quando ativo */
+    /* Mostra menu quando ativo - posiciona ABSOLUTO */
     nav.active {
         display: block !important;
         position: absolute;
-        top: 100%;
+        top: 70px;
         left: 0;
         right: 0;
         background: var(--primary);
-        padding: 0;
+        padding: 1rem 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         z-index: 1000;
-        margin-top: 10px;
-        border-radius: 8px;
-        overflow: hidden;
     }
     
     nav.active ul {
         flex-direction: column;
         width: 100%;
         padding: 0;
-        margin: 0;
     }
     
     nav.active li {
         width: 100%;
-        margin: 0;
     }
     
     nav.active a {
@@ -142,40 +89,17 @@
     nav.active a:hover {
         background: rgba(255,255,255,0.1);
     }
-    
-    nav.active a:last-child {
-        border-bottom: none;
-    }
 }
 
-/* Para telas médias (tablets) */
-@media (max-width: 768px) {
-    .auth-buttons .btn {
-        padding: 7px 12px;
-        font-size: 0.85rem;
-    }
-}
-
-/* Para celulares pequenos */
-@media (max-width: 576px) {
-    .auth-buttons {
-        flex-direction: column;
-        gap: 5px;
+/* DESKTOP */
+@media (min-width: 993px) {
+    .menu-toggle {
+        display: none !important;
     }
     
-    .auth-buttons .btn {
-        padding: 6px 10px;
-        font-size: 0.8rem;
-        min-width: 80px;
-        text-align: center;
+    nav {
+        display: flex !important;
     }
-}
-
-/* CORREÇÃO IMPORTANTE: Garante que auth-buttons sempre tenha display flex */
-.auth-buttons {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
 }
 /* Variáveis CSS */
 :root {
