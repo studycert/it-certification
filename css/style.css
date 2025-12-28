@@ -1,4 +1,113 @@
 /* ============================
+   SIMULADOS - CORREÇÃO DO LAYOUT
+   ============================ */
+
+.simulados-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.simulado-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.simulado-card .card-header {
+    padding: 1.5rem;
+    background: var(--primary);
+    color: white;
+    flex-shrink: 0;
+}
+
+.simulado-card .card-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.simulado-card .card-footer {
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    flex-shrink: 0;
+}
+
+/* Garantir que os cards tenham altura uniforme */
+.simulado-card {
+    min-height: 300px;
+}
+
+/* Estilo do badge */
+.simulado-badge {
+    background: var(--accent);
+    color: white;
+    padding: 0.5rem 1rem;
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+}
+
+/* Botão de mostrar simulados */
+.show-simulados-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: auto; /* Isso empurra o botão para baixo */
+    width: 100%;
+    max-width: 200px;
+}
+
+.show-simulados-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* ============================
+   RESPONSIVIDADE PARA SIMULADOS
+   ============================ */
+@media (max-width: 768px) {
+    .simulados-container {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .simulado-card {
+        min-height: 280px;
+    }
+    
+    .simulado-card .card-body {
+        padding: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .simulados-container {
+        grid-template-columns: 1fr;
+    }
+}
+/* ============================
    VARIÁVEIS E RESET
    ============================ */
 :root {
