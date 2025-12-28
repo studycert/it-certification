@@ -8,10 +8,6 @@
     cursor: pointer;
     padding: 10px;
     z-index: 1001;
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
 }
 
 /* MOBILE */
@@ -19,6 +15,9 @@
     /* Mostra botão hambúrguer */
     .menu-toggle {
         display: block;
+        position: absolute;
+        right: 20px;
+        top: 20px;
     }
     
     /* Ajusta o header */
@@ -27,23 +26,24 @@
         min-height: 70px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding-right: 60px; /* Espaço para o botão hambúrguer */
     }
     
     /* Ajusta logo */
     .logo {
-        position: static;
-        transform: none;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
     }
     
-    /* Ajusta auth buttons - IMPORTANTE: mostrar em mobile */
+    /* Ajusta auth buttons */
     .auth-buttons {
-        position: static;
-        transform: none;
+        position: absolute;
+        right: 70px; /* Deixa espaço para o botão hambúrguer */
+        top: 50%;
+        transform: translateY(-50%);
         display: flex !important;
         gap: 10px;
-        margin-right: 50px; /* Deixa espaço para o botão hambúrguer */
     }
     
     .auth-buttons .btn {
@@ -60,7 +60,7 @@
     nav.active {
         display: block !important;
         position: absolute;
-        top: 100%; /* Abaixo do header */
+        top: 70px;
         left: 0;
         right: 0;
         background: var(--primary);
@@ -98,11 +98,6 @@
     }
     
     nav {
-        display: flex !important;
-    }
-    
-    /* GARANTIR que auth-buttons aparece em desktop */
-    .auth-buttons {
         display: flex !important;
     }
 }
