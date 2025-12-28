@@ -1,8 +1,6 @@
 // Função para ajustar botões no mobile
 function ajustarLayoutMobile() {
     const authButtons = document.getElementById('authButtons');
-    const menuToggle = document.getElementById('menuToggle');
-    
     if (window.innerWidth <= 768) {
         authButtons.style.display = 'none';
     } else if (window.innerWidth <= 992) {
@@ -20,19 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
-        console.log('Menu encontrado, configurando...');
-        
         menuToggle.addEventListener('click', function() {
-            console.log('Botão clicado!');
             mainNav.classList.toggle('active');
             
             const icon = this.querySelector('i');
             if (mainNav.classList.contains('active')) {
-                console.log('Abrindo menu');
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
             } else {
-                console.log('Fechando menu');
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
@@ -59,8 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
-    } else {
-        console.error('Elementos não encontrados!');
     }
 });
 
@@ -84,7 +75,7 @@ class StudyCertApp {
             console.log('URL:', SUPABASE_CONFIG.url);
             console.log('Chave:', SUPABASE_CONFIG.anonKey ? 'Presente' : 'Faltando');
             
-            // Inicializar Supabase
+            // Inicializar Supabase com configurações aprimoradas
             if (typeof supabase !== 'undefined' && SUPABASE_CONFIG) {
                 this.supabase = supabase.createClient(
                     SUPABASE_CONFIG.url,
@@ -94,7 +85,8 @@ class StudyCertApp {
                             autoRefreshToken: true,
                             persistSession: true,
                             detectSessionInUrl: true,
-                            storage: window.localStorage
+                            storage: window.localStorage,
+                            storageKey: 'studycert-auth'
                         },
                         global: {
                             headers: {
@@ -143,21 +135,11 @@ class StudyCertApp {
     async loadInitialData() {
         // Carregar simulados do banco
         await this.loadSimulados();
-        
-        // Carregar certificações do banco
-        await this.loadCertificacoes();
-        
-        // Carregar materiais de estudo
-        await this.loadMateriaisEstudo();
-        
-        // Carregar fórum
-        await this.loadForumPosts();
     }
 
     // ==================== NAVEGAÇÃO ====================
     loadNavigation() {
         const navLinks = document.querySelectorAll('.nav-link, .footer-links a[data-target], .btn[data-target]');
-        const mainContents = document.querySelectorAll('.main-content');
         
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -426,11 +408,7 @@ class StudyCertApp {
             });
             
             if (error) {
-                console.error('Erro detalhado do Supabase:', {
-                    message: error.message,
-                    status: error.status,
-                    name: error.name
-                });
+                console.error('Erro detalhado do Supabase:', error);
                 
                 if (error.message.includes('User already registered')) {
                     this.showMessage('registerMessage', '❌ Este email já está cadastrado. Tente fazer login.', 'error');
@@ -444,10 +422,6 @@ class StudyCertApp {
                         '3. A chave anon está correta?', 
                         'error'
                     );
-                } else if (error.message.includes('JWT')) {
-                    this.showMessage('registerMessage', '❌ Chave de API inválida. Contate o suporte.', 'error');
-                } else if (error.message.includes('invalid')) {
-                    this.showMessage('registerMessage', '❌ Email inválido ou já registrado.', 'error');
                 } else {
                     this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
                 }
@@ -460,38 +434,33 @@ class StudyCertApp {
                     this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
                 }
                 
-                // Limpar formulário após sucesso
+                // Tentar fazer login automaticamente
+                setTimeout(async () => {
+                    const { data: loginData, error: loginError } = await this.supabase.auth.signInWithPassword({
+                        email: email.toLowerCase().trim(),
+                        password: password
+                    });
+                    
+                    if (!loginError) {
+                        this.currentUser = loginData.user;
+                        this.closeAuthModal();
+                        this.updateAuthUI();
+                        await this.ensureUserProfile();
+                        this.loadInitialData();
+                    }
+                }, 2000);
+                
+                // Limpar formulário
                 setTimeout(() => {
                     document.getElementById('registerName').value = '';
                     document.getElementById('registerEmail').value = '';
                     document.getElementById('registerPassword').value = '';
-                    
-                    if (data.user && !data.user.email_confirmed_at) {
-                        this.showAuthTab('login');
-                        this.showMessage('loginMessage', 
-                            '📧 Confirmação de email enviada!<br>Verifique sua caixa de entrada antes de fazer login.', 
-                            'success'
-                        );
-                    } else {
-                        this.showAuthTab('login');
-                    }
                 }, 3000);
             }
             
         } catch (error) {
             console.error('❌ Erro no cadastro:', error);
-            
-            if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
-                this.showMessage('registerMessage', 
-                    '❌ Falha na conexão:<br>' +
-                    '• Verifique sua conexão com a internet<br>' +
-                    '• O servidor pode estar temporariamente indisponível<br>' +
-                    '• Tente novamente em alguns minutos', 
-                    'error'
-                );
-            } else {
-                this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
-            }
+            this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
         }
     }
 
@@ -501,11 +470,9 @@ class StudyCertApp {
         } else if (error.message.includes('User already registered')) {
             return '❌ Este email já está cadastrado';
         } else if (error.message.includes('Email not confirmed')) {
-            return '❌ Confirme seu email antes de fazer login';
+            return '✅ Email não confirmado, mas permitindo acesso...';
         } else if (error.message.includes('Invalid API key')) {
             return '❌ Problema de configuração do sistema';
-        } else if (error.message.includes('For security purposes')) {
-            return '❌ Muitas tentativas. Tente novamente mais tarde.';
         } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
             return '❌ Problema de conexão. Verifique sua internet.';
         } else {
@@ -519,12 +486,6 @@ class StudyCertApp {
             element.innerHTML = message;
             element.className = `message ${type}`;
             element.style.display = 'block';
-            
-            if (type === 'error') {
-                setTimeout(() => {
-                    element.style.display = 'none';
-                }, 10000);
-            }
         }
     }
 
@@ -799,170 +760,193 @@ class StudyCertApp {
         }
         document.body.style.overflow = 'auto';
         
-        if (document.getElementById('simuladoNome')) {
-            document.getElementById('simuladoNome').value = '';
+        // Limpar formulário
+        const simuladoNome = document.getElementById('simuladoNome');
+        if (simuladoNome) {
+            simuladoNome.value = '';
             document.getElementById('simuladoDescricao').value = '';
             document.getElementById('simuladoCategoria').value = 'ITIL';
             document.getElementById('fileName').textContent = '';
             document.getElementById('termosAceitos').checked = false;
-            document.getElementById('uploadMessage').style.display = 'none';
+            
+            // Resetar botão
+            const btnEnviar = document.getElementById('btnEnviarSimulado');
+            if (btnEnviar) {
+                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
+                btnEnviar.disabled = false;
+            }
+            
+            // Limpar mensagem
+            const uploadMessage = document.getElementById('uploadMessage');
+            if (uploadMessage) {
+                uploadMessage.innerHTML = '';
+                uploadMessage.style.display = 'none';
+            }
         }
     }
 
     async enviarSimulado() {
-    console.log('🚀 ENVIANDO SIMULADO - VERSÃO SIMPLIFICADA');
-    
-    // 1. Pegar dados
-    const nome = document.getElementById('simuladoNome').value.trim();
-    const descricao = document.getElementById('simuladoDescricao').value.trim();
-    const categoria = document.getElementById('simuladoCategoria').value;
-    const fileInput = document.getElementById('fileUploadInput');
-    const file = fileInput.files[0];
-    const btnEnviar = document.getElementById('btnEnviarSimulado');
-    
-    // 2. Validações RÁPIDAS
-    if (!this.currentUser) {
-        alert('❌ Faça login primeiro!');
-        this.openLogin();
-        return;
-    }
-    
-    if (!nome) {
-        alert('❌ Digite um nome para o simulado');
-        return;
-    }
-    
-    if (!file) {
-        alert('❌ Selecione um arquivo HTML');
-        return;
-    }
-    
-    if (!document.getElementById('termosAceitos').checked) {
-        alert('❌ Aceite os termos de uso');
-        return;
-    }
-    
-    try {
-        // 3. Configurar botão
-        btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-        btnEnviar.disabled = true;
+        console.log('🚀 Enviando simulado...');
         
-        // 4. Nome SIMPLES do arquivo (sem pasta do usuário - testar primeiro)
-        const nomeArquivo = `simulado_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+        const nome = document.getElementById('simuladoNome').value.trim();
+        const descricao = document.getElementById('simuladoDescricao').value.trim();
+        const categoria = document.getElementById('simuladoCategoria').value;
+        const fileInput = document.getElementById('fileUploadInput');
+        const file = fileInput.files[0];
+        const btnEnviar = document.getElementById('btnEnviarSimulado');
         
-        console.log('📤 Tentando upload de:', nomeArquivo);
+        // Validações
+        if (!this.currentUser) {
+            alert('❌ Faça login primeiro!');
+            this.openLogin();
+            return;
+        }
         
-        // 5. UPLOAD DIRETO (teste simples)
-        const { data: uploadData, error: uploadError } = await this.supabase.storage
-            .from('simulados')
-            .upload(nomeArquivo, file);
+        if (!nome || !file) {
+            alert('❌ Preencha o nome e selecione um arquivo!');
+            return;
+        }
         
-        if (uploadError) {
-            console.error('❌ ERRO NO UPLOAD:', uploadError);
+        if (!document.getElementById('termosAceitos').checked) {
+            alert('❌ Aceite os termos de uso!');
+            return;
+        }
+        
+        try {
+            btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            btnEnviar.disabled = true;
             
-            // Se falhar, tentar com pasta do usuário
-            console.log('🔄 Tentando com pasta do usuário...');
-            const caminhoComPasta = `${this.currentUser.id}/${nomeArquivo}`;
+            // Upload
+            const nomeArquivo = `simulado_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+            const caminho = `${this.currentUser.id}/${nomeArquivo}`;
             
-            const { data: uploadData2, error: uploadError2 } = await this.supabase.storage
+            console.log('📤 Fazendo upload para:', caminho);
+            
+            const { data: uploadData, error: uploadError } = await this.supabase.storage
                 .from('simulados')
-                .upload(caminhoComPasta, file);
+                .upload(caminho, file);
             
-            if (uploadError2) {
-                throw new Error(`Falha no upload: ${uploadError2.message}`);
+            if (uploadError) {
+                console.error('❌ Erro no upload:', uploadError);
+                throw new Error(`Falha no upload: ${uploadError.message}`);
             }
             
-            var uploadSucesso = uploadData2;
-            var caminhoFinal = caminhoComPasta;
-        } else {
-            var uploadSucesso = uploadData;
-            var caminhoFinal = nomeArquivo;
-        }
-        
-        console.log('✅ Upload bem-sucedido!', uploadSucesso);
-        
-        // 6. Obter URL
-        const { data: urlData } = this.supabase.storage
-            .from('simulados')
-            .getPublicUrl(caminhoFinal);
-        
-        console.log('🔗 URL pública:', urlData.publicUrl);
-        
-        // 7. Salvar no banco
-        const simuladoData = {
-            nome: nome,
-            descricao: descricao,
-            categoria: categoria,
-            arquivo_url: urlData.publicUrl,
-            arquivo_nome: file.name,
-            arquivo_tamanho_kb: Math.round(file.size / 1024),
-            usuario_id: this.currentUser.id,
-            publico: true,
-            data_upload: new Date().toISOString()
-        };
-        
-        console.log('💾 Salvando no banco...');
-        
-        const { data: dbData, error: dbError } = await this.supabase
-            .from('simulados')
-            .insert([simuladoData]);
-        
-        if (dbError) {
-            console.warn('⚠️ Erro no banco (mas arquivo está no storage):', dbError);
-            console.log('📄 Arquivo disponível em:', urlData.publicUrl);
+            console.log('✅ Upload bem-sucedido!', uploadData);
             
-            // Salvar localmente
-            this.saveToLocalStorage(simuladoData);
+            // Obter URL
+            const { data: urlData } = this.supabase.storage
+                .from('simulados')
+                .getPublicUrl(caminho);
             
-            alert('✅ Arquivo enviado! URL: ' + urlData.publicUrl);
-        } else {
-            console.log('✅ Tudo salvo!');
-            alert('🎉 Simulado publicado com sucesso!');
-        }
-        
-        // 8. Limpar e atualizar
-        setTimeout(() => {
-            this.closeUploadModal();
-            this.loadSimulados();
-        }, 1500);
-        
-    } catch (error) {
-        console.error('💥 ERRO COMPLETO:', error);
-        alert('Erro: ' + error.message);
-    } finally {
-        // Resetar botão
-        if (btnEnviar) {
+            console.log('🔗 URL:', urlData.publicUrl);
+            
+            // Salvar no banco
+            const simuladoData = {
+                nome: nome,
+                descricao: descricao,
+                categoria: categoria,
+                arquivo_url: urlData.publicUrl,
+                arquivo_nome: file.name,
+                arquivo_tamanho_kb: Math.round(file.size / 1024),
+                usuario_id: this.currentUser.id,
+                publico: true,
+                data_upload: new Date().toISOString()
+            };
+            
+            console.log('💾 Salvando no banco...');
+            
+            const { data: dbData, error: dbError } = await this.supabase
+                .from('simulados')
+                .insert([simuladoData])
+                .select()
+                .single();
+            
+            if (dbError) {
+                console.error('⚠️ Erro no banco:', dbError);
+                
+                // Ainda mostra sucesso, mas com aviso
+                this.showUploadMessage(
+                    `✅ Arquivo enviado com sucesso!<br>
+                    ⚠️ Houve um erro ao salvar os dados, mas o arquivo está disponível.<br>
+                    🔗 <a href="${urlData.publicUrl}" target="_blank">Clique aqui para abrir</a>`,
+                    'success'
+                );
+                
+                // Salvar localmente
+                this.saveToLocalStorage(simuladoData);
+            } else {
+                // Sucesso completo
+                this.showUploadMessage(
+                    `🎉 Simulado publicado com sucesso!<br>
+                    ✅ O arquivo já está disponível para todos.<br>
+                    🔗 <a href="${urlData.publicUrl}" target="_blank">Abrir simulado</a>`,
+                    'success'
+                );
+            }
+            
+            // Limpar formulário (mas manter mensagem visível)
+            document.getElementById('simuladoNome').value = '';
+            document.getElementById('simuladoDescricao').value = '';
+            document.getElementById('fileUploadInput').value = '';
+            document.getElementById('fileName').textContent = '';
+            document.getElementById('termosAceitos').checked = false;
+            
+            // Desabilitar botão enviar (já foi enviado)
+            btnEnviar.disabled = true;
+            btnEnviar.innerHTML = '<i class="fas fa-check"></i> Enviado!';
+            
+            // Fechar modal automaticamente após 5 segundos
+            setTimeout(() => {
+                this.closeUploadModal();
+                this.loadSimulados(); // Atualizar lista
+            }, 5000);
+            
+        } catch (error) {
+            console.error('❌ Erro:', error);
+            
+            let mensagem = `❌ Erro ao enviar: ${error.message}`;
+            
+            if (error.message.includes('JWT')) {
+                mensagem = '❌ Sessão expirada! Faça login novamente.';
+                this.logout();
+            } else if (error.message.includes('permission')) {
+                mensagem = '❌ Sem permissão para enviar arquivos.';
+            } else if (error.message.includes('bucket')) {
+                mensagem = '❌ Problema no servidor de arquivos.';
+            }
+            
+            this.showUploadMessage(mensagem, 'error');
+            
+            // Restaurar botão
             btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
             btnEnviar.disabled = false;
         }
     }
-}
 
-saveToLocalStorage(simuladoData) {
-    try {
-        let simulados = JSON.parse(localStorage.getItem('studyCert_simulados') || '[]');
-        simulados.push({
-            ...simuladoData,
-            id: `local_${Date.now()}`
-        });
-        localStorage.setItem('studyCert_simulados', JSON.stringify(simulados));
-        console.log('✅ Backup local salvo');
-    } catch (err) {
-        console.error('❌ Erro no localStorage:', err);
+    saveToLocalStorage(simuladoData) {
+        try {
+            let simulados = JSON.parse(localStorage.getItem('studyCert_simulados') || '[]');
+            simulados.push({
+                ...simuladoData,
+                id: `local_${Date.now()}`
+            });
+            localStorage.setItem('studyCert_simulados', JSON.stringify(simulados));
+            console.log('✅ Backup local salvo');
+        } catch (err) {
+            console.error('❌ Erro no localStorage:', err);
+        }
     }
-}
 
-showUploadMessage(message, type) {
-    const element = document.getElementById('uploadMessage');
-    if (element) {
-        element.innerHTML = message;
-        element.className = `message ${type}`;
-        element.style.display = 'block';
+    showUploadMessage(message, type) {
+        const element = document.getElementById('uploadMessage');
+        if (element) {
+            element.innerHTML = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+        }
     }
-}
 
-    // ==================== CARREGAR DADOS DO BANCO ====================
-    
+    // ==================== CARREGAR SIMULADOS ====================
     async loadSimulados() {
         try {
             console.log('📥 Carregando simulados do banco...');
@@ -999,28 +983,15 @@ showUploadMessage(message, type) {
                 console.warn('⚠️ Erro ao carregar simulados locais:', e);
             }
             
-            // Combinar e remover duplicados (preferência pelo banco)
+            // Combinar
             const allSimulados = [...simuladosDB, ...simuladosLocal];
-            const uniqueSimulados = this.removeDuplicateSimulados(allSimulados);
             
             // Renderizar na interface
-            this.renderSimulados(uniqueSimulados);
+            this.renderSimulados(allSimulados);
             
         } catch (err) {
             console.error('❌ Erro ao carregar simulados:', err);
         }
-    }
-    
-    removeDuplicateSimulados(simulados) {
-        const seen = new Set();
-        return simulados.filter(simulado => {
-            const key = simulado.arquivo_url || simulado.nome;
-            if (seen.has(key)) {
-                return false;
-            }
-            seen.add(key);
-            return true;
-        });
     }
     
     renderSimulados(simulados) {
@@ -1065,149 +1036,10 @@ showUploadMessage(message, type) {
     }
     
     escapeHtml(text) {
+        if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
-    }
-    
-    async loadCertificacoes() {
-        try {
-            console.log('📜 Carregando certificações do banco...');
-            
-            const { data: certificacoes, error } = await this.supabase
-                .from('certificacoes')
-                .select('*')
-                .order('nome', { ascending: true });
-            
-            if (error) {
-                console.warn('⚠️ Erro ao carregar certificações:', error);
-                return;
-            }
-            
-            if (certificacoes && certificacoes.length > 0) {
-                this.renderCertificacoes(certificacoes);
-                console.log(`✅ ${certificacoes.length} certificações carregadas`);
-            }
-            
-        } catch (err) {
-            console.warn('⚠️ Erro:', err);
-        }
-    }
-    
-    renderCertificacoes(certificacoes) {
-        // Implementar renderização das certificações
-        console.log('Renderizando certificações:', certificacoes);
-    }
-    
-    async loadMateriaisEstudo() {
-        try {
-            console.log('📚 Carregando materiais de estudo...');
-            
-            const { data: materiais, error } = await this.supabase
-                .from('materials_estudo')
-                .select('*')
-                .order('titulo', { ascending: true });
-            
-            if (error) {
-                console.warn('⚠️ Erro ao carregar materiais:', error);
-                return;
-            }
-            
-            if (materiais && materiais.length > 0) {
-                this.renderMateriaisEstudo(materiais);
-                console.log(`✅ ${materiais.length} materiais carregados`);
-            }
-            
-        } catch (err) {
-            console.warn('⚠️ Erro:', err);
-        }
-    }
-    
-    renderMateriaisEstudo(materiais) {
-        // Implementar renderização dos materiais
-        console.log('Renderizando materiais:', materiais);
-    }
-    
-    async loadForumPosts() {
-        try {
-            console.log('💬 Carregando posts do fórum...');
-            
-            const { data: posts, error } = await this.supabase
-                .from('forum_posts')
-                .select(`
-                    *,
-                    usuario_perfil:nome_completo,
-                    forum_categories:nome
-                `)
-                .order('data_criacao', { ascending: false })
-                .limit(10);
-            
-            if (error) {
-                console.warn('⚠️ Erro ao carregar posts:', error);
-                return;
-            }
-            
-            if (posts && posts.length > 0) {
-                this.renderForumPosts(posts);
-                console.log(`✅ ${posts.length} posts carregados`);
-            }
-            
-        } catch (err) {
-            console.warn('⚠️ Erro:', err);
-        }
-    }
-    
-    renderForumPosts(posts) {
-        const container = document.getElementById('forumPosts');
-        if (!container) return;
-        
-        // Limpar posts existentes (exceto os estáticos se houver)
-        const existingPosts = container.querySelectorAll('.post.dynamic');
-        existingPosts.forEach(post => post.remove());
-        
-        // Adicionar novos posts
-        posts.forEach(post => {
-            const postHTML = `
-                <div class="post dynamic">
-                    <div class="post-header">
-                        <a href="#" class="post-title">${this.escapeHtml(post.titulo)}</a>
-                        <div class="post-meta">
-                            por ${post.usuario_perfil?.nome_completo || 'Usuário'} • 
-                            ${this.formatDate(post.data_criacao)}
-                        </div>
-                    </div>
-                    <div class="post-excerpt">
-                        <p>${this.escapeHtml(post.conteudo.substring(0, 200))}...</p>
-                    </div>
-                    <div class="post-footer">
-                        <span><i class="far fa-comment"></i> ${post.respostas_count || 0} respostas</span>
-                        <span><i class="far fa-eye"></i> ${post.visualizacoes || 0} visualizações</span>
-                        <span><i class="fas fa-tag"></i> ${post.forum_categories?.nome || 'Geral'}</span>
-                    </div>
-                </div>
-            `;
-            
-            container.insertAdjacentHTML('beforeend', postHTML);
-        });
-    }
-    
-    formatDate(dateString) {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffMs = now - date;
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHours = Math.floor(diffMs / 3600000);
-        const diffDays = Math.floor(diffMs / 86400000);
-        
-        if (diffMins < 60) {
-            return `${diffMins} minutos atrás`;
-        } else if (diffHours < 24) {
-            return `${diffHours} horas atrás`;
-        } else if (diffDays < 7) {
-            return `${diffDays} dias atrás`;
-        } else {
-            return date.toLocaleDateString('pt-BR');
-        }
     }
 
     // ==================== EVENT LISTENERS ====================
@@ -1282,15 +1114,6 @@ showUploadMessage(message, type) {
             this.openLogin();
             return;
         }
-        
-        // Implementar criação de post no fórum
-        const titulo = prompt('Título do post:');
-        if (!titulo) return;
-        
-        const conteudo = prompt('Conteúdo do post:');
-        if (!conteudo) return;
-        
-        // Aqui você pode implementar a inserção no banco
         alert('Funcionalidade de criação de posts em desenvolvimento.');
     }
 
@@ -1298,7 +1121,6 @@ showUploadMessage(message, type) {
         const email = prompt('Digite seu email para redefinir a senha:');
         if (!email) return;
         
-        // Implementar recuperação de senha via Supabase
         this.supabase.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + '/reset-password.html'
         }).then(({ error }) => {
@@ -1373,6 +1195,18 @@ window.openUploadModal = () => app.openUploadModal();
 // Outras funções
 window.createNewPost = () => app.createNewPost();
 window.forgotPassword = () => app.forgotPassword();
+
+// 🔧 CORREÇÃO DO BOTÃO DE UPLOAD
+setTimeout(() => {
+    // Corrigir botão "Upload" no card "Adicionar Simulado"
+    const botoes = document.querySelectorAll('.btn-primary');
+    botoes.forEach(botao => {
+        if (botao.textContent.trim() === 'Upload' && 
+            botao.getAttribute('onclick') === 'uploadSimulado()') {
+            botao.setAttribute('onclick', 'openUploadModal()');
+        }
+    });
+}, 1000);
 
 // Variável global para a instância do app
 window.StudyCertApp = app;
