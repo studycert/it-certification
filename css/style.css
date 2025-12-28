@@ -1173,163 +1173,26 @@ footer {
     border: 1px solid #cfc;
 }
 
-/* ============================
-   GARANTE VISIBILIDADE DOS BOTÕES
-   ============================ */
-#authButtons {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
 /* ===========================================
-   EFEITO ELEGANTE - SELEÇÃO DISCRETA
+   SELEÇÃO COM LINHA INFERIOR
    =========================================== */
-
-/* RESETA NAVEGAÇÃO */
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 0.3rem; /* Menor espaçamento */
-    margin: 0;
-    padding: 0;
-}
-
-nav li {
-    position: relative;
-}
-
-/* BOTÕES MENORES E MAIS ELEGANTES */
 nav a {
-    position: relative;
     color: rgba(255, 255, 255, 0.85) !important;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem; /* Texto um pouco menor */
-    padding: 8px 16px; /* Menor padding */
-    border-radius: 20px; /* Bordas mais arredondadas (pílula) */
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    background: transparent !important;
-    border: none !important;
-    z-index: 1;
+    padding: 8px 12px 6px 12px !important; /* Mais padding em baixo */
+    margin: 0 2px;
+    font-size: 0.9rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
 }
 
-/* BARRA SUTIL À ESQUERDA NO HOVER */
-nav a::before {
-    content: '';
-    position: absolute;
-    left: 8px; /* Distância da borda */
-    top: 50%;
-    transform: translateY(-50%) scaleX(0);
-    width: 2px; /* Barra mais fina */
-    height: 0;
-    background: #3498db;
-    border-radius: 1px;
-    transition: all 0.3s ease;
-    opacity: 0;
-}
-
-/* HOVER SUTIL */
 nav a:hover {
     color: white !important;
-    background: rgba(52, 152, 219, 0.08) !important;
-    padding-left: 18px; /* Deslocamento mínimo */
-    transform: translateY(-1px); /* Elevação sutil */
+    border-bottom-color: rgba(52, 152, 219, 0.5);
 }
 
-nav a:hover::before {
-    transform: translateY(-50%) scaleX(1);
-    height: 40%; /* Barra mais curta */
-    opacity: 1;
-}
-
-/* SELEÇÃO ATIVA - DISCRETA E ELEGANTE */
 nav a.active {
     color: white !important;
-    background: rgba(52, 152, 219, 0.15) !important; /* Azul mais transparente */
-    padding: 8px 16px;
     font-weight: 600;
-    border: 1px solid rgba(52, 152, 219, 0.3) !important; /* Borda sutil */
-    box-shadow: 
-        0 2px 8px rgba(52, 152, 219, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-/* BARRA BRANCA À ESQUERDA PARA ATIVO */
-nav a.active::before {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 2px;
-    height: 50%;
-    background: white;
-    border-radius: 1px;
-    opacity: 1;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-}
-
-/* EFEITO DE FOCO (OPCIONAL) */
-nav a:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-/* BOTÕES DE AUTH - TAMBÉM MAIS DISCRETOS */
-.auth-buttons .btn {
-    font-size: 0.9rem;
-    padding: 7px 14px;
-    border-radius: 20px;
-    border: 1px solid !important; /* Bordas mais finas */
-    transition: all 0.25s ease;
-}
-
-.auth-buttons .btn-outline {
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.auth-buttons .btn-outline:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: #3498db !important;
-    color: white !important;
-    transform: translateY(-1px);
-}
-
-.auth-buttons .btn-primary {
-    background: rgba(52, 152, 219, 0.9) !important;
-    border-color: rgba(52, 152, 219, 0.7) !important;
-}
-
-.auth-buttons .btn-primary:hover {
-    background: #3498db !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
-}
-
-/* MOBILE - AJUSTES */
-@media (max-width: 992px) {
-    nav.active a {
-        padding: 10px 20px;
-        margin: 1px 8px;
-        border-radius: 10px;
-    }
-    
-    nav.active a.active {
-        background: rgba(52, 152, 219, 0.2) !important;
-        margin: 1px 8px;
-    }
-    
-    nav.active a.active::before {
-        left: 8px;
-        height: 40%;
-    }
-}
-
-/* GARANTE LEGIBILIDADE */
-nav a,
-nav a:hover,
-nav a.active {
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    border-bottom-color: #3498db;
+    background: transparent !important;
 }
