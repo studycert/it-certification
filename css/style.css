@@ -1,4 +1,107 @@
-/* ========== VARIÁVEIS E RESET ========== */
+/* ========== MENU HAMBURGUER SIMPLES ========== */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+}
+
+/* MOBILE */
+@media (max-width: 992px) {
+    /* Mostra botão hambúrguer */
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+    
+    /* Ajusta o header */
+    .header-content {
+        position: relative;
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ajusta logo */
+    .logo {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    /* Ajusta auth buttons */
+    .auth-buttons {
+        position: absolute;
+        right: 70px; /* Deixa espaço para o botão hambúrguer */
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex !important;
+        gap: 10px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    /* Esconde navegação normal em mobile */
+    nav {
+        display: none !important;
+    }
+    
+    /* Mostra menu quando ativo - posiciona ABSOLUTO */
+    nav.active {
+        display: block !important;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        padding: 1rem 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+    
+    nav.active ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+    }
+    
+    nav.active li {
+        width: 100%;
+    }
+    
+    nav.active a {
+        display: block;
+        padding: 1rem 1.5rem;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    nav.active a:hover {
+        background: rgba(255,255,255,0.1);
+    }
+}
+
+/* DESKTOP */
+@media (min-width: 993px) {
+    .menu-toggle {
+        display: none !important;
+    }
+    
+    nav {
+        display: flex !important;
+    }
+}
+/* Variáveis CSS */
 :root {
     --primary: #2c3e50;
     --secondary: #3498db;
@@ -10,6 +113,7 @@
     --gray: #95a5a6;
 }
 
+/* Reset e Base */
 * {
     margin: 0;
     padding: 0;
@@ -30,7 +134,7 @@ body {
     padding: 0 20px;
 }
 
-/* ========== HEADER E NAVEGAÇÃO ========== */
+/* Header */
 header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
     color: white;
@@ -51,7 +155,6 @@ header {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex: 0 0 auto;
 }
 
 .logo i {
@@ -68,7 +171,7 @@ header {
     color: var(--secondary);
 }
 
-/* Navegação principal */
+/* Navegação */
 nav ul {
     display: flex;
     list-style: none;
@@ -107,21 +210,12 @@ nav a:hover, nav a.active {
     transform: translateY(-1px);
 }
 
-/* Botões de autenticação - BASE */
 .auth-buttons {
     display: flex;
     gap: 1rem;
     align-items: center;
 }
 
-.auth-buttons .btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    border-radius: 6px;
-    transition: all 0.3s;
-}
-
-/* Informações do usuário */
 .user-info {
     display: flex;
     align-items: center;
@@ -140,189 +234,7 @@ nav a:hover, nav a.active {
     font-weight: bold;
 }
 
-/* Menu hambúrguer */
-.menu-toggle {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
-}
-
-/* Container direito para mobile */
-.header-right {
-    display: none;
-}
-
-/* ========== DESKTOP (acima de 992px) ========== */
-@media (min-width: 993px) {
-    /* Estrutura do header no desktop */
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    /* Logo à esquerda */
-    .logo {
-        flex: 0 0 auto;
-        margin-right: auto;
-    }
-    
-    /* Navegação no centro */
-    nav {
-        display: flex !important;
-        flex: 1;
-        justify-content: center;
-    }
-    
-    /* Botões de autenticação à direita */
-    .auth-buttons {
-        display: flex !important;
-        flex: 0 0 auto;
-        margin-left: auto;
-    }
-    
-    /* Esconde elementos mobile no desktop */
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    .header-right {
-        display: none !important;
-    }
-}
-
-/* ========== MOBILE (abaixo de 992px) ========== */
-@media (max-width: 992px) {
-    /* Container do header reorganizado */
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 0;
-        position: relative;
-        flex-wrap: nowrap;
-    }
-    
-    /* Logo à esquerda */
-    .logo {
-        flex: 0 0 auto;
-        order: 1;
-    }
-    
-    /* Container direito para mobile */
-    .header-right {
-        display: flex !important;
-        align-items: center;
-        gap: 15px;
-        flex: 0 0 auto;
-        order: 2;
-    }
-    
-    /* Mostra botão hambúrguer */
-    .menu-toggle {
-        display: flex !important;
-    }
-    
-    /* Botões de autenticação no mobile */
-    .auth-buttons {
-        display: flex !important;
-        gap: 8px;
-    }
-    
-    /* Esconde navegação principal em mobile */
-    nav {
-        display: none !important;
-        width: 100%;
-        order: 3;
-    }
-    
-    /* Mostra menu quando ativo */
-    nav.active {
-        display: block !important;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--primary);
-        padding: 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 1000;
-        margin-top: 10px;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    nav.active ul {
-        flex-direction: column;
-        width: 100%;
-        padding: 0;
-        margin: 0;
-    }
-    
-    nav.active li {
-        width: 100%;
-        margin: 0;
-    }
-    
-    nav.active a {
-        display: block;
-        padding: 1rem 1.5rem;
-        width: 100%;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    nav.active a:hover {
-        background: rgba(255,255,255,0.1);
-    }
-    
-    nav.active a:last-child {
-        border-bottom: none;
-    }
-    
-    /* Esconde botões de desktop no mobile */
-    #authButtonsDesktop {
-        display: none !important;
-    }
-}
-
-/* Para celulares pequenos */
-@media (max-width: 576px) {
-    .header-content {
-        padding: 10px 0;
-    }
-    
-    .logo h1 {
-        font-size: 1.4rem;
-    }
-    
-    .auth-buttons {
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .auth-buttons .btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-        min-width: 80px;
-        text-align: center;
-    }
-    
-    .menu-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
-    }
-}
-
-/* ========== BOTÕES ========== */
+/* Botões */
 .btn {
     padding: 0.5rem 1.5rem;
     border-radius: 4px;
@@ -389,7 +301,6 @@ nav a:hover, nav a.active {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* ========== RESTANTE DO CSS (mantido do original) ========== */
 /* Hero Section */
 .hero {
     background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
@@ -1222,7 +1133,7 @@ footer {
     text-decoration: underline;
 }
 
-/* Responsividade geral */
+/* Responsividade */
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
