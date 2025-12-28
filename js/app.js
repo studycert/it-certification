@@ -779,6 +779,20 @@ class StudyCertApp {
 let app;
 document.addEventListener('DOMContentLoaded', () => {
     app = new StudyCertApp();
+    // ... todo o código da classe StudyCertApp ...
+
+// Inicializar app quando o DOM estiver pronto
+let app;
+document.addEventListener('DOMContentLoaded', () => {
+    app = new StudyCertApp(); // ← Sua linha atual
+    
+    // ← ADICIONE AQUI o código do fix
+    
+});
+
+// ← DEPOIS as funções globais
+// ==================== FUNÇÕES GLOBAIS ====================
+// ...
 });
 
 // ==================== FUNÇÕES GLOBAIS ====================
