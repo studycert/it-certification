@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Elementos não encontrados!');
     }
 });
+
 // App principal - StudyCert
 class StudyCertApp {
     constructor() {
@@ -151,27 +152,36 @@ class StudyCertApp {
     }
 
     updateAuthUI() {
-        const authButtons = document.getElementById('authButtons');
+        const authButtonsDesktop = document.getElementById('authButtonsDesktop');
+        const authButtonsMobile = document.getElementById('authButtonsMobile');
         const uploadArea = document.getElementById('uploadArea');
         
         if (this.currentUser) {
             const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
             const initials = displayName.substring(0, 2).toUpperCase();
             
-            authButtons.innerHTML = `
+            const userHtml = `
                 <div class="user-info">
                     <div class="user-avatar">${initials}</div>
                     <span>${displayName}</span>
-                    <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
+                    <button class="btn btn-outline btn-sm" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
                 </div>
             `;
             
+            // Atualiza ambos os conjuntos de botões
+            if (authButtonsDesktop) authButtonsDesktop.innerHTML = userHtml;
+            if (authButtonsMobile) authButtonsMobile.innerHTML = userHtml;
+            
             if (uploadArea) uploadArea.style.display = 'block';
         } else {
-            authButtons.innerHTML = `
-                <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
-                <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
+            const notLoggedHtml = `
+                <button class="btn btn-outline btn-sm" onclick="app.openLogin()">Entrar</button>
+                <button class="btn btn-primary btn-sm" onclick="app.openRegister()">Cadastrar</button>
             `;
+            
+            // Atualiza ambos os conjuntos de botões
+            if (authButtonsDesktop) authButtonsDesktop.innerHTML = notLoggedHtml;
+            if (authButtonsMobile) authButtonsMobile.innerHTML = notLoggedHtml;
             
             if (uploadArea) uploadArea.style.display = 'none';
         }
@@ -786,4 +796,4 @@ window.createNewPost = () => app.createNewPost();
 window.forgotPassword = () => app.forgotPassword();
 
 // Variável global para a instância do app (para debugging)
-window.StudyCertApp = app;
+window.app = app;
