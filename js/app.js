@@ -15,7 +15,8 @@ function ajustarLayoutMobile() {
 // Executa ao carregar e redimensionar
 window.addEventListener('load', ajustarLayoutMobile);
 window.addEventListener('resize', ajustarLayoutMobile);
-// Menu hambúrguer - CÓDIGO MÍNIMO
+
+// Menu hambúrguer
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
@@ -67,13 +68,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Elementos não encontrados!');
     }
 });
+
 // App principal - StudyCert
 class StudyCertApp {
     constructor() {
         this.supabase = null;
         this.currentUser = null;
         this.config = {
-            storageBucket: 'simulados' // Nome do bucket no Supabase Storage
+            storageBucket: 'simulados'
         };
         this.init();
     }
@@ -82,13 +84,42 @@ class StudyCertApp {
         console.log('StudyCert - Inicializando aplicação');
         
         try {
-            // Inicializar Supabase
+            // Testar conexão com Supabase
+            console.log('Testando conexão com Supabase...');
+            console.log('URL:', SUPABASE_CONFIG.url);
+            console.log('Chave:', SUPABASE_CONFIG.anonKey ? 'Presente' : 'Faltando');
+            
+            // Inicializar Supabase com configurações aprimoradas
             if (typeof supabase !== 'undefined' && SUPABASE_CONFIG) {
                 this.supabase = window.supabase.createClient(
                     SUPABASE_CONFIG.url,
-                    SUPABASE_CONFIG.anonKey
+                    SUPABASE_CONFIG.anonKey,
+                    {
+                        auth: {
+                            autoRefreshToken: true,
+                            persistSession: true,
+                            detectSessionInUrl: true,
+                            storage: window.localStorage,
+                            storageKey: 'studycert-auth'
+                        },
+                        global: {
+                            headers: {
+                                'apikey': SUPABASE_CONFIG.anonKey
+                            }
+                        }
+                    }
                 );
-                console.log('✅ Supabase configurado com sucesso!');
+                
+                // Testar conexão básica
+                const { data, error } = await this.supabase.auth.getSession();
+                if (error) {
+                    console.error('❌ Erro na conexão do Supabase:', error);
+                    if (error.message.includes('fetch')) {
+                        this.showGlobalError('Erro de conexão com o servidor. Verifique sua internet e tente novamente.');
+                    }
+                } else {
+                    console.log('✅ Supabase conectado com sucesso!');
+                }
             } else {
                 throw new Error('Configuração do Supabase não encontrada');
             }
@@ -149,7 +180,10 @@ class StudyCertApp {
             
             const { data, error } = await this.supabase.auth.getSession();
             
-            if (error) throw error;
+            if (error) {
+                console.error('❌ Erro ao verificar sessão:', error);
+                return;
+            }
             
             if (data.session) {
                 this.currentUser = data.session.user;
@@ -245,8 +279,17 @@ class StudyCertApp {
         }
         
         try {
-            const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
-            if (error) throw error;
+            console.log('Tentando login para:', email);
+            
+            const { data, error } = await this.supabase.auth.signInWithPassword({ 
+                email: email.toLowerCase().trim(), 
+                password: password 
+            });
+            
+            if (error) {
+                console.error('❌ Erro detalhado no login:', error);
+                throw error;
+            }
             
             this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
             this.currentUser = data.user;
@@ -281,26 +324,122 @@ class StudyCertApp {
         }
         
         try {
+            console.log('Tentando cadastrar usuário:', { email, name });
+            
+            // Testar conexão primeiro
+            try {
+                const { error: testError } = await this.supabase.auth.getSession();
+                if (testError && testError.message.includes('fetch')) {
+                    throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão com a internet.');
+                }
+            } catch (testErr) {
+                console.warn('⚠️ Teste de conexão falhou:', testErr);
+                // Continuar mesmo com erro no teste
+            }
+            
             const { data, error } = await this.supabase.auth.signUp({
-                email,
-                password,
-                options: { data: { full_name: name } }
+                email: email.toLowerCase().trim(),
+                password: password,
+                options: {
+                    data: {
+                        full_name: name.trim(),
+                        created_at: new Date().toISOString()
+                    },
+                    emailRedirectTo: window.location.origin
+                }
             });
             
-            if (error) throw error;
-            
-            this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
-            
-            setTimeout(() => {
-                document.getElementById('registerName').value = '';
-                document.getElementById('registerEmail').value = '';
-                document.getElementById('registerPassword').value = '';
-                this.showAuthTab('login');
-            }, 3000);
+            if (error) {
+                console.error('Erro detalhado do Supabase:', {
+                    message: error.message,
+                    status: error.status,
+                    name: error.name
+                });
+                
+                if (error.message.includes('User already registered')) {
+                    this.showMessage('registerMessage', '❌ Este email já está cadastrado. Tente fazer login.', 'error');
+                } else if (error.message.includes('rate limit')) {
+                    this.showMessage('registerMessage', '❌ Muitas tentativas. Aguarde alguns minutos.', 'error');
+                } else if (error.message.includes('fetch')) {
+                    this.showMessage('registerMessage', 
+                        '❌ Problema de conexão:<br>' +
+                        '1. Verifique sua internet<br>' +
+                        '2. A URL do Supabase está correta?<br>' +
+                        '3. A chave anon está correta?', 
+                        'error'
+                    );
+                } else if (error.message.includes('JWT')) {
+                    this.showMessage('registerMessage', '❌ Chave de API inválida. Contate o suporte.', 'error');
+                } else if (error.message.includes('invalid')) {
+                    this.showMessage('registerMessage', '❌ Email inválido ou já registrado.', 'error');
+                } else {
+                    this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
+                }
+            } else {
+                console.log('Usuário cadastrado com sucesso:', data);
+                
+                if (data.user?.identities?.length === 0) {
+                    this.showMessage('registerMessage', '✅ Este email já possui uma conta. Faça login.', 'success');
+                } else {
+                    this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
+                }
+                
+                // Tentar criar perfil do usuário (opcional)
+                if (data.user) {
+                    try {
+                        const { error: profileError } = await this.supabase
+                            .from('usuario_perfil')
+                            .upsert({
+                                id: data.user.id,
+                                nome_completo: name.trim(),
+                                nivel_experiencia: 'Iniciante',
+                                data_criacao: new Date().toISOString(),
+                                data_atualizacao: new Date().toISOString()
+                            });
+                        
+                        if (profileError) {
+                            console.warn('⚠️ Perfil não criado (tabela pode não existir):', profileError);
+                        } else {
+                            console.log('✅ Perfil do usuário criado');
+                        }
+                    } catch (profileErr) {
+                        console.warn('⚠️ Erro ao criar perfil:', profileErr);
+                    }
+                }
+                
+                // Limpar formulário após sucesso
+                setTimeout(() => {
+                    document.getElementById('registerName').value = '';
+                    document.getElementById('registerEmail').value = '';
+                    document.getElementById('registerPassword').value = '';
+                    
+                    // Se o email precisa de confirmação, mostrar mensagem especial
+                    if (data.user && !data.user.email_confirmed_at) {
+                        this.showAuthTab('login');
+                        this.showMessage('loginMessage', 
+                            '📧 Confirmação de email enviada!<br>Verifique sua caixa de entrada antes de fazer login.', 
+                            'success'
+                        );
+                    } else {
+                        this.showAuthTab('login');
+                    }
+                }, 3000);
+            }
             
         } catch (error) {
             console.error('❌ Erro no cadastro:', error);
-            this.showMessage('registerMessage', this.getAuthErrorMessage(error), 'error');
+            
+            if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+                this.showMessage('registerMessage', 
+                    '❌ Falha na conexão:<br>' +
+                    '• Verifique sua conexão com a internet<br>' +
+                    '• O servidor pode estar temporariamente indisponível<br>' +
+                    '• Tente novamente em alguns minutos', 
+                    'error'
+                );
+            } else {
+                this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
+            }
         }
     }
 
@@ -315,6 +454,8 @@ class StudyCertApp {
             return '❌ Problema de configuração do sistema';
         } else if (error.message.includes('For security purposes')) {
             return '❌ Muitas tentativas. Tente novamente mais tarde.';
+        } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
+            return '❌ Problema de conexão. Verifique sua internet.';
         } else {
             return `❌ Erro: ${error.message}`;
         }
@@ -326,6 +467,13 @@ class StudyCertApp {
             element.innerHTML = message;
             element.className = `message ${type}`;
             element.style.display = 'block';
+            
+            // Auto-remover mensagem de erro após 10 segundos
+            if (type === 'error') {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 10000);
+            }
         }
     }
 
@@ -364,21 +512,24 @@ class StudyCertApp {
     // ==================== SIMULADOS ====================
     abrirModalSimulados() {
         const modal = document.getElementById('modalSimulados');
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     fecharModalSimulados() {
         const modal = document.getElementById('modalSimulados');
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
     }
 
     // ==================== UPLOAD SYSTEM ====================
     initUploadSystem() {
         console.log('📤 Sistema de upload inicializado');
         
-        // Evento para upload de arquivo antigo (compatibilidade)
         const fileUpload = document.getElementById('fileUpload');
         if (fileUpload) {
             fileUpload.addEventListener('change', (e) => {
@@ -388,7 +539,6 @@ class StudyCertApp {
                         alert('Por favor, selecione apenas arquivos HTML.');
                         return;
                     }
-                    alert(`Arquivo "${file.name}" selecionado para upload.`);
                     console.log('Arquivo para upload:', file);
                     e.target.value = '';
                 }
@@ -516,184 +666,192 @@ class StudyCertApp {
     }
 
     setupDragAndDrop() {
-    const uploadArea = document.querySelector('#modalUpload .upload-area');
-    if (!uploadArea) return;
-    
-    // Prevenir comportamentos padrão
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        }, false);
-    });
-    
-    // Highlight quando arrasta sobre
-    ['dragenter', 'dragover'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, () => {
-            uploadArea.classList.add('drag-over');
-        }, false);
-    });
-    
-    // Remove highlight
-    ['dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, () => {
-            uploadArea.classList.remove('drag-over');
-        }, false);
-    });
-    
-    // Handle drop
-    uploadArea.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
+        const uploadArea = document.querySelector('#modalUpload .upload-area');
+        if (!uploadArea) return;
         
-        if (files.length > 0) {
-            const file = files[0];
+        // Prevenir comportamentos padrão
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+        
+        // Highlight quando arrasta sobre
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('drag-over');
+            }, false);
+        });
+        
+        // Remove highlight
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('drag-over');
+            }, false);
+        });
+        
+        // Handle drop
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
             
-            // Validar arquivo
-            if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
-                this.showUploadMessage('❌ Por favor, arraste apenas arquivos HTML (extensão .html ou .htm).', 'error');
-                return;
-            }
-            
-            if (file.size > 10 * 1024 * 1024) { // 10MB limite
-                this.showUploadMessage('❌ Arquivo muito grande. O limite é 10MB.', 'error');
-                return;
-            }
-            
-            // Configurar input de arquivo
-            const fileInput = document.getElementById('fileUploadInput');
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-            
-            // Atualizar interface com feedback visual
-            const fileNameElement = document.getElementById('fileName');
-            if (fileNameElement) {
-                const fileSize = (file.size / 1024).toFixed(1);
-                fileNameElement.innerHTML = `
-                    <div style="text-align: left;">
-                        <strong style="color: var(--success);">✓ Arquivo válido</strong><br>
-                        <span style="font-size: 0.9em; color: var(--dark);">${file.name}</span><br>
-                        <span style="font-size: 0.8em; color: #666;">Tamanho: ${fileSize} KB</span>
-                    </div>
-                `;
+            if (files.length > 0) {
+                const file = files[0];
                 
-                // Adicionar efeito visual de confirmação
-                fileNameElement.style.animation = 'pulse 0.5s ease';
-            }
-            
-            // Mostrar mensagem de sucesso
-            this.showUploadMessage('✅ Arquivo carregado com sucesso!', 'success');
-            
-            // Validar estrutura do arquivo HTML
-            this.validateHTMLFile(file);
-        }
-    }, false);
-    
-    // Adicionar efeito de clique na área de upload
-    uploadArea.addEventListener('click', (e) => {
-        if (e.target === uploadArea || e.target.classList.contains('upload-area')) {
-            document.getElementById('fileUploadInput').click();
-        }
-    });
-}
-
-async validateHTMLFile(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            const content = e.target.result;
-            
-            // Verificações básicas de estrutura HTML
-            const isHTML = content.includes('<!DOCTYPE html') || 
-                          content.includes('<html') || 
-                          content.includes('<body') ||
-                          content.includes('</html>');
-            
-            if (!isHTML) {
-                this.showUploadMessage(
-                    '⚠️ O arquivo pode não ser um HTML válido. Verifique se contém a estrutura básica HTML.',
-                    'warning'
-                );
-                return resolve(false);
-            }
-            
-            // Verificar se parece ser um simulado
-            const hasQuestions = content.match(/\d+\.\s+.*\?/g) || 
-                               content.includes('pergunta') || 
-                               content.includes('questão') ||
-                               content.includes('question') ||
-                               content.match(/[Qq]uestão\s+\d+/g);
-            
-            const hasOptions = content.match(/[A-Da-d]\)\s+.*/g) || 
-                             content.match(/[A-Da-d]\.\s+.*/g) ||
-                             content.includes('alternativa') || 
-                             content.includes('option') ||
-                             content.includes('a)') || content.includes('b)') || 
-                             content.includes('c)') || content.includes('d)');
-            
-            if (!hasQuestions || !hasOptions) {
-                this.showUploadMessage(
-                    '⚠️ O arquivo pode não conter a estrutura de um simulado. Verifique se há perguntas e alternativas (A, B, C, D).',
-                    'warning'
-                );
-            } else {
-                // Tentar contar questões
-                const questionCount = this.countQuestionsInHTML(content);
-                if (questionCount > 0) {
-                    this.showUploadMessage(
-                        `✅ Validado! ${questionCount} questões detectadas.`,
-                        'success'
-                    );
-                    
-                    // Atualizar contagem no nome do arquivo
-                    const fileNameElement = document.getElementById('fileName');
-                    if (fileNameElement) {
-                        const currentHTML = fileNameElement.innerHTML;
-                        fileNameElement.innerHTML = currentHTML.replace(
-                            '✓ Arquivo válido',
-                            `✓ ${questionCount} questões detectadas`
-                        );
-                    }
+                // Validar arquivo
+                if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
+                    this.showUploadMessage('❌ Por favor, arraste apenas arquivos HTML (extensão .html ou .htm).', 'error');
+                    return;
                 }
+                
+                if (file.size > 10 * 1024 * 1024) { // 10MB limite
+                    this.showUploadMessage('❌ Arquivo muito grande. O limite é 10MB.', 'error');
+                    return;
+                }
+                
+                // Configurar input de arquivo
+                const fileInput = document.getElementById('fileUploadInput');
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                
+                // Atualizar interface com feedback visual
+                const fileNameElement = document.getElementById('fileName');
+                if (fileNameElement) {
+                    const fileSize = (file.size / 1024).toFixed(1);
+                    fileNameElement.innerHTML = `
+                        <div style="text-align: left;">
+                            <strong style="color: var(--success);">✓ Arquivo válido</strong><br>
+                            <span style="font-size: 0.9em; color: var(--dark);">${file.name}</span><br>
+                            <span style="font-size: 0.8em; color: #666;">Tamanho: ${fileSize} KB</span>
+                        </div>
+                    `;
+                }
+                
+                // Mostrar mensagem de sucesso
+                this.showUploadMessage('✅ Arquivo carregado com sucesso!', 'success');
             }
-            
-            resolve(true);
-        };
+        }, false);
         
-        reader.onerror = () => {
-            this.showUploadMessage('❌ Erro ao ler o arquivo.', 'error');
-            resolve(false);
-        };
-        
-        reader.readAsText(file);
-    });
-}
+        // Adicionar efeito de clique na área de upload
+        uploadArea.addEventListener('click', (e) => {
+            if (e.target === uploadArea || e.target.classList.contains('upload-area')) {
+                document.getElementById('fileUploadInput').click();
+            }
+        });
+    }
 
-countQuestionsInHTML(content) {
-    // Métodos para contar questões
-    const patterns = [
-        // Padrão 1: "1. Pergunta?"
-        /\d+\.\s+.*\?/g,
-        // Padrão 2: "Questão 1:"
-        /[Qq]uest[ãa]o\s+\d+/g,
-        // Padrão 3: "<div class='question'>"
-        /<[^>]*question[^>]*>/gi,
-        // Padrão 4: "Pergunta" seguida de número
-        /[Pp]ergunta\s+\d+/g
-    ];
-    
-    let maxCount = 0;
-    patterns.forEach(pattern => {
-        const matches = content.match(pattern);
-        if (matches && matches.length > maxCount) {
-            maxCount = matches.length;
+    closeUploadModal() {
+        const modal = document.getElementById('modalUpload');
+        if (modal) {
+            modal.classList.remove('active');
         }
-    });
-    
-    return maxCount;
-}
+        document.body.style.overflow = 'auto';
+        
+        // Limpar formulário
+        if (document.getElementById('simuladoNome')) {
+            document.getElementById('simuladoNome').value = '';
+            document.getElementById('simuladoDescricao').value = '';
+            document.getElementById('simuladoCategoria').value = 'ITIL';
+            document.getElementById('fileName').textContent = '';
+            document.getElementById('termosAceitos').checked = false;
+            document.getElementById('uploadMessage').style.display = 'none';
+        }
+    }
+
+    async enviarSimulado() {
+        const nome = document.getElementById('simuladoNome').value.trim();
+        const descricao = document.getElementById('simuladoDescricao').value.trim();
+        const categoria = document.getElementById('simuladoCategoria').value;
+        const fileInput = document.getElementById('fileUploadInput');
+        const file = fileInput.files[0];
+        
+        const uploadMessage = document.getElementById('uploadMessage');
+        const btnEnviar = document.getElementById('btnEnviarSimulado');
+        
+        // Validação
+        if (!nome) {
+            this.showUploadMessage('❌ Por favor, insira um nome para o simulado.', 'error');
+            return;
+        }
+        
+        if (!file) {
+            this.showUploadMessage('❌ Por favor, selecione um arquivo HTML.', 'error');
+            return;
+        }
+        
+        if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
+            this.showUploadMessage('❌ Por favor, selecione apenas arquivos HTML (.html ou .htm).', 'error');
+            return;
+        }
+        
+        if (!document.getElementById('termosAceitos').checked) {
+            this.showUploadMessage('❌ Você precisa aceitar os termos de uso.', 'error');
+            return;
+        }
+        
+        try {
+            // Mostrar loading
+            btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            btnEnviar.disabled = true;
+            
+            // Salvar no localStorage como fallback
+            const simuladoData = {
+                nome: nome,
+                descricao: descricao,
+                arquivo_nome: file.name,
+                arquivo_tamanho: Math.round(file.size / 1024),
+                usuario_id: this.currentUser.id,
+                usuario_nome: this.currentUser.user_metadata?.full_name || this.currentUser.email,
+                categoria: categoria,
+                data_upload: new Date().toISOString(),
+                local: true
+            };
+            
+            this.saveToLocalStorage(simuladoData);
+            
+            this.showUploadMessage('✅ Simulado salvo localmente com sucesso!', 'success');
+            
+            setTimeout(() => {
+                this.closeUploadModal();
+                alert('Simulado enviado com sucesso! (Salvo localmente)');
+            }, 2000);
+            
+        } catch (error) {
+            console.error('❌ Erro ao enviar simulado:', error);
+            this.showUploadMessage(`❌ Erro ao enviar simulado: ${error.message}`, 'error');
+        } finally {
+            // Restaurar botão
+            if (btnEnviar) {
+                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
+                btnEnviar.disabled = false;
+            }
+        }
+    }
+
+    saveToLocalStorage(simuladoData) {
+        try {
+            let simulados = JSON.parse(localStorage.getItem('studyCert_simulados') || '[]');
+            simulados.push({
+                ...simuladoData,
+                id: `local_${Date.now()}`
+            });
+            localStorage.setItem('studyCert_simulados', JSON.stringify(simulados));
+            console.log('✅ Simulado salvo localmente:', simuladoData.nome);
+        } catch (err) {
+            console.error('❌ Erro ao salvar no localStorage:', err);
+        }
+    }
+
+    showUploadMessage(message, type) {
+        const element = document.getElementById('uploadMessage');
+        if (element) {
+            element.innerHTML = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+        }
+    }
 
     // ==================== EVENT LISTENERS ====================
     setupEventListeners() {
@@ -745,6 +903,19 @@ countQuestionsInHTML(content) {
                 registerEmail.value = registerEmail.value.toLowerCase();
             });
         }
+        
+        // Enter para submit nos forms
+        document.getElementById('loginForm')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.login();
+            }
+        });
+        
+        document.getElementById('registerForm')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.register();
+            }
+        });
     }
 
     // ==================== FUNÇÕES AUXILIARES ====================
@@ -767,7 +938,6 @@ countQuestionsInHTML(content) {
 
     showGlobalError(message) {
         console.error('Erro global:', message);
-        // Aqui você pode implementar uma notificação mais elaborada
         const errorDiv = document.createElement('div');
         errorDiv.className = 'message error';
         errorDiv.style.position = 'fixed';
@@ -778,7 +948,9 @@ countQuestionsInHTML(content) {
         document.body.appendChild(errorDiv);
         
         setTimeout(() => {
-            errorDiv.remove();
+            if (errorDiv.parentNode) {
+                errorDiv.parentNode.removeChild(errorDiv);
+            }
         }, 5000);
     }
 }
