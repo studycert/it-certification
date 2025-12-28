@@ -1,6 +1,42 @@
-/* ========== MENU HAMBURGUER SIMPLES ========== */
+/* ========== HEADER ESTRUTURA ========== */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Lado esquerdo: logo + menu hambúrguer */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo i {
+    font-size: 2rem;
+    color: var(--secondary);
+}
+
+.logo h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.logo span {
+    color: var(--secondary);
+}
+
+/* Menu Hambúrguer - Base */
 .menu-toggle {
-    display: none;
+    display: none; /* Escondido no desktop */
     background: transparent;
     border: none;
     color: white;
@@ -8,57 +44,120 @@
     cursor: pointer;
     padding: 10px;
     z-index: 1001;
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    transition: all 0.3s;
 }
 
-/* MOBILE */
+.menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Navegação */
+nav {
+    display: flex;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+nav a:hover, nav a.active {
+    color: var(--secondary);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Auth Buttons - SEMPRE VISÍVEL */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.auth-buttons .btn {
+    display: inline-block;
+    min-width: 80px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* ========== MOBILE (até 992px) ========== */
 @media (max-width: 992px) {
-    /* Mostra botão hambúrguer */
-    .menu-toggle {
-        display: block;
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+    /* Header ajustado para mobile */
+    .header-content {
+        padding: 0.5rem 0;
+        min-height: 60px;
     }
     
-    /* Ajusta o header */
-    .header-content {
-        position: relative;
-        min-height: 70px;
+    /* Menu hambúrguer VISÍVEL no mobile */
+    .menu-toggle {
         display: flex;
         align-items: center;
-        padding-right: 60px; /* Espaço para o botão hambúrguer */
+        justify-content: center;
+        position: static; /* Remove posição absoluta */
+        order: 2; /* Fica depois da logo */
     }
     
-    /* Ajusta logo */
-    .logo {
-        position: static;
-        transform: none;
+    /* Header-left organiza logo e hambúrguer */
+    .header-left {
+        flex: 1;
+        justify-content: flex-start;
     }
     
-    /* Ajusta auth buttons em mobile */
+    /* Logo ajustada */
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .logo i {
+        font-size: 1.7rem;
+    }
+    
+    /* Auth buttons ajustados para mobile */
     .auth-buttons {
-        display: flex !important;
-        gap: 10px;
-        position: absolute;
-        right: 70px; /* Espaço para o botão hambúrguer */
-        top: 50%;
-        transform: translateY(-50%);
+        order: 3; /* Fica no final */
+        margin-left: auto; /* Empurra para direita */
+        gap: 8px;
     }
     
     .auth-buttons .btn {
         padding: 6px 12px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        min-width: 70px;
     }
     
-    /* Esconde navegação normal em mobile */
+    /* Navegação escondida por padrão no mobile */
     nav {
         display: none !important;
-    }
-    
-    /* Mostra menu quando ativo - posiciona ABSOLUTO */
-    nav.active {
-        display: block !important;
         position: absolute;
         top: 100%;
         left: 0;
@@ -67,83 +166,99 @@
         padding: 1rem 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         z-index: 1000;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
     
-    nav.active ul {
+    /* Navegação ativa no mobile */
+    nav.active {
+        display: block !important;
+    }
+    
+    nav ul {
         flex-direction: column;
         width: 100%;
-        padding: 0;
+        gap: 0;
     }
     
-    nav.active li {
+    nav li {
         width: 100%;
     }
     
-    nav.active a {
+    nav a {
         display: block;
         padding: 1rem 1.5rem;
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     
-    nav.active a:hover {
+    nav a:hover {
         background: rgba(255,255,255,0.1);
     }
 }
 
-/* DESKTOP */
+/* ========== DESKTOP (a partir de 993px) ========== */
 @media (min-width: 993px) {
+    /* Esconde menu hambúrguer no desktop */
     .menu-toggle {
         display: none !important;
     }
     
+    /* Mostra navegação normal */
     nav {
         display: flex !important;
+        position: static;
+        order: 2;
+        flex: 1;
+        justify-content: center;
     }
     
-    /* GARANTIR que auth-buttons aparece em desktop */
+    /* Header-left apenas com logo no desktop */
+    .header-left {
+        order: 1;
+        flex: 0 0 auto;
+    }
+    
+    /* Auth buttons no desktop */
     .auth-buttons {
-        display: flex !important;
-        gap: 1rem;
-        align-items: center;
+        order: 3;
+        flex: 0 0 auto;
+    }
+    
+    /* Ajusta espaçamento da navegação */
+    nav ul {
+        gap: 2rem;
     }
 }
 
-/* ========== ESTILOS GERAIS DO HEADER ========== */
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
+/* ========== MOBILE PEQUENO (até 576px) ========== */
+@media (max-width: 576px) {
+    .logo h1 {
+        font-size: 1.3rem;
+    }
+    
+    .logo i {
+        font-size: 1.5rem;
+    }
+    
+    .auth-buttons .btn {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        min-width: 60px;
+    }
+    
+    .menu-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+    }
 }
 
-/* Auth buttons - SEMPRE VISÍVEL */
+/* ========== REGRAS DE EMERGÊNCIA ========== */
+/* Garantir que auth-buttons nunca fique invisível */
 .auth-buttons {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-/* Garantir que os botões sejam visíveis */
-.auth-buttons .btn {
-    display: inline-block !important;
+    display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
-}
-
-/* Ajuste do layout para navegação */
-nav {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 1.5rem;
-    margin: 0;
-    padding: 0;
 }
 /* Variáveis CSS */
 :root {
