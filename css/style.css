@@ -81,7 +81,7 @@ header {
 }
 
 /* ============================
-   NAVEGAÇÃO DESKTOP - EFEITOS DIFERENCIADOS
+   NAVEGAÇÃO DESKTOP - EFEITOS DIFERENCIADOS COM BARRA AZUL
    ============================ */
 nav {
     display: flex;
@@ -114,14 +114,14 @@ nav a::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--secondary);
+    background-color: var(--secondary); /* Azul */
     opacity: 0;
     border-radius: 6px;
     transition: opacity 0.3s ease;
     z-index: -1;
 }
 
-/* Barra inferior para o link ativo (SELECIONADO) */
+/* Barra inferior AZUL para o link ativo (SELECIONADO) */
 nav a::after {
     content: '';
     position: absolute;
@@ -129,45 +129,45 @@ nav a::after {
     left: 50%;
     width: 0;
     height: 3px;
-    background-color: var(--accent); /* Diferente do hover */
+    background-color: var(--secondary); /* AZUL - mais harmonioso */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(-50%);
     border-radius: 3px 3px 0 0;
 }
 
 /* ============================
-   EFEITO HOVER (passar o mouse) - AZUL SUAVE
+   EFEITO HOVER (passar o mouse) - AZUL TRANSLÚCIDO
    ============================ */
 nav a:hover::before {
-    opacity: 0.15;
+    opacity: 0.15 !important;
 }
 
 nav a:hover {
-    color: white;
-    transform: translateY(-2px);
+    color: white !important;
+    transform: translateY(-2px) !important;
 }
 
 /* ============================
-   EFEITO ATIVO (selecionado) - BARRA LARANJA
+   EFEITO ATIVO (selecionado) - BARRA AZUL FORTE
    ============================ */
 nav a.active::after {
-    width: 80%;
-    background-color: var(--accent); /* Laranja/vermelho */
+    width: 80% !important;
+    background-color: var(--secondary) !important; /* AZUL */
 }
 
 nav a.active {
-    color: white;
-    font-weight: 600;
-    background-color: rgba(231, 76, 60, 0.1); /* Fundo muito sutil */
+    color: white !important;
+    font-weight: 600 !important;
+    background-color: rgba(52, 152, 219, 0.1) !important; /* Fundo azul muito sutil */
 }
 
-/* Efeito de "brilho" sutil nos cantos apenas no hover */
+/* Efeito de "brilho" sutil nos cantos */
 nav a:hover {
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2) !important;
 }
 
 nav a.active {
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2) !important;
 }
 
 /* ============================
@@ -184,7 +184,7 @@ nav a.active {
     }
     
     nav.active a:hover::before {
-        opacity: 0.1;
+        opacity: 0.1 !important;
     }
     
     nav.active a::after {
@@ -195,30 +195,30 @@ nav a.active {
     
     /* Hover no mobile - deslocamento */
     nav.active a:hover::after {
-        width: 60%;
-        left: 20px;
-        transform: translateX(0);
-        background-color: var(--secondary); /* Azul no mobile */
+        width: 60% !important;
+        left: 20px !important;
+        transform: translateX(0) !important;
+        background-color: var(--secondary) !important; /* Azul */
     }
     
-    /* Ativo no mobile - barra e fundo */
+    /* Ativo no mobile - barra AZUL */
     nav.active a.active::after {
-        width: 60%;
-        left: 20px;
-        transform: translateX(0);
-        background-color: var(--accent); /* Laranja no mobile */
+        width: 60% !important;
+        left: 20px !important;
+        transform: translateX(0) !important;
+        background-color: var(--secondary) !important; /* AZUL */
     }
     
     nav.active a:hover {
-        color: white;
-        transform: translateX(5px);
-        background-color: rgba(52, 152, 219, 0.1);
+        color: white !important;
+        transform: translateX(5px) !important;
+        background-color: rgba(52, 152, 219, 0.1) !important;
     }
     
     nav.active a.active {
-        color: white;
-        transform: translateX(5px);
-        background-color: rgba(231, 76, 60, 0.1);
+        color: white !important;
+        transform: translateX(5px) !important;
+        background-color: rgba(52, 152, 219, 0.1) !important;
     }
 }
 /* ============================
