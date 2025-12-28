@@ -17,7 +17,8 @@
         display: block;
         position: absolute;
         right: 20px;
-        top: 20px;
+        top: 50%;
+        transform: translateY(-50%);
     }
     
     /* Ajusta o header */
@@ -26,24 +27,23 @@
         min-height: 70px;
         display: flex;
         align-items: center;
+        padding-right: 60px; /* Espaço para o botão hambúrguer */
     }
     
     /* Ajusta logo */
     .logo {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        position: static;
+        transform: none;
     }
     
-    /* Ajusta auth buttons */
+    /* Ajusta auth buttons em mobile */
     .auth-buttons {
-        position: absolute;
-        right: 70px; /* Deixa espaço para o botão hambúrguer */
-        top: 50%;
-        transform: translateY(-50%);
         display: flex !important;
         gap: 10px;
+        position: absolute;
+        right: 70px; /* Espaço para o botão hambúrguer */
+        top: 50%;
+        transform: translateY(-50%);
     }
     
     .auth-buttons .btn {
@@ -60,7 +60,7 @@
     nav.active {
         display: block !important;
         position: absolute;
-        top: 70px;
+        top: 100%;
         left: 0;
         right: 0;
         background: var(--primary);
@@ -100,6 +100,50 @@
     nav {
         display: flex !important;
     }
+    
+    /* GARANTIR que auth-buttons aparece em desktop */
+    .auth-buttons {
+        display: flex !important;
+        gap: 1rem;
+        align-items: center;
+    }
+}
+
+/* ========== ESTILOS GERAIS DO HEADER ========== */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Auth buttons - SEMPRE VISÍVEL */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Garantir que os botões sejam visíveis */
+.auth-buttons .btn {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ajuste do layout para navegação */
+nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
 }
 /* Variáveis CSS */
 :root {
