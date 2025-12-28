@@ -1,4 +1,146 @@
-/* ========== MENU HAMBURGUER E BOTÕES CORRIGIDOS ========== */
+/* ========== VARIÁVEIS E RESET ========== */
+:root {
+    --primary: #2c3e50;
+    --secondary: #3498db;
+    --accent: #e74c3c;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --light: #ecf0f1;
+    --dark: #2c3e50;
+    --gray: #95a5a6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ========== HEADER E NAVEGAÇÃO ========== */
+header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+.logo i {
+    font-size: 2rem;
+    color: var(--secondary);
+}
+
+.logo h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.logo span {
+    color: var(--secondary);
+}
+
+/* Navegação principal */
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+}
+
+nav a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s;
+}
+
+nav a:hover::before {
+    left: 100%;
+}
+
+nav a:hover, nav a.active {
+    color: var(--secondary);
+    transform: translateY(-1px);
+}
+
+/* Botões de autenticação - BASE */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.auth-buttons .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+
+/* Informações do usuário */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Menu hambúrguer */
 .menu-toggle {
     display: none;
     background: transparent;
@@ -6,35 +148,20 @@
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
     z-index: 1001;
 }
 
-/* DESKTOP - ACIMA DE 992px (PRIMEIRO) */
+/* Container direito para mobile */
+.header-right {
+    display: none;
+}
+
+/* ========== DESKTOP (acima de 992px) ========== */
 @media (min-width: 993px) {
-    /* Esconde botão hambúrguer no desktop */
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    /* Mostra navegação normal no desktop */
-    nav {
-        display: flex !important;
-        flex: 1;
-        justify-content: center;
-    }
-    
-    /* Botões de autenticação no desktop */
-    .auth-buttons {
-        display: flex !important;
-        gap: 1rem;
-        align-items: center;
-    }
-    
-    /* Esconde o container header-right no desktop */
-    .header-right {
-        display: none !important;
-    }
-    
     /* Estrutura do header no desktop */
     .header-content {
         display: flex;
@@ -42,17 +169,37 @@
         align-items: center;
     }
     
+    /* Logo à esquerda */
     .logo {
         flex: 0 0 auto;
+        margin-right: auto;
     }
     
+    /* Navegação no centro */
     nav {
+        display: flex !important;
         flex: 1;
         justify-content: center;
     }
+    
+    /* Botões de autenticação à direita */
+    .auth-buttons {
+        display: flex !important;
+        flex: 0 0 auto;
+        margin-left: auto;
+    }
+    
+    /* Esconde elementos mobile no desktop */
+    .menu-toggle {
+        display: none !important;
+    }
+    
+    .header-right {
+        display: none !important;
+    }
 }
 
-/* MOBILE - ABAIXO DE 992px */
+/* ========== MOBILE (abaixo de 992px) ========== */
 @media (max-width: 992px) {
     /* Container do header reorganizado */
     .header-content {
@@ -61,28 +208,27 @@
         align-items: center;
         padding: 15px 0;
         position: relative;
+        flex-wrap: nowrap;
     }
     
     /* Logo à esquerda */
     .logo {
         flex: 0 0 auto;
+        order: 1;
     }
     
-    /* Container para botões de auth + hambúrguer no mobile */
+    /* Container direito para mobile */
     .header-right {
-        display: flex !important; /* IMPORTANTE: Mostra no mobile */
+        display: flex !important;
         align-items: center;
         gap: 15px;
         flex: 0 0 auto;
+        order: 2;
     }
     
-    /* Mostra botão hambúrguer no mobile */
+    /* Mostra botão hambúrguer */
     .menu-toggle {
         display: flex !important;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
     }
     
     /* Botões de autenticação no mobile */
@@ -91,17 +237,11 @@
         gap: 8px;
     }
     
-    .auth-buttons .btn {
-        padding: 8px 15px;
-        font-size: 0.9rem;
-        white-space: nowrap;
-        border-radius: 6px;
-    }
-    
-    /* Esconde navegação normal em mobile */
+    /* Esconde navegação principal em mobile */
     nav {
         display: none !important;
         width: 100%;
+        order: 3;
     }
     
     /* Mostra menu quando ativo */
@@ -146,171 +286,43 @@
     nav.active a:last-child {
         border-bottom: none;
     }
-}
-
-/* Para telas médias (tablets) */
-@media (max-width: 768px) {
-    .auth-buttons .btn {
-        padding: 7px 12px;
-        font-size: 0.85rem;
+    
+    /* Esconde botões de desktop no mobile */
+    #authButtonsDesktop {
+        display: none !important;
     }
 }
 
 /* Para celulares pequenos */
 @media (max-width: 576px) {
+    .header-content {
+        padding: 10px 0;
+    }
+    
+    .logo h1 {
+        font-size: 1.4rem;
+    }
+    
     .auth-buttons {
         flex-direction: column;
         gap: 5px;
     }
     
     .auth-buttons .btn {
-        padding: 6px 10px;
+        padding: 6px 12px;
         font-size: 0.8rem;
         min-width: 80px;
         text-align: center;
     }
+    
+    .menu-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
 }
 
-/* CORREÇÃO IMPORTANTE: Garante que auth-buttons sempre tenha display flex */
-.auth-buttons {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-/* Variáveis CSS */
-:root {
-    --primary: #2c3e50;
-    --secondary: #3498db;
-    --accent: #e74c3c;
-    --success: #27ae60;
-    --warning: #f39c12;
-    --light: #ecf0f1;
-    --dark: #2c3e50;
-    --gray: #95a5a6;
-}
-
-/* Reset e Base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: #f5f7fa;
-    color: #333;
-    line-height: 1.6;
-}
-
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Header */
-header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
-    color: white;
-    padding: 1rem 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo i {
-    font-size: 2rem;
-    color: var(--secondary);
-}
-
-.logo h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
-}
-
-.logo span {
-    color: var(--secondary);
-}
-
-/* Navegação */
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 1.5rem;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-    background-color: transparent;
-}
-
-nav a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s;
-}
-
-nav a:hover::before {
-    left: 100%;
-}
-
-nav a:hover, nav a.active {
-    color: var(--secondary);
-    transform: translateY(-1px);
-}
-
-.auth-buttons {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: white;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-/* Botões */
+/* ========== BOTÕES ========== */
 .btn {
     padding: 0.5rem 1.5rem;
     border-radius: 4px;
@@ -377,6 +389,7 @@ nav a:hover, nav a.active {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+/* ========== RESTANTE DO CSS (mantido do original) ========== */
 /* Hero Section */
 .hero {
     background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
@@ -1209,7 +1222,7 @@ footer {
     text-decoration: underline;
 }
 
-/* Responsividade */
+/* Responsividade geral */
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
