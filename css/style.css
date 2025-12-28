@@ -93,35 +93,31 @@ nav ul {
 }
 
 nav a {
-    color: white;
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    font-weight: 400;
+    font-size: 0.92rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
     position: relative;
-    overflow: hidden;
-    background-color: transparent;
+    background: transparent;
 }
 
-nav a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s;
+/* BARRA APENAS À ESQUERDA - DESKTOP */
+nav a:hover {
+    color: white;
+    font-weight: 500;
+    padding-left: 24px;
+    border-left: 2px solid rgba(52, 152, 219, 0.5);
 }
 
-nav a:hover::before {
-    left: 100%;
-}
-
-nav a:hover, nav a.active {
-    color: var(--secondary);
-    transform: translateY(-1px);
+nav a.active {
+    color: white;
+    font-weight: 600;
+    padding-left: 24px;
+    border-left: 2px solid white;
+    background: rgba(52, 152, 219, 0.1);
 }
 
 /* Botões de Autenticação - LADO A LADO */
@@ -136,6 +132,25 @@ nav a:hover, nav a.active {
     padding: 0.4rem 1rem;
     font-size: 0.9rem;
     white-space: nowrap;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
 }
 
 /* Botão Hambúrguer - INICIALMENTE ESCONDIDO */
@@ -186,6 +201,7 @@ nav a:hover, nav a.active {
     .header-content {
         padding: 0.5rem 0;
         min-height: 50px;
+        position: relative;
     }
     
     /* Logo à esquerda */
@@ -217,27 +233,32 @@ nav a:hover, nav a.active {
         display: none !important;
     }
     
-    /* Menu hambúrguer quando ativo */
+    /* Menu hambúrguer quando ativo - CORRIGIDO PARA NÃO CORTAR */
     nav.active {
         display: block !important;
         position: absolute;
-        top: 50px;
+        top: 100%;
         left: 0;
         right: 0;
         background: var(--primary);
         padding: 1rem 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         z-index: 1000;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
     
     nav.active ul {
         flex-direction: column;
         width: 100%;
         padding: 0;
+        margin: 0;
     }
     
     nav.active li {
         width: 100%;
+        margin: 0;
     }
     
     nav.active a {
@@ -245,10 +266,25 @@ nav a:hover, nav a.active {
         padding: 1rem 1.5rem;
         width: 100%;
         border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        border-left: none !important;
+        padding-left: 1.5rem !important;
     }
     
+    /* BARRA APENAS À ESQUERDA - MOBILE */
     nav.active a:hover {
         background: rgba(255,255,255,0.1);
+        border-left: 3px solid rgba(52, 152, 219, 0.7) !important;
+        padding-left: 1.8rem !important;
+    }
+    
+    nav.active a.active {
+        background: rgba(52, 152, 219, 0.15);
+        border-left: 3px solid white !important;
+        color: white;
+        font-weight: 600;
+        padding-left: 1.8rem !important;
     }
     
     /* Hero mobile */
@@ -944,7 +980,9 @@ footer {
     color: #555;
 }
 
-.form-group input {
+.form-group input,
+.form-group textarea,
+.form-group select {
     width: 100%;
     padding: 12px;
     border: 2px solid #e1e1e1;
@@ -953,7 +991,9 @@ footer {
     transition: border-color 0.3s;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
     border-color: var(--secondary);
 }
@@ -1101,6 +1141,28 @@ footer {
     color: #666;
 }
 
+/* Modal de Upload */
+.modal-upload {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+}
+
+.modal-upload.active {
+    display: flex;
+    opacity: 1;
+}
+
 /* ============================
    RESPONSIVIDADE
    ============================ */
@@ -1114,6 +1176,32 @@ footer {
     .auth-buttons .btn {
         padding: 0.25rem 0.6rem;
         font-size: 0.75rem;
+    }
+    
+    .user-info {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+    
+    .user-info .btn {
+        margin-top: 5px;
+    }
+    
+    /* Menu hambúrguer ajustado */
+    nav.active {
+        top: 100%;
+        max-height: calc(100vh - 50px);
+    }
+    
+    nav.active a {
+        padding: 1rem 1.5rem;
+    }
+    
+    nav.active a:hover,
+    nav.active a.active {
+        padding-left: 1.8rem !important;
+        border-left: 3px solid !important;
     }
     
     .hero {
@@ -1171,47 +1259,4 @@ footer {
     background: #efe;
     color: #2a7;
     border: 1px solid #cfc;
-}
-/* ============================
-   APENAS 1 BARRA À ESQUERDA
-   ============================ */
-
-/* Remove tudo primeiro */
-nav a::before,
-nav a::after {
-    content: none !important;
-}
-
-/* Nova barra única */
-nav a {
-    color: rgba(255, 255, 255, 0.85) !important;
-    padding: 8px 16px 8px 20px !important; /* Espaço à esquerda */
-    font-weight: 400;
-    font-size: 0.92rem;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    background: transparent !important;
-    border: none !important;
-    position: relative;
-}
-
-/* Barra aparece no hover */
-nav a:hover {
-    color: white !important;
-    font-weight: 500;
-    padding-left: 22px !important;
-}
-
-/* Linha azul fina à esquerda no hover */
-nav a:hover {
-    border-left: 2px solid rgba(52, 152, 219, 0.5) !important;
-}
-
-/* Barra branca para ativo */
-nav a.active {
-    color: white !important;
-    font-weight: 600;
-    padding-left: 22px !important;
-    border-left: 2px solid white !important;
-    background: rgba(52, 152, 219, 0.1) !important;
 }
