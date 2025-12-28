@@ -80,7 +80,9 @@ header {
     color: var(--secondary);
 }
 
-/* Navegação Desktop */
+/* ============================
+   NAVEGAÇÃO DESKTOP - CORREÇÃO DO EFEITO BUGADO
+   ============================ */
 nav {
     display: flex;
     margin: 0 2rem;
@@ -104,96 +106,46 @@ nav a {
     background-color: transparent;
 }
 
+/* REMOVER efeito de transparência antigo */
 nav a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s;
+    content: none; /* Remove completamente o efeito anterior */
 }
 
-nav a:hover::before {
-    left: 100%;
+/* NOVO EFEITO: Barra azul embaixo (similar ao footer) */
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background-color: var(--secondary);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+nav a:hover::after,
+nav a.active::after {
+    width: 80%; /* A barra cresce para 80% da largura do link */
 }
 
 nav a:hover, nav a.active {
     color: var(--secondary);
     transform: translateY(-1px);
+    background-color: transparent; /* Garantir que não tenha fundo transparente */
 }
 
-/* Botões de Autenticação - LADO A LADO */
-.auth-buttons {
-    display: flex;
-    gap: 0.8rem;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.auth-buttons .btn {
-    padding: 0.4rem 1rem;
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-/* Botão Hambúrguer - INICIALMENTE ESCONDIDO */
-.menu-toggle {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 10px/* Navegação Desktop */
-nav {
-    display: flex;
-    margin: 0 2rem;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 1.5rem;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-    background-color: transparent;
-}
-
-nav a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s;
-}
-
-nav a:hover::before {
-    left: 100%;
-}
-
-nav a:hover, nav a.active {
-    color: var(--secondary);
-    transform: translateY(-1px);
-};
-    z-index: 1001;
-    width: 44px;
-    height: 44px;
-    align-items: center;
-    justify-content: center;
+/* Efeito mais sutil para mobile */
+@media (max-width: 992px) {
+    nav.active a::after {
+        height: 2px;
+        bottom: 0;
+    }
+    
+    nav.active a:hover::after,
+    nav.active a.active::after {
+        width: 60%;
+    }
 }
 
 /* ============================
