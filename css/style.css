@@ -1176,13 +1176,14 @@ footer {
 /* ============================
    GARANTE VISIBILIDADE DOS BOTÕES
    ============================ */
-/* IMPORTANTE: Força os botões a aparecerem sempre */
 #authButtons {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+}
+/* Fecha a chave do #authButtons aqui ↑ */
 
- /* ===========================================
+/* ===========================================
    EFEITO ELEGANTE - BARRA AZUL À ESQUERDA
    =========================================== */
 
@@ -1422,5 +1423,3 @@ nav a.active {
 nav a.active {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
-}
-
