@@ -11,27 +11,17 @@
     <script src="js/app.js" defer></script>
 </head>
 <body>
-   <!-- Header -->
+  <!-- Header -->
 <header>
     <div class="container">
         <div class="header-content">
-            <!-- Logo primeiro -->
+            <!-- 1. Logo à esquerda -->
             <div class="logo">
                 <i class="fas fa-graduation-cap"></i>
                 <h1>Study<span>Cert</span></h1>
             </div>
             
-            <!-- Botões de autenticação no meio -->
-            <div class="auth-buttons" id="authButtons">
-                <!-- Será preenchido dinamicamente via JavaScript -->
-            </div>
-            
-            <!-- Botão hambúrguer por último -->
-            <button class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            
-            <!-- Navegação (será mostrada quando o hambúrguer for clicado) -->
+            <!-- 2. Navegação no centro (desktop) -->
             <nav id="mainNav">
                 <ul>
                     <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
@@ -41,6 +31,16 @@
                     <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
                 </ul>
             </nav>
+            
+            <!-- 3. Botões de autenticação à direita -->
+            <div class="auth-buttons" id="authButtons">
+                <!-- Será preenchido dinamicamente via JavaScript -->
+            </div>
+            
+            <!-- 4. Botão hambúrguer (visível apenas no mobile) -->
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </div>
 </header>
