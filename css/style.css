@@ -1711,5 +1711,32 @@ footer {
         transform: translateX(100%);
         opacity: 0;
     }
+   /* Mensagens de sucesso mais visíveis */
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    text-align: left;
+}
+
+.message.success a {
+    color: #0c5460;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.message.success a:hover {
+    color: #062c33;
+}
+
+/* Botão de sucesso */
+.btn-success:disabled {
+    background-color: #28a745 !important;
+    opacity: 0.9;
+    cursor: not-allowed;
+}
 }
 
