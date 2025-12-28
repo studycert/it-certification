@@ -1,3 +1,20 @@
+// Função para ajustar botões no mobile
+function ajustarLayoutMobile() {
+    const authButtons = document.getElementById('authButtons');
+    const menuToggle = document.getElementById('menuToggle');
+    
+    if (window.innerWidth <= 768) {
+        // No mobile muito pequeno, move os botões para o menu hambúrguer
+        authButtons.style.display = 'none';
+    } else if (window.innerWidth <= 992) {
+        // No tablet, mantém os botões visíveis
+        authButtons.style.display = 'flex';
+    }
+}
+
+// Executa ao carregar e redimensionar
+window.addEventListener('load', ajustarLayoutMobile);
+window.addEventListener('resize', ajustarLayoutMobile);
 // Menu hambúrguer - CÓDIGO MÍNIMO
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
