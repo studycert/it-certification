@@ -1,126 +1,264 @@
-/* ========== CORREÇÕES PARA REMOVER LINHA PRETA ========== */
-
-/* HEADER - garantir que não tenha borda/margem extra */
-header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
-    color: white;
-    padding: 1rem 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    border-bottom: none !important; /* REMOVER qualquer borda */
-    margin-bottom: 0 !important;
-}
-
-/* Container do header - sem espaçamento extra */
+/* ========== HEADER ESTRUTURA ========== */
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
-    min-height: 60px; /* Altura mínima consistente */
 }
 
-/* MENU DROPDOWN - corrigir posição e aparência */
+/* Lado esquerdo: logo + menu hambúrguer */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo i {
+    font-size: 2rem;
+    color: var(--secondary);
+}
+
+.logo h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.logo span {
+    color: var(--secondary);
+}
+
+/* Menu Hambúrguer - Base */
+.menu-toggle {
+    display: none; /* Escondido no desktop */
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Navegação */
+nav {
+    display: flex;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+nav a:hover, nav a.active {
+    color: var(--secondary);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Auth Buttons - SEMPRE VISÍVEL */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.auth-buttons .btn {
+    display: inline-block;
+    min-width: 80px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* ========== MOBILE (até 992px) ========== */
 @media (max-width: 992px) {
+    /* Header ajustado para mobile */
+    .header-content {
+        padding: 0.5rem 0;
+        min-height: 60px;
+    }
+    
+    /* Menu hambúrguer VISÍVEL no mobile */
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: static; /* Remove posição absoluta */
+        order: 2; /* Fica depois da logo */
+    }
+    
+    /* Header-left organiza logo e hambúrguer */
+    .header-left {
+        flex: 1;
+        justify-content: flex-start;
+    }
+    
+    /* Logo ajustada */
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .logo i {
+        font-size: 1.7rem;
+    }
+    
+    /* Auth buttons ajustados para mobile */
+    .auth-buttons {
+        order: 3; /* Fica no final */
+        margin-left: auto; /* Empurra para direita */
+        gap: 8px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        min-width: 70px;
+    }
+    
+    /* Navegação escondida por padrão no mobile */
     nav {
         display: none !important;
         position: absolute;
-        top: 100%; /* Começa EXATAMENTE abaixo do header */
+        top: 100%;
         left: 0;
         right: 0;
         background: var(--primary);
-        padding: 0; /* Remover padding extra */
+        padding: 1rem 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 999;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
-        border-top: none; /* REMOVER borda superior */
+        z-index: 1000;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
     
-    /* Menu ativo - animação suave */
+    /* Navegação ativa no mobile */
     nav.active {
         display: block !important;
-        max-height: 500px; /* Altura máxima para animação */
-        padding: 1rem 0; /* Adicionar padding apenas quando ativo */
     }
     
-    /* Lista do menu */
     nav ul {
         flex-direction: column;
         width: 100%;
-        margin: 0;
-        padding: 0;
+        gap: 0;
     }
     
-    /* Itens do menu */
     nav li {
         width: 100%;
-        margin: 0;
     }
     
-    /* Links do menu */
     nav a {
         display: block;
         padding: 1rem 1.5rem;
         width: 100%;
-        color: white;
-        text-decoration: none;
         border-bottom: 1px solid rgba(255,255,255,0.1);
-        transition: background 0.3s;
     }
     
     nav a:hover {
         background: rgba(255,255,255,0.1);
     }
+}
+
+/* ========== DESKTOP (a partir de 993px) ========== */
+@media (min-width: 993px) {
+    /* Esconde menu hambúrguer no desktop */
+    .menu-toggle {
+        display: none !important;
+    }
     
-    /* REMOVER última borda */
-    nav li:last-child a {
-        border-bottom: none;
+    /* Mostra navegação normal */
+    nav {
+        display: flex !important;
+        position: static;
+        order: 2;
+        flex: 1;
+        justify-content: center;
+    }
+    
+    /* Header-left apenas com logo no desktop */
+    .header-left {
+        order: 1;
+        flex: 0 0 auto;
+    }
+    
+    /* Auth buttons no desktop */
+    .auth-buttons {
+        order: 3;
+        flex: 0 0 auto;
+    }
+    
+    /* Ajusta espaçamento da navegação */
+    nav ul {
+        gap: 2rem;
     }
 }
 
-/* ========== GARANTIR QUE NÃO HÁ ESPAÇO EXTRA ========== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ========== MOBILE PEQUENO (até 576px) ========== */
+@media (max-width: 576px) {
+    .logo h1 {
+        font-size: 1.3rem;
+    }
+    
+    .logo i {
+        font-size: 1.5rem;
+    }
+    
+    .auth-buttons .btn {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        min-width: 60px;
+    }
+    
+    .menu-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+    }
 }
 
-body {
-    margin: 0;
-    padding: 0;
-}
-
-/* Verificar se há elementos com margin/padding extra */
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* ========== DEBUG - se ainda persistir ========== */
-/* Adicione temporariamente para verificar */
-/*
-header * {
-    outline: 1px solid red;
-}
-*/
-
-/* ========== CORREÇÃO ESPECÍFICA PARA LINHA PRETA ========== */
-/* Se ainda houver uma linha preta, pode ser sombra ou borda de algum elemento */
-header::after,
-header::before {
-    display: none !important;
-    content: none !important;
-}
-
-.hero {
-    margin-top: 0 !important;
-    padding-top: 5rem !important;
+/* ========== REGRAS DE EMERGÊNCIA ========== */
+/* Garantir que auth-buttons nunca fique invisível */
+.auth-buttons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 /* Variáveis CSS */
 :root {
