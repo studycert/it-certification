@@ -1226,7 +1226,6 @@ footer {
     color: #2a7;
     border: 1px solid #cfc;
 }
-
 /* ============================
    GARANTE VISIBILIDADE DOS BOTÕES
    ============================ */
@@ -1248,3 +1247,20 @@ footer {
     .auth-buttons .btn {
         padding: 0.4rem 1rem !important;
     }
+}
+
+/* ============================
+   CORREÇÃO DO MENU HAMBÚRGUER
+   ============================ */
+@media (max-width: 992px) {
+    /* Garante que o menu funcione corretamente */
+    nav.active {
+        display: block !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: var(--primary) !important;
+        z-index: 1000 !important;
+    }
+}
