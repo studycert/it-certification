@@ -1,3 +1,392 @@
+<script>
+// ============================
+// FUNCIONALIDADES DO SISTEMA
+// ============================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos principais
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    const mainContent = document.getElementById('mainContent');
+    const homeLink = document.getElementById('homeLink');
+    const verSimuladosBtn = document.getElementById('verSimuladosBtn');
+    const modalSimulados = document.getElementById('modalSimulados');
+    const fecharModalBtn = document.getElementById('fecharModalBtn');
+    
+    // Modal de autenticação
+    const loginBtn = document.getElementById('loginBtn');
+    const cadastroBtn = document.getElementById('cadastroBtn');
+    const modalAuth = document.getElementById('modalAuth');
+    const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
+    
+    // Tabs do modal de autenticação
+    const authTabs = document.querySelectorAll('.auth-tab');
+    const authForms = document.querySelectorAll('.auth-form');
+    
+    // Links de navegação
+    const navLinks = document.querySelectorAll('nav a');
+    
+    // ============================
+    // MENU HAMBÚRGUER
+    // ============================
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            // Anima o ícone do hambúrguer
+            this.classList.toggle('active');
+        });
+        
+        // Fecha o menu ao clicar em um link (mobile)
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    navMenu.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                }
+            });
+        });
+        
+        // Fecha menu ao clicar fora (mobile)
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 992 && 
+                navMenu.classList.contains('active') && 
+                !navMenu.contains(event.target) && 
+                !menuToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+            }
+        });
+    }
+    
+    // ============================
+    // NAVEGAÇÃO ENTRE SEÇÕES
+    // ============================
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove classe active de todos os links
+            navLinks.forEach(l => l.classList.remove('active'));
+            
+            // Adiciona classe active ao link clicado
+            this.classList.add('active');
+            
+            // Se for link "Início", mostra conteúdo padrão
+            if (this.id === 'homeLink') {
+                if (mainContent) {
+                    mainContent.classList.add('active');
+                }
+            }
+        });
+    });
+    
+    // ============================
+    // MODAL DE SIMULADOS
+    // ============================
+    if (verSimuladosBtn && modalSimulados) {
+        verSimuladosBtn.addEventListener('click', function() {
+            console.log('Botão Ver 13 simulados clicado'); // Debug
+            modalSimulados.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Previne scroll do body
+        });
+    }
+    
+    if (fecharModalBtn && modalSimulados) {
+        fecharModalBtn.addEventListener('click', function() {
+            modalSimulados.classList.remove('active');
+            document.body.style.overflow = ''; // Restaura scroll
+        });
+    }
+    
+    // Fecha modal ao clicar fora
+    if (modalSimulados) {
+        modalSimulados.addEventListener('click', function(e) {
+            if (e.target === modalSimulados) {
+                modalSimulados.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Fecha modal com ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalSimulados.classList.contains('active')) {
+                modalSimulados.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+    
+    // ============================
+    // MODAL DE AUTENTICAÇÃO
+    // ============================
+    if (loginBtn && modalAuth) {
+        loginBtn.addEventListener('click', function() {
+            modalAuth.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Ativa a tab de login por padrão
+            const loginTab = document.getElementById('loginTab');
+            const cadastroTab = document.getElementById('cadastroTab');
+            const loginForm = document.getElementById('loginForm');
+            const cadastroForm = document.getElementById('cadastroForm');
+            
+            if (loginTab && cadastroTab && loginForm && cadastroForm) {
+                loginTab.classList.add('active');
+                cadastroTab.classList.remove('active');
+                loginForm.classList.add('active');
+                cadastroForm.classList.remove('active');
+            }
+        });
+    }
+    
+    if (cadastroBtn && modalAuth) {
+        cadastroBtn.addEventListener('click', function() {
+            modalAuth.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Ativa a tab de cadastro por padrão
+            const loginTab = document.getElementById('loginTab');
+            const cadastroTab = document.getElementById('cadastroTab');
+            const loginForm = document.getElementById('loginForm');
+            const cadastroForm = document.getElementById('cadastroForm');
+            
+            if (loginTab && cadastroTab && loginForm && cadastroForm) {
+                cadastroTab.classList.add('active');
+                loginTab.classList.remove('active');
+                cadastroForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+        });
+    }
+    
+    if (closeAuthModalBtn && modalAuth) {
+        closeAuthModalBtn.addEventListener('click', function() {
+            modalAuth.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+    
+    if (modalAuth) {
+        // Fecha modal ao clicar fora
+        modalAuth.addEventListener('click', function(e) {
+            if (e.target === modalAuth) {
+                modalAuth.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Fecha modal com ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalAuth.classList.contains('active')) {
+                modalAuth.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+    
+    // ============================
+    // TABS DO MODAL DE AUTENTICAÇÃO
+    // ============================
+    authTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const target = this.getAttribute('data-tab');
+            
+            // Remove active de todas as tabs e forms
+            authTabs.forEach(t => t.classList.remove('active'));
+            authForms.forEach(f => f.classList.remove('active'));
+            
+            // Adiciona active à tab e form atual
+            this.classList.add('active');
+            document.getElementById(target + 'Form').classList.add('active');
+        });
+    });
+    
+    // ============================
+    // FORMULÁRIOS DE AUTENTICAÇÃO
+    // ============================
+    const loginForm = document.getElementById('loginForm');
+    const cadastroForm = document.getElementById('cadastroForm');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = this.querySelector('input[type="email"]').value;
+            const senha = this.querySelector('input[type="password"]').value;
+            
+            // Simulação de login
+            if (email && senha) {
+                showMessage('success', 'Login realizado com sucesso!');
+                setTimeout(() => {
+                    modalAuth.classList.remove('active');
+                    document.body.style.overflow = '';
+                    
+                    // Altera botões para mostrar usuário logado
+                    const authButtons = document.querySelector('.auth-buttons');
+                    if (authButtons) {
+                        authButtons.innerHTML = `
+                            <button class="btn btn-primary" id="userProfile">
+                                <i class="fas fa-user"></i> Minha Conta
+                            </button>
+                            <button class="btn btn-outline" id="logoutBtn">
+                                Sair
+                            </button>
+                        `;
+                        
+                        // Adiciona eventos aos novos botões
+                        document.getElementById('userProfile').addEventListener('click', () => {
+                            showMessage('success', 'Redirecionando para seu perfil...');
+                        });
+                        
+                        document.getElementById('logoutBtn').addEventListener('click', () => {
+                            authButtons.innerHTML = `
+                                <button class="btn btn-outline" id="loginBtn">Entrar</button>
+                                <button class="btn btn-primary" id="cadastroBtn">Cadastrar</button>
+                            `;
+                            // Reatribui eventos aos botões recriados
+                            setupAuthButtons();
+                            showMessage('success', 'Logout realizado com sucesso!');
+                        });
+                    }
+                }, 1500);
+            } else {
+                showMessage('error', 'Por favor, preencha todos os campos.');
+            }
+        });
+    }
+    
+    if (cadastroForm) {
+        cadastroForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = this.querySelector('input[type="text"]').value;
+            const email = this.querySelector('input[type="email"]').value;
+            const senha = this.querySelector('input[type="password"]').value;
+            
+            // Simulação de cadastro
+            if (nome && email && senha) {
+                showMessage('success', 'Cadastro realizado com sucesso!');
+                setTimeout(() => {
+                    modalAuth.classList.remove('active');
+                    document.body.style.overflow = '';
+                }, 1500);
+            } else {
+                showMessage('error', 'Por favor, preencha todos os campos.');
+            }
+        });
+    }
+    
+    // ============================
+    // FUNÇÕES AUXILIARES
+    // ============================
+    function showMessage(type, text) {
+        // Remove mensagens anteriores
+        const existingMessages = document.querySelectorAll('.message');
+        existingMessages.forEach(msg => msg.remove());
+        
+        // Cria nova mensagem
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.textContent = text;
+        messageDiv.style.display = 'block';
+        
+        // Adiciona ao modal de autenticação
+        const authContainer = document.querySelector('.auth-container');
+        if (authContainer) {
+            const authHeader = document.querySelector('.auth-header');
+            if (authHeader) {
+                authHeader.after(messageDiv);
+            }
+        }
+        
+        // Remove após 3 segundos
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 3000);
+    }
+    
+    function setupAuthButtons() {
+        const loginBtn = document.getElementById('loginBtn');
+        const cadastroBtn = document.getElementById('cadastroBtn');
+        
+        if (loginBtn) {
+            loginBtn.addEventListener('click', function() {
+                modalAuth.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                const loginTab = document.getElementById('loginTab');
+                const cadastroTab = document.getElementById('cadastroTab');
+                const loginForm = document.getElementById('loginForm');
+                const cadastroForm = document.getElementById('cadastroForm');
+                
+                if (loginTab && cadastroTab && loginForm && cadastroForm) {
+                    loginTab.classList.add('active');
+                    cadastroTab.classList.remove('active');
+                    loginForm.classList.add('active');
+                    cadastroForm.classList.remove('active');
+                }
+            });
+        }
+        
+        if (cadastroBtn) {
+            cadastroBtn.addEventListener('click', function() {
+                modalAuth.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                const loginTab = document.getElementById('loginTab');
+                const cadastroTab = document.getElementById('cadastroTab');
+                const loginForm = document.getElementById('loginForm');
+                const cadastroForm = document.getElementById('cadastroForm');
+                
+                if (loginTab && cadastroTab && loginForm && cadastroForm) {
+                    cadastroTab.classList.add('active');
+                    loginTab.classList.remove('active');
+                    cadastroForm.classList.add('active');
+                    loginForm.classList.remove('active');
+                }
+            });
+        }
+    }
+    
+    // ============================
+    // INICIALIZAÇÃO
+    // ============================
+    // Mostra conteúdo principal ao carregar
+    if (mainContent) {
+        mainContent.classList.add('active');
+    }
+    
+    // Ativa link "Início" por padrão
+    if (homeLink) {
+        homeLink.classList.add('active');
+    }
+    
+    // Configura botões de autenticação
+    setupAuthButtons();
+    
+    // Simula progresso do usuário
+    const progressFill = document.querySelector('.progress-fill');
+    if (progressFill) {
+        setTimeout(() => {
+            progressFill.style.width = '65%';
+        }, 500);
+    }
+    
+    // Debug: verifica se elementos existem
+    console.log('Elementos carregados:');
+    console.log('- verSimuladosBtn:', verSimuladosBtn ? 'OK' : 'NÃO ENCONTRADO');
+    console.log('- modalSimulados:', modalSimulados ? 'OK' : 'NÃO ENCONTRADO');
+    console.log('- loginBtn:', loginBtn ? 'OK' : 'NÃO ENCONTRADO');
+    console.log('- cadastroBtn:', cadastroBtn ? 'OK' : 'NÃO ENCONTRADO');
+});
+
+// ============================
+// FUNÇÃO PARA ADICIONAR SIMULADO
+// ============================
+function iniciarSimulado(id) {
+    alert(`Iniciando simulado ${id}...\n\nEsta funcionalidade está em desenvolvimento. Em breve você poderá fazer simulados completos!`);
+}
+</script>
 // Função para ajustar botões no mobile
 function ajustarLayoutMobile() {
     const authButtons = document.getElementById('authButtons');
