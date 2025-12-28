@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - StudyCert</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/admin.js" defer></script>
+</head>
+<body>
+    <!-- Header Admin -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Study<span>Cert</span> <span class="admin-badge">Admin</span></h1>
+                </div>
+                <div class="admin-nav">
+                    <a href="index.html" class="btn btn-outline">
+                        <i class="fas fa-home"></i> Voltar ao Site
+                    </a>
+                    <button class="btn btn-danger" onclick="admin.logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar Admin -->
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="admin-profile">
+                <div class="admin-avatar" id="adminAvatar">
+                    <!-- Carregado via JS -->
+                </div>
+                <h3 id="adminName">Carregando...</h3>
+                <p id="adminEmail" class="admin-email">admin@example.com</p>
+                <div class="admin-status">
+                    <span class="status-dot online"></span>
+                    <span>Online</span>
+                </div>
+            </div>
+
+            <nav class="admin-menu">
+                <ul>
+                    <li>
+                        <a href="#dashboard" class="admin-menu-item active" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#simulados" class="admin-menu-item" data-section="simulados">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Gerenciar Simulados</span>
+                            <span class="menu-badge" id="badgeSimulados">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#usuarios" class="admin-menu-item" data-section="usuarios">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                            <span class="menu-badge" id="badgeUsuarios">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#forum" class="admin-menu-item" data-section="forum">
+                            <i class="fas fa-comments"></i>
+                            <span>Posts do Fórum</span>
+                            <span class="menu-badge" id="badgeForum">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#relatorios" class="admin-menu-item" data-section="relatorios">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Relatórios</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#configuracoes" class="admin-menu-item" data-section="configuracoes">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="admin-stats-sidebar">
+                <div class="stat-item">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <h4>Visitas Hoje</h4>
+                        <p id="visitasHoje">0</p>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-upload"></i>
+                    <div>
+                        <h4>Uploads Hoje</h4>
+                        <p id="uploadsHoje">0</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="admin-main">
+            <!-- Dashboard -->
+            <section id="dashboard" class="admin-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                    <p>Visão geral do sistema</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalUsuarios">0</h3>
+                            <p>Usuários Registrados</p>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12% este mês</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-success">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalSimulados">0</h3>
+                            <p>Simulados Publicados</p>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+8% este mês</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalPosts">0</h3>
+                            <p>Posts no Fórum</p>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+15% este mês</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-danger">
+                        <div class="stat-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalArmazenamento">0 MB</h3>
+                            <p>Armazenamento Usado</p>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+5% este mês</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-row">
+                    <div class="admin-col">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-line"></i> Atividade Recente</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="activity-list" id="activityList">
+                                    <!-- Atividades carregadas via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-col">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-exclamation-triangle"></i> Requer Atenção</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert-list" id="alertList">
+                                    <!-- Alertas carregados via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-alt"></i> Estatísticas do Mês</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gerenciar Simulados -->
+            <section id="simulados" class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-alt"></i> Gerenciar Simulados</h2>
+                    <p>Gerencie todos os simulados do sistema</p>
+                </div>
+
+                <div class="admin-toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchSimulados" placeholder="Buscar simulados..." onkeyup="admin.buscarSimulados()">
+                    </div>
+                    <div class="toolbar-actions">
+                        <select id="filterStatus" class="form-control" onchange="admin.filtrarSimulados()">
+                            <option value="all">Todos os status</option>
+                            <option value="ativo">Ativos</option>
+                            <option value="inativo">Inativos</option>
+                            <option value="pendente">Pendentes</option>
+                        </select>
+                        <select id="filterCategoria" class="form-control" onchange="admin.filtrarSimulados()">
+                            <option value="all">Todas categorias</option>
+                            <option value="ITIL">ITIL</option>
+                            <option value="Azure">Azure</option>
+                            <option value="AWS">AWS</option>
+                            <option value="Security">Security+</option>
+                            <option value="Linux">Linux</option>
+                            <option value="CCNA">CCNA</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="admin.carregarSimulados()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                        <button class="btn btn-danger" id="btnExcluirMultiplos" onclick="admin.excluirMultiplosSimulados()" disabled>
+                            <i class="fas fa-trash"></i> Excluir Selecionados
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table" id="simuladosTable">
+                        <thead>
+                            <tr>
+                                <th width="30">
+                                    <input type="checkbox" id="selectAllSimulados" onchange="admin.selecionarTodosSimulados()">
+                                </th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Usuário</th>
+                                <th>Data</th>
+                                <th>Tamanho</th>
+                                <th>Status</th>
+                                <th>Visualizações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="simuladosTableBody">
+                            <!-- Dados carregados via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-pagination">
+                    <div class="pagination-info">
+                        Mostrando <span id="simuladosShowing">0</span> de <span id="simuladosTotal">0</span> simulados
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="btn btn-outline" onclick="admin.paginaAnterior()" id="btnPrev">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </button>
+                        <span id="paginationInfo">Página 1 de 1</span>
+                        <button class="btn btn-outline" onclick="admin.proximaPagina()" id="btnNext">
+                            Próxima <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Usuários -->
+            <section id="usuarios" class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Gerenciar Usuários</h2>
+                    <p>Gerencie os usuários do sistema</p>
+                </div>
+
+                <div class="admin-toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchUsuarios" placeholder="Buscar usuários..." onkeyup="admin.buscarUsuarios()">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Avatar</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Registro</th>
+                                <th>Status</th>
+                                <th>Simulados</th>
+                                <th>Último Login</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTableBody">
+                            <!-- Dados carregados via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Modal de Detalhes do Simulado -->
+            <div id="modalDetalhesSimulado" class="admin-modal">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-info-circle"></i> Detalhes do Simulado</h3>
+                        <button class="fechar-modal" onclick="admin.fecharModalDetalhes()">&times;</button>
+                    </div>
+                    <div class="modal-body" id="detalhesSimuladoContent">
+                        <!-- Carregado via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Confirmação de Exclusão -->
+            <div id="modalConfirmarExclusaoAdmin" class="admin-modal">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Exclusão</h3>
+                        <button class="fechar-modal" onclick="admin.fecharModalConfirmacao()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <h4>Atenção!</h4>
+                                <p id="confirmacaoTexto">Esta ação não pode ser desfeita. O simulado será permanentemente removido.</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="confirmarExclusaoAdmin">
+                                Eu entendo que esta ação é irreversível
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="admin.fecharModalConfirmacao()">Cancelar</button>
+                        <button class="btn btn-danger" onclick="admin.executarExclusaoSimulado()" id="btnExecutarExclusao">
+                            <i class="fas fa-trash"></i> Excluir Permanentemente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+</body>
+</html>
