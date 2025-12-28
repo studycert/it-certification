@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateAuthButtons();
     // Resto do seu código de inicialização...
 });
-// Menu hambúrguer - versão simplificada
+// Menu hambúrguer - versão simplificada e funcional
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
