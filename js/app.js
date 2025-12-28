@@ -29,30 +29,51 @@ document.addEventListener('DOMContentLoaded', function() {
     updateAuthButtons();
     // Resto do seu código de inicialização...
 });
-// Menu hambúrguer - CÓDIGO MÍNIMO
+// Menu hambúrguer - versão simplificada
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     
     if (menuToggle && mainNav) {
-        console.log('Menu encontrado, configurando...');
-        
         menuToggle.addEventListener('click', function() {
-            console.log('Botão clicado!');
             mainNav.classList.toggle('active');
             
             // Muda o ícone
             const icon = this.querySelector('i');
             if (mainNav.classList.contains('active')) {
-                console.log('Abrindo menu');
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
             } else {
-                console.log('Fechando menu');
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
         });
+        
+        // Fechar menu ao clicar em link no mobile
+        mainNav.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && window.innerWidth <= 992) {
+                mainNav.classList.remove('active');
+                const icon = menuToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        });
+        
+        // Ajustar quando redimensionar a tela
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) {
+                mainNav.classList.remove('active');
+                const icon = menuToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        });
+    }
+});
         
         // Fechar menu ao clicar em link (mobile)
         mainNav.addEventListener('click', function(e) {
