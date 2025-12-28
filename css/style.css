@@ -1172,27 +1172,173 @@ footer {
     color: #2a7;
     border: 1px solid #cfc;
 }
+/* ============================
+   GARANTE VISIBILIDADE DOS BOTÕES
+   ============================ */
+#authButtons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
 
 /* ===========================================
-   SELEÇÃO COM LINHA INFERIOR
+   ELEGANTE: TRANSPARÊNCIA + BARRA ESQUERDA + FONTE
    =========================================== */
-nav a {
-    color: rgba(255, 255, 255, 0.85) !important;
-    padding: 8px 12px 6px 12px !important; /* Mais padding em baixo */
-    margin: 0 2px;
-    font-size: 0.9rem;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s ease;
+
+/* NAVEGAÇÃO */
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
 }
 
+nav li {
+    position: relative;
+}
+
+/* ESTADO NORMAL - TRANSPARENTE */
+nav a {
+    position: relative;
+    color: rgba(255, 255, 255, 0.75) !important;
+    text-decoration: none;
+    font-weight: 400; /* Normal */
+    font-size: 0.92rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 8px 16px 8px 22px !important; /* Espaço para barra */
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent !important;
+    border: none !important;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* BARRA AZUL À ESQUERDA (SEMPRE PRESENTE MAS ESCONDIDA) */
+nav a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 0;
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    border-radius: 0 4px 4px 0;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+/* HOVER: TRANSPARÊNCIA + BARRA VISÍVEL + FONTE MAIS FORTE */
 nav a:hover {
     color: white !important;
-    border-bottom-color: rgba(52, 152, 219, 0.5);
+    font-weight: 500; /* Mais forte */
+    background: rgba(52, 152, 219, 0.1) !important; /* Transparência azul */
+    padding-left: 24px !important; /* Desloca para barra */
+    letter-spacing: 0.02em; /* Leve espaçamento */
 }
 
+nav a:hover::before {
+    transform: translateY(-50%) scaleY(1);
+    height: 70%;
+    opacity: 1;
+}
+
+/* ATIVO: TRANSPARÊNCIA MAIOR + BARRA BRANCA + FONTE DESTACADA */
 nav a.active {
     color: white !important;
-    font-weight: 600;
-    border-bottom-color: #3498db;
+    font-weight: 600; /* Negrito */
+    font-family: 'Segoe UI Semibold', 'Segoe UI', Tahoma, sans-serif; /* Fonte diferente */
+    background: rgba(52, 152, 219, 0.15) !important; /* Transparência maior */
+    padding-left: 24px !important;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+nav a.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 80%;
+    background: linear-gradient(to bottom, #ffffff, rgba(255, 255, 255, 0.9));
+    border-radius: 0 4px 4px 0;
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+/* EFEITO DE "GLOW" SUTIL NO FUNDO DO ATIVO */
+nav a.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at left center,
+        rgba(52, 152, 219, 0.1) 0%,
+        transparent 70%
+    );
+    border-radius: 8px;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+/* BOTÕES AUTH - ESTILO COORDENADO */
+.auth-buttons .btn {
+    font-size: 0.88rem;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.25s ease;
+    font-weight: 400;
+}
+
+.auth-buttons .btn-outline {
     background: transparent !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.auth-buttons .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: #3498db !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.auth-buttons .btn-primary {
+    background: rgba(52, 152, 219, 0.85) !important;
+    border-color: rgba(52, 152, 219, 0.7) !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.auth-buttons .btn-primary:hover {
+    background: rgba(52, 152, 219, 0.95) !important;
+    font-weight: 600;
+}
+
+/* MOBILE */
+@media (max-width: 992px) {
+    nav.active a {
+        padding: 10px 20px 10px 26px !important;
+        margin: 2px 8px;
+    }
+    
+    nav.active a:hover {
+        padding-left: 28px !important;
+    }
+    
+    nav.active a.active {
+        background: rgba(52, 152, 219, 0.2) !important;
+        padding-left: 28px !important;
+    }
+    
+    nav.active a::before {
+        width: 2px;
+    }
 }
