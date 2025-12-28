@@ -1,7 +1,7 @@
 // Configurações do Supabase
 const SUPABASE_CONFIG = {
-    url: 'https://lkguubynwngnewucgewx.supabase.co',
-    anonKey: 'sb_publishable_XIFYyZ49NHXHuDVbFSpWOA_Ovd1CEd3'
+   url: 'https://uhbwudgdeyvbkqoflaqw.supabase.co',
+    anonKey: 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4'
 };
 
 // Configurações da aplicação
