@@ -1182,3 +1182,39 @@ footer {
     visibility: visible !important;
     opacity: 1 !important;
 }
+/* SOLUÇÃO RÁPIDA - Fix para efeitos de botões */
+nav a {
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1 !important;
+    transform: none !important;
+    transition: background-color 0.3s, color 0.3s !important;
+}
+
+nav a:hover {
+    background-color: rgba(52, 152, 219, 0.3) !important;
+    transform: translateY(-2px) !important;
+    z-index: 10 !important;
+}
+
+nav a.active {
+    background-color: #3498db !important;
+    z-index: 5 !important;
+}
+
+.auth-buttons .btn {
+    position: relative !important;
+    z-index: 2 !important;
+    transform: none !important;
+}
+
+.auth-buttons .btn:hover {
+    transform: translateY(-2px) !important;
+    z-index: 20 !important;
+}
+
+/* Desativa todos os pseudo-elementos problemáticos */
+*::before {
+    content: none !important;
+    display: none !important;
+}
