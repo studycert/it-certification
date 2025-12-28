@@ -1,118 +1,6 @@
-/* ========== MENU HAMBURGUER SIMPLES ========== */
-.menu-toggle {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 1001;
-}
-
-/* MOBILE */
-@media (max-width: 992px) {
-    /* Ajusta o header */
-    .header-content {
-        position: relative;
-        min-height: 70px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    
-    /* Logo centralizada ou à esquerda */
-    .logo {
-        position: relative;
-        left: 0;
-        top: 0;
-        transform: none;
-        margin: 0;
-    }
-    
-    /* Botão hambúrguer à direita */
-    .menu-toggle {
-        display: flex;
-        position: relative;
-        right: 0;
-        top: 0;
-        transform: none;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-    }
-    
-    /* Ajusta auth buttons */
-    .auth-buttons {
-        position: relative;
-        right: 0;
-        top: 0;
-        transform: none;
-        display: flex !important;
-        gap: 8px;
-        margin-left: auto;
-        margin-right: 10px;
-    }
-    
-    .auth-buttons .btn {
-        padding: 6px 12px;
-        font-size: 0.85rem;
-        white-space: nowrap;
-    }
-    
-    /* Esconde navegação normal em mobile */
-    nav {
-        display: none !important;
-    }
-    
-    /* Mostra menu quando ativo */
-    nav.active {
-        display: block !important;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--primary);
-        padding: 1rem 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 1000;
-        border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    nav.active ul {
-        flex-direction: column;
-        width: 100%;
-        padding: 0;
-    }
-    
-    nav.active li {
-        width: 100%;
-    }
-    
-    nav.active a {
-        display: block;
-        padding: 1rem 1.5rem;
-        width: 100%;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    nav.active a:hover {
-        background: rgba(255,255,255,0.1);
-    }
-}
-
-/* DESKTOP */
-@media (min-width: 993px) {
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    nav {
-        display: flex !important;
-    }
-}
-/* Variáveis CSS */
+/* ============================
+   VARIÁVEIS E RESET
+   ============================ */
 :root {
     --primary: #2c3e50;
     --secondary: #3498db;
@@ -124,12 +12,16 @@
     --gray: #95a5a6;
 }
 
-/* Reset e Base */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -145,11 +37,13 @@ body {
     padding: 0 20px;
 }
 
-/* Header */
+/* ============================
+   HEADER PRINCIPAL (DESKTOP)
+   ============================ */
 header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
     color: white;
-    padding: 1rem 0;
+    padding: 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
@@ -160,12 +54,16 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem 0;
+    height: 70px;
 }
 
+/* Logo */
 .logo {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .logo i {
@@ -182,7 +80,12 @@ header {
     color: var(--secondary);
 }
 
-/* Navegação */
+/* Navegação Desktop */
+nav {
+    display: flex;
+    margin: 0 2rem;
+}
+
 nav ul {
     display: flex;
     list-style: none;
@@ -221,31 +124,115 @@ nav a:hover, nav a.active {
     transform: translateY(-1px);
 }
 
+/* Botões de Autenticação Desktop */
 .auth-buttons {
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex-shrink: 0;
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/* Botão Hambúrguer (inicialmente escondido) */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
     color: white;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--secondary);
-    display: flex;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+    width: 44px;
+    height: 44px;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
 }
 
-/* Botões */
+/* ============================
+   LAYOUT MOBILE (até 992px)
+   ============================ */
+@media (max-width: 992px) {
+    .header-content {
+        padding: 0.5rem 0;
+        height: 60px;
+        position: relative;
+    }
+    
+    /* Esconde a navegação normal no mobile */
+    nav {
+        display: none !important;
+    }
+    
+    /* Mostra botão hambúrguer no mobile */
+    .menu-toggle {
+        display: flex;
+        order: 3; /* Fica à direita */
+    }
+    
+    /* Ajusta auth buttons para ficar antes do hambúrguer */
+    .auth-buttons {
+        order: 2;
+        margin-left: auto;
+        margin-right: 10px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+    
+    /* Menu hambúrguer quando ativo */
+    nav.active {
+        display: block !important;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        padding: 1rem 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+    
+    nav.active ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+    }
+    
+    nav.active li {
+        width: 100%;
+    }
+    
+    nav.active a {
+        display: block;
+        padding: 1rem 1.5rem;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    nav.active a:hover {
+        background: rgba(255,255,255,0.1);
+    }
+}
+
+/* ============================
+   LAYOUT DESKTOP (acima de 992px)
+   ============================ */
+@media (min-width: 993px) {
+    .menu-toggle {
+        display: none !important;
+    }
+    
+    nav {
+        display: flex !important;
+    }
+}
+
+/* ============================
+   BOTÕES
+   ============================ */
 .btn {
     padding: 0.5rem 1.5rem;
     border-radius: 4px;
@@ -312,14 +299,17 @@ nav a:hover, nav a.active {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Hero Section */
+/* ============================
+   SEÇÃO HERO
+   ============================ */
 .hero {
     background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
     background-size: cover;
     background-position: center;
     color: white;
-    padding: 5rem 0;
+    padding: 4rem 0;
     text-align: center;
+    margin-top: 0;
 }
 
 .hero h2 {
@@ -333,7 +323,9 @@ nav a:hover, nav a.active {
     margin: 0 auto 2rem;
 }
 
-/* Main Content */
+/* ============================
+   CONTEÚDO PRINCIPAL
+   ============================ */
 .main-content {
     display: none;
     padding: 3rem 0;
@@ -361,7 +353,9 @@ nav a:hover, nav a.active {
     margin: 0 auto;
 }
 
-/* Cards */
+/* ============================
+   CARDS
+   ============================ */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -398,7 +392,9 @@ nav a:hover, nav a.active {
     border-top: 1px solid #eee;
 }
 
-/* Forum */
+/* ============================
+   FÓRUM
+   ============================ */
 .forum-container {
     display: grid;
     grid-template-columns: 1fr 3fr;
@@ -508,7 +504,9 @@ nav a:hover, nav a.active {
     width: 200px;
 }
 
-/* Study Materials */
+/* ============================
+   MATERIAIS DE ESTUDO
+   ============================ */
 .materials-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -550,7 +548,9 @@ nav a:hover, nav a.active {
     margin-bottom: 1rem;
 }
 
-/* Simulados */
+/* ============================
+   SIMULADOS
+   ============================ */
 .simulados-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -635,7 +635,9 @@ nav a:hover, nav a.active {
     margin-bottom: 1.5rem;
 }
 
-/* Certificações Grid */
+/* ============================
+   CERTIFICAÇÕES
+   ============================ */
 .certifications-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -687,7 +689,9 @@ nav a:hover, nav a.active {
     margin-bottom: 1rem;
 }
 
-/* Progresso do usuário */
+/* ============================
+   PROGRESSO DO USUÁRIO
+   ============================ */
 .user-progress {
     background: white;
     padding: 20px;
@@ -712,11 +716,14 @@ nav a:hover, nav a.active {
     transition: width 1s ease;
 }
 
-/* Footer */
+/* ============================
+   FOOTER
+   ============================ */
 footer {
     background: var(--primary);
     color: white;
     padding: 3rem 0 1.5rem;
+    margin-top: auto;
 }
 
 .footer-content {
@@ -792,6 +799,9 @@ footer {
     font-size: 0.9rem;
 }
 
+/* ============================
+   MODAIS
+   ============================ */
 /* Modal de Login/Cadastro */
 .modal-auth {
     display: none;
@@ -933,27 +943,6 @@ footer {
     text-decoration: none;
 }
 
-/* Mensagens de erro/sucesso */
-.message {
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-    text-align: center;
-    display: none;
-}
-
-.message.error {
-    background: #fee;
-    color: #c33;
-    border: 1px solid #fcc;
-}
-
-.message.success {
-    background: #efe;
-    color: #2a7;
-    border: 1px solid #cfc;
-}
-
 /* Modal de Simulados */
 .modal-simulados {
     display: none;
@@ -1086,87 +1075,29 @@ footer {
     color: #666;
 }
 
-/* Modal de Upload */
-.modal-upload {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    padding: 20px;
-}
-
-.modal-upload.active {
-    display: flex;
-    opacity: 1;
-}
-
-/* Estilos para textarea e select */
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #e1e1e1;
-    border-radius: 6px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.form-group textarea:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: var(--secondary);
-}
-
-.form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.form-group label input[type="checkbox"] {
-    margin-right: 8px;
-}
-
-.form-group a {
-    color: var(--secondary);
-    text-decoration: none;
-}
-
-.form-group a:hover {
-    text-decoration: underline;
-}
-
-/* Responsividade */
+/* ============================
+   RESPONSIVIDADE ADICIONAL
+   ============================ */
 @media (max-width: 768px) {
     .header-content {
-        flex-direction: column;
-        gap: 1rem;
+        height: 60px;
+        padding: 0.5rem 0;
     }
-
-    nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
+    
+    .hero {
+        padding: 2.5rem 0;
     }
-
-    .forum-container {
-        grid-template-columns: 1fr;
-    }
-
+    
     .hero h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
-
+    
     .hero p {
         font-size: 1rem;
+    }
+    
+    .forum-container {
+        grid-template-columns: 1fr;
     }
     
     .modal-container {
@@ -1187,24 +1118,25 @@ footer {
     .btn-sm {
         align-self: flex-end;
     }
-    /* Remove faixa preta abaixo do header */
-@media (max-width: 992px) {
-    header {
-        padding: 0.5rem 0;
-    }
-    
-    .header-content {
-        padding: 0;
-    }
-    
-    /* Garante que não haja overflow ou margens extras */
-    body {
-        overflow-x: hidden;
-    }
-    
-    /* Ajusta o hero section para começar logo após o header */
-    .hero {
-        padding: 3rem 0;
-        margin-top: 0;
-    }
+}
+
+/* Mensagens */
+.message {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: center;
+    display: none;
+}
+
+.message.error {
+    background: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.message.success {
+    background: #efe;
+    color: #2a7;
+    border: 1px solid #cfc;
 }
