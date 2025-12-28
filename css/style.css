@@ -12,43 +12,53 @@
 
 /* MOBILE */
 @media (max-width: 992px) {
-    /* Mostra botão hambúrguer */
-    .menu-toggle {
-        display: block;
-        position: absolute;
-        right: 20px;
-        top: 20px;
-    }
-    
     /* Ajusta o header */
     .header-content {
         position: relative;
         min-height: 70px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
     }
     
-    /* Ajusta logo */
+    /* Logo centralizada ou à esquerda */
     .logo {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        position: relative;
+        left: 0;
+        top: 0;
+        transform: none;
+        margin: 0;
+    }
+    
+    /* Botão hambúrguer à direita */
+    .menu-toggle {
+        display: flex;
+        position: relative;
+        right: 0;
+        top: 0;
+        transform: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
     }
     
     /* Ajusta auth buttons */
     .auth-buttons {
-        position: absolute;
-        right: 70px; /* Deixa espaço para o botão hambúrguer */
-        top: 50%;
-        transform: translateY(-50%);
+        position: relative;
+        right: 0;
+        top: 0;
+        transform: none;
         display: flex !important;
-        gap: 10px;
+        gap: 8px;
+        margin-left: auto;
+        margin-right: 10px;
     }
     
     .auth-buttons .btn {
         padding: 6px 12px;
         font-size: 0.85rem;
+        white-space: nowrap;
     }
     
     /* Esconde navegação normal em mobile */
@@ -56,17 +66,18 @@
         display: none !important;
     }
     
-    /* Mostra menu quando ativo - posiciona ABSOLUTO */
+    /* Mostra menu quando ativo */
     nav.active {
         display: block !important;
         position: absolute;
-        top: 70px;
+        top: 100%;
         left: 0;
         right: 0;
         background: var(--primary);
         padding: 1rem 0;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         z-index: 1000;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
     
     nav.active ul {
