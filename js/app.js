@@ -516,176 +516,184 @@ class StudyCertApp {
     }
 
     setupDragAndDrop() {
-        const uploadArea = document.querySelector('#modalUpload .upload-area');
-        if (!uploadArea) return;
-        
-        uploadArea.addEventListener('dragover', (e) => {
+    const uploadArea = document.querySelector('#modalUpload .upload-area');
+    if (!uploadArea) return;
+    
+    // Prevenir comportamentos padrão
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, (e) => {
             e.preventDefault();
-            uploadArea.style.borderColor = 'var(--secondary)';
-            uploadArea.style.background = 'rgba(93, 173, 226, 0.1)';
-        });
+            e.stopPropagation();
+        }, false);
+    });
+    
+    // Highlight quando arrasta sobre
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('drag-over');
+        }, false);
+    });
+    
+    // Remove highlight
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('drag-over');
+        }, false);
+    });
+    
+    // Handle drop
+    uploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
         
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = 'rgba(149, 165, 166, 0.3)';
-            uploadArea.style.background = 'white';
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = 'rgba(149, 165, 166, 0.3)';
-            uploadArea.style.background = 'white';
+        if (files.length > 0) {
+            const file = files[0];
             
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                if (file.name.endsWith('.html') || file.name.endsWith('.htm')) {
-                    const fileInput = document.getElementById('fileUploadInput');
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    fileInput.files = dataTransfer.files;
-                    
-                    // Disparar evento change
-                    const event = new Event('change', { bubbles: true });
-                    fileInput.dispatchEvent(event);
-                } else {
-                    this.showUploadMessage('Por favor, arraste apenas arquivos HTML.', 'error');
-                }
-            }
-        });
-    }
-
-    closeUploadModal() {
-        const modal = document.getElementById('modalUpload');
-        if (modal) {
-            modal.classList.remove('active');
-        }
-        document.body.style.overflow = 'auto';
-        
-        // Limpar formulário
-        if (document.getElementById('simuladoNome')) {
-            document.getElementById('simuladoNome').value = '';
-            document.getElementById('simuladoDescricao').value = '';
-            document.getElementById('simuladoCategoria').value = 'ITIL';
-            document.getElementById('fileName').textContent = '';
-            document.getElementById('termosAceitos').checked = false;
-            document.getElementById('uploadMessage').style.display = 'none';
-        }
-    }
-
-    async enviarSimulado() {
-        const nome = document.getElementById('simuladoNome').value.trim();
-        const descricao = document.getElementById('simuladoDescricao').value.trim();
-        const categoria = document.getElementById('simuladoCategoria').value;
-        const fileInput = document.getElementById('fileUploadInput');
-        const file = fileInput.files[0];
-        
-        const uploadMessage = document.getElementById('uploadMessage');
-        const btnEnviar = document.getElementById('btnEnviarSimulado');
-        
-        // Validação
-        if (!nome) {
-            this.showUploadMessage('Por favor, insira um nome para o simulado.', 'error');
-            return;
-        }
-        
-        if (!file) {
-            this.showUploadMessage('Por favor, selecione um arquivo HTML.', 'error');
-            return;
-        }
-        
-        if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
-            this.showUploadMessage('Por favor, selecione apenas arquivos HTML.', 'error');
-            return;
-        }
-        
-        if (!document.getElementById('termosAceitos').checked) {
-            this.showUploadMessage('Você precisa aceitar os termos de uso.', 'error');
-            return;
-        }
-        
-        try {
-            // Mostrar loading
-            btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            btnEnviar.disabled = true;
-            
-            // Fazer upload para o Storage
-            const nomeArquivo = `${Date.now()}_${this.currentUser.id}_${file.name.replace(/\s+/g, '_')}`;
-            
-            const { data: uploadData, error: uploadError } = await this.supabase.storage
-                .from(this.config.storageBucket)
-                .upload(nomeArquivo, file);
-            
-            if (uploadError) {
-                // Se o bucket não existir, vamos criar uma estrutura mais simples
-                if (uploadError.message.includes('bucket')) {
-                    console.log('Bucket não encontrado, salvando apenas no banco de dados...');
-                    // Vamos salvar apenas as informações no banco
-                    nomeArquivo = file.name;
-                } else {
-                    throw uploadError;
-                }
+            // Validar arquivo
+            if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
+                this.showUploadMessage('❌ Por favor, arraste apenas arquivos HTML (extensão .html ou .htm).', 'error');
+                return;
             }
             
-            // Salvar metadados no banco de dados
-            const { error: dbError } = await this.supabase
-                .from('simulados')
-                .insert({
-                    nome: nome,
-                    descricao: descricao,
-                    arquivo_url: nomeArquivo,
-                    usuario_id: this.currentUser.id,
-                    usuario_nome: this.currentUser.user_metadata?.full_name || this.currentUser.email,
-                    categoria: categoria,
-                    data_upload: new Date().toISOString(),
-                    visualizacoes: 0,
-                    downloads: 0,
-                    ativo: true
-                });
+            if (file.size > 10 * 1024 * 1024) { // 10MB limite
+                this.showUploadMessage('❌ Arquivo muito grande. O limite é 10MB.', 'error');
+                return;
+            }
             
-            if (dbError) {
-                // Se a tabela não existir, vamos apenas mostrar uma mensagem
-                if (dbError.message.includes('relation')) {
-                    console.log('Tabela simulados não existe, apenas mostrando sucesso...');
-                    this.showUploadMessage('✅ Simulado enviado com sucesso! (Banco de dados não configurado)', 'success');
-                } else {
-                    throw dbError;
-                }
+            // Configurar input de arquivo
+            const fileInput = document.getElementById('fileUploadInput');
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+            
+            // Atualizar interface com feedback visual
+            const fileNameElement = document.getElementById('fileName');
+            if (fileNameElement) {
+                const fileSize = (file.size / 1024).toFixed(1);
+                fileNameElement.innerHTML = `
+                    <div style="text-align: left;">
+                        <strong style="color: var(--success);">✓ Arquivo válido</strong><br>
+                        <span style="font-size: 0.9em; color: var(--dark);">${file.name}</span><br>
+                        <span style="font-size: 0.8em; color: #666;">Tamanho: ${fileSize} KB</span>
+                    </div>
+                `;
+                
+                // Adicionar efeito visual de confirmação
+                fileNameElement.style.animation = 'pulse 0.5s ease';
+            }
+            
+            // Mostrar mensagem de sucesso
+            this.showUploadMessage('✅ Arquivo carregado com sucesso!', 'success');
+            
+            // Validar estrutura do arquivo HTML
+            this.validateHTMLFile(file);
+        }
+    }, false);
+    
+    // Adicionar efeito de clique na área de upload
+    uploadArea.addEventListener('click', (e) => {
+        if (e.target === uploadArea || e.target.classList.contains('upload-area')) {
+            document.getElementById('fileUploadInput').click();
+        }
+    });
+}
+
+async validateHTMLFile(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            const content = e.target.result;
+            
+            // Verificações básicas de estrutura HTML
+            const isHTML = content.includes('<!DOCTYPE html') || 
+                          content.includes('<html') || 
+                          content.includes('<body') ||
+                          content.includes('</html>');
+            
+            if (!isHTML) {
+                this.showUploadMessage(
+                    '⚠️ O arquivo pode não ser um HTML válido. Verifique se contém a estrutura básica HTML.',
+                    'warning'
+                );
+                return resolve(false);
+            }
+            
+            // Verificar se parece ser um simulado
+            const hasQuestions = content.match(/\d+\.\s+.*\?/g) || 
+                               content.includes('pergunta') || 
+                               content.includes('questão') ||
+                               content.includes('question') ||
+                               content.match(/[Qq]uestão\s+\d+/g);
+            
+            const hasOptions = content.match(/[A-Da-d]\)\s+.*/g) || 
+                             content.match(/[A-Da-d]\.\s+.*/g) ||
+                             content.includes('alternativa') || 
+                             content.includes('option') ||
+                             content.includes('a)') || content.includes('b)') || 
+                             content.includes('c)') || content.includes('d)');
+            
+            if (!hasQuestions || !hasOptions) {
+                this.showUploadMessage(
+                    '⚠️ O arquivo pode não conter a estrutura de um simulado. Verifique se há perguntas e alternativas (A, B, C, D).',
+                    'warning'
+                );
             } else {
-                this.showUploadMessage('✅ Simulado enviado com sucesso!', 'success');
+                // Tentar contar questões
+                const questionCount = this.countQuestionsInHTML(content);
+                if (questionCount > 0) {
+                    this.showUploadMessage(
+                        `✅ Validado! ${questionCount} questões detectadas.`,
+                        'success'
+                    );
+                    
+                    // Atualizar contagem no nome do arquivo
+                    const fileNameElement = document.getElementById('fileName');
+                    if (fileNameElement) {
+                        const currentHTML = fileNameElement.innerHTML;
+                        fileNameElement.innerHTML = currentHTML.replace(
+                            '✓ Arquivo válido',
+                            `✓ ${questionCount} questões detectadas`
+                        );
+                    }
+                }
             }
             
-            setTimeout(() => {
-                this.closeUploadModal();
-                // Atualizar a lista de simulados se necessário
-                alert('Simulado enviado com sucesso!');
-            }, 2000);
-            
-        } catch (error) {
-            console.error('❌ Erro ao enviar simulado:', error);
-            this.showUploadMessage(`❌ Erro ao enviar simulado: ${error.message}`, 'error');
-        } finally {
-            // Restaurar botão
-            if (btnEnviar) {
-                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
-                btnEnviar.disabled = false;
-            }
-        }
-    }
+            resolve(true);
+        };
+        
+        reader.onerror = () => {
+            this.showUploadMessage('❌ Erro ao ler o arquivo.', 'error');
+            resolve(false);
+        };
+        
+        reader.readAsText(file);
+    });
+}
 
-    showUploadMessage(message, type) {
-        const element = document.getElementById('uploadMessage');
-        if (element) {
-            element.innerHTML = message;
-            element.className = `message ${type}`;
-            element.style.display = 'block';
-            
-            // Auto-remover mensagem após 5 segundos (exceto success)
-            if (type === 'error') {
-                setTimeout(() => {
-                    element.style.display = 'none';
-                }, 5000);
-            }
+countQuestionsInHTML(content) {
+    // Métodos para contar questões
+    const patterns = [
+        // Padrão 1: "1. Pergunta?"
+        /\d+\.\s+.*\?/g,
+        // Padrão 2: "Questão 1:"
+        /[Qq]uest[ãa]o\s+\d+/g,
+        // Padrão 3: "<div class='question'>"
+        /<[^>]*question[^>]*>/gi,
+        // Padrão 4: "Pergunta" seguida de número
+        /[Pp]ergunta\s+\d+/g
+    ];
+    
+    let maxCount = 0;
+    patterns.forEach(pattern => {
+        const matches = content.match(pattern);
+        if (matches && matches.length > maxCount) {
+            maxCount = matches.length;
         }
-    }
+    });
+    
+    return maxCount;
+}
 
     // ==================== EVENT LISTENERS ====================
     setupEventListeners() {
