@@ -1217,4 +1217,214 @@ nav a.active {
 *::before {
     content: none !important;
     display: none !important;
+   /* ... outros estilos ... */
+
+/* ===========================================
+   SOLUÇÃO DEFINITIVA - Remove todos os bugs de botões
+   =========================================== */
+
+/* 1. RESETA COMPLETAMENTE todos os efeitos problemáticos */
+nav a,
+.auth-buttons .btn {
+    all: unset; /* Remove todos os estilos herdados */
+    cursor: pointer;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+/* 2. RECONSTRÓI os botões de navegação do zero */
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1rem;
+}
+
+nav li {
+    position: relative;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.7rem 1.4rem;
+    border-radius: 6px;
+    background-color: transparent;
+    transition: all 0.2s ease;
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+nav a.active {
+    background-color: #3498db !important;
+    color: white !important;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+/* 3. RECONSTRÓI os botões de autenticação do zero */
+.auth-buttons {
+    display: flex !important;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.auth-buttons .btn {
+    padding: 0.6rem 1.3rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    min-width: 90px;
+    position: relative;
+    z-index: 2;
+}
+
+.auth-buttons .btn-outline {
+    background-color: transparent;
+    border-color: white;
+    color: white;
+}
+
+.auth-buttons .btn-outline:hover {
+    background-color: white;
+    color: #2c3e50;
+    transform: translateY(-2px);
+}
+
+.auth-buttons .btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+.auth-buttons .btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+/* 4. MATA TODOS os pseudo-elementos que possam estar causando problemas */
+nav a::before,
+nav a::after,
+.auth-buttons .btn::before,
+.auth-buttons .btn::after,
+nav li::before,
+nav li::after {
+    content: none !important;
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* 5. Remove qualquer overlay transparente */
+* {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    mix-blend-mode: normal !important;
+}
+
+/* 6. Corrige especificamente para mobile */
+@media (max-width: 992px) {
+    .menu-toggle {
+        z-index: 1001;
+    }
+    
+    nav.active {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #2c3e50;
+        z-index: 1000;
+    }
+    
+    nav.active ul {
+        flex-direction: column;
+        padding: 1rem 0;
+    }
+    
+    nav.active a {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0;
+        width: 100%;
+    }
+    
+    nav.active a:hover {
+        background-color: rgba(52, 152, 219, 0.3) !important;
+        transform: none !important;
+    }
+    
+    nav.active a.active {
+        background-color: #3498db !important;
+        border-left: 4px solid #2980b9;
+    }
+}
+
+/* 7. Força o z-index correto em todas as situações */
+header {
+    z-index: 1000;
+    position: relative;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1001;
+}
+
+/* 8. Remove qualquer transparência bugada */
+nav a:not(.active):not(:hover) {
+    opacity: 1 !important;
+    background-color: transparent !important;
+}
+
+/* 9. Garante que os cliques sejam precisos */
+nav a,
+.auth-buttons .btn {
+    pointer-events: auto !important;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* 10. Fix final - Override completo */
+*[class*="nav"],
+*[class*="btn"],
+*[id*="auth"] {
+    transform-style: flat !important;
+    transform-box: fill-box !important;
+    will-change: transform;
+}
+
+/* IMPORTANTE: Isso sobrescreve QUALQUER estilo problemático anterior */
+nav a {
+    background-image: none !important;
+    text-shadow: none !important;
+    box-shadow: 0 0 0 rgba(0,0,0,0) !important;
+    filter: none !important;
+}
+
+nav a:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+/* Desativa todos os pseudo-elementos problemáticos */
+*::before {
+    content: none !important;
+    display: none !important;
+}
+
+} /* ESTE é o } de fechamento do arquivo - NÃO COLOQUE NADA ABAIXO */
 }
