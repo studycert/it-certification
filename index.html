@@ -16,9 +16,17 @@
 <header>
     <div class="container">
         <div class="header-content">
-            <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <h1>Study<span>Cert</span></h1>
+            <!-- Logo + Menu Hambúrguer lado a lado -->
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Study<span>Cert</span></h1>
+                </div>
+                
+                <!-- Botão hambúrguer bem ao lado da logo -->
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
             
             <!-- Navegação DESKTOP -->
@@ -32,16 +40,11 @@
                 </ul>
             </nav>
             
-            <!-- Auth Buttons - TEM CONTEÚDO INICIAL -->
+            <!-- Auth Buttons -->
             <div class="auth-buttons" id="authButtons">
                 <button class="btn btn-outline btn-sm" onclick="openLogin()">Entrar</button>
                 <button class="btn btn-primary btn-sm" onclick="openRegister()">Cadastrar</button>
             </div>
-            
-            <!-- Botão hambúrguer MOBILE -->
-            <button class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
-            </button>
         </div>
     </div>
 </header>
