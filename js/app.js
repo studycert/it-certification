@@ -810,149 +810,156 @@ class StudyCertApp {
     }
 
     async enviarSimulado() {
-        const nome = document.getElementById('simuladoNome').value.trim();
-        const descricao = document.getElementById('simuladoDescricao').value.trim();
-        const categoria = document.getElementById('simuladoCategoria').value;
-        const fileInput = document.getElementById('fileUploadInput');
-        const file = fileInput.files[0];
+    console.log('🚀 ENVIANDO SIMULADO - VERSÃO SIMPLIFICADA');
+    
+    // 1. Pegar dados
+    const nome = document.getElementById('simuladoNome').value.trim();
+    const descricao = document.getElementById('simuladoDescricao').value.trim();
+    const categoria = document.getElementById('simuladoCategoria').value;
+    const fileInput = document.getElementById('fileUploadInput');
+    const file = fileInput.files[0];
+    const btnEnviar = document.getElementById('btnEnviarSimulado');
+    
+    // 2. Validações RÁPIDAS
+    if (!this.currentUser) {
+        alert('❌ Faça login primeiro!');
+        this.openLogin();
+        return;
+    }
+    
+    if (!nome) {
+        alert('❌ Digite um nome para o simulado');
+        return;
+    }
+    
+    if (!file) {
+        alert('❌ Selecione um arquivo HTML');
+        return;
+    }
+    
+    if (!document.getElementById('termosAceitos').checked) {
+        alert('❌ Aceite os termos de uso');
+        return;
+    }
+    
+    try {
+        // 3. Configurar botão
+        btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        btnEnviar.disabled = true;
         
-        const uploadMessage = document.getElementById('uploadMessage');
-        const btnEnviar = document.getElementById('btnEnviarSimulado');
+        // 4. Nome SIMPLES do arquivo (sem pasta do usuário - testar primeiro)
+        const nomeArquivo = `simulado_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
         
-        if (!this.currentUser) {
-            this.showUploadMessage('❌ Faça login para enviar simulados.', 'error');
-            return;
-        }
+        console.log('📤 Tentando upload de:', nomeArquivo);
         
-        if (!nome) {
-            this.showUploadMessage('❌ Por favor, insira um nome para o simulado.', 'error');
-            return;
-        }
+        // 5. UPLOAD DIRETO (teste simples)
+        const { data: uploadData, error: uploadError } = await this.supabase.storage
+            .from('simulados')
+            .upload(nomeArquivo, file);
         
-        if (!file) {
-            this.showUploadMessage('❌ Por favor, selecione um arquivo HTML.', 'error');
-            return;
-        }
-        
-        if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
-            this.showUploadMessage('❌ Por favor, selecione apenas arquivos HTML.', 'error');
-            return;
-        }
-        
-        if (!document.getElementById('termosAceitos').checked) {
-            this.showUploadMessage('❌ Você precisa aceitar os termos de uso.', 'error');
-            return;
-        }
-        
-        try {
-            btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            btnEnviar.disabled = true;
+        if (uploadError) {
+            console.error('❌ ERRO NO UPLOAD:', uploadError);
             
-            console.log('📤 Iniciando upload do arquivo...');
+            // Se falhar, tentar com pasta do usuário
+            console.log('🔄 Tentando com pasta do usuário...');
+            const caminhoComPasta = `${this.currentUser.id}/${nomeArquivo}`;
             
-            // Upload para Supabase Storage
-            const fileId = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-            const filePath = `${this.currentUser.id}/${fileId}`;
-            
-            const { data: uploadData, error: uploadError } = await this.supabase.storage
+            const { data: uploadData2, error: uploadError2 } = await this.supabase.storage
                 .from('simulados')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
+                .upload(caminhoComPasta, file);
             
-            if (uploadError) {
-                console.error('❌ Erro no upload do arquivo:', uploadError);
-                throw new Error(`Falha no upload: ${uploadError.message}`);
+            if (uploadError2) {
+                throw new Error(`Falha no upload: ${uploadError2.message}`);
             }
             
-            console.log('✅ Arquivo enviado com sucesso:', uploadData);
+            var uploadSucesso = uploadData2;
+            var caminhoFinal = caminhoComPasta;
+        } else {
+            var uploadSucesso = uploadData;
+            var caminhoFinal = nomeArquivo;
+        }
+        
+        console.log('✅ Upload bem-sucedido!', uploadSucesso);
+        
+        // 6. Obter URL
+        const { data: urlData } = this.supabase.storage
+            .from('simulados')
+            .getPublicUrl(caminhoFinal);
+        
+        console.log('🔗 URL pública:', urlData.publicUrl);
+        
+        // 7. Salvar no banco
+        const simuladoData = {
+            nome: nome,
+            descricao: descricao,
+            categoria: categoria,
+            arquivo_url: urlData.publicUrl,
+            arquivo_nome: file.name,
+            arquivo_tamanho_kb: Math.round(file.size / 1024),
+            usuario_id: this.currentUser.id,
+            publico: true,
+            data_upload: new Date().toISOString()
+        };
+        
+        console.log('💾 Salvando no banco...');
+        
+        const { data: dbData, error: dbError } = await this.supabase
+            .from('simulados')
+            .insert([simuladoData]);
+        
+        if (dbError) {
+            console.warn('⚠️ Erro no banco (mas arquivo está no storage):', dbError);
+            console.log('📄 Arquivo disponível em:', urlData.publicUrl);
             
-            // Obter URL pública
-            const { data: urlData } = this.supabase.storage
-                .from('simulados')
-                .getPublicUrl(filePath);
+            // Salvar localmente
+            this.saveToLocalStorage(simuladoData);
             
-            console.log('🔗 URL pública:', urlData.publicUrl);
-            
-            // Salvar no banco de dados (tabela simulados)
-            const simuladoData = {
-                nome: nome,
-                descricao: descricao,
-                categoria: categoria,
-                arquivo_url: urlData.publicUrl,
-                arquivo_nome: file.name,
-                arquivo_tamanho_kb: Math.round(file.size / 1024),
-                usuario_id: this.currentUser.id,
-                publico: true,
-                data_upload: new Date().toISOString()
-            };
-            
-            console.log('💾 Salvando dados no banco...');
-            
-            const { data: dbData, error: dbError } = await this.supabase
-                .from('simulados')
-                .insert([simuladoData])
-                .select()
-                .single();
-            
-            if (dbError) {
-                console.error('❌ Erro ao salvar no banco:', dbError);
-                // Tentar deletar o arquivo do storage se falhou no banco
-                await this.supabase.storage.from('simulados').remove([filePath]);
-                throw new Error(`Erro no banco de dados: ${dbError.message}`);
-            }
-            
-            console.log('✅ Dados salvos no banco:', dbData);
-            
-            // Salvar localmente como backup
-            this.saveToLocalStorage({
-                ...simuladoData,
-                id: dbData.id,
-                local_backup: true
-            });
-            
-            this.showUploadMessage('✅ Simulado enviado com sucesso!', 'success');
-            
-            setTimeout(() => {
-                this.closeUploadModal();
-                this.loadSimulados();
-                this.showNotification('Simulado publicado com sucesso!', 'success');
-            }, 2000);
-            
-        } catch (error) {
-            console.error('❌ Erro ao enviar simulado:', error);
-            this.showUploadMessage(`❌ Erro: ${error.message}`, 'error');
-        } finally {
-            if (btnEnviar) {
-                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
-                btnEnviar.disabled = false;
-            }
+            alert('✅ Arquivo enviado! URL: ' + urlData.publicUrl);
+        } else {
+            console.log('✅ Tudo salvo!');
+            alert('🎉 Simulado publicado com sucesso!');
+        }
+        
+        // 8. Limpar e atualizar
+        setTimeout(() => {
+            this.closeUploadModal();
+            this.loadSimulados();
+        }, 1500);
+        
+    } catch (error) {
+        console.error('💥 ERRO COMPLETO:', error);
+        alert('Erro: ' + error.message);
+    } finally {
+        // Resetar botão
+        if (btnEnviar) {
+            btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
+            btnEnviar.disabled = false;
         }
     }
+}
 
-    saveToLocalStorage(simuladoData) {
-        try {
-            let simulados = JSON.parse(localStorage.getItem('studyCert_simulados') || '[]');
-            simulados.push({
-                ...simuladoData,
-                id: `local_${Date.now()}`
-            });
-            localStorage.setItem('studyCert_simulados', JSON.stringify(simulados));
-            console.log('✅ Simulado salvo localmente:', simuladoData.nome);
-        } catch (err) {
-            console.error('❌ Erro ao salvar no localStorage:', err);
-        }
+saveToLocalStorage(simuladoData) {
+    try {
+        let simulados = JSON.parse(localStorage.getItem('studyCert_simulados') || '[]');
+        simulados.push({
+            ...simuladoData,
+            id: `local_${Date.now()}`
+        });
+        localStorage.setItem('studyCert_simulados', JSON.stringify(simulados));
+        console.log('✅ Backup local salvo');
+    } catch (err) {
+        console.error('❌ Erro no localStorage:', err);
     }
+}
 
-    showUploadMessage(message, type) {
-        const element = document.getElementById('uploadMessage');
-        if (element) {
-            element.innerHTML = message;
-            element.className = `message ${type}`;
-            element.style.display = 'block';
-        }
+showUploadMessage(message, type) {
+    const element = document.getElementById('uploadMessage');
+    if (element) {
+        element.innerHTML = message;
+        element.className = `message ${type}`;
+        element.style.display = 'block';
     }
+}
 
     // ==================== CARREGAR DADOS DO BANCO ====================
     
