@@ -33,7 +33,7 @@
     .header-right {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
         flex: 0 0 auto;
     }
     
@@ -46,7 +46,7 @@
         height: 44px;
     }
     
-    /* Botões de autenticação */
+    /* Botões de autenticação - AGORA VISÍVEIS EM MOBILE */
     .auth-buttons {
         display: flex !important;
         gap: 8px;
@@ -54,9 +54,10 @@
     }
     
     .auth-buttons .btn {
-        padding: 8px 12px;
-        font-size: 0.85rem;
+        padding: 8px 15px;
+        font-size: 0.9rem;
         white-space: nowrap;
+        border-radius: 6px;
     }
     
     /* Esconde navegação normal em mobile */
@@ -120,28 +121,80 @@
         display: flex !important;
     }
     
-    /* No desktop, esconde o container header-right */
+    /* No desktop, mostra o container header-right se tiver conteúdo */
     .header-right {
-        display: none;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+/* Para telas muito pequenas (celulares pequenos) */
+@media (max-width: 768px) {
+    .header-right {
+        gap: 10px;
+    }
+    
+    .auth-buttons {
+        flex-direction: row; /* Mantém os botões lado a lado */
+        gap: 8px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        min-width: auto;
+    }
+    
+    .menu-toggle {
+        width: 40px;
+        height: 40px;
     }
 }
 
 /* Para telas muito pequenas (celulares pequenos) */
 @media (max-width: 480px) {
+    .header-content {
+        padding: 10px 0;
+    }
+    
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-right {
+        gap: 8px;
+    }
+    
     .auth-buttons {
         flex-direction: column;
         gap: 5px;
     }
     
     .auth-buttons .btn {
-        width: 100px;
+        width: 90px;
         text-align: center;
-        padding: 8px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
     }
     
     .menu-toggle {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Para telas extremamente pequenas */
+@media (max-width: 360px) {
+    .auth-buttons .btn {
+        width: 80px;
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.3rem;
     }
 }
 /* Variáveis CSS */
