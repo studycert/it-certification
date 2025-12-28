@@ -1173,338 +1173,45 @@ footer {
     border: 1px solid #cfc;
 }
 /* ============================
-   GARANTE VISIBILIDADE DOS BOTÕES
+   APENAS 1 BARRA À ESQUERDA
    ============================ */
-#authButtons {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+
+/* Remove tudo primeiro */
+nav a::before,
+nav a::after {
+    content: none !important;
 }
 
-/* ===========================================
-   BOTÃO "ENTRAR" - ESTILO ORIGINAL
-   =========================================== */
-
-/* Botão "Entrar" - Branco com bordas */
-.auth-buttons .btn-outline {
-    background: transparent !important;
-    border: 2px solid white !important;
-    color: white !important;
-    font-weight: 500;
-    padding: 8px 18px !important;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-}
-
-/* Hover - Fundo branco, texto azul */
-.auth-buttons .btn-outline:hover {
-    background: white !important;
-    color: #2c3e50 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
-}
-
-/* Botão "Cadastrar" - Azul */
-.auth-buttons .btn-primary {
-    background: #3498db !important;
-    border: 2px solid #3498db !important;
-    color: white !important;
-    font-weight: 600;
-    padding: 8px 18px !important;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-}
-
-/* Hover - Azul mais escuro */
-.auth-buttons .btn-primary:hover {
-    background: #2980b9 !important;
-    border-color: #2980b9 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-/* ===========================================
-   NAVEGAÇÃO - EFEITO ELEGANTE
-   =========================================== */
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 0.4rem;
-    margin: 0;
-    padding: 0;
-}
-
-nav li {
-    position: relative;
-}
-
+/* Nova barra única */
 nav a {
-    color: rgba(255, 255, 255, 0.8) !important;
-    text-decoration: none;
+    color: rgba(255, 255, 255, 0.85) !important;
+    padding: 8px 16px 8px 20px !important; /* Espaço à esquerda */
     font-weight: 400;
     font-size: 0.92rem;
-    padding: 8px 16px;
     border-radius: 6px;
-    transition: all 0.25s ease;
-    position: relative;
+    transition: all 0.2s ease;
     background: transparent !important;
     border: none !important;
+    position: relative;
 }
 
-/* Barra azul à esquerda */
-nav a::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 0;
-    background: #3498db;
-    border-radius: 0 2px 2px 0;
-    transition: height 0.3s ease;
-    opacity: 0;
-}
-
+/* Barra aparece no hover */
 nav a:hover {
     color: white !important;
     font-weight: 500;
-    background: rgba(52, 152, 219, 0.08) !important;
-    padding-left: 20px;
+    padding-left: 22px !important;
 }
 
-nav a:hover::before {
-    height: 60%;
-    opacity: 1;
+/* Linha azul fina à esquerda no hover */
+nav a:hover {
+    border-left: 2px solid rgba(52, 152, 219, 0.5) !important;
 }
 
+/* Barra branca para ativo */
 nav a.active {
     color: white !important;
     font-weight: 600;
-    background: rgba(52, 152, 219, 0.15) !important;
-    padding-left: 20px;
-}
-
-nav a.active::before {
-    height: 70%;
-    opacity: 1;
-    background: white;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-}
-
-/* ===========================================
-   RESPONSIVO
-   =========================================== */
-@media (max-width: 992px) {
-    .auth-buttons .btn {
-        padding: 6px 14px !important;
-        font-size: 0.85rem;
-    }
-    
-    nav.active a {
-        padding: 10px 20px !important;
-        margin: 1px 8px;
-    }
-   /* ... todo o seu CSS existente ... */
-
-/* ===========================================
-   FIX PARA MENU HAMBURGUER NO MOBILE
-   =========================================== */
-
-@media (max-width: 992px) {
-    /* HEADER MOBILE - GARANTE ESPAÇO */
-    header {
-        position: relative;
-        z-index: 1000;
-        overflow: visible !important;
-    }
-    
-    .header-content {
-        min-height: 60px;
-        position: relative;
-        z-index: 1001;
-    }
-    
-    /* BOTÃO HAMBURGUER - GARANTE VISIBILIDADE */
-    .menu-toggle {
-        display: flex !important;
-        position: relative;
-        z-index: 1002;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
-        width: 44px;
-        height: 44px;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-left: 10px;
-    }
-    
-    .menu-toggle:hover {
-        background: rgba(255, 255, 255, 0.2);
-    }
-    
-    .menu-toggle i {
-        font-size: 1.4rem;
-        color: white;
-    }
-    
-    /* MENU ABERTO - CORREÇÃO DE POSIÇÃO */
-    nav.active {
-        display: block !important;
-        position: absolute !important;
-        top: 100% !important;
-        left: 0 !important;
-        right: 0 !important;
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-        padding: 15px 0 !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
-        z-index: 999 !important;
-        max-height: calc(100vh - 70px) !important;
-        overflow-y: auto !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        animation: slideDown 0.3s ease-out !important;
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    /* LISTA DO MENU */
-    nav.active ul {
-        flex-direction: column !important;
-        gap: 0 !important;
-        padding: 0 15px !important;
-    }
-    
-    nav.active li {
-        width: 100%;
-        margin-bottom: 2px;
-    }
-    
-    /* LINKS DO MENU MOBILE */
-    nav.active a {
-        display: block !important;
-        width: 100% !important;
-        padding: 14px 20px !important;
-        margin: 0 !important;
-        border-radius: 8px !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-        font-size: 0.95rem !important;
-        background: transparent !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    nav.active a:hover {
-        background: rgba(52, 152, 219, 0.15) !important;
-        padding-left: 24px !important;
-        transform: none !important;
-    }
-    
-    nav.active a.active {
-        background: rgba(52, 152, 219, 0.25) !important;
-        border-left: 4px solid #3498db !important;
-        font-weight: 600 !important;
-    }
-    
-    nav.active a.active::before {
-        display: none !important;
-    }
-    
-    /* BOTÕES DE AUTH NO MOBILE */
-    .auth-buttons {
-        margin-right: 10px;
-        gap: 8px;
-    }
-    
-    .auth-buttons .btn {
-        padding: 6px 12px !important;
-        font-size: 0.85rem !important;
-        min-width: 70px !important;
-    }
-    
-    /* LOGO NO MOBILE */
-    .logo {
-        flex: 1;
-        min-width: 0;
-    }
-    
-    .logo h1 {
-        font-size: 1.4rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    /* GARANTE QUE NADA CORTE O MENU */
-    body {
-        overflow-x: hidden !important;
-    }
-    
-    /* REMOVE QUALQUER OVERFLOW */
-    .container,
-    .header-content,
-    nav,
-    nav.active {
-        overflow: visible !important;
-        clip-path: none !important;
-    }
-}
-
-/* FIX ESPECÍFICO PARA TELAS MUITO PEQUENAS */
-@media (max-width: 480px) {
-    .header-content {
-        min-height: 55px;
-        padding: 5px 0 !important;
-    }
-    
-    .logo h1 {
-        font-size: 1.2rem;
-    }
-    
-    .logo i {
-        font-size: 1.5rem;
-    }
-    
-    .menu-toggle {
-        width: 40px;
-        height: 40px;
-        margin-left: 5px;
-    }
-    
-    nav.active {
-        max-height: calc(100vh - 60px) !important;
-        padding: 10px 0 !important;
-    }
-    
-    nav.active a {
-        padding: 12px 16px !important;
-        font-size: 0.9rem !important;
-    }
-    
-    .auth-buttons {
-        gap: 5px;
-    }
-    
-    .auth-buttons .btn {
-        padding: 5px 10px !important;
-        font-size: 0.8rem !important;
-        min-width: 65px !important;
-    }
-    
-    .auth-buttons .btn-outline,
-    .auth-buttons .btn-primary {
-        border-width: 1px !important;
-    }
-}
-
-} /* ESTE é o } de fechamento do arquivo - SE JÁ TIVER, NÃO DUPLIQUE */
+    padding-left: 22px !important;
+    border-left: 2px solid white !important;
+    background: rgba(52, 152, 219, 0.1) !important;
 }
