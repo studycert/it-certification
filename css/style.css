@@ -1,3 +1,106 @@
+/* ========== AJUSTES FINAIS PARA MOBILE ========== */
+@media (max-width: 992px) {
+    /* Garantir que tudo caiba em uma linha */
+    .header-content {
+        flex-wrap: nowrap;
+        overflow: visible;
+    }
+    
+    /* Header-left: logo + hambúrguer lado a lado */
+    .header-left {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    /* Logo compacta para mobile */
+    .logo {
+        flex: 0 0 auto;
+        min-width: 0;
+    }
+    
+    .logo h1 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+    
+    /* Menu hambúrguer compacto */
+    .menu-toggle {
+        flex: 0 0 auto;
+        margin: 0;
+        padding: 8px;
+    }
+    
+    /* Auth buttons compactos */
+    .auth-buttons {
+        flex: 0 0 auto;
+        margin-left: auto;
+        white-space: nowrap;
+    }
+    
+    .auth-buttons .btn {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}
+
+/* ========== ESPAÇAMENTO ENTRE ELEMENTOS ========== */
+.header-left {
+    gap: 15px; /* Espaço entre logo e hambúrguer */
+}
+
+.auth-buttons {
+    gap: 8px; /* Espaço entre botões Entrar e Cadastrar */
+}
+
+/* ========== MOBILE MUITO PEQUENO ========== */
+@media (max-width: 480px) {
+    .logo h1 {
+        max-width: 120px;
+        font-size: 1.2rem;
+    }
+    
+    .logo i {
+        font-size: 1.4rem;
+    }
+    
+    .auth-buttons .btn {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        min-width: 55px;
+    }
+    
+    .menu-toggle {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+}
+
+/* ========== Z-INDEX PARA MENU DROPDOWN ========== */
+header {
+    z-index: 1000;
+}
+
+.menu-toggle {
+    z-index: 1001;
+}
+
+nav.active {
+    z-index: 999;
+}
+
+/* ========== ANIMAÇÃO DO MENU HAMBÚRGUER ========== */
+.menu-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.menu-toggle.active i {
+    transform: rotate(90deg);
+}
 /* ========== HEADER ESTRUTURA ========== */
 .header-content {
     display: flex;
