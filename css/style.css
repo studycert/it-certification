@@ -1247,4 +1247,50 @@ footer {
     .auth-buttons .btn {
         padding: 0.4rem 1rem !important;
     }
+   /* ============================
+   BOTÕES ELEGANTES APENAS PARA DESKTOP (> 992px) - JÁ TEMOS
+   ============================ */
+@media (min-width: 993px) {
+    .auth-buttons {
+        gap: 0.8rem !important;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.4rem 1.2rem !important;
+        border-radius: 25px !important;
+        /* ... resto do código desktop ... */
+    }
+}
+
+/* ============================
+   BOTÕES ELEGANTES PARA CELULAR (até 768px) - ADICIONE AGORA
+   ============================ */
+@media (max-width: 768px) {
+    .auth-buttons {
+        gap: 0.4rem !important;
+        margin-left: auto;
+        margin-right: 10px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.4rem 0.9rem !important;
+        border-radius: 20px !important;
+        font-size: 0.8rem !important;
+        /* ... resto do código mobile ... */
+    }
+}
+
+/* ============================
+   BOTÕES PARA TABLET (769px - 992px) - ADICIONE AGORA
+   ============================ */
+@media (min-width: 769px) and (max-width: 992px) {
+    .auth-buttons {
+        gap: 0.5rem !important;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.5rem 1rem !important;
+        border-radius: 6px !important;
+        font-size: 0.85rem !important;
+    }
 }
