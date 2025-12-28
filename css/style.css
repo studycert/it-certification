@@ -1277,3 +1277,439 @@ footer {
         z-index: 1000 !important;
     }
 }
+
+/* ... (todo o conteúdo CSS existente) ... */
+
+/* ============================
+   COMPONENTES DE USUÁRIO
+   ============================ */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin-left: 10px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.user-info span {
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.user-info .btn-outline {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-info .btn-outline:hover {
+    background: white;
+    color: var(--primary);
+}
+
+/* ============================
+   MODAL DE UPLOAD
+   ============================ */
+.modal-upload {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 15px;
+}
+
+.modal-upload.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-upload .modal-container {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-upload .modal-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.modal-upload .modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-upload .modal-body {
+    padding: 25px;
+}
+
+.modal-upload .modal-footer {
+    padding: 15px 25px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Área de upload no modal */
+.modal-upload .upload-area {
+    background: #f8fafc;
+    border: 2px dashed rgba(149, 165, 166, 0.5);
+    border-radius: 10px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin: 20px 0;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.modal-upload .upload-area:hover {
+    border-color: var(--secondary);
+    background: #f0f7ff;
+    transform: translateY(-2px);
+}
+
+.modal-upload .upload-area i {
+    font-size: 3rem;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    transition: color 0.3s;
+}
+
+.modal-upload .upload-area:hover i {
+    color: var(--secondary);
+}
+
+.modal-upload .upload-area h4 {
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.modal-upload .upload-area p {
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+/* Formulários no modal de upload */
+.modal-upload .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-upload .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.modal-upload .form-group input[type="text"],
+.modal-upload .form-group textarea,
+.modal-upload .form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: white;
+}
+
+.modal-upload .form-group input[type="text"]:focus,
+.modal-upload .form-group textarea:focus,
+.modal-upload .form-group select:focus {
+    outline: none;
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.modal-upload .form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal-upload .form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%232c3e50' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+    padding-right: 40px;
+}
+
+/* Checkbox no modal */
+.modal-upload .form-group label[for="termosAceitos"] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: normal;
+    cursor: pointer;
+    color: #555;
+    margin-bottom: 0;
+}
+
+.modal-upload .form-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.modal-upload .form-group a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+.modal-upload .form-group a:hover {
+    text-decoration: underline;
+}
+
+/* Nome do arquivo selecionado */
+#fileName {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #f0f7ff;
+    border-radius: 6px;
+    border-left: 4px solid var(--secondary);
+    font-size: 0.9rem;
+    color: var(--dark);
+    word-break: break-all;
+}
+
+/* Botão de enviar com loading */
+.modal-upload .btn-success:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Animação de spinner */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ============================
+   RESPONSIVIDADE PARA MODAIS
+   ============================ */
+@media (max-width: 768px) {
+    .user-info {
+        padding: 5px 8px;
+        gap: 8px;
+    }
+    
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+    
+    .user-info span {
+        font-size: 0.8rem;
+        display: none; /* Esconde nome em mobile muito pequeno */
+    }
+    
+    .user-info .btn-outline {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+    }
+    
+    /* Modal de upload responsivo */
+    .modal-upload {
+        padding: 10px;
+    }
+    
+    .modal-upload .modal-container {
+        max-height: 95vh;
+    }
+    
+    .modal-upload .modal-body {
+        padding: 15px;
+    }
+    
+    .modal-upload .upload-area {
+        padding: 1.5rem 1rem;
+    }
+    
+    .modal-upload .upload-area i {
+        font-size: 2.5rem;
+    }
+    
+    .modal-upload .modal-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .modal-upload .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-info span {
+        display: none; /* Sempre esconde nome em telas muito pequenas */
+    }
+    
+    .modal-upload .upload-area {
+        padding: 1rem;
+    }
+    
+    .modal-upload .upload-area i {
+        font-size: 2rem;
+    }
+    
+    .modal-upload .upload-area h4 {
+        font-size: 1.1rem;
+    }
+}
+
+/* ============================
+   ANIMAÇÃO PARA DRAG & DROP
+   ============================ */
+.modal-upload .upload-area.drag-over {
+    border-color: var(--success);
+    background: rgba(39, 174, 96, 0.05);
+    transform: scale(1.02);
+}
+
+.modal-upload .upload-area.drag-over i {
+    color: var(--success);
+}
+
+/* ============================
+   AJUSTES PARA BOTÕES NO HEADER
+   ============================ */
+@media (min-width: 993px) {
+    .auth-buttons {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/* ============================
+   ESTADO DE CARREGAMENTO
+   ============================ */
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ============================
+   NOTIFICAÇÕES
+   ============================ */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 10000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-out;
+    max-width: 400px;
+}
+
+.notification.success {
+    background: linear-gradient(135deg, var(--success) 0%, #219653 100%);
+    border-left: 4px solid #1e8449;
+}
+
+.notification.error {
+    background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
+    border-left: 4px solid #a93226;
+}
+
+.notification.info {
+    background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
+    border-left: 4px solid #21618c;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
