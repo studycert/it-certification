@@ -1210,3 +1210,407 @@ setTimeout(() => {
 
 // Variável global para a instância do app
 window.StudyCertApp = app;
+// ==================== FUNÇÃO DE EMERGÊNCIA PARA O BOTÃO ====================
+function abrirModalUpload() {
+    console.log('🎯 BOTÃO UPLOAD CLICADO!');
+    
+    // Tentar método 1: via app
+    if (window.app && typeof window.app.openUploadModal === 'function') {
+        console.log('✅ Abrindo via app.openUploadModal()');
+        return window.app.openUploadModal();
+    }
+    
+    // Tentar método 2: via função global
+    if (typeof window.openUploadModal === 'function') {
+        console.log('✅ Abrindo via window.openUploadModal()');
+        return window.openUploadModal();
+    }
+    
+    // Tentar método 3: via instância StudyCertApp
+    if (window.StudyCertApp && typeof window.StudyCertApp.openUploadModal === 'function') {
+        console.log('✅ Abrindo via StudyCertApp.openUploadModal()');
+        return window.StudyCertApp.openUploadModal();
+    }
+    
+    // Método 4: CRIAR MODAL MANUALMENTE
+    console.log('🆘 Nenhuma função encontrada. Criando modal manualmente...');
+    
+    criarModalUploadManual();
+}
+
+function criarModalUploadManual() {
+    console.log('🔨 Criando modal manual de upload...');
+    
+    // Verificar se usuário está logado
+    const usuarioLogado = window.app?.currentUser || window.StudyCertApp?.currentUser;
+    
+    if (!usuarioLogado) {
+        alert('⚠️ Faça login primeiro para enviar simulados!');
+        
+        // Tentar abrir login
+        if (window.app?.openLogin) {
+            window.app.openLogin();
+        } else if (window.openLogin) {
+            window.openLogin();
+        }
+        return;
+    }
+    
+    console.log('✅ Usuário logado:', usuarioLogado.email);
+    
+    // Criar modal HTML
+    const modalHTML = `
+        <div id="modalUploadManual" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        ">
+            <div style="
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                max-width: 600px;
+                width: 100%;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            ">
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 8px 8px 0 0;
+                    margin: -30px -30px 20px -30px;
+                ">
+                    <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-cloud-upload-alt"></i> Enviar Simulado
+                    </h3>
+                    <button onclick="document.getElementById('modalUploadManual').remove()" style="
+                        background: rgba(255,255,255,0.2);
+                        border: none;
+                        color: white;
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                    ">
+                        &times;
+                    </button>
+                </div>
+                
+                <div id="uploadMessageManual" style="
+                    padding: 12px;
+                    border-radius: 6px;
+                    margin-bottom: 20px;
+                    display: none;
+                "></div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">
+                        Nome do Simulado *
+                    </label>
+                    <input type="text" id="nomeSimuladoManual" placeholder="Ex: ITIL 4 Foundation - Simulado 1" style="
+                        width: 100%;
+                        padding: 12px 15px;
+                        border: 2px solid #e1e1e1;
+                        border-radius: 8px;
+                        font-size: 16px;
+                    " required>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">
+                        Descrição
+                    </label>
+                    <textarea id="descricaoSimuladoManual" rows="3" placeholder="Descreva seu simulado..." style="
+                        width: 100%;
+                        padding: 12px 15px;
+                        border: 2px solid #e1e1e1;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    "></textarea>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">
+                        Categoria
+                    </label>
+                    <select id="categoriaSimuladoManual" style="
+                        width: 100%;
+                        padding: 12px 15px;
+                        border: 2px solid #e1e1e1;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        cursor: pointer;
+                    ">
+                        <option value="ITIL">ITIL</option>
+                        <option value="Linux">Linux (LPIC)</option>
+                        <option value="AWS">AWS</option>
+                        <option value="Azure">Azure</option>
+                        <option value="Security">Security+</option>
+                        <option value="CCNA">CCNA</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                
+                <div id="areaUploadManual" style="
+                    margin: 20px 0;
+                    padding: 2rem;
+                    background: #f8fafc;
+                    border: 2px dashed rgba(149, 165, 166, 0.5);
+                    border-radius: 10px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                " onclick="document.getElementById('arquivoUploadManual').click()">
+                    <i class="fas fa-file-upload" style="font-size: 3rem; color: #95a5a6; margin-bottom: 1rem;"></i>
+                    <h4 style="margin-bottom: 0.5rem; color: #2c3e50; font-size: 1.2rem;">
+                        Selecione o arquivo HTML
+                    </h4>
+                    <p style="color: #95a5a6; margin-bottom: 1.5rem;">
+                        Arraste ou clique para selecionar um arquivo HTML
+                    </p>
+                    <button type="button" style="
+                        background: #3498db;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">
+                        <i class="fas fa-folder-open"></i> Selecionar Arquivo
+                    </button>
+                    <p id="nomeArquivoManual" style="margin-top: 10px; color: #666;"></p>
+                </div>
+                
+                <input type="file" id="arquivoUploadManual" accept=".html,.htm" style="display: none;" 
+                       onchange="atualizarNomeArquivoManual()">
+                
+                <div style="margin-top: 20px;">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #555;">
+                        <input type="checkbox" id="termosManuais" required style="width: 18px; height: 18px; cursor: pointer;">
+                        Concordo com os <a href="#" onclick="alert('Termos de uso em desenvolvimento')" style="color: #3498db;">termos de uso</a>
+                    </label>
+                </div>
+                
+                <div style="
+                    margin-top: 30px;
+                    padding: 15px 0;
+                    border-top: 1px solid #eee;
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                ">
+                    <button onclick="document.getElementById('modalUploadManual').remove()" style="
+                        background: #f8f9fa;
+                        color: #333;
+                        border: 1px solid #ddd;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">
+                        Cancelar
+                    </button>
+                    <button onclick="enviarSimuladoManual()" id="btnEnviarManual" style="
+                        background: #27ae60;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">
+                        <i class="fas fa-paper-plane"></i> Enviar Simulado
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Adicionar ao body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Adicionar evento para fechar ao clicar fora
+    const modal = document.getElementById('modalUploadManual');
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.remove();
+        }
+    });
+    
+    console.log('✅ Modal manual criado!');
+}
+
+// Função auxiliar para atualizar nome do arquivo
+function atualizarNomeArquivoManual() {
+    const fileInput = document.getElementById('arquivoUploadManual');
+    const nomeArquivoElement = document.getElementById('nomeArquivoManual');
+    
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const tamanhoKB = (file.size / 1024).toFixed(2);
+        nomeArquivoElement.innerHTML = `
+            <div style="text-align: left;">
+                <strong style="color: #27ae60;">✓ Arquivo válido</strong><br>
+                <span style="font-size: 0.9em; color: #2c3e50;">${file.name}</span><br>
+                <span style="font-size: 0.8em; color: #666;">Tamanho: ${tamanhoKB} KB</span>
+            </div>
+        `;
+        
+        mostrarMensagemUploadManual('✅ Arquivo carregado com sucesso!', 'success');
+    }
+}
+
+// Função para mostrar mensagens
+function mostrarMensagemUploadManual(mensagem, tipo) {
+    const element = document.getElementById('uploadMessageManual');
+    if (element) {
+        element.innerHTML = mensagem;
+        element.style.display = 'block';
+        element.style.background = tipo === 'success' ? '#d4edda' : '#f8d7da';
+        element.style.color = tipo === 'success' ? '#155724' : '#721c24';
+        element.style.border = tipo === 'success' ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
+    }
+}
+
+// Função para enviar simulado (versão manual)
+async function enviarSimuladoManual() {
+    const nome = document.getElementById('nomeSimuladoManual').value.trim();
+    const descricao = document.getElementById('descricaoSimuladoManual').value.trim();
+    const categoria = document.getElementById('categoriaSimuladoManual').value;
+    const fileInput = document.getElementById('arquivoUploadManual');
+    const file = fileInput.files[0];
+    const btnEnviar = document.getElementById('btnEnviarManual');
+    
+    // Validações
+    if (!nome || !file) {
+        mostrarMensagemUploadManual('❌ Preencha o nome e selecione um arquivo!', 'error');
+        return;
+    }
+    
+    if (!document.getElementById('termosManuais').checked) {
+        mostrarMensagemUploadManual('❌ Aceite os termos de uso!', 'error');
+        return;
+    }
+    
+    try {
+        // Desabilitar botão
+        btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        btnEnviar.disabled = true;
+        
+        // Pegar usuário
+        const usuario = window.app?.currentUser || window.StudyCertApp?.currentUser;
+        if (!usuario) {
+            throw new Error('Usuário não encontrado!');
+        }
+        
+        // Pegar supabase
+        const supabase = window.app?.supabase || window.supabase;
+        if (!supabase) {
+            throw new Error('Conexão com Supabase não encontrada!');
+        }
+        
+        console.log('📤 Enviando simulado manualmente...');
+        
+        // Fazer upload
+        const nomeArquivo = `manual_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+        const caminho = `${usuario.id}/${nomeArquivo}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('simulados')
+            .upload(caminho, file);
+        
+        if (uploadError) {
+            throw new Error(`Erro no upload: ${uploadError.message}`);
+        }
+        
+        // Obter URL
+        const { data: urlData } = supabase.storage
+            .from('simulados')
+            .getPublicUrl(caminho);
+        
+        // Salvar no banco
+        const simuladoData = {
+            nome: nome,
+            descricao: descricao,
+            categoria: categoria,
+            arquivo_url: urlData.publicUrl,
+            arquivo_nome: file.name,
+            arquivo_tamanho_kb: Math.round(file.size / 1024),
+            usuario_id: usuario.id,
+            publico: true,
+            data_upload: new Date().toISOString()
+        };
+        
+        const { error: dbError } = await supabase
+            .from('simulados')
+            .insert([simuladoData]);
+        
+        if (dbError) {
+            console.warn('⚠️ Erro no banco:', dbError);
+            mostrarMensagemUploadManual(
+                `✅ Arquivo enviado!<br>
+                ⚠️ Erro ao salvar dados, mas o arquivo está disponível:<br>
+                🔗 <a href="${urlData.publicUrl}" target="_blank">Abrir simulado</a>`,
+                'success'
+            );
+        } else {
+            mostrarMensagemUploadManual(
+                `🎉 Simulado publicado com sucesso!<br>
+                ✅ O arquivo já está disponível para todos.<br>
+                🔗 <a href="${urlData.publicUrl}" target="_blank">Abrir simulado</a>`,
+                'success'
+            );
+        }
+        
+        // Limpar formulário
+        document.getElementById('nomeSimuladoManual').value = '';
+        document.getElementById('descricaoSimuladoManual').value = '';
+        document.getElementById('arquivoUploadManual').value = '';
+        document.getElementById('nomeArquivoManual').textContent = '';
+        document.getElementById('termosManuais').checked = false;
+        
+        // Mudar botão
+        btnEnviar.innerHTML = '<i class="fas fa-check"></i> Enviado!';
+        
+        // Fechar modal após 5 segundos
+        setTimeout(() => {
+            const modal = document.getElementById('modalUploadManual');
+            if (modal) modal.remove();
+            
+            // Recarregar simulados se possível
+            if (window.app?.loadSimulados) {
+                window.app.loadSimulados();
+            }
+        }, 5000);
+        
+    } catch (error) {
+        console.error('❌ Erro:', error);
+        mostrarMensagemUploadManual(`❌ Erro: ${error.message}`, 'error');
+        
+        // Restaurar botão
+        btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
+        btnEnviar.disabled = false;
+    }
+}
+
+// Adicionar as funções ao objeto global
+window.abrirModalUpload = abrirModalUpload;
+window.atualizarNomeArquivoManual = atualizarNomeArquivoManual;
+window.enviarSimuladoManual = enviarSimuladoManual;
+window.mostrarMensagemUploadManual = mostrarMensagemUploadManual;
