@@ -1,61 +1,4 @@
-// Função para ajustar botões no mobile
-function ajustarLayoutMobile() {
-    const authButtons = document.getElementById('authButtons');
-    if (window.innerWidth <= 768) {
-        authButtons.style.display = 'none';
-    } else if (window.innerWidth <= 992) {
-        authButtons.style.display = 'flex';
-    }
-}
-
-// Executa ao carregar e redimensionar
-window.addEventListener('load', ajustarLayoutMobile);
-window.addEventListener('resize', ajustarLayoutMobile);
-
-// Menu hambúrguer
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menuToggle');
-    const mainNav = document.getElementById('mainNav');
-    
-    if (menuToggle && mainNav) {
-        menuToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
-            
-            const icon = this.querySelector('i');
-            if (mainNav.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
-        });
-        
-        mainNav.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' && window.innerWidth <= 992) {
-                mainNav.classList.remove('active');
-                const icon = menuToggle.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            }
-        });
-        
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                mainNav.classList.remove('active');
-                const icon = menuToggle.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            }
-        });
-    }
-});
-
-// App principal - StudyCert
+// App principal - StudyCertApp
 class StudyCertApp {
     constructor() {
         this.supabase = null;
@@ -72,10 +15,8 @@ class StudyCertApp {
         try {
             // Testar conexão com Supabase
             console.log('Testando conexão com Supabase...');
-            console.log('URL:', SUPABASE_CONFIG.url);
-            console.log('Chave:', SUPABASE_CONFIG.anonKey ? 'Presente' : 'Faltando');
             
-            // Inicializar Supabase com configurações aprimoradas
+            // Inicializar Supabase
             if (typeof supabase !== 'undefined' && SUPABASE_CONFIG) {
                 this.supabase = supabase.createClient(
                     SUPABASE_CONFIG.url,
@@ -87,11 +28,6 @@ class StudyCertApp {
                             detectSessionInUrl: true,
                             storage: window.localStorage,
                             storageKey: 'studycert-auth'
-                        },
-                        global: {
-                            headers: {
-                                'apikey': SUPABASE_CONFIG.anonKey
-                            }
                         }
                     }
                 );
@@ -100,9 +36,7 @@ class StudyCertApp {
                 const { data, error } = await this.supabase.auth.getSession();
                 if (error) {
                     console.error('❌ Erro na conexão do Supabase:', error);
-                    if (error.message.includes('fetch')) {
-                        this.showGlobalError('Erro de conexão com o servidor. Verifique sua internet e tente novamente.');
-                    }
+                    this.showNotification('Erro de conexão com o servidor. Verifique sua internet.', 'error');
                 } else {
                     console.log('✅ Supabase conectado com sucesso!');
                 }
@@ -119,22 +53,13 @@ class StudyCertApp {
             // Configurar eventos
             this.setupEventListeners();
             
-            // Inicializar sistema de upload
-            this.initUploadSystem();
-            
             // Carregar dados iniciais
             this.loadInitialData();
             
         } catch (err) {
             console.error('❌ Erro na inicialização:', err);
-            this.showGlobalError('Erro na configuração do sistema. Por favor, recarregue a página.');
+            this.showNotification('Erro na configuração do sistema. Por favor, recarregue a página.', 'error');
         }
-    }
-
-    // ==================== CARREGAR DADOS INICIAIS ====================
-    async loadInitialData() {
-        // Carregar simulados do banco
-        await this.loadSimulados();
     }
 
     // ==================== NAVEGAÇÃO ====================
@@ -205,7 +130,8 @@ class StudyCertApp {
         const uploadArea = document.getElementById('uploadArea');
         
         if (this.currentUser) {
-            const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
+            const displayName = this.currentUser.user_metadata?.full_name || 
+                               this.currentUser.email?.split('@')[0] || 'Usuário';
             const initials = displayName.substring(0, 2).toUpperCase();
             
             authButtons.innerHTML = `
@@ -224,70 +150,6 @@ class StudyCertApp {
             `;
             
             if (uploadArea) uploadArea.style.display = 'none';
-        }
-    }
-
-    // Função para garantir perfil do usuário
-    async ensureUserProfile() {
-        if (!this.currentUser) return;
-        
-        try {
-            // Verificar se o perfil já existe
-            const { data: existingProfile, error: checkError } = await this.supabase
-                .from('usuario_perfil')
-                .select('id')
-                .eq('id', this.currentUser.id)
-                .single();
-            
-            if (checkError && checkError.code !== 'PGRST116') {
-                console.warn('⚠️ Erro ao verificar perfil:', checkError);
-            }
-            
-            // Se não existe, criar
-            if (!existingProfile) {
-                const userData = {
-                    id: this.currentUser.id,
-                    nome_completo: this.currentUser.user_metadata?.full_name || 
-                                   this.currentUser.email.split('@')[0] || 'Usuário',
-                    nivel_experiencia: 'Iniciante',
-                    data_criacao: new Date().toISOString(),
-                    data_atualizacao: new Date().toISOString()
-                };
-                
-                const { data: newProfile, error: createError } = await this.supabase
-                    .from('usuario_perfil')
-                    .insert([userData]);
-                
-                if (createError) {
-                    console.warn('⚠️ Não foi possível criar perfil:', createError);
-                } else {
-                    console.log('✅ Perfil criado com sucesso');
-                }
-            }
-        } catch (err) {
-            console.warn('⚠️ Erro ao garantir perfil:', err);
-        }
-    }
-
-    // Carregar progresso do usuário
-    async loadUserProgress() {
-        if (!this.currentUser) return;
-        
-        try {
-            const { data: progresso, error } = await this.supabase
-                .from('usuario_progresso')
-                .select('*')
-                .eq('usuario_id', this.currentUser.id);
-            
-            if (error) {
-                console.warn('⚠️ Erro ao carregar progresso:', error);
-                return;
-            }
-            
-            this.showUserProgress(progresso);
-            
-        } catch (err) {
-            console.warn('⚠️ Erro:', err);
         }
     }
 
@@ -313,8 +175,12 @@ class StudyCertApp {
         document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
         
-        document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
-        document.getElementById(`${tab}Form`).classList.add('active');
+        const tabElement = document.querySelector(`.auth-tab[data-tab="${tab}"]`);
+        const formElement = document.getElementById(`${tab}Form`);
+        
+        if (tabElement) tabElement.classList.add('active');
+        if (formElement) formElement.classList.add('active');
+        
         this.clearAuthMessages();
     }
 
@@ -333,8 +199,8 @@ class StudyCertApp {
     }
 
     async login() {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
+        const email = document.getElementById('loginEmail')?.value;
+        const password = document.getElementById('loginPassword')?.value;
         
         if (!email || !password) {
             this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
@@ -364,8 +230,12 @@ class StudyCertApp {
                 this.closeAuthModal();
                 this.updateAuthUI();
                 this.loadUserProgress();
-                document.getElementById('loginEmail').value = '';
-                document.getElementById('loginPassword').value = '';
+                
+                // Limpar campos
+                const loginEmail = document.getElementById('loginEmail');
+                const loginPassword = document.getElementById('loginPassword');
+                if (loginEmail) loginEmail.value = '';
+                if (loginPassword) loginPassword.value = '';
                 
                 // Recarregar dados do usuário
                 this.loadInitialData();
@@ -378,9 +248,9 @@ class StudyCertApp {
     }
 
     async register() {
-        const name = document.getElementById('registerName').value;
-        const email = document.getElementById('registerEmail').value;
-        const password = document.getElementById('registerPassword').value;
+        const name = document.getElementById('registerName')?.value;
+        const email = document.getElementById('registerEmail')?.value;
+        const password = document.getElementById('registerPassword')?.value;
         
         if (!name || !email || !password) {
             this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
@@ -403,7 +273,7 @@ class StudyCertApp {
                         full_name: name.trim(),
                         created_at: new Date().toISOString()
                     },
-                    emailRedirectTo: 'https://studycert.github.io/it-certification/'
+                    emailRedirectTo: window.location.origin
                 }
             });
             
@@ -416,10 +286,7 @@ class StudyCertApp {
                     this.showMessage('registerMessage', '❌ Muitas tentativas. Aguarde alguns minutos.', 'error');
                 } else if (error.message.includes('fetch')) {
                     this.showMessage('registerMessage', 
-                        '❌ Problema de conexão:<br>' +
-                        '1. Verifique sua internet<br>' +
-                        '2. A URL do Supabase está correta?<br>' +
-                        '3. A chave anon está correta?', 
+                        '❌ Problema de conexão. Verifique sua internet.', 
                         'error'
                     );
                 } else {
@@ -428,11 +295,7 @@ class StudyCertApp {
             } else {
                 console.log('Usuário cadastrado com sucesso:', data);
                 
-                if (data.user?.identities?.length === 0) {
-                    this.showMessage('registerMessage', '✅ Este email já possui uma conta. Faça login.', 'success');
-                } else {
-                    this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
-                }
+                this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
                 
                 // Tentar fazer login automaticamente
                 setTimeout(async () => {
@@ -452,9 +315,13 @@ class StudyCertApp {
                 
                 // Limpar formulário
                 setTimeout(() => {
-                    document.getElementById('registerName').value = '';
-                    document.getElementById('registerEmail').value = '';
-                    document.getElementById('registerPassword').value = '';
+                    const registerName = document.getElementById('registerName');
+                    const registerEmail = document.getElementById('registerEmail');
+                    const registerPassword = document.getElementById('registerPassword');
+                    
+                    if (registerName) registerName.value = '';
+                    if (registerEmail) registerEmail.value = '';
+                    if (registerPassword) registerPassword.value = '';
                 }, 3000);
             }
             
@@ -471,8 +338,6 @@ class StudyCertApp {
             return '❌ Este email já está cadastrado';
         } else if (error.message.includes('Email not confirmed')) {
             return '✅ Email não confirmado, mas permitindo acesso...';
-        } else if (error.message.includes('Invalid API key')) {
-            return '❌ Problema de configuração do sistema';
         } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
             return '❌ Problema de conexão. Verifique sua internet.';
         } else {
@@ -503,6 +368,68 @@ class StudyCertApp {
             
         } catch (error) {
             console.error('❌ Erro ao fazer logout:', error);
+        }
+    }
+
+    async ensureUserProfile() {
+        if (!this.currentUser) return;
+        
+        try {
+            // Verificar se o perfil já existe
+            const { data: existingProfile, error: checkError } = await this.supabase
+                .from('usuario_perfil')
+                .select('id')
+                .eq('id', this.currentUser.id)
+                .single();
+            
+            if (checkError && checkError.code !== 'PGRST116') {
+                console.warn('⚠️ Erro ao verificar perfil:', checkError);
+            }
+            
+            // Se não existe, criar
+            if (!existingProfile) {
+                const userData = {
+                    id: this.currentUser.id,
+                    nome_completo: this.currentUser.user_metadata?.full_name || 
+                                   this.currentUser.email?.split('@')[0] || 'Usuário',
+                    nivel_experiencia: 'Iniciante',
+                    data_criacao: new Date().toISOString(),
+                    data_atualizacao: new Date().toISOString()
+                };
+                
+                const { error: createError } = await this.supabase
+                    .from('usuario_perfil')
+                    .insert([userData]);
+                
+                if (createError) {
+                    console.warn('⚠️ Não foi possível criar perfil:', createError);
+                } else {
+                    console.log('✅ Perfil criado com sucesso');
+                }
+            }
+        } catch (err) {
+            console.warn('⚠️ Erro ao garantir perfil:', err);
+        }
+    }
+
+    async loadUserProgress() {
+        if (!this.currentUser) return;
+        
+        try {
+            const { data: progresso, error } = await this.supabase
+                .from('usuario_progresso')
+                .select('*')
+                .eq('usuario_id', this.currentUser.id);
+            
+            if (error) {
+                console.warn('⚠️ Erro ao carregar progresso:', error);
+                return;
+            }
+            
+            this.showUserProgress(progresso);
+            
+        } catch (err) {
+            console.warn('⚠️ Erro:', err);
         }
     }
 
@@ -550,49 +477,32 @@ class StudyCertApp {
     }
 
     // ==================== UPLOAD SYSTEM ====================
-    initUploadSystem() {
-        console.log('📤 Sistema de upload inicializado');
+    async abrirModalUpload() {
+        console.log('🎯 ABRIR MODAL UPLOAD CLICADO');
         
-        const fileUpload = document.getElementById('fileUpload');
-        if (fileUpload) {
-            fileUpload.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    if (file.type !== 'text/html' && !file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
-                        alert('Por favor, selecione apenas arquivos HTML.');
-                        return;
-                    }
-                    console.log('Arquivo para upload:', file);
-                    e.target.value = '';
-                }
-            });
-        }
-    }
-
-    uploadSimulado() {
         if (!this.currentUser) {
-            alert('Por favor, faça login para fazer upload de simulados.');
+            alert('⚠️ Faça login primeiro para enviar simulados!');
             this.openLogin();
             return;
         }
         
-        document.getElementById('fileUpload').click();
-    }
-
-    // Modal de Upload
-    openUploadModal() {
-        if (!this.currentUser) {
-            alert('Por favor, faça login para fazer upload de simulados.');
-            this.openLogin();
-            return;
+        console.log('✅ Usuário logado:', this.currentUser.email);
+        
+        // Remover modal existente se houver
+        const existingModal = document.getElementById('modalUpload');
+        if (existingModal) {
+            existingModal.remove();
         }
         
-        if (!document.getElementById('modalUpload')) {
-            this.createUploadModal();
-        }
+        // Criar novo modal
+        this.createUploadModal();
         
-        document.getElementById('modalUpload').classList.add('active');
-        document.body.style.overflow = 'hidden';
+        // Mostrar modal
+        const modal = document.getElementById('modalUpload');
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     createUploadModal() {
@@ -605,7 +515,7 @@ class StudyCertApp {
                     </div>
                     
                     <div class="modal-body">
-                        <div id="uploadMessage" class="message"></div>
+                        <div id="uploadMessage" class="message" style="display: none;"></div>
                         
                         <div class="form-group">
                             <label for="simuladoNome">Nome do Simulado *</label>
@@ -630,21 +540,21 @@ class StudyCertApp {
                             </select>
                         </div>
                         
-                        <div class="upload-area" style="margin: 20px 0; padding: 2rem;">
+                        <div class="upload-area" id="dragDropArea" style="margin: 20px 0; padding: 2rem; cursor: pointer;">
                             <i class="fas fa-file-upload"></i>
                             <h4>Selecione o arquivo HTML</h4>
-                            <p>Arraste ou clique para selecionar um arquivo HTML</p>
+                            <p>Arraste ou clique para selecionar um arquivo HTML (máx. 10MB)</p>
                             <input type="file" id="fileUploadInput" accept=".html,.htm" style="display: none;">
-                            <button class="btn btn-primary" onclick="document.getElementById('fileUploadInput').click()">
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('fileUploadInput').click()">
                                 <i class="fas fa-folder-open"></i> Selecionar Arquivo
                             </button>
-                            <p id="fileName" style="margin-top: 10px; color: var(--gray);"></p>
+                            <div id="fileName" style="margin-top: 10px; padding: 8px; background: #f0f7ff; border-radius: 4px; display: none;"></div>
                         </div>
                         
                         <div class="form-group" style="margin-top: 20px;">
-                            <label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                                 <input type="checkbox" id="termosAceitos" required>
-                                Concordo com os <a href="#" onclick="alert('Termos de uso em desenvolvimento')">termos de uso</a>
+                                Concordo com os <a href="#" onclick="alert('Termos de uso em desenvolvimento')" style="color: var(--secondary);">termos de uso</a>
                             </label>
                         </div>
                     </div>
@@ -661,139 +571,112 @@ class StudyCertApp {
         
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         
+        // Configurar eventos do modal
+        this.setupUploadModalEvents();
+    }
+
+    setupUploadModalEvents() {
         const modal = document.getElementById('modalUpload');
+        const fileInput = document.getElementById('fileUploadInput');
+        const dragDropArea = document.getElementById('dragDropArea');
+        const fileNameElement = document.getElementById('fileName');
+        
+        // Fechar modal ao clicar fora
         modal.addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
+            if (e.target === modal) {
                 this.closeUploadModal();
             }
         });
         
-        const fileInput = document.getElementById('fileUploadInput');
+        // Fechar com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeUploadModal();
+            }
+        });
+        
+        // Gerenciar seleção de arquivo
         if (fileInput) {
             fileInput.addEventListener('change', (e) => {
                 if (e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    const fileNameElement = document.getElementById('fileName');
-                    if (fileNameElement) {
-                        fileNameElement.textContent = `Arquivo selecionado: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
-                        fileNameElement.style.color = 'var(--success)';
-                    }
+                    this.handleFileSelection(e.target.files[0]);
                 }
             });
         }
         
-        this.setupDragAndDrop();
+        // Configurar drag and drop
+        if (dragDropArea) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, () => {
+                    dragDropArea.classList.add('drag-over');
+                });
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, () => {
+                    dragDropArea.classList.remove('drag-over');
+                });
+            });
+            
+            dragDropArea.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.handleFileSelection(files[0]);
+                }
+            });
+        }
     }
 
-    setupDragAndDrop() {
-        const uploadArea = document.querySelector('#modalUpload .upload-area');
-        if (!uploadArea) return;
+    handleFileSelection(file) {
+        const fileNameElement = document.getElementById('fileName');
         
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            }, false);
-        });
-        
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.add('drag-over');
-            }, false);
-        });
-        
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.remove('drag-over');
-            }, false);
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            
-            if (files.length > 0) {
-                const file = files[0];
-                
-                if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
-                    this.showUploadMessage('❌ Por favor, arraste apenas arquivos HTML.', 'error');
-                    return;
-                }
-                
-                if (file.size > 10 * 1024 * 1024) {
-                    this.showUploadMessage('❌ Arquivo muito grande. O limite é 10MB.', 'error');
-                    return;
-                }
-                
-                const fileInput = document.getElementById('fileUploadInput');
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                fileInput.files = dataTransfer.files;
-                
-                const fileNameElement = document.getElementById('fileName');
-                if (fileNameElement) {
-                    const fileSize = (file.size / 1024).toFixed(1);
-                    fileNameElement.innerHTML = `
-                        <div style="text-align: left;">
-                            <strong style="color: var(--success);">✓ Arquivo válido</strong><br>
-                            <span style="font-size: 0.9em; color: var(--dark);">${file.name}</span><br>
-                            <span style="font-size: 0.8em; color: #666;">Tamanho: ${fileSize} KB</span>
-                        </div>
-                    `;
-                }
-                
-                this.showUploadMessage('✅ Arquivo carregado com sucesso!', 'success');
-            }
-        }, false);
-        
-        uploadArea.addEventListener('click', (e) => {
-            if (e.target === uploadArea || e.target.classList.contains('upload-area')) {
-                document.getElementById('fileUploadInput').click();
-            }
-        });
-    }
-
-    closeUploadModal() {
-        const modal = document.getElementById('modalUpload');
-        if (modal) {
-            modal.classList.remove('active');
+        // Validar arquivo
+        if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
+            this.showUploadMessage('❌ Por favor, selecione apenas arquivos HTML (.html ou .htm).', 'error');
+            return;
         }
-        document.body.style.overflow = 'auto';
         
-        // Limpar formulário
-        const simuladoNome = document.getElementById('simuladoNome');
-        if (simuladoNome) {
-            simuladoNome.value = '';
-            document.getElementById('simuladoDescricao').value = '';
-            document.getElementById('simuladoCategoria').value = 'ITIL';
-            document.getElementById('fileName').textContent = '';
-            document.getElementById('termosAceitos').checked = false;
-            
-            // Resetar botão
-            const btnEnviar = document.getElementById('btnEnviarSimulado');
-            if (btnEnviar) {
-                btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
-                btnEnviar.disabled = false;
-            }
-            
-            // Limpar mensagem
-            const uploadMessage = document.getElementById('uploadMessage');
-            if (uploadMessage) {
-                uploadMessage.innerHTML = '';
-                uploadMessage.style.display = 'none';
-            }
+        if (file.size > 10 * 1024 * 1024) { // 10MB
+            this.showUploadMessage('❌ Arquivo muito grande. O limite é 10MB.', 'error');
+            return;
         }
+        
+        // Mostrar informações do arquivo
+        const fileSize = (file.size / 1024).toFixed(1);
+        fileNameElement.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-file-code" style="color: var(--success); font-size: 1.2rem;"></i>
+                <div>
+                    <strong style="color: var(--dark);">${file.name}</strong><br>
+                    <small style="color: #666;">Tamanho: ${fileSize} KB</small>
+                </div>
+            </div>
+        `;
+        fileNameElement.style.display = 'block';
+        
+        this.showUploadMessage('✅ Arquivo selecionado com sucesso!', 'success');
+        
+        // Armazenar arquivo no objeto app para uso posterior
+        this.selectedFile = file;
     }
 
     async enviarSimulado() {
-        console.log('🚀 Enviando simulado...');
+        console.log('🚀 Iniciando envio do simulado...');
         
-        const nome = document.getElementById('simuladoNome').value.trim();
-        const descricao = document.getElementById('simuladoDescricao').value.trim();
-        const categoria = document.getElementById('simuladoCategoria').value;
-        const fileInput = document.getElementById('fileUploadInput');
-        const file = fileInput.files[0];
+        // Coletar dados do formulário
+        const nome = document.getElementById('simuladoNome')?.value.trim();
+        const descricao = document.getElementById('simuladoDescricao')?.value.trim();
+        const categoria = document.getElementById('simuladoCategoria')?.value;
+        const termosAceitos = document.getElementById('termosAceitos')?.checked;
         const btnEnviar = document.getElementById('btnEnviarSimulado');
+        const file = this.selectedFile;
         
         // Validações
         if (!this.currentUser) {
@@ -802,29 +685,39 @@ class StudyCertApp {
             return;
         }
         
-        if (!nome || !file) {
-            alert('❌ Preencha o nome e selecione um arquivo!');
+        if (!nome) {
+            this.showUploadMessage('❌ Digite um nome para o simulado.', 'error');
             return;
         }
         
-        if (!document.getElementById('termosAceitos').checked) {
-            alert('❌ Aceite os termos de uso!');
+        if (!file) {
+            this.showUploadMessage('❌ Selecione um arquivo HTML.', 'error');
+            return;
+        }
+        
+        if (!termosAceitos) {
+            this.showUploadMessage('❌ Aceite os termos de uso para continuar.', 'error');
             return;
         }
         
         try {
+            // Desabilitar botão e mostrar loading
             btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             btnEnviar.disabled = true;
             
-            // Upload
+            console.log('📤 Fazendo upload do arquivo...');
+            
+            // Criar nome único para o arquivo
             const nomeArquivo = `simulado_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
             const caminho = `${this.currentUser.id}/${nomeArquivo}`;
             
-            console.log('📤 Fazendo upload para:', caminho);
-            
+            // Fazer upload para o Supabase Storage
             const { data: uploadData, error: uploadError } = await this.supabase.storage
                 .from('simulados')
-                .upload(caminho, file);
+                .upload(caminho, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
             
             if (uploadError) {
                 console.error('❌ Erro no upload:', uploadError);
@@ -833,28 +726,30 @@ class StudyCertApp {
             
             console.log('✅ Upload bem-sucedido!', uploadData);
             
-            // Obter URL
+            // Obter URL pública do arquivo
             const { data: urlData } = this.supabase.storage
                 .from('simulados')
                 .getPublicUrl(caminho);
             
-            console.log('🔗 URL:', urlData.publicUrl);
+            console.log('🔗 URL pública:', urlData.publicUrl);
             
-            // Salvar no banco
+            // Preparar dados para salvar no banco
             const simuladoData = {
                 nome: nome,
-                descricao: descricao,
-                categoria: categoria,
+                descricao: descricao || '',
+                categoria: categoria || 'Outros',
                 arquivo_url: urlData.publicUrl,
                 arquivo_nome: file.name,
                 arquivo_tamanho_kb: Math.round(file.size / 1024),
                 usuario_id: this.currentUser.id,
                 publico: true,
-                data_upload: new Date().toISOString()
+                data_upload: new Date().toISOString(),
+                status: 'ativo'
             };
             
-            console.log('💾 Salvando no banco...');
+            console.log('💾 Salvando no banco de dados...');
             
+            // Salvar no banco de dados
             const { data: dbData, error: dbError } = await this.supabase
                 .from('simulados')
                 .insert([simuladoData])
@@ -862,57 +757,66 @@ class StudyCertApp {
                 .single();
             
             if (dbError) {
-                console.error('⚠️ Erro no banco:', dbError);
+                console.error('⚠️ Erro ao salvar no banco:', dbError);
                 
-                // Ainda mostra sucesso, mas com aviso
+                // Mesmo com erro no banco, o arquivo foi enviado
                 this.showUploadMessage(
                     `✅ Arquivo enviado com sucesso!<br>
                     ⚠️ Houve um erro ao salvar os dados, mas o arquivo está disponível.<br>
-                    🔗 <a href="${urlData.publicUrl}" target="_blank">Clique aqui para abrir</a>`,
+                    🔗 <a href="${urlData.publicUrl}" target="_blank" style="color: var(--secondary); font-weight: bold;">Clique aqui para abrir</a>`,
                     'success'
                 );
                 
-                // Salvar localmente
+                // Salvar localmente como backup
                 this.saveToLocalStorage(simuladoData);
             } else {
                 // Sucesso completo
+                console.log('✅ Simulado salvo no banco:', dbData);
+                
                 this.showUploadMessage(
                     `🎉 Simulado publicado com sucesso!<br>
                     ✅ O arquivo já está disponível para todos.<br>
-                    🔗 <a href="${urlData.publicUrl}" target="_blank">Abrir simulado</a>`,
+                    🔗 <a href="${urlData.publicUrl}" target="_blank" style="color: var(--secondary); font-weight: bold;">Abrir simulado</a>`,
                     'success'
                 );
             }
             
-            // Limpar formulário (mas manter mensagem visível)
+            // Limpar formulário
             document.getElementById('simuladoNome').value = '';
             document.getElementById('simuladoDescricao').value = '';
-            document.getElementById('fileUploadInput').value = '';
-            document.getElementById('fileName').textContent = '';
+            document.getElementById('fileName').innerHTML = '';
+            document.getElementById('fileName').style.display = 'none';
             document.getElementById('termosAceitos').checked = false;
+            this.selectedFile = null;
             
-            // Desabilitar botão enviar (já foi enviado)
-            btnEnviar.disabled = true;
+            // Atualizar botão
             btnEnviar.innerHTML = '<i class="fas fa-check"></i> Enviado!';
             
             // Fechar modal automaticamente após 5 segundos
             setTimeout(() => {
                 this.closeUploadModal();
-                this.loadSimulados(); // Atualizar lista
+                
+                // Recarregar lista de simulados
+                this.loadSimulados();
+                
+                // Mostrar notificação
+                this.showNotification('Simulado publicado com sucesso!', 'success');
             }, 5000);
             
         } catch (error) {
-            console.error('❌ Erro:', error);
+            console.error('❌ Erro no envio:', error);
             
             let mensagem = `❌ Erro ao enviar: ${error.message}`;
             
             if (error.message.includes('JWT')) {
                 mensagem = '❌ Sessão expirada! Faça login novamente.';
                 this.logout();
-            } else if (error.message.includes('permission')) {
+            } else if (error.message.includes('permission') || error.message.includes('403')) {
                 mensagem = '❌ Sem permissão para enviar arquivos.';
-            } else if (error.message.includes('bucket')) {
+            } else if (error.message.includes('bucket') || error.message.includes('storage')) {
                 mensagem = '❌ Problema no servidor de arquivos.';
+            } else if (error.message.includes('fetch') || error.message.includes('network')) {
+                mensagem = '❌ Problema de conexão. Verifique sua internet.';
             }
             
             this.showUploadMessage(mensagem, 'error');
@@ -928,12 +832,13 @@ class StudyCertApp {
             let simulados = JSON.parse(localStorage.getItem('studyCert_simulados') || '[]');
             simulados.push({
                 ...simuladoData,
-                id: `local_${Date.now()}`
+                id: `local_${Date.now()}`,
+                data_salvamento: new Date().toISOString()
             });
             localStorage.setItem('studyCert_simulados', JSON.stringify(simulados));
             console.log('✅ Backup local salvo');
         } catch (err) {
-            console.error('❌ Erro no localStorage:', err);
+            console.error('❌ Erro ao salvar no localStorage:', err);
         }
     }
 
@@ -943,13 +848,28 @@ class StudyCertApp {
             element.innerHTML = message;
             element.className = `message ${type}`;
             element.style.display = 'block';
+            
+            // Rolagem automática para a mensagem
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+    }
+
+    closeUploadModal() {
+        const modal = document.getElementById('modalUpload');
+        if (modal) {
+            modal.classList.remove('active');
+            modal.remove(); // Remover completamente do DOM
+        }
+        document.body.style.overflow = 'auto';
+        
+        // Limpar arquivo selecionado
+        this.selectedFile = null;
     }
 
     // ==================== CARREGAR SIMULADOS ====================
     async loadSimulados() {
         try {
-            console.log('📥 Carregando simulados do banco...');
+            console.log('📥 Carregando simulados...');
             
             // Carregar simulados do banco
             let simuladosDB = [];
@@ -961,6 +881,7 @@ class StudyCertApp {
                         usuario_perfil:nome_completo
                     `)
                     .eq('publico', true)
+                    .eq('status', 'ativo')
                     .order('data_upload', { ascending: false })
                     .limit(20);
                 
@@ -977,31 +898,44 @@ class StudyCertApp {
             // Carregar simulados locais
             let simuladosLocal = [];
             try {
-                simuladosLocal = JSON.parse(localStorage.getItem('studyCert_simulados') || '[]');
-                console.log(`📱 ${simuladosLocal.length} simulados carregados localmente`);
+                const localData = localStorage.getItem('studyCert_simulados');
+                if (localData) {
+                    simuladosLocal = JSON.parse(localData);
+                    console.log(`📱 ${simuladosLocal.length} simulados carregados localmente`);
+                }
             } catch (e) {
                 console.warn('⚠️ Erro ao carregar simulados locais:', e);
             }
             
-            // Combinar
+            // Combinar e remover duplicatas
             const allSimulados = [...simuladosDB, ...simuladosLocal];
+            const uniqueSimulados = this.removeDuplicates(allSimulados);
             
             // Renderizar na interface
-            this.renderSimulados(allSimulados);
+            this.renderSimulados(uniqueSimulados);
             
         } catch (err) {
             console.error('❌ Erro ao carregar simulados:', err);
         }
     }
     
+    removeDuplicates(simulados) {
+        const seen = new Set();
+        return simulados.filter(simulado => {
+            const key = simulado.arquivo_url || simulado.nome;
+            if (seen.has(key)) {
+                return false;
+            }
+            seen.add(key);
+            return true;
+        });
+    }
+    
     renderSimulados(simulados) {
         const container = document.getElementById('simuladosContent');
         if (!container) return;
         
-        // Manter os cards estáticos originais
-        const staticCards = Array.from(container.querySelectorAll('.simulado-card:not(.dynamic)'));
-        
-        // Limpar cards dinâmicos anteriores
+        // Remover apenas cards dinâmicos anteriores
         const dynamicCards = container.querySelectorAll('.simulado-card.dynamic');
         dynamicCards.forEach(card => card.remove());
         
@@ -1017,6 +951,7 @@ class StudyCertApp {
                         <p>${this.escapeHtml(simulado.descricao || 'Simulado compartilhado pela comunidade')}</p>
                         ${simulado.usuario_perfil ? `<p><small>Por: ${this.escapeHtml(simulado.usuario_perfil.nome_completo || 'Usuário')}</small></p>` : ''}
                         ${simulado.arquivo_tamanho_kb ? `<p><small>Tamanho: ${simulado.arquivo_tamanho_kb} KB</small></p>` : ''}
+                        ${simulado.data_upload ? `<p><small>Enviado: ${new Date(simulado.data_upload).toLocaleDateString('pt-BR')}</small></p>` : ''}
                     </div>
                     <div class="card-footer">
                         ${simulado.arquivo_url ? 
@@ -1040,6 +975,12 @@ class StudyCertApp {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    // ==================== CARREGAR DADOS INICIAIS ====================
+    async loadInitialData() {
+        // Carregar simulados do banco
+        await this.loadSimulados();
     }
 
     // ==================== EVENT LISTENERS ====================
@@ -1105,6 +1046,50 @@ class StudyCertApp {
                 this.register();
             }
         });
+        
+        // Menu hambúrguer
+        const menuToggle = document.getElementById('menuToggle');
+        const mainNav = document.getElementById('mainNav');
+        
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('active');
+                const icon = menuToggle.querySelector('i');
+                if (icon) {
+                    if (mainNav.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            });
+            
+            // Fechar menu ao clicar em um link
+            mainNav.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A' && window.innerWidth <= 992) {
+                    mainNav.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            });
+            
+            // Fechar menu ao redimensionar para desktop
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 992) {
+                    mainNav.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            });
+        }
     }
 
     // ==================== FUNÇÕES AUXILIARES ====================
@@ -1114,7 +1099,7 @@ class StudyCertApp {
             this.openLogin();
             return;
         }
-        alert('Funcionalidade de criação de posts em desenvolvimento.');
+        this.showNotification('Funcionalidade de criação de posts em desenvolvimento.', 'info');
     }
 
     forgotPassword() {
@@ -1132,25 +1117,12 @@ class StudyCertApp {
         });
     }
 
-    showGlobalError(message) {
-        console.error('Erro global:', message);
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'message error';
-        errorDiv.style.position = 'fixed';
-        errorDiv.style.top = '20px';
-        errorDiv.style.right = '20px';
-        errorDiv.style.zIndex = '10000';
-        errorDiv.innerHTML = `❌ ${message}`;
-        document.body.appendChild(errorDiv);
-        
-        setTimeout(() => {
-            if (errorDiv.parentNode) {
-                errorDiv.parentNode.removeChild(errorDiv);
-            }
-        }, 5000);
-    }
-    
     showNotification(message, type = 'info') {
+        // Remover notificações existentes
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => notification.remove());
+        
+        // Criar nova notificação
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.innerHTML = `
@@ -1160,6 +1132,7 @@ class StudyCertApp {
         
         document.body.appendChild(notification);
         
+        // Remover após 3 segundos
         setTimeout(() => {
             notification.style.animation = 'slideOut 0.3s ease-out forwards';
             setTimeout(() => {
@@ -1175,6 +1148,7 @@ class StudyCertApp {
 let app;
 document.addEventListener('DOMContentLoaded', () => {
     app = new StudyCertApp();
+    window.app = app; // Tornar global
 });
 
 // ==================== FUNÇÕES GLOBAIS ====================
@@ -1189,428 +1163,23 @@ window.logout = () => app.logout();
 // Simulados
 window.abrirModalSimulados = () => app.abrirModalSimulados();
 window.fecharModalSimulados = () => app.fecharModalSimulados();
-window.uploadSimulado = () => app.uploadSimulado();
-window.openUploadModal = () => app.openUploadModal();
+
+// Upload
+window.abrirModalUpload = () => app.abrirModalUpload();
 
 // Outras funções
 window.createNewPost = () => app.createNewPost();
 window.forgotPassword = () => app.forgotPassword();
 
-// 🔧 CORREÇÃO DO BOTÃO DE UPLOAD
-setTimeout(() => {
-    // Corrigir botão "Upload" no card "Adicionar Simulado"
-    const botoes = document.querySelectorAll('.btn-primary');
-    botoes.forEach(botao => {
-        if (botao.textContent.trim() === 'Upload' && 
-            botao.getAttribute('onclick') === 'uploadSimulado()') {
-            botao.setAttribute('onclick', 'openUploadModal()');
-        }
-    });
-}, 1000);
-
-// Variável global para a instância do app
-window.StudyCertApp = app;
-// ==================== FUNÇÃO DE EMERGÊNCIA PARA O BOTÃO ====================
-function abrirModalUpload() {
-    console.log('🎯 BOTÃO UPLOAD CLICADO!');
-    
-    // Tentar método 1: via app
-    if (window.app && typeof window.app.openUploadModal === 'function') {
-        console.log('✅ Abrindo via app.openUploadModal()');
-        return window.app.openUploadModal();
-    }
-    
-    // Tentar método 2: via função global
-    if (typeof window.openUploadModal === 'function') {
-        console.log('✅ Abrindo via window.openUploadModal()');
-        return window.openUploadModal();
-    }
-    
-    // Tentar método 3: via instância StudyCertApp
-    if (window.StudyCertApp && typeof window.StudyCertApp.openUploadModal === 'function') {
-        console.log('✅ Abrindo via StudyCertApp.openUploadModal()');
-        return window.StudyCertApp.openUploadModal();
-    }
-    
-    // Método 4: CRIAR MODAL MANUALMENTE
-    console.log('🆘 Nenhuma função encontrada. Criando modal manualmente...');
-    
-    criarModalUploadManual();
-}
-
-function criarModalUploadManual() {
-    console.log('🔨 Criando modal manual de upload...');
-    
-    // Verificar se usuário está logado
-    const usuarioLogado = window.app?.currentUser || window.StudyCertApp?.currentUser;
-    
-    if (!usuarioLogado) {
-        alert('⚠️ Faça login primeiro para enviar simulados!');
-        
-        // Tentar abrir login
-        if (window.app?.openLogin) {
-            window.app.openLogin();
-        } else if (window.openLogin) {
-            window.openLogin();
-        }
-        return;
-    }
-    
-    console.log('✅ Usuário logado:', usuarioLogado.email);
-    
-    // Criar modal HTML
-    const modalHTML = `
-        <div id="modalUploadManual" style="
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        ">
-            <div style="
-                background: white;
-                padding: 30px;
-                border-radius: 10px;
-                max-width: 600px;
-                width: 100%;
-                max-height: 90vh;
-                overflow-y: auto;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            ">
-                <div style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 20px;
-                    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-                    color: white;
-                    padding: 20px;
-                    border-radius: 8px 8px 0 0;
-                    margin: -30px -30px 20px -30px;
-                ">
-                    <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
-                        <i class="fas fa-cloud-upload-alt"></i> Enviar Simulado
-                    </h3>
-                    <button onclick="document.getElementById('modalUploadManual').remove()" style="
-                        background: rgba(255,255,255,0.2);
-                        border: none;
-                        color: white;
-                        width: 32px;
-                        height: 32px;
-                        border-radius: 50%;
-                        cursor: pointer;
-                        font-size: 1.2rem;
-                    ">
-                        &times;
-                    </button>
-                </div>
-                
-                <div id="uploadMessageManual" style="
-                    padding: 12px;
-                    border-radius: 6px;
-                    margin-bottom: 20px;
-                    display: none;
-                "></div>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">
-                        Nome do Simulado *
-                    </label>
-                    <input type="text" id="nomeSimuladoManual" placeholder="Ex: ITIL 4 Foundation - Simulado 1" style="
-                        width: 100%;
-                        padding: 12px 15px;
-                        border: 2px solid #e1e1e1;
-                        border-radius: 8px;
-                        font-size: 16px;
-                    " required>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">
-                        Descrição
-                    </label>
-                    <textarea id="descricaoSimuladoManual" rows="3" placeholder="Descreva seu simulado..." style="
-                        width: 100%;
-                        padding: 12px 15px;
-                        border: 2px solid #e1e1e1;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    "></textarea>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">
-                        Categoria
-                    </label>
-                    <select id="categoriaSimuladoManual" style="
-                        width: 100%;
-                        padding: 12px 15px;
-                        border: 2px solid #e1e1e1;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        cursor: pointer;
-                    ">
-                        <option value="ITIL">ITIL</option>
-                        <option value="Linux">Linux (LPIC)</option>
-                        <option value="AWS">AWS</option>
-                        <option value="Azure">Azure</option>
-                        <option value="Security">Security+</option>
-                        <option value="CCNA">CCNA</option>
-                        <option value="Outros">Outros</option>
-                    </select>
-                </div>
-                
-                <div id="areaUploadManual" style="
-                    margin: 20px 0;
-                    padding: 2rem;
-                    background: #f8fafc;
-                    border: 2px dashed rgba(149, 165, 166, 0.5);
-                    border-radius: 10px;
-                    text-align: center;
-                    cursor: pointer;
-                    transition: all 0.3s;
-                " onclick="document.getElementById('arquivoUploadManual').click()">
-                    <i class="fas fa-file-upload" style="font-size: 3rem; color: #95a5a6; margin-bottom: 1rem;"></i>
-                    <h4 style="margin-bottom: 0.5rem; color: #2c3e50; font-size: 1.2rem;">
-                        Selecione o arquivo HTML
-                    </h4>
-                    <p style="color: #95a5a6; margin-bottom: 1.5rem;">
-                        Arraste ou clique para selecionar um arquivo HTML
-                    </p>
-                    <button type="button" style="
-                        background: #3498db;
-                        color: white;
-                        border: none;
-                        padding: 10px 20px;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-weight: 600;
-                    ">
-                        <i class="fas fa-folder-open"></i> Selecionar Arquivo
-                    </button>
-                    <p id="nomeArquivoManual" style="margin-top: 10px; color: #666;"></p>
-                </div>
-                
-                <input type="file" id="arquivoUploadManual" accept=".html,.htm" style="display: none;" 
-                       onchange="atualizarNomeArquivoManual()">
-                
-                <div style="margin-top: 20px;">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #555;">
-                        <input type="checkbox" id="termosManuais" required style="width: 18px; height: 18px; cursor: pointer;">
-                        Concordo com os <a href="#" onclick="alert('Termos de uso em desenvolvimento')" style="color: #3498db;">termos de uso</a>
-                    </label>
-                </div>
-                
-                <div style="
-                    margin-top: 30px;
-                    padding: 15px 0;
-                    border-top: 1px solid #eee;
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 10px;
-                ">
-                    <button onclick="document.getElementById('modalUploadManual').remove()" style="
-                        background: #f8f9fa;
-                        color: #333;
-                        border: 1px solid #ddd;
-                        padding: 10px 20px;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    ">
-                        Cancelar
-                    </button>
-                    <button onclick="enviarSimuladoManual()" id="btnEnviarManual" style="
-                        background: #27ae60;
-                        color: white;
-                        border: none;
-                        padding: 10px 20px;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-weight: 600;
-                    ">
-                        <i class="fas fa-paper-plane"></i> Enviar Simulado
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Adicionar ao body
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
-    // Adicionar evento para fechar ao clicar fora
-    const modal = document.getElementById('modalUploadManual');
-    modal.addEventListener('click', function(e) {
-        if (e.target === this) {
-            this.remove();
-        }
-    });
-    
-    console.log('✅ Modal manual criado!');
-}
-
-// Função auxiliar para atualizar nome do arquivo
-function atualizarNomeArquivoManual() {
-    const fileInput = document.getElementById('arquivoUploadManual');
-    const nomeArquivoElement = document.getElementById('nomeArquivoManual');
-    
-    if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const tamanhoKB = (file.size / 1024).toFixed(2);
-        nomeArquivoElement.innerHTML = `
-            <div style="text-align: left;">
-                <strong style="color: #27ae60;">✓ Arquivo válido</strong><br>
-                <span style="font-size: 0.9em; color: #2c3e50;">${file.name}</span><br>
-                <span style="font-size: 0.8em; color: #666;">Tamanho: ${tamanhoKB} KB</span>
-            </div>
-        `;
-        
-        mostrarMensagemUploadManual('✅ Arquivo carregado com sucesso!', 'success');
+// Ajustar layout mobile
+function ajustarLayoutMobile() {
+    const authButtons = document.getElementById('authButtons');
+    if (window.innerWidth <= 768) {
+        // Em telas muito pequenas, esconder nome do usuário
+        const userSpans = document.querySelectorAll('.user-info span');
+        userSpans.forEach(span => span.style.display = 'none');
     }
 }
 
-// Função para mostrar mensagens
-function mostrarMensagemUploadManual(mensagem, tipo) {
-    const element = document.getElementById('uploadMessageManual');
-    if (element) {
-        element.innerHTML = mensagem;
-        element.style.display = 'block';
-        element.style.background = tipo === 'success' ? '#d4edda' : '#f8d7da';
-        element.style.color = tipo === 'success' ? '#155724' : '#721c24';
-        element.style.border = tipo === 'success' ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
-    }
-}
-
-// Função para enviar simulado (versão manual)
-async function enviarSimuladoManual() {
-    const nome = document.getElementById('nomeSimuladoManual').value.trim();
-    const descricao = document.getElementById('descricaoSimuladoManual').value.trim();
-    const categoria = document.getElementById('categoriaSimuladoManual').value;
-    const fileInput = document.getElementById('arquivoUploadManual');
-    const file = fileInput.files[0];
-    const btnEnviar = document.getElementById('btnEnviarManual');
-    
-    // Validações
-    if (!nome || !file) {
-        mostrarMensagemUploadManual('❌ Preencha o nome e selecione um arquivo!', 'error');
-        return;
-    }
-    
-    if (!document.getElementById('termosManuais').checked) {
-        mostrarMensagemUploadManual('❌ Aceite os termos de uso!', 'error');
-        return;
-    }
-    
-    try {
-        // Desabilitar botão
-        btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-        btnEnviar.disabled = true;
-        
-        // Pegar usuário
-        const usuario = window.app?.currentUser || window.StudyCertApp?.currentUser;
-        if (!usuario) {
-            throw new Error('Usuário não encontrado!');
-        }
-        
-        // Pegar supabase
-        const supabase = window.app?.supabase || window.supabase;
-        if (!supabase) {
-            throw new Error('Conexão com Supabase não encontrada!');
-        }
-        
-        console.log('📤 Enviando simulado manualmente...');
-        
-        // Fazer upload
-        const nomeArquivo = `manual_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-        const caminho = `${usuario.id}/${nomeArquivo}`;
-        
-        const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('simulados')
-            .upload(caminho, file);
-        
-        if (uploadError) {
-            throw new Error(`Erro no upload: ${uploadError.message}`);
-        }
-        
-        // Obter URL
-        const { data: urlData } = supabase.storage
-            .from('simulados')
-            .getPublicUrl(caminho);
-        
-        // Salvar no banco
-        const simuladoData = {
-            nome: nome,
-            descricao: descricao,
-            categoria: categoria,
-            arquivo_url: urlData.publicUrl,
-            arquivo_nome: file.name,
-            arquivo_tamanho_kb: Math.round(file.size / 1024),
-            usuario_id: usuario.id,
-            publico: true,
-            data_upload: new Date().toISOString()
-        };
-        
-        const { error: dbError } = await supabase
-            .from('simulados')
-            .insert([simuladoData]);
-        
-        if (dbError) {
-            console.warn('⚠️ Erro no banco:', dbError);
-            mostrarMensagemUploadManual(
-                `✅ Arquivo enviado!<br>
-                ⚠️ Erro ao salvar dados, mas o arquivo está disponível:<br>
-                🔗 <a href="${urlData.publicUrl}" target="_blank">Abrir simulado</a>`,
-                'success'
-            );
-        } else {
-            mostrarMensagemUploadManual(
-                `🎉 Simulado publicado com sucesso!<br>
-                ✅ O arquivo já está disponível para todos.<br>
-                🔗 <a href="${urlData.publicUrl}" target="_blank">Abrir simulado</a>`,
-                'success'
-            );
-        }
-        
-        // Limpar formulário
-        document.getElementById('nomeSimuladoManual').value = '';
-        document.getElementById('descricaoSimuladoManual').value = '';
-        document.getElementById('arquivoUploadManual').value = '';
-        document.getElementById('nomeArquivoManual').textContent = '';
-        document.getElementById('termosManuais').checked = false;
-        
-        // Mudar botão
-        btnEnviar.innerHTML = '<i class="fas fa-check"></i> Enviado!';
-        
-        // Fechar modal após 5 segundos
-        setTimeout(() => {
-            const modal = document.getElementById('modalUploadManual');
-            if (modal) modal.remove();
-            
-            // Recarregar simulados se possível
-            if (window.app?.loadSimulados) {
-                window.app.loadSimulados();
-            }
-        }, 5000);
-        
-    } catch (error) {
-        console.error('❌ Erro:', error);
-        mostrarMensagemUploadManual(`❌ Erro: ${error.message}`, 'error');
-        
-        // Restaurar botão
-        btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Simulado';
-        btnEnviar.disabled = false;
-    }
-}
-
-// Adicionar as funções ao objeto global
-window.abrirModalUpload = abrirModalUpload;
-window.atualizarNomeArquivoManual = atualizarNomeArquivoManual;
-window.enviarSimuladoManual = enviarSimuladoManual;
-window.mostrarMensagemUploadManual = mostrarMensagemUploadManual;
+window.addEventListener('load', ajustarLayoutMobile);
+window.addEventListener('resize', ajustarLayoutMobile);
