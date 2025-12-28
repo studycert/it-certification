@@ -182,41 +182,77 @@ class StudyCertApp {
         }
     }
 
-    updateAuthUI() {
-        const authButtonsDesktop = document.getElementById('authButtonsDesktop');
-        const authButtonsMobile = document.getElementById('authButtonsMobile');
-        const uploadArea = document.getElementById('uploadArea');
-        
-        if (this.currentUser) {
-            const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
-            const initials = displayName.substring(0, 2).toUpperCase();
-            
-            const userHtml = `
-                <div class="user-info">
-                    <div class="user-avatar">${initials}</div>
-                    <span>${displayName}</span>
-                    <button class="btn btn-outline btn-sm" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
-                </div>
-            `;
-            
-            // Atualiza ambos os conjuntos de botões
-            if (authButtonsDesktop) authButtonsDesktop.innerHTML = userHtml;
-            if (authButtonsMobile) authButtonsMobile.innerHTML = userHtml;
-            
-            if (uploadArea) uploadArea.style.display = 'block';
-        } else {
-            const notLoggedHtml = `
-                <button class="btn btn-outline btn-sm" onclick="app.openLogin()">Entrar</button>
-                <button class="btn btn-primary btn-sm" onclick="app.openRegister()">Cadastrar</button>
-            `;
-            
-            // Atualiza ambos os conjuntos de botões
-            if (authButtonsDesktop) authButtonsDesktop.innerHTML = notLoggedHtml;
-            if (authButtonsMobile) authButtonsMobile.innerHTML = notLoggedHtml;
-            
-            if (uploadArea) uploadArea.style.display = 'none';
-        }
+   // No seu app.js, substitua a função updateAuthUI por esta:
+
+updateAuthUI() {
+    const authButtons = document.getElementById('authButtons');
+    if (!authButtons) {
+        console.error('❌ Elemento authButtons não encontrado!');
+        return;
     }
+    
+    console.log('🔄 Atualizando UI de autenticação...');
+    
+    if (this.currentUser) {
+        const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
+        const initials = displayName.substring(0, 2).toUpperCase();
+        
+        console.log('👤 Usuário logado:', displayName);
+        
+        authButtons.innerHTML = `
+            <div class="user-info">
+                <div class="user-avatar">${initials}</div>
+                <span>${displayName}</span>
+                <button class="btn btn-outline btn-sm" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
+            </div>
+        `;
+        
+        // Mostrar área de upload se existir
+        const uploadArea = document.getElementById('uploadArea');
+        if (uploadArea) uploadArea.style.display = 'block';
+        
+    } else {
+        console.log('👤 Usuário não logado');
+        
+        authButtons.innerHTML = `
+            <button class="btn btn-outline btn-sm" onclick="app.openLogin()">Entrar</button>
+            <button class="btn btn-primary btn-sm" onclick="app.openRegister()">Cadastrar</button>
+        `;
+        
+        // Esconder área de upload se existir
+        const uploadArea = document.getElementById('uploadArea');
+        if (uploadArea) uploadArea.style.display = 'none';
+    }
+}
+
+// Adicione esta função para garantir que a UI seja atualizada quando o DOM carregar
+async checkAuth() {
+    try {
+        if (!this.supabase) return;
+        
+        const { data, error } = await this.supabase.auth.getSession();
+        
+        if (error) throw error;
+        
+        if (data.session) {
+            this.currentUser = data.session.user;
+            console.log('✅ Usuário logado:', this.currentUser.email);
+        } else {
+            this.currentUser = null;
+            console.log('ℹ️ Nenhum usuário logado');
+        }
+        
+        // ATUALIZAR A UI IMEDIATAMENTE
+        this.updateAuthUI();
+        
+        if (this.currentUser) this.showUserProgress();
+        
+    } catch (err) {
+        console.error('❌ Erro ao verificar autenticação:', err);
+        // Mesmo com erro, garantir que a UI seja atualizada
+        this.updateAuthUI();
+    }
+}
 
     // Modal de Autenticação
     openLogin(e) {
@@ -803,6 +839,75 @@ class StudyCertApp {
 let app;
 document.addEventListener('DOMContentLoaded', () => {
     app = new StudyCertApp();
+    // Adicione no final do seu app.js, antes do último });
+
+// Função de inicialização forçada
+function initAuthButtons() {
+    console.log('🔧 Inicializando botões de autenticação...');
+    
+    // Verificar se já temos uma instância do app
+    if (window.app && window.app.updateAuthUI) {
+        console.log('📱 Usando app existente');
+        window.app.updateAuthUI();
+    } else {
+        console.log('⚠️ App não inicializado, usando conteúdo estático');
+        
+        const authButtons = document.getElementById('authButtons');
+        if (authButtons) {
+            // Se o authButtons estiver vazio, preencher com conteúdo estático
+            if (!authButtons.innerHTML.trim()) {
+                authButtons.innerHTML = `
+                    <button class="btn btn-outline btn-sm" onclick="openLogin()">Entrar</button>
+                    <button class="btn btn-primary btn-sm" onclick="openRegister()">Cadastrar</button>
+                `;
+            }
+        }
+    }
+}
+
+// Inicializar quando o DOM carregar
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOM carregado');
+    
+    // Verificar se há erro no Supabase
+    if (!window.SUPABASE_CONFIG) {
+        console.warn('⚠️ Supabase config não encontrada, usando modo estático');
+    }
+    
+    // Forçar inicialização dos botões após um pequeno delay
+    setTimeout(initAuthButtons, 100);
+});
+
+// Adicionar função global openLogin/openRegister para uso imediato
+window.openLogin = function(e) {
+    if (e) e.preventDefault();
+    if (window.app) {
+        window.app.openLogin(e);
+    } else {
+        // Fallback se o app não estiver carregado
+        alert('Carregando sistema de login...');
+    }
+};
+
+window.openRegister = function(e) {
+    if (e) e.preventDefault();
+    if (window.app) {
+        window.app.openRegister(e);
+    } else {
+        // Fallback se o app não estiver carregado
+        alert('Carregando sistema de cadastro...');
+    }
+};
+
+// Adicionar também ao window para garantir
+window.closeAuthModal = function() {
+    if (window.app) {
+        window.app.closeAuthModal();
+    } else {
+        const modal = document.getElementById('modalAuth');
+        if (modal) modal.classList.remove('active');
+    }
+};
 });
 
 // ==================== FUNÇÕES GLOBAIS ====================
