@@ -1236,3 +1236,15 @@ footer {
     visibility: visible !important;
     opacity: 1 !important;
 }
+/* ============================
+   AJUSTE APENAS PARA DESKTOP (> 992px)
+   ============================ */
+@media (min-width: 993px) {
+    .auth-buttons {
+        gap: 0.8rem !important; /* Espaçamento entre os botões apenas no desktop */
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.4rem 1rem !important;
+    }
+}
