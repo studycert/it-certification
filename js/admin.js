@@ -1,21 +1,18 @@
-// Admin Panel Application - VERSÃO SIMPLIFICADA
+// Admin Panel Application - VERSÃO SIMPLIFICADA E FUNCIONAL
 class AdminPanel {
     constructor() {
         this.currentUser = null;
         this.adminData = null;
         this.currentSection = 'dashboard';
         this.simulados = [];
-        this.paginaAtual = 1;
-        this.itensPorPagina = 10;
-        this.simuladosSelecionados = new Set();
         this.init();
     }
 
     async init() {
-        console.log('🎯 Inicializando Painel Admin (Modo Desenvolvimento)');
+        console.log('🎯 Inicializando Painel Admin');
         
         try {
-            // ⭐⭐ PERMITIR ACESSO SEM VERIFICAÇÃO ⭐⭐
+            // Permitir acesso sem verificação
             this.allowAccessWithoutVerification();
             
             // Carregar interface
@@ -64,21 +61,15 @@ class AdminPanel {
         const adminName = document.getElementById('adminName');
         const adminEmail = document.getElementById('adminEmail');
         const adminAvatar = document.getElementById('adminAvatar');
-        const adminGreeting = document.getElementById('adminGreeting');
+        const userRoleBadge = document.getElementById('userRoleBadge');
         
         if (adminName) adminName.textContent = 'Administrador';
-        if (adminGreeting) adminGreeting.textContent = 'Administrador';
         if (adminEmail) adminEmail.textContent = 'admin@example.com';
-        if (adminAvatar) adminAvatar.textContent = 'AD';
-        
-        // Configurar navegação
-        document.querySelectorAll('.admin-menu-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const section = item.getAttribute('data-section');
-                this.mostrarSecao(section);
-            });
-        });
+        if (userRoleBadge) userRoleBadge.textContent = 'Super Admin';
+        if (adminAvatar) {
+            adminAvatar.textContent = 'AD';
+            adminAvatar.style.background = 'linear-gradient(135deg, #3498db 0%, #2c3e50 100%)';
+        }
     }
 
     async carregarDadosIniciais() {
@@ -87,89 +78,52 @@ class AdminPanel {
         
         // Carregar atividades
         this.carregarAtividadeRecente();
-        
-        // Carregar alertas
-        this.carregarAlertas();
     }
 
     carregarEstatisticas() {
         // Dados de exemplo
-        const stats = {
-            usuarios: 42,
-            simulados: 18,
-            posts: 56,
-            armazenamento: '156 MB'
-        };
-        
-        // Atualizar UI
-        document.getElementById('totalUsuarios').textContent = stats.usuarios;
-        document.getElementById('totalSimulados').textContent = stats.simulados;
-        document.getElementById('totalPosts').textContent = stats.posts;
-        document.getElementById('totalArmazenamento').textContent = stats.armazenamento;
-        
-        // Badges
-        document.getElementById('badgeUsuarios').textContent = stats.usuarios;
-        document.getElementById('badgeSimulados').textContent = stats.simulados;
-        document.getElementById('badgeForum').textContent = stats.posts;
-        
-        // Sidebar
-        document.getElementById('visitasHoje').textContent = 24;
-        document.getElementById('uploadsHoje').textContent = 3;
+        setTimeout(() => {
+            document.getElementById('totalUsuarios').textContent = '42';
+            document.getElementById('totalSimulados').textContent = '18';
+            document.getElementById('totalPosts').textContent = '56';
+            document.getElementById('totalArmazenamento').textContent = '156 MB';
+            
+            // Badges
+            document.getElementById('badgeUsuarios').textContent = '42';
+            document.getElementById('badgeSimulados').textContent = '18';
+            document.getElementById('badgeForum').textContent = '56';
+            
+            // Sidebar
+            document.getElementById('visitasHoje').textContent = '24';
+            document.getElementById('uploadsHoje').textContent = '3';
+        }, 500);
     }
 
     carregarAtividadeRecente() {
         const container = document.getElementById('activityList');
         if (!container) return;
         
-        const atividades = [
-            { icon: 'fa-sign-in-alt', color: '#3498db', title: 'Login de administrador', user: 'Admin', time: 'Agora' },
-            { icon: 'fa-upload', color: '#27ae60', title: 'Simulado publicado', user: 'João Silva', time: '2h atrás' },
-            { icon: 'fa-user-plus', color: '#9b59b6', title: 'Novo usuário', user: 'maria@email.com', time: '4h atrás' },
-            { icon: 'fa-comment', color: '#f39c12', title: 'Novo post', user: 'Carlos Santos', time: '1 dia atrás' }
-        ];
-        
-        container.innerHTML = atividades.map(a => `
-            <div class="activity-item">
-                <div class="activity-icon" style="background: ${a.color}">
-                    <i class="fas ${a.icon}"></i>
+        setTimeout(() => {
+            const atividades = [
+                { icon: 'fa-sign-in-alt', color: '#3498db', title: 'Login de administrador', user: 'Admin', time: 'Agora' },
+                { icon: 'fa-upload', color: '#27ae60', title: 'Simulado publicado', user: 'João Silva', time: '2h atrás' },
+                { icon: 'fa-user-plus', color: '#9b59b6', title: 'Novo usuário', user: 'maria@email.com', time: '4h atrás' },
+                { icon: 'fa-comment', color: '#f39c12', title: 'Novo post', user: 'Carlos Santos', time: '1 dia atrás' }
+            ];
+            
+            container.innerHTML = atividades.map(a => `
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: ${a.color}">
+                        <i class="fas ${a.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${a.title}</h4>
+                        <p>${a.user}</p>
+                    </div>
+                    <div class="activity-time">${a.time}</div>
                 </div>
-                <div class="activity-content">
-                    <h4>${a.title}</h4>
-                    <p>${a.user}</p>
-                </div>
-                <div class="activity-time">${a.time}</div>
-            </div>
-        `).join('');
-    }
-
-    carregarAlertas() {
-        const container = document.getElementById('alertList');
-        if (!container) return;
-        
-        container.innerHTML = `
-            <div class="alert-placeholder">
-                <i class="fas fa-check-circle"></i>
-                <p>Tudo funcionando normalmente</p>
-            </div>
-        `;
-    }
-
-    mostrarSecao(sectionId) {
-        // Esconder todas as seções
-        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-        
-        // Remover active do menu
-        document.querySelectorAll('.admin-menu-item').forEach(item => item.classList.remove('active'));
-        
-        // Mostrar seção
-        const section = document.getElementById(sectionId);
-        if (section) section.classList.add('active');
-        
-        // Ativar menu
-        const menuItem = document.querySelector(`[data-section="${sectionId}"]`);
-        if (menuItem) menuItem.classList.add('active');
-        
-        this.currentSection = sectionId;
+            `).join('');
+        }, 800);
     }
 
     configurarEventos() {
@@ -177,44 +131,6 @@ class AdminPanel {
         document.querySelectorAll('[onclick*="logout"]').forEach(btn => {
             btn.onclick = () => this.logout();
         });
-        
-        // Botões da tabela de simulados
-        document.getElementById('selectAllSimulados')?.addEventListener('change', (e) => {
-            this.selecionarTodosSimulados(e.target.checked);
-        });
-        
-        // Paginação
-        document.getElementById('btnPrev')?.addEventListener('click', () => this.paginaAnterior());
-        document.getElementById('btnNext')?.addEventListener('click', () => this.proximaPagina());
-    }
-
-    // Métodos de exemplo para simulados
-    selecionarTodosSimulados(checked) {
-        const checkboxes = document.querySelectorAll('.simulado-checkbox');
-        checkboxes.forEach(cb => cb.checked = checked);
-        
-        const btn = document.getElementById('btnExcluirMultiplos');
-        if (btn) btn.disabled = !checked;
-    }
-
-    paginaAnterior() {
-        if (this.paginaAtual > 1) {
-            this.paginaAtual--;
-            this.atualizarPaginacao();
-        }
-    }
-
-    proximaPagina() {
-        this.paginaAtual++;
-        this.atualizarPaginacao();
-    }
-
-    atualizarPaginacao() {
-        const info = document.getElementById('paginationInfo');
-        if (info) info.textContent = `Página ${this.paginaAtual}`;
-        
-        const btnPrev = document.getElementById('btnPrev');
-        if (btnPrev) btnPrev.disabled = this.paginaAtual <= 1;
     }
 
     logout() {
@@ -233,7 +149,6 @@ class AdminPanel {
     showToast(message, type = 'info') {
         console.log(`Toast [${type}]: ${message}`);
         
-        // Implementação simples de toast
         const toast = document.createElement('div');
         toast.style.cssText = `
             position: fixed;
