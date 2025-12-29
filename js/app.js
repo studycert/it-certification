@@ -1,3 +1,21 @@
+// Adicione no seu app.js, na função de login
+async function login() {
+    // ... seu código existente de login ...
+    
+    // APÓS login bem-sucedido, adicione:
+    console.log('✅ Login realizado com sucesso');
+    
+    // Disparar evento para verificar admin
+    const event = new Event('userLoggedIn');
+    window.dispatchEvent(event);
+    
+    // Ou se preferir, chamar diretamente
+    setTimeout(() => {
+        if (window.adminVerifier) {
+            window.adminVerifier.init();
+        }
+    }, 1000);
+}
 async function verificarEAdicionarBotaoAdmin(user) {
     try {
         // Verificar se usuário é admin
