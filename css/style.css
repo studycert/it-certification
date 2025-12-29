@@ -1712,4 +1712,67 @@ footer {
         opacity: 0;
     }
 }
+/* ============================
+   AJUSTES PARA OS BOTÕES NO MOBILE
+   ============================ */
+@media (max-width: 992px) {
+    .header-content {
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+    }
+    
+    /* Logo à esquerda */
+    .logo {
+        order: 1;
+        flex: 1;
+        min-width: 0; /* Permite que a logo encolha */
+    }
+    
+    /* Botões de autenticação - posiciona à direita */
+    .auth-buttons {
+        order: 2;
+        display: flex !important;
+        margin-left: 0 !important; /* Remove a margem automática */
+        gap: 0.5rem;
+        margin-right: 10px;
+    }
+    
+    /* Menu hambúrguer - à direita dos botões */
+    .menu-toggle {
+        order: 3;
+        margin-left: 0;
+    }
+    
+    /* Ajusta a logo para não quebrar */
+    .logo h1 {
+        font-size: 1.4rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Ajusta o tamanho dos botões */
+    .auth-buttons .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+}
+
+/* Para telas muito pequenas (menos de 480px) */
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .auth-buttons {
+        gap: 0.3rem;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
 
