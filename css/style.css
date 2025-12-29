@@ -1776,7 +1776,7 @@ footer {
     }
 }
 /* ============================
-   BOTÃO ADMIN NO HEADER
+   BOTÃO ADMIN APENAS COM ÍCONE
    ============================ */
 .admin-link-container {
     display: flex;
@@ -1784,62 +1784,156 @@ footer {
     margin-left: 8px;
 }
 
-.btn-admin-header {
+.btn-admin-icon {
     background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
     color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-decoration: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 5px;
-    transition: all 0.3s;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(243, 156, 18, 0.3);
-    white-space: nowrap;
-    height: 32px;
+    box-shadow: 0 3px 8px rgba(243, 156, 18, 0.4);
+    position: relative;
+    overflow: hidden;
 }
 
-.btn-admin-header:hover {
+.btn-admin-icon:hover {
     background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(243, 156, 18, 0.4);
+    transform: translateY(-2px) rotate(15deg);
+    box-shadow: 0 6px 15px rgba(243, 156, 18, 0.5);
+    width: 38px;
+    height: 38px;
 }
 
-.btn-admin-header i {
-    font-size: 0.9rem;
+.btn-admin-icon:active {
+    transform: translateY(0) scale(0.95);
 }
 
-.admin-text {
-    font-size: 0.8rem;
+.btn-admin-icon i {
+    font-size: 1.1rem;
+    transition: transform 0.3s;
 }
 
-/* Responsividade para o botão admin */
+.btn-admin-icon:hover i {
+    transform: rotate(180deg);
+}
+
+/* Tooltip no hover (para desktop) */
+.btn-admin-icon::after {
+    content: 'Painel Admin';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: rgba(44, 62, 80, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-admin-icon::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border: 5px solid transparent;
+    border-bottom-color: rgba(44, 62, 80, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.btn-admin-icon:hover::after,
+.btn-admin-icon:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(12px);
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
-    .admin-text {
-        display: none; /* Esconde o texto "Admin" em telas pequenas */
+    .admin-link-container {
+        margin-left: 5px;
     }
     
-    .btn-admin-header {
-        padding: 6px 8px;
-        font-size: 0.75rem;
+    .btn-admin-icon {
+        width: 32px;
+        height: 32px;
     }
     
-    .btn-admin-header i {
-        margin: 0;
+    .btn-admin-icon i {
+        font-size: 1rem;
+    }
+    
+    .btn-admin-icon:hover {
+        width: 34px;
+        height: 34px;
+    }
+    
+    /* Tooltip mais discreto no mobile */
+    .btn-admin-icon::after {
+        font-size: 0.7rem;
+        padding: 4px 8px;
     }
 }
 
 @media (max-width: 480px) {
     .admin-link-container {
-        margin-left: 4px;
+        margin-left: 3px;
     }
     
-    .btn-admin-header {
-        padding: 5px 6px;
-        min-width: 32px;
+    .btn-admin-icon {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .btn-admin-icon i {
+        font-size: 0.9rem;
+    }
+    
+    .btn-admin-icon:hover {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Garantir que o botão admin fique alinhado com os outros botões */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Ajuste para quando o usuário não está logado */
+.auth-buttons:has(.admin-link-container) .btn-outline,
+.auth-buttons:has(.admin-link-container) .btn-primary {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+}
+
+@media (max-width: 768px) {
+    .auth-buttons:has(.admin-link-container) .btn-outline,
+    .auth-buttons:has(.admin-link-container) .btn-primary {
+        height: 32px;
+        padding: 0 10px;
+        font-size: 0.8rem;
     }
 }
