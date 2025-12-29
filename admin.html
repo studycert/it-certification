@@ -10,6 +10,106 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/admin.js" defer></script>
+    <style>
+        /* Estilos específicos para o admin */
+        .admin-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        
+        .user-role-badge {
+            background: #3498db;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .quick-stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .quick-stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .quick-stat-item i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .quick-stat-item.primary { border-left: 4px solid #3498db; }
+        .quick-stat-item.success { border-left: 4px solid #27ae60; }
+        .quick-stat-item.warning { border-left: 4px solid #f39c12; }
+        .quick-stat-item.danger { border-left: 4px solid #e74c3c; }
+        
+        .admin-welcome {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .admin-welcome h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .admin-welcome p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        .last-login {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-welcome {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .quick-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header Admin -->
@@ -44,6 +144,7 @@
                 <div class="admin-status">
                     <span class="status-dot online"></span>
                     <span>Online</span>
+                    <span id="userRoleBadge" class="user-role-badge">Admin</span>
                 </div>
             </div>
 
@@ -113,66 +214,36 @@
         <main class="admin-main">
             <!-- Dashboard -->
             <section id="dashboard" class="admin-section active">
-                <div class="section-header">
-                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
-                    <p>Visão geral do sistema</p>
+                <div class="admin-welcome">
+                    <div>
+                        <h2><i class="fas fa-graduation-cap"></i> Bem-vindo ao Painel Admin, <span id="adminGreeting">Administrador</span>!</h2>
+                        <p>Gerencie seu sistema StudyCert de forma eficiente</p>
+                    </div>
+                    <div class="last-login">
+                        <i class="far fa-clock"></i> Último login: <span id="lastLoginTime">Agora</span>
+                    </div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-card stat-primary">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="totalUsuarios">0</h3>
-                            <p>Usuários Registrados</p>
-                            <div class="stat-trend">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>+12% este mês</span>
-                            </div>
-                        </div>
+                <div class="quick-stats">
+                    <div class="quick-stat-item primary">
+                        <i class="fas fa-users"></i>
+                        <h3 id="totalUsuarios">0</h3>
+                        <p>Usuários</p>
                     </div>
-
-                    <div class="stat-card stat-success">
-                        <div class="stat-icon">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="totalSimulados">0</h3>
-                            <p>Simulados Publicados</p>
-                            <div class="stat-trend">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>+8% este mês</span>
-                            </div>
-                        </div>
+                    <div class="quick-stat-item success">
+                        <i class="fas fa-file-alt"></i>
+                        <h3 id="totalSimulados">0</h3>
+                        <p>Simulados</p>
                     </div>
-
-                    <div class="stat-card stat-warning">
-                        <div class="stat-icon">
-                            <i class="fas fa-comments"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="totalPosts">0</h3>
-                            <p>Posts no Fórum</p>
-                            <div class="stat-trend">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>+15% este mês</span>
-                            </div>
-                        </div>
+                    <div class="quick-stat-item warning">
+                        <i class="fas fa-comments"></i>
+                        <h3 id="totalPosts">0</h3>
+                        <p>Posts</p>
                     </div>
-
-                    <div class="stat-card stat-danger">
-                        <div class="stat-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="totalArmazenamento">0 MB</h3>
-                            <p>Armazenamento Usado</p>
-                            <div class="stat-trend">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>+5% este mês</span>
-                            </div>
-                        </div>
+                    <div class="quick-stat-item danger">
+                        <i class="fas fa-hdd"></i>
+                        <h3 id="totalArmazenamento">0 MB</h3>
+                        <p>Armazenamento</p>
                     </div>
                 </div>
 
@@ -181,10 +252,16 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3><i class="fas fa-chart-line"></i> Atividade Recente</h3>
+                                <button class="btn btn-sm" onclick="admin.carregarAtividadeRecente()">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
                             </div>
                             <div class="card-body">
                                 <div class="activity-list" id="activityList">
-                                    <!-- Atividades carregadas via JS -->
+                                    <div class="activity-placeholder">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Carregando atividades...</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -194,10 +271,14 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3><i class="fas fa-exclamation-triangle"></i> Requer Atenção</h3>
+                                <span class="badge badge-danger" id="alertCount">0</span>
                             </div>
                             <div class="card-body">
                                 <div class="alert-list" id="alertList">
-                                    <!-- Alertas carregados via JS -->
+                                    <div class="alert-placeholder">
+                                        <i class="fas fa-check-circle"></i>
+                                        <p>Tudo funcionando normalmente</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -207,6 +288,13 @@
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-calendar-alt"></i> Estatísticas do Mês</h3>
+                        <div class="header-actions">
+                            <select id="chartPeriod" class="form-control-sm">
+                                <option value="7d">Últimos 7 dias</option>
+                                <option value="30d" selected>Últimos 30 dias</option>
+                                <option value="90d">Últimos 90 dias</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
@@ -224,28 +312,35 @@
                 </div>
 
                 <div class="admin-toolbar">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchSimulados" placeholder="Buscar simulados..." onkeyup="admin.buscarSimulados()">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchSimulados" placeholder="Buscar simulados...">
+                        </div>
+                        <div class="filters">
+                            <select id="filterStatus" class="form-control">
+                                <option value="all">Todos os status</option>
+                                <option value="ativo">Ativos</option>
+                                <option value="inativo">Inativos</option>
+                                <option value="pendente">Pendentes</option>
+                            </select>
+                            <select id="filterCategoria" class="form-control">
+                                <option value="all">Todas categorias</option>
+                                <option value="ITIL">ITIL</option>
+                                <option value="Azure">Azure</option>
+                                <option value="AWS">AWS</option>
+                                <option value="Security">Security+</option>
+                                <option value="Linux">Linux</option>
+                                <option value="CCNA">CCNA</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="toolbar-actions">
-                        <select id="filterStatus" class="form-control" onchange="admin.filtrarSimulados()">
-                            <option value="all">Todos os status</option>
-                            <option value="ativo">Ativos</option>
-                            <option value="inativo">Inativos</option>
-                            <option value="pendente">Pendentes</option>
-                        </select>
-                        <select id="filterCategoria" class="form-control" onchange="admin.filtrarSimulados()">
-                            <option value="all">Todas categorias</option>
-                            <option value="ITIL">ITIL</option>
-                            <option value="Azure">Azure</option>
-                            <option value="AWS">AWS</option>
-                            <option value="Security">Security+</option>
-                            <option value="Linux">Linux</option>
-                            <option value="CCNA">CCNA</option>
-                        </select>
+                    <div class="toolbar-right">
                         <button class="btn btn-primary" onclick="admin.carregarSimulados()">
                             <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                        <button class="btn btn-success" onclick="admin.importarSimulado()">
+                            <i class="fas fa-file-import"></i> Importar
                         </button>
                         <button class="btn btn-danger" id="btnExcluirMultiplos" onclick="admin.excluirMultiplosSimulados()" disabled>
                             <i class="fas fa-trash"></i> Excluir Selecionados
@@ -258,7 +353,7 @@
                         <thead>
                             <tr>
                                 <th width="30">
-                                    <input type="checkbox" id="selectAllSimulados" onchange="admin.selecionarTodosSimulados()">
+                                    <input type="checkbox" id="selectAllSimulados">
                                 </th>
                                 <th>Nome</th>
                                 <th>Categoria</th>
@@ -271,7 +366,14 @@
                             </tr>
                         </thead>
                         <tbody id="simuladosTableBody">
-                            <!-- Dados carregados via JS -->
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <div class="loading-data">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Carregando simulados...</p>
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -300,9 +402,19 @@
                 </div>
 
                 <div class="admin-toolbar">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchUsuarios" placeholder="Buscar usuários..." onkeyup="admin.buscarUsuarios()">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchUsuarios" placeholder="Buscar usuários...">
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <button class="btn btn-primary" onclick="admin.exportarUsuarios()">
+                            <i class="fas fa-file-export"></i> Exportar
+                        </button>
+                        <button class="btn btn-success" onclick="admin.adicionarUsuario()">
+                            <i class="fas fa-user-plus"></i> Adicionar Usuário
+                        </button>
                     </div>
                 </div>
 
@@ -321,7 +433,14 @@
                             </tr>
                         </thead>
                         <tbody id="usuariosTableBody">
-                            <!-- Dados carregados via JS -->
+                            <tr>
+                                <td colspan="8" class="text-center">
+                                    <div class="loading-data">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Carregando usuários...</p>
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -335,7 +454,10 @@
                         <button class="fechar-modal" onclick="admin.fecharModalDetalhes()">&times;</button>
                     </div>
                     <div class="modal-body" id="detalhesSimuladoContent">
-                        <!-- Carregado via JS -->
+                        <div class="loading-data">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Carregando detalhes...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -383,5 +505,79 @@
             <p>Carregando...</p>
         </div>
     </div>
+
+    <script>
+        // Estilos para placeholders
+        const style = document.createElement('style');
+        style.textContent = `
+            .activity-placeholder, .alert-placeholder, .loading-data {
+                text-align: center;
+                padding: 30px;
+                color: #95a5a6;
+            }
+            
+            .activity-placeholder i, .alert-placeholder i, .loading-data i {
+                font-size: 2rem;
+                margin-bottom: 10px;
+                display: block;
+            }
+            
+            .admin-toolbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .toolbar-left, .toolbar-right {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            
+            .search-box {
+                position: relative;
+            }
+            
+            .search-box i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #95a5a6;
+            }
+            
+            .search-box input {
+                padding-left: 35px;
+                min-width: 250px;
+            }
+            
+            .filters {
+                display: flex;
+                gap: 5px;
+            }
+            
+            .form-control, .form-control-sm {
+                padding: 8px 12px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            
+            .form-control-sm {
+                padding: 5px 10px;
+                font-size: 0.9em;
+            }
+            
+            .header-actions {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
