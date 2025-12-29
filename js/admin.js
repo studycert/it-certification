@@ -96,6 +96,17 @@ class AdminPanel {
             
             if (data) {
                 this.adminData = data;
+                // Adicione após this.adminData = data;
+if (this.adminData.permissions && !Array.isArray(this.adminData.permissions)) {
+    // Se permissions não for array, converte
+    if (typeof this.adminData.permissions === 'string') {
+        try {
+            this.adminData.permissions = JSON.parse(this.adminData.permissions);
+        } catch (e) {
+            this.adminData.permissions = [];
+        }
+    }
+}
                 
                 // Armazenar permissões no localStorage para acesso rápido
                 localStorage.setItem('admin_role', data.role);
