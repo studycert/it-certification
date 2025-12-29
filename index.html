@@ -860,19 +860,24 @@
     // Verificar se é admin e adicionar link
     document.addEventListener('DOMContentLoaded', function() {
         // Esta verificação seria baseada no usuário atual
-        // Por enquanto, vamos mostrar apenas se estiver logado
         setTimeout(() => {
             const authButtons = document.getElementById('authButtons');
             if (authButtons && window.app && window.app.currentUser) {
                 // Verificar se é admin (baseado no email por enquanto)
-                const adminEmails = ['admin@studycert.com', 'suporte@studycert.com'];
-                if (adminEmails.includes(window.app.currentUser.email)) {
+                const adminEmails = ['admin@studycert.com', 'suporte@studycert.com', 'admin@example.com', 'andre.martins05@gmail.com'];
+                if (adminEmails.includes(window.app.currentUser.email.toLowerCase())) {
+                    // Criar container para o botão admin
+                    const adminContainer = document.createElement('div');
+                    adminContainer.className = 'admin-link-container';
+                    
                     const adminLink = document.createElement('a');
                     adminLink.href = 'admin.html';
-                    adminLink.className = 'btn btn-warning';
-                    adminLink.innerHTML = '<i class="fas fa-cog"></i> Admin';
-                    adminLink.style.marginLeft = '10px';
-                    authButtons.appendChild(adminLink);
+                    adminLink.className = 'btn-admin-header';
+                    adminLink.innerHTML = '<i class="fas fa-cog"></i> <span class="admin-text">Admin</span>';
+                    adminLink.title = 'Painel Administrativo';
+                    
+                    adminContainer.appendChild(adminLink);
+                    authButtons.appendChild(adminContainer);
                 }
             }
         }, 1000);
