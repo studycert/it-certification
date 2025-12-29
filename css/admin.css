@@ -1,3 +1,78 @@
+/* Adicione no final do admin.css */
+
+/* Botão de emergência (só aparece no console) */
+.emergency-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 9999;
+    display: none; /* Só aparece via console */
+}
+
+/* Melhorias na tabela */
+.text-center {
+    text-align: center;
+}
+
+.p-4 {
+    padding: 1.5rem;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+/* Animações para toast */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast {
+    animation: slideInRight 0.3s ease-out;
+}
+
+/* Botão close no toast */
+.close-toast {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 10px;
+    opacity: 0.8;
+}
+
+.close-toast:hover {
+    opacity: 1;
+}
 /* Estilos adicionais para admin */
 
 /* Botão com ícone */
