@@ -1809,6 +1809,16 @@ a[href*="admin.html"] i {
 .admin-nav .btn-outline[style*="color"] {
     color: white !important;
 }
+/* ===================================
+   SOLUÇÃO DEFINITIVA - TUDO BRANCO NO HEADER
+   =================================== */
+.admin-header * {
+    color: white !important;
+}
+
+.admin-badge {
+    color: white !important;
+}
 
 .admin-nav .btn-outline:hover[style*="color"] {
     color: #2c3e50 !important;
