@@ -865,19 +865,24 @@
             if (authButtons && window.app && window.app.currentUser) {
                 // Verificar se é admin (baseado no email por enquanto)
                 const adminEmails = ['admin@studycert.com', 'suporte@studycert.com', 'admin@example.com', 'andre.martins05@gmail.com'];
-                if (adminEmails.includes(window.app.currentUser.email.toLowerCase())) {
+                const userEmail = window.app.currentUser.email.toLowerCase();
+                
+                if (adminEmails.includes(userEmail)) {
                     // Criar container para o botão admin
                     const adminContainer = document.createElement('div');
                     adminContainer.className = 'admin-link-container';
                     
                     const adminLink = document.createElement('a');
                     adminLink.href = 'admin.html';
-                    adminLink.className = 'btn-admin-header';
-                    adminLink.innerHTML = '<i class="fas fa-cog"></i> <span class="admin-text">Admin</span>';
+                    adminLink.className = 'btn-admin-icon';
+                    adminLink.innerHTML = '<i class="fas fa-cog"></i>';
                     adminLink.title = 'Painel Administrativo';
+                    adminLink.setAttribute('aria-label', 'Painel Administrativo');
                     
                     adminContainer.appendChild(adminLink);
                     authButtons.appendChild(adminContainer);
+                    
+                    console.log('✅ Botão admin adicionado para:', userEmail);
                 }
             }
         }, 1000);
