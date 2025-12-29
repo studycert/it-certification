@@ -1,3 +1,32 @@
+async function verificarEAdicionarBotaoAdmin(user) {
+    try {
+        // Verificar se usuário é admin
+        const { data, error } = await supabase
+            .from('admin_users')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
+        
+        if (data && !error) {
+            const authButtons = document.getElementById('authButtons');
+            if (authButtons) {
+                const adminLink = document.createElement('a');
+                adminLink.href = 'admin.html';
+                adminLink.className = 'btn btn-warning btn-sm';
+                adminLink.innerHTML = '<i class="fas fa-cog"></i> Admin';
+                adminLink.style.marginLeft = '10px';
+                authButtons.appendChild(adminLink);
+            }
+        }
+    } catch (error) {
+        console.log('Erro ao verificar admin:', error);
+    }
+}
+
+// Chamar esta função após login bem-sucedido
+// Na função login(), adicione:
+// if (user) verificarEAdicionarBotaoAdmin(user);
+
 // App principal - StudyCertApp
 class StudyCertApp {
     constructor() {
