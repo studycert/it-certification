@@ -1,3 +1,71 @@
+/* Estilos adicionais para admin */
+
+/* Botão com ícone */
+.btn i {
+    margin-right: 5px;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #3498db;
+    color: #3498db;
+}
+
+.btn-outline:hover {
+    background: #3498db;
+    color: white;
+}
+
+/* Badges */
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-secondary {
+    background: #95a5a6;
+    color: white;
+}
+
+/* Text utilities */
+.text-muted {
+    color: #95a5a6 !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+/* Descrição box */
+.descricao-box {
+    background: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+}
+
+.descricao-box p {
+    margin: 0.5rem 0 0 0;
+    color: #666;
+}
+
+/* Close toast button */
+.close-toast {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+}
 /* ============================
    ADMIN STYLES
    ============================ */
