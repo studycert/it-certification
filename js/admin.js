@@ -84,32 +84,88 @@ class AdminPanel {
     }
 
     async verificarPermissaoAdmin() {
-        try {
-            // Verificar se o usuário está na tabela admin_users
-            const { data, error } = await this.supabase
-                .from('admin_users')
+    try {
+        console.log('🔍 Verificando permissões para:', this.currentUser.id);
+        
+        // PRIMEIRO: Verificar se já temos dados de admin no localStorage (cache)
+        const cachedRole = localStorage.getItem('admin_role');
+        const cachedPermissions = localStorage.getItem('admin_permissions');
+        
+        if (cachedRole && cachedPermissions) {
+            console.log('✅ Usando permissões em cache:', cachedRole);
+            this.adminData = {
+                role: cachedRole,
+                permissions: JSON.parse(cachedPermissions)
+            };
+            return true;
+        }
+        
+        // SEGUNDO: Buscar na tabela admin_users
+        console.log('📋 Buscando na tabela admin_users...');
+        const { data, error } = await this.supabase
+            .from('admin_users')
+            .select('*')
+            .eq('user_id', this.currentUser.id)
+            .single();
+        
+        if (error) {
+            console.log('❌ Não encontrado em admin_users:', error.message);
+            
+            // TENTAR OUTRO NOME DE TABELA
+            console.log('🔄 Tentando tabela alternativa...');
+            const { data: data2, error: error2 } = await this.supabase
+                .from('usuarios_admin')
                 .select('*')
                 .eq('user_id', this.currentUser.id)
                 .single();
             
-            if (error) {
-                console.log('Usuário não encontrado na tabela admin:', error.message);
+            if (error2) {
+                console.log('❌ Não encontrado em usuarios_admin:', error2.message);
                 return false;
             }
             
-            if (data) {
-                this.adminData = data;
-                
-                // Converter permissions para array se for string
-                if (this.adminData.permissions && !Array.isArray(this.adminData.permissions)) {
-                    if (typeof this.adminData.permissions === 'string') {
-                        try {
-                            this.adminData.permissions = JSON.parse(this.adminData.permissions);
-                        } catch (e) {
-                            this.adminData.permissions = [];
-                        }
-                    }
-                }
+            if (data2) {
+                console.log('✅ Encontrado em usuarios_admin:', data2);
+                this.processAdminData(data2);
+                return true;
+            }
+        }
+        
+        if (data) {
+            console.log('✅ Encontrado em admin_users:', data);
+            this.processAdminData(data);
+            return true;
+        }
+        
+        return false;
+        
+    } catch (error) {
+        console.error('❌ Erro ao verificar permissões:', error);
+        return false;
+    }
+}
+
+// Adicione esta função auxiliar também:
+processAdminData(adminData) {
+    this.adminData = adminData;
+    
+    // Garantir que permissions seja array
+    if (this.adminData.permissions && !Array.isArray(this.adminData.permissions)) {
+        if (typeof this.adminData.permissions === 'string') {
+            try {
+                this.adminData.permissions = JSON.parse(this.adminData.permissions);
+            } catch (e) {
+                this.adminData.permissions = [];
+            }
+        } else {
+            this.adminData.permissions = [];
+        }
+    }
+    
+    // Salvar no localStorage para cache
+    localStorage.setItem('admin_role', this.adminData.role || 'admin');
+    localStorage.setItem('admin_permissions', JSON.stringify(this.adminData.permissions || []));
+}
                 
                 // Armazenar permissões no localStorage para acesso rápido
                 localStorage.setItem('admin_role', data.role);
