@@ -1518,3 +1518,298 @@ body {
     margin: 0 auto;
     padding: 0 20px;
 }
+/* ============================
+   CORREÇÕES ULTIMAS PARA BOTÕES E CORES
+   ============================ */
+
+/* ============================
+   1. BOTÃO "SAIR" COM FONTE BRANCA GARANTIDA
+   ============================ */
+.admin-nav .btn-danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 8px 18px !important;
+    border-radius: 6px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3) !important;
+}
+
+.admin-nav .btn-danger:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%) !important;
+    color: white !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4) !important;
+}
+
+.admin-nav .btn-danger:active {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3) !important;
+}
+
+/* ============================
+   2. BOTÃO "VOLTAR AO SITE" CORRIGIDO
+   ============================ */
+.admin-nav .btn-outline {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    font-weight: 500 !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+}
+
+.admin-nav .btn-outline:hover {
+    background: white !important;
+    color: #2c3e50 !important;
+    border-color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ============================
+   3. CORREÇÃO DE CORES NA SIDEBAR - GARANTIR BRANCO
+   ============================ */
+.admin-sidebar,
+.admin-sidebar *:not(i):not(.btn):not(a):not(button) {
+    color: white !important;
+}
+
+/* Perfil do admin - branco garantido */
+.admin-profile h3 {
+    color: white !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+.admin-email {
+    color: #e0e0e0 !important;
+    opacity: 0.9 !important;
+}
+
+.admin-status {
+    color: #b0e0b0 !important;
+}
+
+.user-role-badge {
+    background: rgba(52, 152, 219, 0.3) !important;
+    color: white !important;
+    border: 1px solid rgba(52, 152, 219, 0.5) !important;
+}
+
+/* Menu - cores corrigidas */
+.admin-menu-item {
+    color: #e0e0e0 !important;
+}
+
+.admin-menu-item:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.admin-menu-item.active {
+    color: white !important;
+    background: rgba(52, 152, 219, 0.25) !important;
+    border-left: 4px solid #3498db !important;
+}
+
+.admin-menu-item i {
+    color: #3498db !important;
+}
+
+.admin-menu-item.active i {
+    color: white !important;
+}
+
+/* Estatísticas sidebar */
+.stat-item h4 {
+    color: #b0b0b0 !important;
+}
+
+.stat-item p {
+    color: white !important;
+    font-weight: 700 !important;
+}
+
+.stat-item i {
+    color: #3498db !important;
+    background: rgba(52, 152, 219, 0.15) !important;
+}
+
+/* ============================
+   4. CORREÇÃO PARA BOTÕES NO HEADER DO SITE PRINCIPAL
+   (Para quando estiver no admin.css, afetando todo o site)
+   ============================ */
+
+/* REMOVER QUALQUER TEXTO DO BOTÃO ADMIN NO HEADER PRINCIPAL */
+.btn-admin-icon,
+a[href*="admin.html"]:not(.admin-menu-item) {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+    color: white !important;
+    text-decoration: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Esconder TODO texto */
+.btn-admin-icon *:not(i),
+a[href*="admin.html"] *:not(i) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    font-size: 0 !important;
+}
+
+/* Garantir que apenas o ícone fique visível */
+.btn-admin-icon i,
+a[href*="admin.html"] i {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    font-size: 1.1rem !important;
+}
+
+/* Tooltip para o botão admin */
+.btn-admin-icon::after {
+    content: 'Painel Admin' !important;
+    position: absolute !important;
+    top: 110% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: rgba(44, 62, 80, 0.95) !important;
+    color: white !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s !important;
+    z-index: 1000 !important;
+    pointer-events: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-admin-icon:hover::after {
+    opacity: 1 !important;
+    visibility: visible !important;
+    top: 120% !important;
+}
+
+/* ============================
+   5. RESPONSIVIDADE PARA BOTÕES DO ADMIN
+   ============================ */
+@media (max-width: 768px) {
+    .admin-nav {
+        gap: 10px !important;
+    }
+    
+    .admin-nav .btn-outline,
+    .admin-nav .btn-danger {
+        padding: 6px 12px !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .admin-nav .btn-outline i,
+    .admin-nav .btn-danger i {
+        font-size: 0.85rem !important;
+    }
+    
+    /* Botão admin no header principal - mobile */
+    .btn-admin-icon,
+    a[href*="admin.html"]:not(.admin-menu-item) {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .btn-admin-icon i,
+    a[href*="admin.html"] i {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-nav {
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        gap: 5px !important;
+    }
+    
+    .admin-nav .btn-outline,
+    .admin-nav .btn-danger {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 5px 10px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    /* Esconde texto, mantém apenas ícone em telas muito pequenas */
+    .admin-nav .btn-outline span:not(i),
+    .admin-nav .btn-danger span:not(i) {
+        display: none !important;
+    }
+    
+    .admin-nav .btn-outline i,
+    .admin-nav .btn-danger i {
+        margin-right: 0 !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Botão admin no header principal - mobile pequeno */
+    .btn-admin-icon,
+    a[href*="admin.html"]:not(.admin-menu-item) {
+        width: 30px !important;
+        height: 30px !important;
+    }
+    
+    .btn-admin-icon i,
+    a[href*="admin.html"] i {
+        font-size: 0.9rem !important;
+    }
+}
+
+/* ============================
+   6. GARANTIR QUE BOTÕES TENHAM COR BRANCA
+   ============================ */
+.admin-nav .btn,
+.admin-nav a.btn {
+    color: white !important;
+}
+
+/* Apenas o botão outline muda no hover */
+.admin-nav .btn-outline:hover {
+    color: #2c3e50 !important;
+}
+
+/* ============================
+   7. REMOVER ESTILOS INLINE CONFLITANTES
+   ============================ */
+/* Esta regra sobrepõe estilos inline problemáticos */
+.admin-nav .btn-danger[style*="color"],
+.admin-nav .btn-outline[style*="color"] {
+    color: white !important;
+}
+
+.admin-nav .btn-outline:hover[style*="color"] {
+    color: #2c3e50 !important;
+}
