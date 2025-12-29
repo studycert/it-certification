@@ -854,39 +854,5 @@
 <div class="auth-buttons" id="authButtons">
     <!-- Conteúdo existente... -->
 </div>
-
-<!-- E adicione este script no final do body (antes do </body>): -->
-<script>
-    // Verificar se é admin e adicionar link
-    document.addEventListener('DOMContentLoaded', function() {
-        // Esta verificação seria baseada no usuário atual
-        setTimeout(() => {
-            const authButtons = document.getElementById('authButtons');
-            if (authButtons && window.app && window.app.currentUser) {
-                // Verificar se é admin (baseado no email por enquanto)
-                const adminEmails = ['admin@studycert.com', 'suporte@studycert.com', 'admin@example.com', 'andre.martins05@gmail.com'];
-                const userEmail = window.app.currentUser.email.toLowerCase();
-                
-                if (adminEmails.includes(userEmail)) {
-                    // Criar container para o botão admin
-                    const adminContainer = document.createElement('div');
-                    adminContainer.className = 'admin-link-container';
-                    
-                    const adminLink = document.createElement('a');
-                    adminLink.href = 'admin.html';
-                    adminLink.className = 'btn-admin-icon';
-                    adminLink.innerHTML = '<i class="fas fa-cog"></i>';
-                    adminLink.title = 'Painel Administrativo';
-                    adminLink.setAttribute('aria-label', 'Painel Administrativo');
-                    
-                    adminContainer.appendChild(adminLink);
-                    authButtons.appendChild(adminContainer);
-                    
-                    console.log('✅ Botão admin adicionado para:', userEmail);
-                }
-            }
-        }, 1000);
-    });
-</script>
 </body>
 </html>
