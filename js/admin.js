@@ -85,6 +85,33 @@ class AdminPanel {
 
     async verificarPermissaoAdmin() {
     try {
+        async verificarPermissaoAdmin() {
+    try {
+        // ⭐⭐ SOLUÇÃO DIRETA: PERMITIR SEU USUÁRIO ESPECÍFICO ⭐⭐
+        if (this.currentUser.email === 'andre.martins05@gmail.com' || 
+            this.currentUser.id === '5462e8e3-b6b6-41c9-9c83-67da6aca45f9') {
+            
+            console.log('⭐⭐ USUÁRIO PERMITIDO:', this.currentUser.email);
+            
+            this.adminData = {
+                role: 'super_admin',
+                permissions: [
+                    "view_dashboard",
+                    "manage_simulados",
+                    "manage_users", 
+                    "manage_forum",
+                    "view_reports",
+                    "manage_settings"
+                ]
+            };
+            
+            localStorage.setItem('admin_role', 'super_admin');
+            localStorage.setItem('admin_permissions', JSON.stringify(this.adminData.permissions));
+            
+            return true;
+        }
+        
+        // Resto do código original...
         console.log('🔍 Verificando permissões para:', this.currentUser.id);
         
         // PRIMEIRO: Verificar se já temos dados de admin no localStorage (cache)
