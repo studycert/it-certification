@@ -6,144 +6,163 @@
     <title>Painel Administrativo - StudyCert</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    <script src="js/admin.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* ============================
-           ESTILOS PRINCIPAIS DO PAINEL
+           ESTILOS DO PAINEL ADMIN
            ============================ */
-        body.admin-page {
+        body.admin-panel {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
         }
 
+        /* Container principal - similar ao index.html */
         .admin-container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             min-height: calc(100vh - 40px);
-            display: flex;
-            flex-direction: column;
         }
 
-        /* ============================
-           HEADER REDESENHADO
-           ============================ */
+        /* Header - igual ao do index */
         .admin-header {
-            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
-            padding: 0 40px;
-            height: 70px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            position: relative;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            align-items: center;
+            padding: 0.8rem 30px;
+            min-height: 60px;
         }
 
-        .admin-header .logo {
+        .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
 
-        .admin-header .logo i {
-            font-size: 2.2rem;
-            color: #64b5f6;
-            background: rgba(255, 255, 255, 0.1);
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
+        .logo i {
+            font-size: 2rem;
+            color: var(--secondary);
         }
 
-        .admin-header .logo h1 {
+        .logo h1 {
             font-size: 1.8rem;
             font-weight: 700;
             color: white;
-            margin: 0;
-            letter-spacing: -0.5px;
         }
 
-        .admin-header .logo span {
-            color: #64b5f6;
+        .logo span {
+            color: var(--secondary);
         }
 
-        .admin-badge {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 600;
-            margin-left: 10px;
-            letter-spacing: 0.5px;
-            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.4);
+        /* Navegação do admin - horizontal */
+        .admin-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* ============================
-           BARRA DE NAVEGAÇÃO HORIZONTAL
-           ============================ */
-        .admin-nav-top {
-            background: linear-gradient(135deg, #283593 0%, #3949ab 100%);
-            padding: 0 40px;
+        .admin-nav ul {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            list-style: none;
+            margin: 0;
+            padding: 0 30px;
         }
 
-        .admin-user-info {
+        .admin-nav li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .admin-nav a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .admin-nav a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .admin-nav a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom-color: var(--secondary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .admin-nav a i {
+            margin-right: 8px;
+        }
+
+        .nav-badge {
+            background: var(--secondary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+
+        /* Área do usuário */
+        .user-area {
             display: flex;
             align-items: center;
             gap: 15px;
             color: white;
         }
 
-        .admin-user-avatar {
+        .user-avatar {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #64b5f6 0%, #2196f3 100%);
+            background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
+            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.2rem;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
         }
 
-        .admin-user-details {
+        .user-details {
             display: flex;
             flex-direction: column;
         }
 
-        .admin-user-name {
+        .user-name {
             font-weight: 600;
             font-size: 0.95rem;
         }
 
-        .admin-user-email {
+        .user-email {
             font-size: 0.8rem;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
-        .admin-user-status {
+        .user-status {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 5px;
+            font-size: 0.8rem;
         }
 
         .status-dot {
@@ -154,150 +173,36 @@
             box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
         }
 
-        .user-role-badge {
-            background: rgba(100, 181, 246, 0.2);
-            color: #64b5f6;
-            padding: 3px 10px;
+        .user-role {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 3px 8px;
             border-radius: 15px;
             font-size: 0.75rem;
             font-weight: 600;
-            border: 1px solid rgba(100, 181, 246, 0.3);
         }
 
-        .admin-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .admin-actions .btn-outline {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .admin-actions .btn-outline:hover {
-            background: white;
-            color: #283593;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
-        }
-
-        .admin-actions .btn-danger {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-        }
-
-        .admin-actions .btn-danger:hover {
-            background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
-        }
-
-        /* ============================
-           MENU HORIZONTAL
-           ============================ */
-        .admin-menu-horizontal {
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 0 40px;
-            display: flex;
-            gap: 2px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .admin-menu-horizontal::-webkit-scrollbar {
-            display: none;
-        }
-
-        .admin-menu-item-horizontal {
-            padding: 20px 25px;
-            color: #666;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            white-space: nowrap;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .admin-menu-item-horizontal:hover {
-            color: #283593;
-            background: #f5f7ff;
-        }
-
-        .admin-menu-item-horizontal.active {
-            color: #283593;
-            border-bottom-color: #283593;
-            background: linear-gradient(to bottom, rgba(40, 53, 147, 0.05), transparent);
-            font-weight: 600;
-        }
-
-        .admin-menu-item-horizontal i {
-            font-size: 1.1rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .menu-badge {
-            background: #ff6b6b;
-            color: white;
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 600;
-            min-width: 24px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(255, 107, 107, 0.3);
-        }
-
-        /* ============================
-           CONTEÚDO PRINCIPAL
-           ============================ */
+        /* Conteúdo principal */
         .admin-main {
-            flex: 1;
-            padding: 30px 40px;
-            background: #f8f9ff;
-            overflow-y: auto;
+            padding: 30px;
+            background: #f5f7fa;
+            min-height: calc(100vh - 140px);
         }
 
-        /* ============================
-           WELCOME CARD
-           ============================ */
-        .admin-welcome-card {
-            background: linear-gradient(135deg, #283593 0%, #3949ab 100%);
+        /* Welcome card */
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             border-radius: 15px;
             margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(40, 53, 147, 0.3);
         }
 
-        .admin-welcome-content h2 {
+        .welcome-content h2 {
             font-size: 1.8rem;
             margin-bottom: 10px;
             display: flex;
@@ -305,18 +210,7 @@
             gap: 15px;
         }
 
-        .admin-welcome-content h2 i {
-            background: rgba(255, 255, 255, 0.2);
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .admin-welcome-content p {
+        .welcome-content p {
             opacity: 0.9;
             font-size: 1rem;
             margin: 0;
@@ -333,9 +227,7 @@
             backdrop-filter: blur(10px);
         }
 
-        /* ============================
-           STATS GRID
-           ============================ */
+        /* Stats grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -345,52 +237,41 @@
 
         .stat-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 10px;
             padding: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             gap: 20px;
-            transition: all 0.3s;
-            border: 1px solid #e0e0e0;
-            position: relative;
-            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid;
         }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-        }
-
-        .stat-card.primary::before { background: linear-gradient(90deg, #283593, #3949ab); }
-        .stat-card.success::before { background: linear-gradient(90deg, #4caf50, #66bb6a); }
-        .stat-card.warning::before { background: linear-gradient(90deg, #ff9800, #ffb74d); }
-        .stat-card.danger::before { background: linear-gradient(90deg, #f44336, #ef5350); }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
+        .stat-card.users { border-left-color: #3498db; }
+        .stat-card.simulados { border-left-color: #27ae60; }
+        .stat-card.forum { border-left-color: #9b59b6; }
+        .stat-card.storage { border-left-color: #e74c3c; }
+
         .stat-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 15px;
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: white;
         }
 
-        .stat-card.primary .stat-icon { background: linear-gradient(135deg, #283593, #3949ab); }
-        .stat-card.success .stat-icon { background: linear-gradient(135deg, #4caf50, #66bb6a); }
-        .stat-card.warning .stat-icon { background: linear-gradient(135deg, #ff9800, #ffb74d); }
-        .stat-card.danger .stat-icon { background: linear-gradient(135deg, #f44336, #ef5350); }
+        .stat-card.users .stat-icon { background: #3498db; }
+        .stat-card.simulados .stat-icon { background: #27ae60; }
+        .stat-card.forum .stat-icon { background: #9b59b6; }
+        .stat-card.storage .stat-icon { background: #e74c3c; }
 
         .stat-content h3 {
             font-size: 2.2rem;
@@ -407,10 +288,8 @@
             font-weight: 500;
         }
 
-        /* ============================
-           ACTIVITY CARDS
-           ============================ */
-        .admin-dashboard-row {
+        /* Dashboard grid */
+        .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
@@ -419,15 +298,14 @@
 
         .dashboard-card {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             overflow: hidden;
-            border: 1px solid #e0e0e0;
         }
 
         .dashboard-card-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -436,7 +314,7 @@
 
         .dashboard-card-header h3 {
             margin: 0;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: #2c3e50;
             display: flex;
             align-items: center;
@@ -444,13 +322,14 @@
         }
 
         .dashboard-card-body {
-            padding: 25px;
+            padding: 20px;
         }
 
+        /* Activity list */
         .activity-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
         .activity-item {
@@ -458,23 +337,23 @@
             align-items: center;
             gap: 15px;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             transition: background 0.3s;
         }
 
         .activity-item:hover {
-            background: #f8f9ff;
+            background: #f8f9fa;
         }
 
         .activity-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
         }
 
@@ -484,26 +363,24 @@
 
         .activity-content h4 {
             margin: 0 0 5px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #2c3e50;
             font-weight: 600;
         }
 
         .activity-content p {
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #7f8c8d;
         }
 
         .activity-time {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #95a5a6;
             white-space: nowrap;
-            background: #f8f9ff;
-            padding: 5px 10px;
-            border-radius: 20px;
         }
 
+        /* Alert list */
         .alert-list {
             display: flex;
             flex-direction: column;
@@ -512,121 +389,180 @@
 
         .alert-item {
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             border-left: 4px solid;
-            background: #f8f9ff;
+            background: #f8f9fa;
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        .alert-item i {
-            font-size: 1.5rem;
-            width: 40px;
-            text-align: center;
-        }
-
         .alert-item.warning {
-            border-left-color: #ff9800;
-            background: linear-gradient(90deg, rgba(255, 152, 0, 0.05), transparent);
-        }
-
-        .alert-item.warning i {
-            color: #ff9800;
+            border-left-color: #f39c12;
+            background: #fef9e7;
         }
 
         .alert-item.danger {
-            border-left-color: #f44336;
-            background: linear-gradient(90deg, rgba(244, 67, 54, 0.05), transparent);
+            border-left-color: #e74c3c;
+            background: #fdedec;
         }
 
-        .alert-item.danger i {
-            color: #f44336;
+        .alert-item.success {
+            border-left-color: #27ae60;
+            background: #eafaf1;
         }
+
+        .alert-item i {
+            font-size: 1.3rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .alert-item.warning i { color: #f39c12; }
+        .alert-item.danger i { color: #e74c3c; }
+        .alert-item.success i { color: #27ae60; }
 
         .alert-content h4 {
             margin: 0 0 5px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #2c3e50;
         }
 
         .alert-content p {
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #7f8c8d;
         }
 
-        /* ============================
-           CHART CONTAINER
-           ============================ */
+        /* Chart container */
         .chart-container {
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 40px;
-            border: 1px solid #e0e0e0;
         }
 
         .chart-header {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .chart-header h3 {
             margin: 0;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: #2c3e50;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* ============================
-           PÁGINAS DOS SIMULADOS
-           ============================ */
-        .section-header {
+        /* Tabelas */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             background: white;
-            padding: 25px 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e0e0e0;
         }
 
-        .section-header h2 {
-            font-size: 1.8rem;
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .admin-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .admin-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-ativo { background: #d5f4e6; color: #27ae60; }
+        .status-inativo { background: #fdedec; color: #e74c3c; }
+        .status-pendente { background: #fef9e7; color: #f39c12; }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
         }
 
-        .section-header p {
-            color: #7f8c8d;
-            font-size: 1rem;
-            margin: 0;
+        .action-btn.view { background: #3498db; }
+        .action-btn.edit { background: #f39c12; }
+        .action-btn.delete { background: #e74c3c; }
+        .action-btn.download { background: #27ae60; }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
-        .admin-toolbar {
-            background: white;
-            padding: 20px 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        /* Pagination */
+        .pagination {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            border: 1px solid #e0e0e0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
         }
 
-        .toolbar-left {
+        .pagination-info {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .pagination-controls {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
             flex-wrap: wrap;
+            gap: 15px;
         }
 
         .search-box {
@@ -642,9 +578,9 @@
         }
 
         .search-box input {
-            padding: 12px 15px 12px 40px;
+            padding: 10px 15px 10px 40px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            border-radius: 8px;
             width: 300px;
             font-size: 0.95rem;
             transition: all 0.3s;
@@ -652,161 +588,157 @@
 
         .search-box input:focus {
             outline: none;
-            border-color: #283593;
-            box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
 
-        .filters {
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
             display: flex;
-            gap: 10px;
         }
 
-        .form-control {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 0.95rem;
+        .modal-content {
             background: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            min-width: 150px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .form-control:focus {
-            outline: none;
-            border-color: #283593;
-            box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .toolbar-right {
+        .modal-header h3 {
+            margin: 0;
+            color: #2c3e50;
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
         }
 
-        /* ============================
-           RESPONSIVIDADE
-           ============================ */
-        @media (max-width: 1200px) {
-            .admin-header,
-            .admin-nav-top,
-            .admin-menu-horizontal,
-            .admin-main {
-                padding: 0 30px;
-            }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #95a5a6;
+            cursor: pointer;
+            transition: color 0.3s;
         }
 
+        .close-modal:hover {
+            color: #e74c3c;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #95a5a6;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsividade */
         @media (max-width: 992px) {
-            body.admin-page {
-                padding: 10px;
-            }
-            
-            .admin-header,
-            .admin-nav-top,
-            .admin-menu-horizontal,
             .admin-main {
-                padding: 0 20px;
+                padding: 20px;
             }
             
-            .admin-welcome-card {
+            .welcome-card {
                 flex-direction: column;
-                gap: 20px;
                 text-align: center;
+                gap: 20px;
             }
             
             .search-box input {
-                width: 250px;
+                width: 100%;
             }
             
-            .admin-toolbar {
+            .toolbar {
                 flex-direction: column;
                 align-items: stretch;
-            }
-            
-            .toolbar-left,
-            .toolbar-right {
-                width: 100%;
-                justify-content: center;
             }
         }
 
         @media (max-width: 768px) {
-            .admin-header {
-                height: auto;
-                padding: 15px 20px;
+            .header-content {
                 flex-direction: column;
+                padding: 15px;
                 gap: 15px;
             }
             
-            .admin-nav-top {
+            .user-area {
                 flex-direction: column;
-                height: auto;
-                padding: 15px 20px;
-                gap: 15px;
+                text-align: center;
             }
             
-            .admin-user-info,
-            .admin-actions {
-                width: 100%;
-                justify-content: center;
+            .admin-nav ul {
+                flex-direction: column;
+                padding: 0;
+            }
+            
+            .admin-nav a {
+                text-align: left;
+                padding: 15px;
             }
             
             .stats-grid {
                 grid-template-columns: 1fr;
             }
             
-            .admin-dashboard-row {
+            .dashboard-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .search-box input {
-                width: 100%;
-            }
-            
-            .admin-menu-horizontal {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .admin-menu-item-horizontal {
-                padding: 15px;
-            }
         }
 
-        @media (max-width: 480px) {
-            .admin-header .logo h1 {
-                font-size: 1.4rem;
-            }
-            
-            .admin-menu-item-horizontal {
-                font-size: 0.85rem;
-                padding: 12px;
-            }
-            
-            .admin-menu-item-horizontal i {
-                font-size: 1rem;
-            }
-            
-            .section-header h2 {
-                font-size: 1.4rem;
-            }
-            
-            .chart-container {
-                padding: 20px;
-            }
-            
-            .stat-card {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        /* ============================
-           ANIMAÇÕES
-           ============================ */
-        .admin-section {
-            animation: fadeIn 0.4s ease-out;
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
         }
 
         @keyframes fadeIn {
@@ -819,121 +751,56 @@
                 transform: translateY(0);
             }
         }
-
-        /* ============================
-           LOADING OVERLAY
-           ============================ */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .loading-spinner {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .loading-spinner i {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #283593;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
     </style>
 </head>
-<body class="admin-page">
-    <!-- Container Principal -->
+<body class="admin-panel">
     <div class="admin-container">
         <!-- Header -->
         <header class="admin-header">
-            <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <h1>Study<span style="color: #64b5f6;">Cert</span> <span class="admin-badge">Admin</span></h1>
-            </div>
-            
-            <div class="admin-user-info">
-                <div class="admin-user-avatar" id="adminAvatar">
-                    AD
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Study<span>Cert</span> <span style="color: #64b5f6; font-size: 0.9rem;">Admin</span></h1>
                 </div>
-                <div class="admin-user-details">
-                    <div class="admin-user-name" id="adminName">Administrador</div>
-                    <div class="admin-user-email" id="adminEmail">admin@example.com</div>
-                </div>
-                <div class="admin-user-status">
-                    <span class="status-dot online"></span>
-                    <span>Online</span>
-                    <span id="userRoleBadge" class="user-role-badge">Super Admin</span>
+                
+                <div class="user-area">
+                    <div class="user-avatar" id="adminAvatar">
+                        AD
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name" id="adminName">Administrador</div>
+                        <div class="user-email" id="adminEmail">admin@studyCert.com</div>
+                    </div>
+                    <div class="user-status">
+                        <span class="status-dot"></span>
+                        <span>Online</span>
+                        <span class="user-role">Super Admin</span>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <!-- Barra de Navegação -->
-        <div class="admin-nav-top">
-            <div class="admin-menu-horizontal">
-                <a href="#dashboard" class="admin-menu-item-horizontal active" data-section="dashboard">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#simulados" class="admin-menu-item-horizontal" data-section="simulados">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Simulados</span>
-                    <span class="menu-badge" id="badgeSimulados">0</span>
-                </a>
-                <a href="#usuarios" class="admin-menu-item-horizontal" data-section="usuarios">
-                    <i class="fas fa-users"></i>
-                    <span>Usuários</span>
-                    <span class="menu-badge" id="badgeUsuarios">0</span>
-                </a>
-                <a href="#forum" class="admin-menu-item-horizontal" data-section="forum">
-                    <i class="fas fa-comments"></i>
-                    <span>Fórum</span>
-                    <span class="menu-badge" id="badgeForum">0</span>
-                </a>
-                <a href="#relatorios" class="admin-menu-item-horizontal" data-section="relatorios">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Relatórios</span>
-                </a>
-                <a href="#configuracoes" class="admin-menu-item-horizontal" data-section="configuracoes">
-                    <i class="fas fa-cog"></i>
-                    <span>Configurações</span>
-                </a>
-            </div>
-            
-            <div class="admin-actions">
-                <a href="index.html" class="btn btn-outline">
-                    <i class="fas fa-home"></i>
-                    <span>Voltar ao Site</span>
-                </a>
-                <button class="btn btn-danger" onclick="admin.logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sair</span>
-                </button>
-            </div>
-        </div>
+        <!-- Navigation -->
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="#dashboard" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#usuarios" data-section="usuarios"><i class="fas fa-users"></i> Usuários <span class="nav-badge" id="badgeUsers">0</span></a></li>
+                <li><a href="#simulados" data-section="simulados"><i class="fas fa-file-alt"></i> Simulados <span class="nav-badge" id="badgeSimulados">0</span></a></li>
+                <li><a href="#forum" data-section="forum"><i class="fas fa-comments"></i> Fórum <span class="nav-badge" id="badgeForum">0</span></a></li>
+                <li><a href="#relatorios" data-section="relatorios"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                <li><a href="#configuracoes" data-section="configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
+                <li><a href="index.html" class="btn btn-outline" style="margin: 0 10px; padding: 8px 15px;"><i class="fas fa-home"></i> Voltar ao Site</a></li>
+                <li><a href="#" onclick="logout()" class="btn btn-danger" style="margin: 0 10px; padding: 8px 15px;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+        </nav>
 
-        <!-- Conteúdo Principal -->
+        <!-- Main Content -->
         <main class="admin-main">
-            <!-- Dashboard -->
-            <section id="dashboard" class="admin-section active">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="admin-section active fade-in">
                 <!-- Welcome Card -->
-                <div class="admin-welcome-card">
-                    <div class="admin-welcome-content">
+                <div class="welcome-card">
+                    <div class="welcome-content">
                         <h2>
                             <i class="fas fa-graduation-cap"></i>
                             Bem-vindo ao Painel Admin!
@@ -948,17 +815,17 @@
 
                 <!-- Stats Grid -->
                 <div class="stats-grid">
-                    <div class="stat-card primary">
+                    <div class="stat-card users">
                         <div class="stat-icon">
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="totalUsuarios">0</h3>
+                            <h3 id="totalUsers">0</h3>
                             <p>Usuários Registrados</p>
                         </div>
                     </div>
                     
-                    <div class="stat-card success">
+                    <div class="stat-card simulados">
                         <div class="stat-icon">
                             <i class="fas fa-file-alt"></i>
                         </div>
@@ -968,7 +835,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card warning">
+                    <div class="stat-card forum">
                         <div class="stat-icon">
                             <i class="fas fa-comments"></i>
                         </div>
@@ -978,83 +845,41 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card danger">
+                    <div class="stat-card storage">
                         <div class="stat-icon">
                             <i class="fas fa-hdd"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="totalArmazenamento">0 MB</h3>
+                            <h3 id="totalStorage">0 MB</h3>
                             <p>Armazenamento Usado</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Activity and Alerts -->
-                <div class="admin-dashboard-row">
+                <div class="dashboard-grid">
                     <div class="dashboard-card">
                         <div class="dashboard-card-header">
                             <h3><i class="fas fa-chart-line"></i> Atividade Recente</h3>
-                            <button class="btn btn-sm" onclick="admin.carregarAtividadeRecente()">
+                            <button class="btn btn-sm" onclick="refreshActivity()">
                                 <i class="fas fa-sync-alt"></i>
                             </button>
                         </div>
                         <div class="dashboard-card-body">
                             <div class="activity-list" id="activityList">
-                                <div class="activity-item">
-                                    <div class="activity-icon" style="background: linear-gradient(135deg, #283593, #3949ab);">
-                                        <i class="fas fa-sign-in-alt"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <h4>Login de administrador</h4>
-                                        <p>Administrador</p>
-                                    </div>
-                                    <div class="activity-time">Agora</div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon" style="background: linear-gradient(135deg, #4caf50, #66bb6a);">
-                                        <i class="fas fa-upload"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <h4>Novo simulado publicado</h4>
-                                        <p>João Silva</p>
-                                    </div>
-                                    <div class="activity-time">2 horas atrás</div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon" style="background: linear-gradient(135deg, #ff9800, #ffb74d);">
-                                        <i class="fas fa-user-plus"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <h4>Novo usuário registrado</h4>
-                                        <p>Maria Santos</p>
-                                    </div>
-                                    <div class="activity-time">4 horas atrás</div>
-                                </div>
+                                <!-- Atividades serão carregadas aqui -->
                             </div>
                         </div>
                     </div>
 
                     <div class="dashboard-card">
                         <div class="dashboard-card-header">
-                            <h3><i class="fas fa-exclamation-triangle"></i> Requer Atenção</h3>
+                            <h3><i class="fas fa-exclamation-triangle"></i> Alertas</h3>
                             <span class="badge badge-danger" id="alertCount">0</span>
                         </div>
                         <div class="dashboard-card-body">
                             <div class="alert-list" id="alertList">
-                                <div class="alert-item warning">
-                                    <i class="fas fa-exclamation-circle"></i>
-                                    <div class="alert-content">
-                                        <h4>Backup Pendente</h4>
-                                        <p>Backup semanal deve ser realizado</p>
-                                    </div>
-                                </div>
-                                <div class="alert-item">
-                                    <i class="fas fa-check-circle" style="color: #4caf50;"></i>
-                                    <div class="alert-content">
-                                        <h4>Tudo Normal</h4>
-                                        <p>Todos os sistemas operacionais estão funcionando</p>
-                                    </div>
-                                </div>
+                                <!-- Alertas serão carregados aqui -->
                             </div>
                         </div>
                     </div>
@@ -1071,276 +896,843 @@
                 </div>
             </section>
 
-            <!-- Gerenciar Simulados -->
-            <section id="simulados" class="admin-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-file-alt"></i> Gerenciar Simulados</h2>
-                    <p>Gerencie todos os simulados do sistema</p>
-                </div>
-
-                <div class="admin-toolbar">
-                    <div class="toolbar-left">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="searchSimulados" placeholder="Buscar simulados...">
-                        </div>
-                        <div class="filters">
-                            <select id="filterStatus" class="form-control">
-                                <option value="all">Todos os status</option>
-                                <option value="ativo">Ativos</option>
-                                <option value="inativo">Inativos</option>
-                                <option value="pendente">Pendentes</option>
-                            </select>
-                            <select id="filterCategoria" class="form-control">
-                                <option value="all">Todas categorias</option>
-                                <option value="ITIL">ITIL</option>
-                                <option value="Azure">Azure</option>
-                                <option value="AWS">AWS</option>
-                                <option value="Security">Security+</option>
-                                <option value="Linux">Linux</option>
-                                <option value="CCNA">CCNA</option>
-                            </select>
-                        </div>
+            <!-- Usuários Section -->
+            <section id="usuarios" class="admin-section">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchUsers" placeholder="Buscar usuários...">
                     </div>
-                    <div class="toolbar-right">
-                        <button class="btn btn-primary" onclick="admin.carregarSimulados()">
+                    <div>
+                        <button class="btn btn-primary" onclick="loadUsers()">
                             <i class="fas fa-sync-alt"></i> Atualizar
                         </button>
-                        <button class="btn btn-success" onclick="admin.importarSimulado()">
-                            <i class="fas fa-file-import"></i> Importar
-                        </button>
-                        <button class="btn btn-danger" id="btnExcluirMultiplos" onclick="admin.excluirMultiplosSimulados()" disabled>
-                            <i class="fas fa-trash"></i> Excluir Selecionados
+                        <button class="btn btn-success" onclick="showAddUserModal()">
+                            <i class="fas fa-user-plus"></i> Novo Usuário
                         </button>
                     </div>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="admin-table" id="simuladosTable">
+                    <table class="admin-table">
                         <thead>
                             <tr>
-                                <th width="30">
-                                    <input type="checkbox" id="selectAllSimulados">
-                                </th>
+                                <th>ID</th>
                                 <th>Nome</th>
-                                <th>Categoria</th>
-                                <th>Usuário</th>
-                                <th>Data</th>
-                                <th>Tamanho</th>
+                                <th>Email</th>
+                                <th>Cadastro</th>
                                 <th>Status</th>
-                                <th>Visualizações</th>
+                                <th>Último Login</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="simuladosTableBody">
-                            <tr>
-                                <td colspan="9" class="text-center">
-                                    <div class="loading-data">
-                                        <i class="fas fa-spinner fa-spin"></i>
-                                        <p>Carregando simulados...</p>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody id="usersTable">
+                            <!-- Usuários serão carregados aqui -->
                         </tbody>
                     </table>
                 </div>
 
-                <div class="admin-pagination">
+                <div class="pagination">
                     <div class="pagination-info">
-                        Mostrando <span id="simuladosShowing">0</span> de <span id="simuladosTotal">0</span> simulados
+                        Mostrando <span id="usersShowing">0</span> de <span id="usersTotal">0</span> usuários
                     </div>
                     <div class="pagination-controls">
-                        <button class="btn btn-outline" onclick="admin.paginaAnterior()" id="btnPrev">
+                        <button class="btn btn-outline" onclick="prevPage('users')">
                             <i class="fas fa-chevron-left"></i> Anterior
                         </button>
-                        <span id="paginationInfo">Página 1 de 1</span>
-                        <button class="btn btn-outline" onclick="admin.proximaPagina()" id="btnNext">
+                        <span id="usersPageInfo">Página 1 de 1</span>
+                        <button class="btn btn-outline" onclick="nextPage('users')">
                             Próxima <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 </div>
             </section>
 
-            <!-- Modal de Detalhes do Simulado -->
-            <div id="modalDetalhesSimulado" class="admin-modal">
-                <div class="modal-container">
-                    <div class="modal-header">
-                        <h3><i class="fas fa-info-circle"></i> Detalhes do Simulado</h3>
-                        <button class="fechar-modal" onclick="admin.fecharModalDetalhes()">&times;</button>
+            <!-- Simulados Section -->
+            <section id="simulados" class="admin-section">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchSimulados" placeholder="Buscar simulados...">
                     </div>
-                    <div class="modal-body" id="detalhesSimuladoContent">
-                        <div class="loading-data">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <p>Carregando detalhes...</p>
+                    <div>
+                        <button class="btn btn-primary" onclick="loadSimulados()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                        <button class="btn btn-success" onclick="showAddSimuladoModal()">
+                            <i class="fas fa-plus"></i> Novo Simulado
+                        </button>
+                        <button class="btn btn-warning" onclick="showImportModal()">
+                            <i class="fas fa-file-import"></i> Importar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Questões</th>
+                                <th>Status</th>
+                                <th>Downloads</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="simuladosTable">
+                            <!-- Simulados serão carregados aqui -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-info">
+                        Mostrando <span id="simuladosShowing">0</span> de <span id="simuladosTotal">0</span> simulados
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="btn btn-outline" onclick="prevPage('simulados')">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </button>
+                        <span id="simuladosPageInfo">Página 1 de 1</span>
+                        <button class="btn btn-outline" onclick="nextPage('simulados')">
+                            Próxima <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fórum Section -->
+            <section id="forum" class="admin-section">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchForum" placeholder="Buscar posts...">
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="loadForumPosts()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                        <button class="btn btn-danger" onclick="cleanForum()">
+                            <i class="fas fa-trash"></i> Limpar Spam
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Categoria</th>
+                                <th>Respostas</th>
+                                <th>Visualizações</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="forumTable">
+                            <!-- Posts do fórum serão carregados aqui -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-info">
+                        Mostrando <span id="forumShowing">0</span> de <span id="forumTotal">0</span> posts
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="btn btn-outline" onclick="prevPage('forum')">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </button>
+                        <span id="forumPageInfo">Página 1 de 1</span>
+                        <button class="btn btn-outline" onclick="nextPage('forum')">
+                            Próxima <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Relatórios Section -->
+            <section id="relatorios" class="admin-section">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h3><i class="fas fa-chart-pie"></i> Relatório de Acesso</h3>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <canvas id="accessChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h3><i class="fas fa-download"></i> Downloads por Categoria</h3>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <canvas id="downloadsChart"></canvas>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <div class="dashboard-card" style="margin-top: 30px;">
+                    <div class="dashboard-card-header">
+                        <h3><i class="fas fa-history"></i> Logs do Sistema</h3>
+                        <button class="btn btn-sm" onclick="exportLogs()">
+                            <i class="fas fa-download"></i> Exportar
+                        </button>
+                    </div>
+                    <div class="dashboard-card-body">
+                        <div class="activity-list" id="systemLogs">
+                            <!-- Logs do sistema serão carregados aqui -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configurações Section -->
+            <section id="configuracoes" class="admin-section">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h3><i class="fas fa-cog"></i> Configurações Gerais</h3>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <form id="settingsForm">
+                                <div style="margin-bottom: 20px;">
+                                    <label>Nome do Site:</label>
+                                    <input type="text" class="form-control" value="StudyCert" style="width: 100%; margin-top: 5px;">
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <label>Email de Contato:</label>
+                                    <input type="email" class="form-control" value="contato@studyCert.com" style="width: 100%; margin-top: 5px;">
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <label>Manutenção:</label>
+                                    <div style="margin-top: 5px;">
+                                        <input type="checkbox" id="maintenanceMode">
+                                        <label for="maintenanceMode">Modo Manutenção</label>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <label>Limite de Upload (MB):</label>
+                                    <input type="number" class="form-control" value="10" style="width: 100%; margin-top: 5px;">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success">Salvar Configurações</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h3><i class="fas fa-shield-alt"></i> Segurança</h3>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <div style="margin-bottom: 15px;">
+                                <button class="btn btn-warning" onclick="backupDatabase()">
+                                    <i class="fas fa-database"></i> Backup do Banco
+                                </button>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <button class="btn btn-info" onclick="clearCache()">
+                                    <i class="fas fa-broom"></i> Limpar Cache
+                                </button>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <button class="btn btn-danger" onclick="resetSystem()">
+                                    <i class="fas fa-redo"></i> Resetar Estatísticas
+                                </button>
+                            </div>
+                            
+                            <div>
+                                <label>Logs de Auditoria:</label>
+                                <div style="margin-top: 10px;">
+                                    <button class="btn btn-sm" onclick="viewAuditLogs()">
+                                        <i class="fas fa-eye"></i> Ver Logs
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="clearAuditLogs()">
+                                        <i class="fas fa-trash"></i> Limpar Logs
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Carregando...</p>
+    <!-- Modal Adicionar Usuário -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Adicionar Novo Usuário</h3>
+                <button class="close-modal" onclick="closeModal('addUserModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div style="margin-bottom: 15px;">
+                        <label>Nome Completo:</label>
+                        <input type="text" id="newUserName" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label>Email:</label>
+                        <input type="email" id="newUserEmail" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label>Senha:</label>
+                        <input type="password" id="newUserPassword" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label>Tipo de Usuário:</label>
+                        <select id="newUserRole" style="width: 100%; padding: 8px; margin-top: 5px;">
+                            <option value="user">Usuário</option>
+                            <option value="moderator">Moderador</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('addUserModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveUser()">Salvar Usuário</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Simulado -->
+    <div id="addSimuladoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> Adicionar Novo Simulado</h3>
+                <button class="close-modal" onclick="closeModal('addSimuladoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addSimuladoForm">
+                    <div style="margin-bottom: 15px;">
+                        <label>Nome do Simulado:</label>
+                        <input type="text" id="simuladoName" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label>Categoria:</label>
+                        <select id="simuladoCategory" style="width: 100%; padding: 8px; margin-top: 5px;">
+                            <option value="ITIL">ITIL</option>
+                            <option value="Azure">Azure</option>
+                            <option value="AWS">AWS</option>
+                            <option value="Security+">Security+</option>
+                            <option value="Linux">Linux</option>
+                            <option value="CCNA">CCNA</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label>Número de Questões:</label>
+                        <input type="number" id="simuladoQuestions" min="1" value="10" style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label>Arquivo HTML:</label>
+                        <input type="file" id="simuladoFile" accept=".html" style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('addSimuladoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveSimulado()">Salvar Simulado</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Importar -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-import"></i> Importar Dados</h3>
+                <button class="close-modal" onclick="closeModal('importModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #3498db; margin-bottom: 20px;"></i>
+                    <h4>Importar Arquivo CSV</h4>
+                    <p>Faça upload de um arquivo CSV com os dados que deseja importar</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <input type="file" id="importFile" accept=".csv" style="width: 100%; padding: 10px;">
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <select id="importType" style="width: 100%; padding: 8px;">
+                            <option value="users">Usuários</option>
+                            <option value="simulados">Simulados</option>
+                            <option value="forum">Posts do Fórum</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('importModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="importData()">Importar</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Script para controlar a navegação
+        // Dados de exemplo para demonstração
+        const demoData = {
+            users: [
+                { id: 1, name: "João Silva", email: "joao@email.com", date: "2024-01-15", status: "ativo", lastLogin: "Hoje" },
+                { id: 2, name: "Maria Santos", email: "maria@email.com", date: "2024-01-10", status: "ativo", lastLogin: "2 dias atrás" },
+                { id: 3, name: "Carlos Oliveira", email: "carlos@email.com", date: "2024-01-05", status: "inativo", lastLogin: "1 semana atrás" },
+                { id: 4, name: "Ana Pereira", email: "ana@email.com", date: "2024-01-01", status: "ativo", lastLogin: "Ontem" },
+                { id: 5, name: "Pedro Costa", email: "pedro@email.com", date: "2023-12-28", status: "pendente", lastLogin: "Nunca" }
+            ],
+            
+            simulados: [
+                { id: 1, name: "ITIL 4 Foundation", category: "ITIL", questions: 40, status: "ativo", downloads: 124, date: "2024-01-10" },
+                { id: 2, name: "Azure Fundamentals", category: "Azure", questions: 35, status: "ativo", downloads: 89, date: "2024-01-08" },
+                { id: 3, name: "Security+ SY0-601", category: "Security+", questions: 45, status: "ativo", downloads: 156, date: "2024-01-05" },
+                { id: 4, name: "LPIC-1", category: "Linux", questions: 60, status: "ativo", downloads: 78, date: "2024-01-02" },
+                { id: 5, name: "CCNA 200-301", category: "CCNA", questions: 55, status: "pendente", downloads: 0, date: "2024-01-15" }
+            ],
+            
+            forumPosts: [
+                { id: 1, title: "Dúvida sobre LPIC-1", author: "João Silva", category: "Linux", replies: 7, views: 42, date: "2024-01-14", status: "ativo" },
+                { id: 2, title: "Material para ITIL 4", author: "Maria Santos", category: "ITIL", replies: 12, views: 87, date: "2024-01-12", status: "ativo" },
+                { id: 3, title: "Experiência com Security+", author: "Carlos Oliveira", category: "Security+", replies: 23, views: 156, date: "2024-01-10", status: "ativo" },
+                { id: 4, title: "SPAM: Ganhe dinheiro rápido", author: "Spammer", category: "Geral", replies: 0, views: 3, date: "2024-01-15", status: "spam" }
+            ],
+            
+            activities: [
+                { icon: "fa-sign-in-alt", color: "#3498db", title: "Login de administrador", user: "Admin", time: "Agora" },
+                { icon: "fa-upload", color: "#27ae60", title: "Novo simulado publicado", user: "João Silva", time: "2 horas atrás" },
+                { icon: "fa-user-plus", color: "#9b59b6", title: "Novo usuário registrado", user: "Maria Santos", time: "4 horas atrás" },
+                { icon: "fa-comment", color: "#f39c12", title: "Novo post no fórum", user: "Carlos Santos", time: "1 dia atrás" }
+            ],
+            
+            alerts: [
+                { type: "warning", icon: "fa-exclamation-circle", title: "Backup Pendente", message: "Backup semanal deve ser realizado" },
+                { type: "success", icon: "fa-check-circle", title: "Tudo Normal", message: "Todos os sistemas operacionais estão funcionando" },
+                { type: "danger", icon: "fa-server", title: "Alta Carga", message: "Servidor com 85% de utilização" }
+            ]
+        };
+
+        // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar navegação entre seções
-            document.querySelectorAll('.admin-menu-item-horizontal').forEach(item => {
-                item.addEventListener('click', function(e) {
+            // Navegação entre seções
+            document.querySelectorAll('.admin-nav a[data-section]').forEach(link => {
+                link.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    // Remover active de todos
-                    document.querySelectorAll('.admin-menu-item-horizontal').forEach(i => i.classList.remove('active'));
+                    // Remove active de todos
+                    document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
                     document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
                     
-                    // Adicionar active ao clicado
+                    // Adiciona active ao clicado
                     this.classList.add('active');
                     const sectionId = this.getAttribute('data-section');
                     const section = document.getElementById(sectionId);
                     if (section) {
                         section.classList.add('active');
+                        section.classList.add('fade-in');
+                        
+                        // Carrega dados da seção
+                        loadSectionData(sectionId);
                     }
                 });
             });
             
-            // Carregar dados iniciais
-            setTimeout(() => {
-                // Preencher estatísticas
-                document.getElementById('totalUsuarios').textContent = '42';
-                document.getElementById('totalSimulados').textContent = '18';
-                document.getElementById('totalPosts').textContent = '56';
-                document.getElementById('totalArmazenamento').textContent = '156 MB';
-                
-                // Atualizar badges
-                document.getElementById('badgeSimulados').textContent = '18';
-                document.getElementById('badgeUsuarios').textContent = '42';
-                document.getElementById('badgeForum').textContent = '56';
-                
-                // Atualizar alert count
-                document.getElementById('alertCount').textContent = '1';
-            }, 1000);
+            // Carregar dashboard inicial
+            loadDashboardData();
             
-            // Inicializar Chart.js se disponível
-            if (typeof Chart !== 'undefined') {
-                const ctx = document.getElementById('monthlyChart');
-                if (ctx) {
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                            datasets: [{
-                                label: 'Usuários',
-                                data: [65, 59, 80, 81, 56, 55, 40, 45, 70, 85, 90, 95],
-                                borderColor: '#283593',
-                                backgroundColor: 'rgba(40, 53, 147, 0.1)',
-                                tension: 0.4,
-                                fill: true,
-                                borderWidth: 3
-                            }, {
-                                label: 'Simulados',
-                                data: [28, 48, 40, 19, 86, 27, 90, 35, 50, 65, 75, 85],
-                                borderColor: '#4caf50',
-                                backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                                tension: 0.4,
-                                fill: true,
-                                borderWidth: 3
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                    labels: {
-                                        font: {
-                                            size: 14
-                                        }
-                                    }
-                                },
-                                tooltip: {
-                                    mode: 'index',
-                                    intersect: false
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: 'rgba(0, 0, 0, 0.05)'
-                                    },
-                                    ticks: {
-                                        font: {
-                                            size: 12
-                                        }
-                                    }
-                                },
-                                x: {
-                                    grid: {
-                                        color: 'rgba(0, 0, 0, 0.05)'
-                                    },
-                                    ticks: {
-                                        font: {
-                                            size: 12
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-            
-            // Simular dados de atividade
-            const activityList = document.getElementById('activityList');
-            if (activityList) {
-                // Os dados já estão no HTML inicial
-            }
+            // Inicializar gráficos
+            initCharts();
         });
-        
-        // Função logout
-        window.admin = window.admin || {};
-        window.admin.logout = function() {
+
+        // Funções principais
+        function loadSectionData(section) {
+            switch(section) {
+                case 'usuarios':
+                    loadUsers();
+                    break;
+                case 'simulados':
+                    loadSimulados();
+                    break;
+                case 'forum':
+                    loadForumPosts();
+                    break;
+                case 'relatorios':
+                    loadReports();
+                    break;
+                case 'configuracoes':
+                    loadSettings();
+                    break;
+            }
+        }
+
+        function loadDashboardData() {
+            // Atualizar estatísticas
+            document.getElementById('totalUsers').textContent = '42';
+            document.getElementById('totalSimulados').textContent = '18';
+            document.getElementById('totalPosts').textContent = '56';
+            document.getElementById('totalStorage').textContent = '156 MB';
+            
+            // Atualizar badges
+            document.getElementById('badgeUsers').textContent = '42';
+            document.getElementById('badgeSimulados').textContent = '18';
+            document.getElementById('badgeForum').textContent = '56';
+            document.getElementById('alertCount').textContent = demoData.alerts.length;
+            
+            // Carregar atividades
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = demoData.activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: ${activity.color};">
+                        <i class="fas ${activity.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${activity.title}</h4>
+                        <p>${activity.user}</p>
+                    </div>
+                    <div class="activity-time">${activity.time}</div>
+                </div>
+            `).join('');
+            
+            // Carregar alertas
+            const alertList = document.getElementById('alertList');
+            alertList.innerHTML = demoData.alerts.map(alert => `
+                <div class="alert-item ${alert.type}">
+                    <i class="fas ${alert.icon}"></i>
+                    <div class="alert-content">
+                        <h4>${alert.title}</h4>
+                        <p>${alert.message}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadUsers() {
+            const usersTable = document.getElementById('usersTable');
+            usersTable.innerHTML = demoData.users.map(user => `
+                <tr>
+                    <td>#${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.date}</td>
+                    <td><span class="status-badge status-${user.status}">${user.status}</span></td>
+                    <td>${user.lastLogin}</td>
+                    <td class="actions">
+                        <button class="action-btn view" onclick="viewUser(${user.id})"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit" onclick="editUser(${user.id})"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete" onclick="deleteUser(${user.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            updatePaginationInfo('users', demoData.users.length, 5);
+        }
+
+        function loadSimulados() {
+            const simuladosTable = document.getElementById('simuladosTable');
+            simuladosTable.innerHTML = demoData.simulados.map(simulado => `
+                <tr>
+                    <td>#${simulado.id}</td>
+                    <td>${simulado.name}</td>
+                    <td>${simulado.category}</td>
+                    <td>${simulado.questions}</td>
+                    <td><span class="status-badge status-${simulado.status}">${simulado.status}</span></td>
+                    <td>${simulado.downloads}</td>
+                    <td>${simulado.date}</td>
+                    <td class="actions">
+                        <button class="action-btn view" onclick="viewSimulado(${simulado.id})"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit" onclick="editSimulado(${simulado.id})"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn download" onclick="downloadSimulado(${simulado.id})"><i class="fas fa-download"></i></button>
+                        <button class="action-btn delete" onclick="deleteSimulado(${simulado.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            updatePaginationInfo('simulados', demoData.simulados.length, 5);
+        }
+
+        function loadForumPosts() {
+            const forumTable = document.getElementById('forumTable');
+            forumTable.innerHTML = demoData.forumPosts.map(post => `
+                <tr>
+                    <td>#${post.id}</td>
+                    <td>${post.title}</td>
+                    <td>${post.author}</td>
+                    <td>${post.category}</td>
+                    <td>${post.replies}</td>
+                    <td>${post.views}</td>
+                    <td>${post.date}</td>
+                    <td><span class="status-badge status-${post.status}">${post.status}</span></td>
+                    <td class="actions">
+                        <button class="action-btn view" onclick="viewPost(${post.id})"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit" onclick="editPost(${post.id})"><i class="fas fa-edit"></i></button>
+                        ${post.status === 'spam' ? 
+                            '<button class="action-btn delete" onclick="deletePost(' + post.id + ')"><i class="fas fa-trash"></i></button>' :
+                            '<button class="action-btn delete" onclick="reportSpam(' + post.id + ')"><i class="fas fa-flag"></i></button>'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+            
+            updatePaginationInfo('forum', demoData.forumPosts.length, 5);
+        }
+
+        function loadReports() {
+            // Carregar logs do sistema
+            const systemLogs = document.getElementById('systemLogs');
+            const logs = [
+                "2024-01-15 10:30: Backup automático realizado",
+                "2024-01-15 09:15: Usuário João Silva fez login",
+                "2024-01-14 16:45: Novo simulado adicionado",
+                "2024-01-14 14:20: Erro no upload resolvido",
+                "2024-01-13 11:10: Atualização de segurança aplicada"
+            ];
+            
+            systemLogs.innerHTML = logs.map(log => `
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: #3498db;">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${log}</h4>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadSettings() {
+            // Configurações já estão no HTML
+        }
+
+        function initCharts() {
+            // Gráfico mensal
+            const monthlyCtx = document.getElementById('monthlyChart');
+            if (monthlyCtx) {
+                new Chart(monthlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                        datasets: [{
+                            label: 'Usuários',
+                            data: [65, 59, 80, 81, 56, 55, 40, 45, 70, 85, 90, 95],
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true
+                    }
+                });
+            }
+            
+            // Gráfico de acesso
+            const accessCtx = document.getElementById('accessChart');
+            if (accessCtx) {
+                new Chart(accessCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Desktop', 'Mobile', 'Tablet'],
+                        datasets: [{
+                            data: [60, 35, 5],
+                            backgroundColor: ['#3498db', '#2ecc71', '#9b59b6']
+                        }]
+                    }
+                });
+            }
+            
+            // Gráfico de downloads
+            const downloadsCtx = document.getElementById('downloadsChart');
+            if (downloadsCtx) {
+                new Chart(downloadsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['ITIL', 'Azure', 'Security+', 'Linux', 'CCNA'],
+                        datasets: [{
+                            label: 'Downloads',
+                            data: [124, 89, 156, 78, 45],
+                            backgroundColor: '#3498db'
+                        }]
+                    }
+                });
+            }
+        }
+
+        // Funções utilitárias
+        function updatePaginationInfo(type, total, showing) {
+            document.getElementById(`${type}Showing`).textContent = showing;
+            document.getElementById(`${type}Total`).textContent = total;
+            document.getElementById(`${type}PageInfo`).textContent = `Página 1 de ${Math.ceil(total / 5)}`;
+        }
+
+        function prevPage(type) {
+            alert(`Página anterior de ${type}`);
+        }
+
+        function nextPage(type) {
+            alert(`Próxima página de ${type}`);
+        }
+
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showAddUserModal() {
+            showModal('addUserModal');
+        }
+
+        function showAddSimuladoModal() {
+            showModal('addSimuladoModal');
+        }
+
+        function showImportModal() {
+            showModal('importModal');
+        }
+
+        // Funções de ação
+        function refreshActivity() {
+            alert('Atualizando atividades...');
+        }
+
+        function saveUser() {
+            alert('Usuário salvo com sucesso!');
+            closeModal('addUserModal');
+            loadUsers();
+        }
+
+        function saveSimulado() {
+            alert('Simulado salvo com sucesso!');
+            closeModal('addSimuladoModal');
+            loadSimulados();
+        }
+
+        function importData() {
+            alert('Dados importados com sucesso!');
+            closeModal('importModal');
+        }
+
+        function viewUser(id) {
+            alert(`Visualizando usuário #${id}`);
+        }
+
+        function editUser(id) {
+            alert(`Editando usuário #${id}`);
+        }
+
+        function deleteUser(id) {
+            if (confirm('Tem certeza que deseja excluir este usuário?')) {
+                alert(`Usuário #${id} excluído!`);
+                loadUsers();
+            }
+        }
+
+        function viewSimulado(id) {
+            alert(`Visualizando simulado #${id}`);
+        }
+
+        function editSimulado(id) {
+            alert(`Editando simulado #${id}`);
+        }
+
+        function downloadSimulado(id) {
+            alert(`Baixando simulado #${id}`);
+        }
+
+        function deleteSimulado(id) {
+            if (confirm('Tem certeza que deseja excluir este simulado?')) {
+                alert(`Simulado #${id} excluído!`);
+                loadSimulados();
+            }
+        }
+
+        function viewPost(id) {
+            alert(`Visualizando post #${id}`);
+        }
+
+        function editPost(id) {
+            alert(`Editando post #${id}`);
+        }
+
+        function reportSpam(id) {
+            if (confirm('Marcar este post como spam?')) {
+                alert(`Post #${id} marcado como spam!`);
+                loadForumPosts();
+            }
+        }
+
+        function deletePost(id) {
+            if (confirm('Excluir este post permanentemente?')) {
+                alert(`Post #${id} excluído!`);
+                loadForumPosts();
+            }
+        }
+
+        function cleanForum() {
+            if (confirm('Limpar todos os posts marcados como spam?')) {
+                alert('Fórum limpo com sucesso!');
+                loadForumPosts();
+            }
+        }
+
+        function backupDatabase() {
+            alert('Backup do banco de dados realizado com sucesso!');
+        }
+
+        function clearCache() {
+            alert('Cache limpo com sucesso!');
+        }
+
+        function resetSystem() {
+            if (confirm('Resetar todas as estatísticas do sistema?')) {
+                alert('Estatísticas resetadas!');
+                loadDashboardData();
+            }
+        }
+
+        function viewAuditLogs() {
+            alert('Abrindo logs de auditoria...');
+        }
+
+        function clearAuditLogs() {
+            if (confirm('Limpar todos os logs de auditoria?')) {
+                alert('Logs de auditoria limpos!');
+            }
+        }
+
+        function exportLogs() {
+            alert('Exportando logs...');
+        }
+
+        function logout() {
             if (confirm('Deseja realmente sair do painel administrativo?')) {
-                // Redirecionar para a página inicial
                 window.location.href = 'index.html';
             }
-        };
-        
-        // Funções placeholder
-        window.admin.carregarAtividadeRecente = function() {
-            alert('Atualizando atividades...');
-        };
-        
-        window.admin.carregarSimulados = function() {
-            alert('Carregando simulados...');
-        };
-        
-        window.admin.importarSimulado = function() {
-            alert('Abrindo modal de importação...');
-        };
-        
-        window.admin.excluirMultiplosSimulados = function() {
-            alert('Excluindo simulados selecionados...');
-        };
-        
-        window.admin.paginaAnterior = function() {
-            alert('Página anterior...');
-        };
-        
-        window.admin.proximaPagina = function() {
-            alert('Próxima página...');
-        };
-        
-        window.admin.fecharModalDetalhes = function() {
-            document.getElementById('modalDetalhesSimulado').style.display = 'none';
-        };
+        }
     </script>
 </body>
 </html>
