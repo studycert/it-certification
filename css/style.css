@@ -1775,4 +1775,71 @@ footer {
         font-size: 0.75rem;
     }
 }
+/* ============================
+   BOTÃO ADMIN NO HEADER
+   ============================ */
+.admin-link-container {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+}
 
+.btn-admin-header {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(243, 156, 18, 0.3);
+    white-space: nowrap;
+    height: 32px;
+}
+
+.btn-admin-header:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(243, 156, 18, 0.4);
+}
+
+.btn-admin-header i {
+    font-size: 0.9rem;
+}
+
+.admin-text {
+    font-size: 0.8rem;
+}
+
+/* Responsividade para o botão admin */
+@media (max-width: 768px) {
+    .admin-text {
+        display: none; /* Esconde o texto "Admin" em telas pequenas */
+    }
+    
+    .btn-admin-header {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .btn-admin-header i {
+        margin: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-link-container {
+        margin-left: 4px;
+    }
+    
+    .btn-admin-header {
+        padding: 5px 6px;
+        min-width: 32px;
+    }
+}
