@@ -200,43 +200,45 @@ class StudyCertApp {
         }
     }
 
-    updateAuthUI() {
-        const authButtons = document.getElementById('authButtons');
-        const uploadArea = document.getElementById('uploadArea');
+   updateAuthUI() {
+    const authButtons = document.getElementById('authButtons');
+    const uploadArea = document.getElementById('uploadArea');
+    
+    if (this.currentUser) {
+        const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
+        const initials = displayName.substring(0, 2).toUpperCase();
         
-        if (this.currentUser) {
-            const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
-            const initials = displayName.substring(0, 2).toUpperCase();
-            
-            // Verificar se é admin
-            const isAdmin = localStorage.getItem('admin_role') || 
-                           this.currentUser.email === 'andre.martins05@gmail.com' ||
-                           this.currentUser.email === 'admin@example.com';
-            
-            authButtons.innerHTML = `
-                <div class="user-info">
-                    <div class="user-avatar">${initials}</div>
-                    <span>${displayName}</span>
-                    ${isAdmin ? 
-                        `<a href="admin.html" class="btn btn-primary" style="margin-left: 10px;">
-                            <i class="fas fa-cog"></i> Painel Admin
-                        </a>` : 
-                        ''
-                    }
-                    <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
-                </div>
-            `;
-            
-            if (uploadArea) uploadArea.style.display = 'block';
-        } else {
-            authButtons.innerHTML = `
-                <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
-                <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
-            `;
-            
-            if (uploadArea) uploadArea.style.display = 'none';
-        }
+        // Verificar se é admin
+        const isAdmin = localStorage.getItem('admin_role') || 
+                       this.currentUser.email === 'andre.martins05@gmail.com' ||
+                       this.currentUser.email === 'admin@example.com';
+        
+        authButtons.innerHTML = `
+            <div class="user-info">
+                <div class="user-avatar">${initials}</div>
+                <span>${displayName}</span>
+                ${isAdmin ? 
+                    `<div class="admin-link-container">
+                        <a href="admin.html" class="btn-admin-icon" title="Painel Administrativo">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    </div>` : 
+                    ''
+                }
+                <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
+            </div>
+        `;
+        
+        if (uploadArea) uploadArea.style.display = 'block';
+    } else {
+        authButtons.innerHTML = `
+            <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
+            <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
+        `;
+        
+        if (uploadArea) uploadArea.style.display = 'none';
     }
+}
 
     // Função para garantir perfil do usuário
     async ensureUserProfile() {
