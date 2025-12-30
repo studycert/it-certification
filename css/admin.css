@@ -125,7 +125,7 @@ body {
 .admin-nav .btn-outline {
     background: transparent;
     border: 2px solid white;
-    color: white;
+    color: white !important; /* ← Com !important para forçar */
 }
 
 .admin-nav .btn-outline:hover {
