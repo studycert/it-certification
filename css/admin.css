@@ -1552,3 +1552,25 @@ body {
         width: auto;
     }
 }
+/* ============================
+   CORREÇÃO PARA BOTÃO ADMIN BRANCO
+   ============================ */
+.admin-nav a.btn-outline {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.admin-nav a.btn-outline:hover,
+.admin-nav a.btn-outline:focus,
+.admin-nav a.btn-outline:active,
+.admin-nav a.btn-outline:visited {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+/* Se for um link dentro de um botão */
+.admin-nav .btn-outline,
+.admin-nav .btn-outline:link,
+.admin-nav .btn-outline:visited {
+    color: white !important;
+}
