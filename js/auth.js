@@ -1,56 +1,75 @@
-// auth.js - Sistema de autenticação global
+// auth.js - Sistema de autenticação global CORRIGIDO
 class AuthManager {
     constructor() {
         this.supabase = null;
         this.currentUser = null;
-        this.init();
+        this.isInitialized = false;
     }
 
     async init() {
-        // Configuração do Supabase (mesma do config.js)
-        const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
+        if (this.isInitialized) return;
         
-        if (typeof supabase !== 'undefined') {
-            this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                auth: {
-                    autoRefreshToken: true,
-                    persistSession: true,
-                    detectSessionInUrl: true,
-                    storage: window.localStorage,
-                    storageKey: 'studycert-auth'
-                }
-            });
-            
-            // Verificar sessão
-            await this.checkSession();
+        try {
+            // Usar a mesma configuração do config.js
+            if (typeof supabase !== 'undefined' && window.SUPABASE_CONFIG) {
+                this.supabase = supabase.createClient(
+                    window.SUPABASE_CONFIG.url,
+                    window.SUPABASE_CONFIG.anonKey,
+                    {
+                        auth: {
+                            autoRefreshToken: true,
+                            persistSession: true,
+                            detectSessionInUrl: true,
+                            storage: window.localStorage,
+                            storageKey: 'studycert-auth' // DEVE SER O MESMO DO app.js
+                        }
+                    }
+                );
+                
+                // Verificar sessão
+                await this.checkSession();
+                this.isInitialized = true;
+                
+                console.log('✅ AuthManager inicializado');
+            } else {
+                console.warn('⚠️ SUPABASE_CONFIG não encontrado, usando localStorage');
+                this.loadFromLocalStorage();
+            }
+        } catch (error) {
+            console.error('❌ Erro ao inicializar AuthManager:', error);
         }
     }
 
     async checkSession() {
         try {
+            if (!this.supabase) return;
+            
             const { data: { session } } = await this.supabase.auth.getSession();
             
             if (session) {
                 this.currentUser = session.user;
-                console.log('✅ Usuário logado (global):', this.currentUser.email);
+                console.log('✅ Sessão encontrada:', this.currentUser.email);
                 this.saveToLocalStorage();
+                this.dispatchAuthEvent('login');
             } else {
-                // Tentar carregar do localStorage
+                console.log('⚠️ Nenhuma sessão encontrada');
                 this.loadFromLocalStorage();
             }
         } catch (error) {
             console.error('❌ Erro ao verificar sessão:', error);
+            this.loadFromLocalStorage();
         }
     }
 
     saveToLocalStorage() {
         if (this.currentUser) {
-            localStorage.setItem('studycert_user', JSON.stringify({
+            const userData = {
                 id: this.currentUser.id,
                 email: this.currentUser.email,
-                name: this.currentUser.user_metadata?.full_name || this.currentUser.email
-            }));
+                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0]
+            };
+            localStorage.setItem('studycert_user', JSON.stringify(userData));
+            console.log('💾 Usuário salvo no localStorage');
         }
     }
 
@@ -73,6 +92,8 @@ class AuthManager {
 
     async login(email, password) {
         try {
+            if (!this.supabase) await this.init();
+            
             const { data, error } = await this.supabase.auth.signInWithPassword({
                 email: email.toLowerCase().trim(),
                 password: password
@@ -82,6 +103,8 @@ class AuthManager {
 
             this.currentUser = data.user;
             this.saveToLocalStorage();
+            this.dispatchAuthEvent('login');
+            
             return { success: true, user: data.user };
             
         } catch (error) {
@@ -92,9 +115,14 @@ class AuthManager {
 
     async logout() {
         try {
-            await this.supabase.auth.signOut();
+            if (this.supabase) {
+                await this.supabase.auth.signOut();
+            }
+            
             this.currentUser = null;
             localStorage.removeItem('studycert_user');
+            this.dispatchAuthEvent('logout');
+            
             return { success: true };
         } catch (error) {
             console.error('❌ Erro no logout:', error);
@@ -109,92 +137,126 @@ class AuthManager {
     getUser() {
         return this.currentUser;
     }
+
+    getSupabase() {
+        return this.supabase;
+    }
+
+    setUser(user) {
+        this.currentUser = user;
+        this.saveToLocalStorage();
+    }
+
+    clearUser() {
+        this.currentUser = null;
+        localStorage.removeItem('studycert_user');
+    }
+
+    dispatchAuthEvent(eventType) {
+        const event = new CustomEvent(`studycert-auth-${eventType}`, {
+            detail: { user: this.currentUser }
+        });
+        window.dispatchEvent(event);
+    }
 }
 
-// Instância global
-let authManager = null;
+// Criar instância global única
+const authManager = new AuthManager();
 
 // Inicializar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', async () => {
-    authManager = new AuthManager();
-    window.authManager = authManager;
+    await authManager.init();
     
-    // Aguardar inicialização
-    setTimeout(() => {
-        updateAuthUI();
-    }, 500);
+    // Expor para uso global
+    window.authManager = authManager;
+    window.studyCertAuth = authManager; // Alias para compatibilidade
+    
+    console.log('🎯 AuthManager carregado globalmente');
+    
+    // Atualizar UI se houver elementos
+    updateAuthUI();
 });
 
-// Atualizar interface com estado de autenticação
+// Função para atualizar interface (pode ser chamada por qualquer página)
 function updateAuthUI() {
     const authContainer = document.getElementById('authContainer');
-    const uploadSection = document.getElementById('uploadSection');
+    const authStatus = document.getElementById('authStatus');
     
     if (!authManager) return;
     
-    if (authManager.isAuthenticated()) {
-        const user = authManager.getUser();
-        const userName = user.user_metadata?.full_name || user.email;
-        
-        if (authContainer) {
+    const isAuthenticated = authManager.isAuthenticated();
+    
+    if (authStatus) {
+        if (isAuthenticated) {
+            const user = authManager.getUser();
+            authStatus.textContent = `Logado como: ${user.email}`;
+            authStatus.style.color = '#27ae60';
+        } else {
+            authStatus.textContent = 'Não logado';
+            authStatus.style.color = '#666';
+        }
+    }
+    
+    if (authContainer) {
+        if (isAuthenticated) {
+            const user = authManager.getUser();
+            const userName = user.user_metadata?.full_name || user.email.split('@')[0];
+            
             authContainer.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div style="background: var(--primary); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <div style="background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">
                         ${userName.substring(0, 2).toUpperCase()}
                     </div>
-                    <div>
+                    <div style="font-size: 0.9rem;">
                         <div style="font-weight: bold;">${userName}</div>
-                        <div style="font-size: 0.8rem; color: #666;">${user.email}</div>
+                        <div style="color: #666; font-size: 0.8rem;">${user.email}</div>
                     </div>
-                    <button onclick="logout()" class="btn btn-outline" style="margin-left: 1rem;">
-                        <i class="fas fa-sign-out-alt"></i> Sair
+                    <button onclick="logoutGlobal()" class="btn btn-outline btn-sm" style="margin-left: 0.5rem;">
+                        <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
             `;
-        }
-        
-        if (uploadSection) {
-            uploadSection.style.display = 'block';
-        }
-    } else {
-        if (authContainer) {
+        } else {
             authContainer.innerHTML = `
-                <div style="display: flex; gap: 1rem;">
-                    <button onclick="showLoginModal()" class="btn btn-outline">
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="showLoginModal()" class="btn btn-outline btn-sm">
                         <i class="fas fa-sign-in-alt"></i> Entrar
                     </button>
-                    <button onclick="showRegisterModal()" class="btn btn-primary">
+                    <a href="index.html#register" class="btn btn-primary btn-sm">
                         <i class="fas fa-user-plus"></i> Cadastrar
-                    </button>
+                    </a>
                 </div>
             `;
-        }
-        
-        if (uploadSection) {
-            uploadSection.style.display = 'none';
         }
     }
 }
 
 // Funções globais
-async function logout() {
+async function logoutGlobal() {
     if (authManager) {
         await authManager.logout();
         updateAuthUI();
-        window.location.reload();
+        // Recarregar a página para atualizar estado
+        setTimeout(() => window.location.reload(), 500);
     }
 }
 
 function showLoginModal() {
-    // Redirecionar para página de login ou mostrar modal
     window.location.href = 'index.html#login';
 }
 
-function showRegisterModal() {
-    window.location.href = 'index.html#register';
-}
-
-// Exportar para uso global
-window.AuthManager = AuthManager;
+// Expor funções para uso global
 window.updateAuthUI = updateAuthUI;
-window.logout = logout;
+window.logoutGlobal = logoutGlobal;
+window.showLoginModal = showLoginModal;
+
+// Adicionar listener para eventos de auth
+window.addEventListener('studycert-auth-login', () => {
+    console.log('🔔 Evento de login disparado');
+    updateAuthUI();
+});
+
+window.addEventListener('studycert-auth-logout', () => {
+    console.log('🔔 Evento de logout disparado');
+    updateAuthUI();
+});
