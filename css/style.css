@@ -1937,3 +1937,41 @@ footer {
         font-size: 0.8rem;
     }
 }
+/* Estilos para os cards de material na página inicial */
+.material-stats {
+    display: flex;
+    gap: 1rem;
+    margin: 0.8rem 0;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.material-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.material-icon {
+    background: var(--primary);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.material-card:hover .material-icon {
+    transform: scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .materials-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .stats-summary div {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
