@@ -1,38 +1,47 @@
-// auth.js - Sistema de autenticação global CORRIGIDO
+// js/auth.js - Sistema de autenticação global CORRIGIDO
 class AuthManager {
     constructor() {
         this.supabase = null;
         this.currentUser = null;
         this.isInitialized = false;
+        this.init();
     }
 
     async init() {
         if (this.isInitialized) return;
         
         try {
-            // Usar a mesma configuração do config.js
-            if (typeof supabase !== 'undefined' && window.SUPABASE_CONFIG) {
-                this.supabase = supabase.createClient(
-                    window.SUPABASE_CONFIG.url,
-                    window.SUPABASE_CONFIG.anonKey,
-                    {
-                        auth: {
-                            autoRefreshToken: true,
-                            persistSession: true,
-                            detectSessionInUrl: true,
-                            storage: window.localStorage,
-                            storageKey: 'studycert-auth' // DEVE SER O MESMO DO app.js
+            // Configuração do Supabase
+            const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
+            const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
+            
+            if (typeof supabase !== 'undefined') {
+                this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                    auth: {
+                        autoRefreshToken: true,
+                        persistSession: true,
+                        detectSessionInUrl: false,
+                        storage: window.localStorage,
+                        storageKey: 'studycert-auth'
+                    },
+                    global: {
+                        headers: {
+                            'apikey': SUPABASE_KEY
                         }
                     }
-                );
+                });
                 
-                // Verificar sessão
+                // Verificar sessão atual
                 await this.checkSession();
                 this.isInitialized = true;
                 
-                console.log('✅ AuthManager inicializado');
+                console.log('✅ AuthManager inicializado com sucesso');
+                
+                // Disparar evento de inicialização
+                window.dispatchEvent(new CustomEvent('studycert-auth-ready'));
+                
             } else {
-                console.warn('⚠️ SUPABASE_CONFIG não encontrado, usando localStorage');
+                console.warn('⚠️ Supabase não disponível, usando localStorage');
                 this.loadFromLocalStorage();
             }
         } catch (error) {
@@ -44,19 +53,24 @@ class AuthManager {
         try {
             if (!this.supabase) return;
             
-            const { data: { session } } = await this.supabase.auth.getSession();
+            const { data: { session }, error } = await this.supabase.auth.getSession();
+            
+            if (error) {
+                console.warn('⚠️ Erro ao verificar sessão:', error);
+                this.loadFromLocalStorage();
+                return;
+            }
             
             if (session) {
                 this.currentUser = session.user;
-                console.log('✅ Sessão encontrada:', this.currentUser.email);
+                console.log('✅ Sessão ativa:', this.currentUser.email);
                 this.saveToLocalStorage();
-                this.dispatchAuthEvent('login');
             } else {
-                console.log('⚠️ Nenhuma sessão encontrada');
+                console.log('⚠️ Nenhuma sessão ativa');
                 this.loadFromLocalStorage();
             }
         } catch (error) {
-            console.error('❌ Erro ao verificar sessão:', error);
+            console.error('❌ Erro na verificação de sessão:', error);
             this.loadFromLocalStorage();
         }
     }
@@ -69,7 +83,7 @@ class AuthManager {
                 name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0]
             };
             localStorage.setItem('studycert_user', JSON.stringify(userData));
-            console.log('💾 Usuário salvo no localStorage');
+            localStorage.setItem('studycert_auth', 'true');
         }
     }
 
@@ -103,7 +117,11 @@ class AuthManager {
 
             this.currentUser = data.user;
             this.saveToLocalStorage();
-            this.dispatchAuthEvent('login');
+            
+            // Disparar evento
+            window.dispatchEvent(new CustomEvent('studycert-auth-login', {
+                detail: { user: data.user }
+            }));
             
             return { success: true, user: data.user };
             
@@ -121,7 +139,10 @@ class AuthManager {
             
             this.currentUser = null;
             localStorage.removeItem('studycert_user');
-            this.dispatchAuthEvent('logout');
+            localStorage.removeItem('studycert_auth');
+            
+            // Disparar evento
+            window.dispatchEvent(new CustomEvent('studycert-auth-logout'));
             
             return { success: true };
         } catch (error) {
@@ -150,13 +171,7 @@ class AuthManager {
     clearUser() {
         this.currentUser = null;
         localStorage.removeItem('studycert_user');
-    }
-
-    dispatchAuthEvent(eventType) {
-        const event = new CustomEvent(`studycert-auth-${eventType}`, {
-            detail: { user: this.currentUser }
-        });
-        window.dispatchEvent(event);
+        localStorage.removeItem('studycert_auth');
     }
 }
 
@@ -165,98 +180,18 @@ const authManager = new AuthManager();
 
 // Inicializar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', async () => {
-    await authManager.init();
-    
     // Expor para uso global
     window.authManager = authManager;
-    window.studyCertAuth = authManager; // Alias para compatibilidade
+    window.studyCertAuth = authManager;
     
-    console.log('🎯 AuthManager carregado globalmente');
-    
-    // Atualizar UI se houver elementos
-    updateAuthUI();
+    console.log('🎯 AuthManager carregado e pronto');
 });
 
-// Função para atualizar interface (pode ser chamada por qualquer página)
-function updateAuthUI() {
-    const authContainer = document.getElementById('authContainer');
-    const authStatus = document.getElementById('authStatus');
-    
-    if (!authManager) return;
-    
-    const isAuthenticated = authManager.isAuthenticated();
-    
-    if (authStatus) {
-        if (isAuthenticated) {
-            const user = authManager.getUser();
-            authStatus.textContent = `Logado como: ${user.email}`;
-            authStatus.style.color = '#27ae60';
-        } else {
-            authStatus.textContent = 'Não logado';
-            authStatus.style.color = '#666';
-        }
-    }
-    
-    if (authContainer) {
-        if (isAuthenticated) {
-            const user = authManager.getUser();
-            const userName = user.user_metadata?.full_name || user.email.split('@')[0];
-            
-            authContainer.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <div style="background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">
-                        ${userName.substring(0, 2).toUpperCase()}
-                    </div>
-                    <div style="font-size: 0.9rem;">
-                        <div style="font-weight: bold;">${userName}</div>
-                        <div style="color: #666; font-size: 0.8rem;">${user.email}</div>
-                    </div>
-                    <button onclick="logoutGlobal()" class="btn btn-outline btn-sm" style="margin-left: 0.5rem;">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            `;
-        } else {
-            authContainer.innerHTML = `
-                <div style="display: flex; gap: 0.5rem;">
-                    <button onclick="showLoginModal()" class="btn btn-outline btn-sm">
-                        <i class="fas fa-sign-in-alt"></i> Entrar
-                    </button>
-                    <a href="index.html#register" class="btn btn-primary btn-sm">
-                        <i class="fas fa-user-plus"></i> Cadastrar
-                    </a>
-                </div>
-            `;
-        }
-    }
+// Função para verificar se está logado (para uso em outras páginas)
+function checkAuth() {
+    return authManager.isAuthenticated();
 }
 
-// Funções globais
-async function logoutGlobal() {
-    if (authManager) {
-        await authManager.logout();
-        updateAuthUI();
-        // Recarregar a página para atualizar estado
-        setTimeout(() => window.location.reload(), 500);
-    }
-}
-
-function showLoginModal() {
-    window.location.href = 'index.html#login';
-}
-
-// Expor funções para uso global
-window.updateAuthUI = updateAuthUI;
-window.logoutGlobal = logoutGlobal;
-window.showLoginModal = showLoginModal;
-
-// Adicionar listener para eventos de auth
-window.addEventListener('studycert-auth-login', () => {
-    console.log('🔔 Evento de login disparado');
-    updateAuthUI();
-});
-
-window.addEventListener('studycert-auth-logout', () => {
-    console.log('🔔 Evento de logout disparado');
-    updateAuthUI();
-});
+// Exportar para uso global
+window.checkAuth = checkAuth;
+window.logoutGlobal = () => authManager.logout();
