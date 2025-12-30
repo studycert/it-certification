@@ -201,10 +201,42 @@
         .breadcrumb-page a:hover {
             color: var(--secondary);
         }
+
+        /* Modal de upload */
+        .upload-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .upload-modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Estilos para loading */
+        .loading-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
     </style>
 </head>
 <body>
-    <!-- Header (igual ao index.html) -->
+    <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -272,7 +304,6 @@
 
         <!-- Grid de Materiais -->
         <div class="materials-grid-page" id="materialsContainer">
-            <!-- Os materiais serão carregados aqui via JavaScript -->
             <div class="loading-message">
                 <i class="fas fa-spinner fa-spin"></i> Carregando materiais...
             </div>
@@ -309,10 +340,10 @@
                 <p style="font-size: 0.9rem; color: #95a5a6;">
                     Formatos suportados: PDF, PPT, DOC, ZIP, MP4 (máx. 100MB)
                 </p>
-                <div class="btn btn-primary" style="margin-top: 1rem;" onclick="document.getElementById('fileInputPage').click()">
+                <div class="btn btn-primary" style="margin-top: 1rem;" onclick="showUploadModal()">
                     <i class="fas fa-upload"></i> Selecionar Arquivos
                 </div>
-                <input type="file" id="fileInputPage" multiple accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4" style="display: none;">
+                <input type="file" id="fileInputPage" multiple accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4,.avi,.mov,.mkv" style="display: none;">
             </div>
 
             <div id="uploadProgressPage" style="display: none; margin-top: 1rem;">
@@ -329,7 +360,7 @@
         </section>
     </main>
 
-    <!-- Footer (igual ao index.html) -->
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -352,8 +383,18 @@
         </div>
     </footer>
 
+    <!-- Modal de Upload (será inserido dinamicamente) -->
+    
     <script>
-        // Dados das certificações (pode vir de um JSON externo)
+        // Configuração do Supabase (use as mesmas credenciais do config.js)
+        const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
+        
+        let supabaseClient = null;
+        let currentUser = null;
+        let currentUploadFile = null;
+
+        // Dados das certificações
         const certifications = {
             'itil4': {
                 title: 'ITIL 4 Foundation',
@@ -399,67 +440,30 @@
             }
         };
 
-        // Dados dos materiais (em um sistema real, viria de um banco de dados)
-        const materialsData = {
-            'itil4': [
-                {
-                    id: 1,
-                    title: 'Guia Completo ITIL 4',
-                    type: 'pdf',
-                    size: '5.2 MB',
-                    views: 1200,
-                    updated: '2024-03-15',
-                    description: 'Guia completo com todos os conceitos, princípios e práticas do ITIL 4 Foundation.',
-                    file: 'itil4-guia-completo.pdf'
-                },
-                {
-                    id: 2,
-                    title: 'Apresentação ITIL 4',
-                    type: 'ppt',
-                    size: '8.7 MB',
-                    views: 890,
-                    updated: '2024-03-10',
-                    description: 'Slides com resumo visual dos principais tópicos para estudo rápido.',
-                    file: 'itil4-apresentacao.pptx'
-                },
-                {
-                    id: 3,
-                    title: 'Questões Resolvidas',
-                    type: 'doc',
-                    size: '3.1 MB',
-                    views: 1500,
-                    updated: '2024-03-05',
-                    description: '200 questões comentadas para prática antes do exame.',
-                    file: 'itil4-questoes.docx'
+        // Inicializar Supabase
+        async function initSupabase() {
+            if (typeof supabase !== 'undefined') {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                    auth: {
+                        autoRefreshToken: true,
+                        persistSession: true
+                    }
+                });
+                
+                // Verificar sessão
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) {
+                    currentUser = session.user;
+                    console.log('✅ Usuário logado:', currentUser.email);
+                } else {
+                    console.log('⚠️ Usuário não logado');
                 }
-            ],
-            'azure': [
-                {
-                    id: 1,
-                    title: 'Azure Fundamentals Guide',
-                    type: 'pdf',
-                    size: '4.5 MB',
-                    views: 980,
-                    updated: '2024-03-12',
-                    description: 'Guia completo para AZ-900: Azure Fundamentals.',
-                    file: 'azure-fundamentals.pdf'
-                }
-            ],
-            'aws': [
-                {
-                    id: 1,
-                    title: 'AWS Cloud Practitioner',
-                    type: 'pdf',
-                    size: '6.1 MB',
-                    views: 1100,
-                    updated: '2024-03-14',
-                    description: 'Material completo para certificação AWS Cloud Practitioner.',
-                    file: 'aws-cloud-practitioner.pdf'
-                }
-            ]
-        };
+            } else {
+                console.error('❌ Supabase não carregado');
+            }
+        }
 
-        // Função para obter o parâmetro da URL
+        // Função para obter parâmetro da URL
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -468,10 +472,12 @@
         }
 
         // Inicialização da página
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initSupabase();
+            
             const certId = getUrlParameter('cert') || 'itil4';
             loadCertification(certId);
-            loadMaterials(certId);
+            await loadMaterialsFromSupabase(certId);
             setupFilters();
             setupUpload();
         });
@@ -480,101 +486,140 @@
         function loadCertification(certId) {
             const cert = certifications[certId] || certifications['itil4'];
             
-            // Atualiza o breadcrumb
             document.getElementById('currentCertification').textContent = cert.title;
-            
-            // Atualiza o cabeçalho
             document.getElementById('certIcon').innerHTML = `<i class="${cert.icon}"></i>`;
             document.getElementById('certTitle').textContent = cert.title;
             document.getElementById('certLevel').textContent = `Nível: ${cert.level}`;
             document.getElementById('certDescription').textContent = cert.description;
-            
-            // Aplica a cor da certificação
             document.getElementById('certHeader').style.borderLeft = `5px solid ${cert.color}`;
         }
 
-        // Carrega os materiais
-        function loadMaterials(certId, filterType = 'all', sortBy = 'date_desc', searchTerm = '') {
-            const container = document.getElementById('materialsContainer');
-            const certMaterials = materialsData[certId] || [];
-            
-            // Aplica filtros
-            let filteredMaterials = certMaterials.filter(material => {
-                // Filtro por tipo
-                if (filterType !== 'all' && material.type !== filterType) {
-                    return false;
+        // Carrega materiais do Supabase
+        async function loadMaterialsFromSupabase(certId, filterType = 'all', sortBy = 'date_desc', searchTerm = '') {
+            try {
+                console.log('📥 Carregando materiais para:', certId);
+                
+                if (!supabaseClient) {
+                    console.error('❌ Supabase não inicializado');
+                    showNoMaterials();
+                    return;
                 }
                 
-                // Filtro por busca
-                if (searchTerm && !material.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
-                    !material.description.toLowerCase().includes(searchTerm.toLowerCase())) {
-                    return false;
+                // Construir consulta
+                let query = supabaseClient
+                    .from('materiais')
+                    .select('*')
+                    .eq('certificacao', certId)
+                    .eq('publico', true);
+                
+                // Aplicar filtro de tipo
+                if (filterType !== 'all') {
+                    query = query.eq('tipo', filterType);
                 }
                 
-                return true;
-            });
-            
-            // Ordenação
-            filteredMaterials.sort((a, b) => {
+                // Aplicar busca
+                if (searchTerm) {
+                    query = query.or(`titulo.ilike.%${searchTerm}%,descricao.ilike.%${searchTerm}%`);
+                }
+                
+                // Aplicar ordenação
                 switch(sortBy) {
                     case 'date_desc':
-                        return new Date(b.updated) - new Date(a.updated);
+                        query = query.order('data_upload', { ascending: false });
+                        break;
                     case 'date_asc':
-                        return new Date(a.updated) - new Date(b.updated);
+                        query = query.order('data_upload', { ascending: true });
+                        break;
                     case 'views_desc':
-                        return b.views - a.views;
+                        query = query.order('visualizacoes', { ascending: false });
+                        break;
                     case 'name_asc':
-                        return a.title.localeCompare(b.title);
-                    default:
-                        return 0;
+                        query = query.order('titulo', { ascending: true });
+                        break;
                 }
-            });
+                
+                // Executar consulta
+                const { data, error } = await query;
+                
+                if (error) {
+                    console.error('❌ Erro ao carregar materiais:', error);
+                    showNoMaterials('Erro ao carregar materiais.');
+                    return;
+                }
+                
+                console.log(`✅ ${data?.length || 0} materiais carregados do Supabase`);
+                updateMaterialsInterface(data || []);
+                updateStats(data || []);
+                
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                showNoMaterials('Erro na conexão com o servidor.');
+            }
+        }
+
+        // Atualiza interface com os materiais
+        function updateMaterialsInterface(materials) {
+            const container = document.getElementById('materialsContainer');
             
-            // Atualiza estatísticas
-            updateStats(filteredMaterials);
-            
-            // Renderiza os materiais
-            if (filteredMaterials.length === 0) {
-                container.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
-                        <i class="fas fa-folder-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-                        <h3>Nenhum material encontrado</h3>
-                        <p>Tente alterar os filtros ou compartilhe um material!</p>
-                    </div>
-                `;
+            if (!materials || materials.length === 0) {
+                showNoMaterials('Nenhum material encontrado.');
                 return;
             }
             
-            container.innerHTML = filteredMaterials.map(material => `
-                <div class="material-card-page">
+            container.innerHTML = materials.map(material => `
+                <div class="material-card-page" data-id="${material.id}">
                     <div class="card-header-page">
-                        <i class="fas fa-file-${material.type} ${material.type}-color file-icon-page"></i>
+                        <i class="fas fa-file-${material.tipo} ${material.tipo}-color file-icon-page"></i>
                         <div>
-                            <h3>${material.title}</h3>
-                            <small>${material.type.toUpperCase()} • ${material.size}</small>
+                            <h3>${material.titulo}</h3>
+                            <small>${material.tipo.toUpperCase()} • ${formatFileSize(material.arquivo_tamanho_kb)}</small>
                         </div>
                     </div>
                     <div class="card-body-page">
-                        <p>${material.description}</p>
+                        <p>${material.descricao || 'Material compartilhado pela comunidade.'}</p>
                         <div class="file-info-page">
-                            <span><i class="far fa-clock"></i> Atualizado: ${formatDate(material.updated)}</span>
-                            <span><i class="far fa-eye"></i> ${material.views.toLocaleString()} visualizações</span>
+                            <span><i class="far fa-clock"></i> ${formatDate(material.data_upload)}</span>
+                            <span><i class="far fa-eye"></i> ${material.visualizacoes || 0} visualizações</span>
+                            <span><i class="fas fa-download"></i> ${material.downloads || 0} downloads</span>
                         </div>
-                        <button class="btn btn-primary" onclick="downloadMaterial('${material.file}')" style="margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" style="margin-top: 1rem;">
                             <i class="fas fa-download"></i> Baixar
                         </button>
+                        ${currentUser && material.usuario_id === currentUser.id ? `
+                            <button class="btn btn-outline" onclick="deleteMaterial('${material.id}')" style="margin-top: 1rem; margin-left: 0.5rem;">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        ` : ''}
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Mostra mensagem quando não há materiais
+        function showNoMaterials(message = 'Nenhum material encontrado.') {
+            const container = document.getElementById('materialsContainer');
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                    <i class="fas fa-folder-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                    <h3>${message}</h3>
+                    <p>Seja o primeiro a compartilhar um material!</p>
+                    ${currentUser ? 
+                        `<button class="btn btn-primary" onclick="showUploadModal()">
+                            <i class="fas fa-plus"></i> Compartilhar Material
+                        </button>` : 
+                        `<p>Faça <a href="index.html#login" style="color: var(--primary);">login</a> para compartilhar materiais.</p>`
+                    }
+                </div>
+            `;
         }
 
         // Atualiza estatísticas
         function updateStats(materials) {
             const totalMaterials = materials.length;
             const totalSize = materials.reduce((sum, material) => {
-                return sum + parseFloat(material.size);
-            }, 0);
-            const totalViews = materials.reduce((sum, material) => sum + material.views, 0);
+                return sum + (material.arquivo_tamanho_kb || 0);
+            }, 0) / 1024; // Converter para MB
+            const totalViews = materials.reduce((sum, material) => sum + (material.visualizacoes || 0), 0);
             
             document.getElementById('totalMaterials').textContent = totalMaterials;
             document.getElementById('totalSize').textContent = totalSize.toFixed(1) + ' MB';
@@ -583,8 +628,26 @@
 
         // Formata data
         function formatDate(dateString) {
-            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-            return new Date(dateString).toLocaleDateString('pt-BR', options);
+            try {
+                const date = new Date(dateString);
+                const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                return date.toLocaleDateString('pt-BR', options);
+            } catch (e) {
+                return 'Data desconhecida';
+            }
+        }
+
+        // Formata tamanho do arquivo
+        function formatFileSize(kb) {
+            if (!kb) return 'Tamanho desconhecido';
+            
+            if (kb < 1024) {
+                return `${kb} KB`;
+            } else if (kb < 1024 * 1024) {
+                return `${(kb / 1024).toFixed(1)} MB`;
+            } else {
+                return `${(kb / (1024 * 1024)).toFixed(2)} GB`;
+            }
         }
 
         // Configura filtros
@@ -594,7 +657,7 @@
                 const filterType = this.value;
                 const sortBy = document.getElementById('filterSort').value;
                 const searchTerm = document.getElementById('searchMaterial').value;
-                loadMaterials(certId, filterType, sortBy, searchTerm);
+                loadMaterialsFromSupabase(certId, filterType, sortBy, searchTerm);
             });
             
             document.getElementById('filterSort').addEventListener('change', function() {
@@ -602,7 +665,7 @@
                 const filterType = document.getElementById('filterType').value;
                 const sortBy = this.value;
                 const searchTerm = document.getElementById('searchMaterial').value;
-                loadMaterials(certId, filterType, sortBy, searchTerm);
+                loadMaterialsFromSupabase(certId, filterType, sortBy, searchTerm);
             });
             
             document.getElementById('searchMaterial').addEventListener('input', function() {
@@ -610,11 +673,11 @@
                 const filterType = document.getElementById('filterType').value;
                 const sortBy = document.getElementById('filterSort').value;
                 const searchTerm = this.value;
-                loadMaterials(certId, filterType, sortBy, searchTerm);
+                loadMaterialsFromSupabase(certId, filterType, sortBy, searchTerm);
             });
         }
 
-        // Configura upload
+        // Configura área de upload
         function setupUpload() {
             const uploadArea = document.getElementById('uploadAreaPage');
             const fileInput = document.getElementById('fileInputPage');
@@ -635,448 +698,349 @@
                 e.preventDefault();
                 uploadArea.style.background = '#f8fafc';
                 uploadArea.style.borderColor = '#3498db';
-                handleFiles(e.dataTransfer.files);
+                handleFileDrop(e.dataTransfer.files);
             });
             
             fileInput.addEventListener('change', (e) => {
-                handleFiles(e.target.files);
+                handleFileSelect(e.target.files);
             });
         }
-        
-        function handleFiles(files) {
-            // Implementar upload real aqui
-            alert(`Simulação: ${files.length} arquivo(s) selecionado(s) para upload.\n\nEm um sistema real, enviaria para o servidor.`);
-        }
-        
-        function downloadMaterial(fileName) {
-            alert(`Simulação: Download do arquivo ${fileName}\n\nEm um sistema real, baixaria do servidor.`);
-        }
-        // Configuração do Supabase
-    const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
-    
-    let supabaseClient = null;
-    let currentUser = null;
 
-    // Inicializar Supabase
-    async function initSupabase() {
-        if (typeof supabase !== 'undefined') {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            
-            // Verificar sessão
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                console.log('Usuário logado:', currentUser.email);
-            }
-        }
-    }
-
-    // Função para carregar materiais do Supabase
-    async function loadMaterialsFromSupabase(certId, filterType = 'all', sortBy = 'date_desc', searchTerm = '') {
-        try {
-            console.log('📥 Carregando materiais para:', certId);
-            
-            // Construir consulta
-            let query = supabaseClient
-                .from('materiais')
-                .select('*')
-                .eq('certificacao', certId)
-                .eq('publico', true);
-            
-            // Aplicar filtro de tipo
-            if (filterType !== 'all') {
-                query = query.eq('tipo', filterType);
-            }
-            
-            // Aplicar busca
-            if (searchTerm) {
-                query = query.or(`titulo.ilike.%${searchTerm}%,descricao.ilike.%${searchTerm}%`);
-            }
-            
-            // Aplicar ordenação
-            switch(sortBy) {
-                case 'date_desc':
-                    query = query.order('data_upload', { ascending: false });
-                    break;
-                case 'date_asc':
-                    query = query.order('data_upload', { ascending: true });
-                    break;
-                case 'views_desc':
-                    query = query.order('visualizacoes', { ascending: false });
-                    break;
-                case 'name_asc':
-                    query = query.order('titulo', { ascending: true });
-                    break;
-            }
-            
-            // Executar consulta
-            const { data, error } = await query;
-            
-            if (error) {
-                console.error('❌ Erro ao carregar materiais:', error);
-                // Usar dados locais como fallback
-                const localData = materialsData[certId] || [];
-                loadMaterialsLocal(certId, localData, filterType, sortBy, searchTerm);
-                return;
-            }
-            
-            console.log(`✅ ${data.length} materiais carregados do Supabase`);
-            
-            // Atualizar interface
-            updateMaterialsInterface(data);
-            updateStats(data);
-            
-        } catch (error) {
-            console.error('❌ Erro:', error);
-            // Fallback para dados locais
-            const localData = materialsData[certId] || [];
-            loadMaterialsLocal(certId, localData, filterType, sortBy, searchTerm);
-        }
-    }
-
-    // Função para atualizar interface com dados do Supabase
-    function updateMaterialsInterface(materials) {
-        const container = document.getElementById('materialsContainer');
-        
-        if (!materials || materials.length === 0) {
-            container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
-                    <i class="fas fa-folder-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-                    <h3>Nenhum material encontrado</h3>
-                    <p>Seja o primeiro a compartilhar um material!</p>
-                    ${currentUser ? 
-                        `<button class="btn btn-primary" onclick="showUploadModal()">
-                            <i class="fas fa-plus"></i> Compartilhar Material
-                        </button>` : 
-                        `<p>Faça login para compartilhar materiais.</p>`
-                    }
-                </div>
-            `;
-            return;
-        }
-        
-        container.innerHTML = materials.map(material => `
-            <div class="material-card-page" data-id="${material.id}">
-                <div class="card-header-page">
-                    <i class="fas fa-file-${material.tipo} ${material.tipo}-color file-icon-page"></i>
-                    <div>
-                        <h3>${material.titulo}</h3>
-                        <small>${material.tipo.toUpperCase()} • ${formatFileSize(material.arquivo_tamanho_kb)}</small>
-                    </div>
-                </div>
-                <div class="card-body-page">
-                    <p>${material.descricao || 'Material compartilhado pela comunidade.'}</p>
-                    <div class="file-info-page">
-                        <span><i class="far fa-clock"></i> ${formatDate(material.data_upload)}</span>
-                        <span><i class="far fa-eye"></i> ${material.visualizacoes || 0} visualizações</span>
-                        <span><i class="fas fa-download"></i> ${material.downloads || 0} downloads</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" style="margin-top: 1rem;">
-                        <i class="fas fa-download"></i> Baixar
-                    </button>
-                    ${material.usuario_id === currentUser?.id ? `
-                        <button class="btn btn-outline" onclick="editMaterial('${material.id}')" style="margin-top: 1rem; margin-left: 0.5rem;">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                    ` : ''}
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Função para fazer upload de material
-    async function uploadMaterial(file, title, description, certId, type) {
-        try {
+        // Mostra modal de upload
+        function showUploadModal() {
             if (!currentUser) {
                 alert('Faça login para compartilhar materiais.');
                 window.location.href = 'index.html#login';
                 return;
             }
             
-            // 1. Upload para Storage
-            const fileName = `material_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-            const filePath = `${certId}/${currentUser.id}/${fileName}`;
-            
-            console.log('📤 Upload para:', filePath);
-            
-            const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                .from('materiais')
-                .upload(filePath, file);
-            
-            if (uploadError) {
-                console.error('❌ Erro no upload:', uploadError);
-                throw new Error(`Falha no upload: ${uploadError.message}`);
-            }
-            
-            console.log('✅ Upload bem-sucedido');
-            
-            // 2. Obter URL pública
-            const { data: urlData } = supabaseClient.storage
-                .from('materiais')
-                .getPublicUrl(filePath);
-            
-            // 3. Salvar metadados no banco
-            const materialData = {
-                titulo: title,
-                descricao: description,
-                tipo: type,
-                certificacao: certId,
-                arquivo_url: urlData.publicUrl,
-                arquivo_nome: file.name,
-                arquivo_tamanho_kb: Math.round(file.size / 1024),
-                usuario_id: currentUser.id,
-                visualizacoes: 0,
-                downloads: 0,
-                publico: true
-            };
-            
-            const { data: dbData, error: dbError } = await supabaseClient
-                .from('materiais')
-                .insert([materialData])
-                .select()
-                .single();
-            
-            if (dbError) {
-                console.error('❌ Erro ao salvar no banco:', dbError);
-                
-                // Tentar remover o arquivo do storage em caso de erro
-                try {
-                    await supabaseClient.storage
-                        .from('materiais')
-                        .remove([filePath]);
-                } catch (cleanupError) {
-                    console.warn('⚠️ Não foi possível limpar o arquivo:', cleanupError);
-                }
-                
-                throw new Error(`Erro ao salvar informações: ${dbError.message}`);
-            }
-            
-            console.log('✅ Material salvo no banco:', dbData);
-            
-            return {
-                success: true,
-                message: 'Material compartilhado com sucesso!',
-                data: dbData
-            };
-            
-        } catch (error) {
-            console.error('❌ Erro no processo de upload:', error);
-            return {
-                success: false,
-                message: error.message
-            };
+            document.getElementById('fileInputPage').click();
         }
-    }
 
-    // Função para baixar material
-    async function downloadMaterial(materialId, fileUrl, fileName) {
-        try {
-            // Registrar download no banco
-            await supabaseClient
-                .from('materiais')
-                .update({ 
-                    downloads: supabaseClient.raw('downloads + 1')
-                })
-                .eq('id', materialId);
+        // Processa arquivos selecionados
+        function handleFileSelect(files) {
+            if (files.length === 0) return;
             
-            // Baixar arquivo
-            const link = document.createElement('a');
-            link.href = fileUrl;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const file = files[0];
+            currentUploadFile = file;
+            showUploadForm(file);
+        }
+
+        // Processa arquivos arrastados
+        function handleFileDrop(files) {
+            if (files.length === 0) return;
             
-            console.log('✅ Download iniciado:', fileName);
+            const file = files[0];
+            currentUploadFile = file;
+            showUploadForm(file);
+        }
+
+        // Mostra formulário de upload
+        function showUploadForm(file) {
+            const fileType = detectFileType(file.name);
+            const certId = getUrlParameter('cert') || 'itil4';
             
-        } catch (error) {
-            console.error('❌ Erro ao baixar:', error);
-            // Fallback: baixar diretamente
-            window.open(fileUrl, '_blank');
-        }
-    }
-
-    // Função para formatar tamanho do arquivo
-    function formatFileSize(kb) {
-        if (!kb) return 'Tamanho desconhecido';
-        
-        if (kb < 1024) {
-            return `${kb} KB`;
-        } else if (kb < 1024 * 1024) {
-            return `${(kb / 1024).toFixed(1)} MB`;
-        } else {
-            return `${(kb / (1024 * 1024)).toFixed(2)} GB`;
-        }
-    }
-
-    // Atualize a função loadMaterials
-    async function loadMaterials(certId, filterType = 'all', sortBy = 'date_desc', searchTerm = '') {
-        if (supabaseClient) {
-            await loadMaterialsFromSupabase(certId, filterType, sortBy, searchTerm);
-        } else {
-            // Fallback para dados locais
-            const localData = materialsData[certId] || [];
-            loadMaterialsLocal(certId, localData, filterType, sortBy, searchTerm);
-        }
-    }
-
-    // Atualize a função setupUpload
-    function setupUpload() {
-        const uploadArea = document.getElementById('uploadAreaPage');
-        const fileInput = document.getElementById('fileInputPage');
-        
-        // Drag and drop
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.style.background = '#e8f4fc';
-            uploadArea.style.borderColor = '#2980b9';
-        });
-        
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.background = '#f8fafc';
-            uploadArea.style.borderColor = '#3498db';
-        });
-        
-        uploadArea.addEventListener('drop', async (e) => {
-            e.preventDefault();
-            uploadArea.style.background = '#f8fafc';
-            uploadArea.style.borderColor = '#3498db';
-            await handleFiles(e.dataTransfer.files);
-        });
-        
-        fileInput.addEventListener('change', async (e) => {
-            await handleFiles(e.target.files);
-        });
-    }
-    
-    async function handleFiles(files) {
-        if (files.length === 0) return;
-        
-        if (!currentUser) {
-            alert('Faça login para compartilhar materiais.');
-            window.location.href = 'index.html#login';
-            return;
-        }
-        
-        // Modal para informações do material
-        const certId = getUrlParameter('cert') || 'itil4';
-        const file = files[0];
-        
-        // Detectar tipo do arquivo
-        const fileType = detectFileType(file.name);
-        
-        // Criar modal de upload
-        const modalHTML = `
-            <div id="uploadModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-                <div style="background: white; padding: 2rem; border-radius: 10px; max-width: 500px; width: 90%;">
-                    <h3 style="margin-bottom: 1rem;">Compartilhar Material</h3>
-                    <div id="uploadProgress" style="display: none; margin-bottom: 1rem;">
-                        <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
-                            <div id="progressBar" style="height: 100%; background: #27ae60; width: 0%;"></div>
+            // Criar modal
+            const modalHTML = `
+                <div class="upload-modal-overlay" id="uploadModal">
+                    <div class="upload-modal">
+                        <h3 style="margin-bottom: 1rem; color: var(--primary);">
+                            <i class="fas fa-upload"></i> Compartilhar Material
+                        </h3>
+                        
+                        <div id="uploadProgressContainer" style="display: none; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Enviando...</span>
+                                <span id="modalProgressPercent">0%</span>
+                            </div>
+                            <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                                <div id="modalProgressBar" style="height: 100%; background: #27ae60; width: 0%;"></div>
+                            </div>
                         </div>
-                        <div id="progressText" style="text-align: center; margin-top: 0.5rem;"></div>
-                    </div>
-                    <div id="uploadForm">
-                        <input type="text" id="materialTitle" placeholder="Título do material" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 2px solid #ddd; border-radius: 8px;">
-                        <textarea id="materialDescription" placeholder="Descrição (opcional)" rows="3" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 2px solid #ddd; border-radius: 8px;"></textarea>
-                        <div style="margin-bottom: 1rem;">
-                            <strong>Arquivo:</strong> ${file.name} (${formatFileSize(file.size / 1024)})
-                        </div>
-                        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                            <button onclick="closeUploadModal()" class="btn btn-outline">Cancelar</button>
-                            <button onclick="processUpload('${certId}', '${fileType}')" class="btn btn-primary">Enviar</button>
+                        
+                        <div id="uploadFormContainer">
+                            <div style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <i class="fas fa-file-${fileType} ${fileType}-color" style="font-size: 2rem;"></i>
+                                    <div>
+                                        <strong>${file.name}</strong><br>
+                                        <small>${formatFileSize(file.size / 1024)} • ${fileType.toUpperCase()}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 1rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Título *</label>
+                                <input type="text" id="materialTitle" placeholder="Ex: Guia Completo ITIL 4" 
+                                       style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;" required>
+                            </div>
+                            
+                            <div style="margin-bottom: 1rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Descrição</label>
+                                <textarea id="materialDescription" rows="3" placeholder="Descreva o material..." 
+                                          style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;"></textarea>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                                <button onclick="closeUploadModal()" class="btn btn-outline">Cancelar</button>
+                                <button onclick="processUpload('${certId}', '${fileType}')" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Enviar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
-        
-        // Adicionar modal ao body
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-        
-        // Armazenar arquivo para uso posterior
-        window.currentUploadFile = file;
-    }
-    
-    function detectFileType(fileName) {
-        const ext = fileName.split('.').pop().toLowerCase();
-        if (['pdf'].includes(ext)) return 'pdf';
-        if (['ppt', 'pptx'].includes(ext)) return 'ppt';
-        if (['doc', 'docx'].includes(ext)) return 'doc';
-        if (['zip', 'rar', '7z'].includes(ext)) return 'zip';
-        if (['mp4', 'avi', 'mov', 'mkv'].includes(ext)) return 'video';
-        return 'other';
-    }
-    
-    async function processUpload(certId, fileType) {
-        const title = document.getElementById('materialTitle').value;
-        const description = document.getElementById('materialDescription').value;
-        const file = window.currentUploadFile;
-        
-        if (!title.trim()) {
-            alert('Por favor, insira um título para o material.');
-            return;
+            `;
+            
+            // Remover modal existente
+            closeUploadModal();
+            
+            // Adicionar novo modal
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
         }
-        
-        // Mostrar progresso
-        document.getElementById('uploadForm').style.display = 'none';
-        document.getElementById('uploadProgress').style.display = 'block';
-        
-        // Simular progresso
-        let progress = 0;
-        const progressInterval = setInterval(() => {
-            progress += 10;
-            if (progress > 90) clearInterval(progressInterval);
-            document.getElementById('progressBar').style.width = progress + '%';
-            document.getElementById('progressText').textContent = `Enviando... ${progress}%`;
-        }, 100);
-        
-        try {
-            // Fazer upload real
-            const result = await uploadMaterial(file, title, description, certId, fileType);
+
+        // Detecta tipo de arquivo
+        function detectFileType(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            if (['pdf'].includes(ext)) return 'pdf';
+            if (['ppt', 'pptx'].includes(ext)) return 'ppt';
+            if (['doc', 'docx'].includes(ext)) return 'doc';
+            if (['zip', 'rar', '7z'].includes(ext)) return 'zip';
+            if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) return 'video';
+            return 'other';
+        }
+
+        // Processa upload
+        async function processUpload(certId, fileType) {
+            const title = document.getElementById('materialTitle').value;
+            const description = document.getElementById('materialDescription').value;
+            const file = currentUploadFile;
             
-            clearInterval(progressInterval);
-            document.getElementById('progressBar').style.width = '100%';
-            document.getElementById('progressText').textContent = 'Concluído!';
+            if (!title.trim()) {
+                alert('Por favor, insira um título para o material.');
+                return;
+            }
             
-            setTimeout(() => {
-                closeUploadModal();
-                if (result.success) {
+            // Validar tamanho do arquivo (máx 100MB)
+            if (file.size > 100 * 1024 * 1024) {
+                alert('Arquivo muito grande. O limite é 100MB.');
+                return;
+            }
+            
+            // Mostrar progresso
+            document.getElementById('uploadFormContainer').style.display = 'none';
+            document.getElementById('uploadProgressContainer').style.display = 'block';
+            
+            try {
+                // 1. Upload para Storage
+                const fileName = `material_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                const filePath = `${certId}/${currentUser.id}/${fileName}`;
+                
+                console.log('📤 Fazendo upload para:', filePath);
+                
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('materiais')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+                
+                if (uploadError) {
+                    console.error('❌ Erro no upload:', uploadError);
+                    
+                    if (uploadError.message.includes('The resource already exists')) {
+                        throw new Error('Já existe um arquivo com este nome.');
+                    } else if (uploadError.message.includes('permission')) {
+                        throw new Error('Sem permissão para fazer upload.');
+                    } else {
+                        throw new Error(`Falha no upload: ${uploadError.message}`);
+                    }
+                }
+                
+                console.log('✅ Upload bem-sucedido');
+                
+                // 2. Obter URL pública
+                const { data: urlData } = supabaseClient.storage
+                    .from('materiais')
+                    .getPublicUrl(filePath);
+                
+                // 3. Salvar metadados no banco
+                const materialData = {
+                    titulo: title,
+                    descricao: description || null,
+                    tipo: fileType,
+                    certificacao: certId,
+                    arquivo_url: urlData.publicUrl,
+                    arquivo_nome: file.name,
+                    arquivo_tamanho_kb: Math.round(file.size / 1024),
+                    usuario_id: currentUser.id,
+                    visualizacoes: 0,
+                    downloads: 0,
+                    publico: true
+                };
+                
+                const { data: dbData, error: dbError } = await supabaseClient
+                    .from('materiais')
+                    .insert([materialData])
+                    .select()
+                    .single();
+                
+                if (dbError) {
+                    console.error('❌ Erro ao salvar no banco:', dbError);
+                    
+                    // Tentar remover o arquivo do storage
+                    try {
+                        await supabaseClient.storage
+                            .from('materiais')
+                            .remove([filePath]);
+                    } catch (cleanupError) {
+                        console.warn('⚠️ Não foi possível limpar o arquivo:', cleanupError);
+                    }
+                    
+                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                }
+                
+                console.log('✅ Material salvo no banco:', dbData);
+                
+                // Sucesso
+                document.getElementById('modalProgressBar').style.width = '100%';
+                document.getElementById('modalProgressPercent').textContent = '100%';
+                
+                setTimeout(() => {
+                    closeUploadModal();
                     alert('✅ Material compartilhado com sucesso!');
+                    
                     // Recarregar materiais
                     const filterType = document.getElementById('filterType').value;
                     const sortBy = document.getElementById('filterSort').value;
                     const searchTerm = document.getElementById('searchMaterial').value;
-                    loadMaterials(certId, filterType, sortBy, searchTerm);
-                } else {
-                    alert('❌ Erro: ' + result.message);
-                }
-            }, 1000);
-            
-        } catch (error) {
-            console.error('❌ Erro no upload:', error);
-            alert('Erro ao fazer upload: ' + error.message);
-            closeUploadModal();
+                    loadMaterialsFromSupabase(certId, filterType, sortBy, searchTerm);
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ Erro no processo de upload:', error);
+                alert('❌ Erro: ' + error.message);
+                closeUploadModal();
+            }
         }
-    }
-    
-    function closeUploadModal() {
-        const modal = document.getElementById('uploadModal');
-        if (modal) modal.remove();
-        window.currentUploadFile = null;
-    }
 
-    // Inicialize o Supabase quando a página carregar
-    document.addEventListener('DOMContentLoaded', async function() {
-        await initSupabase();
-        
-        const certId = getUrlParameter('cert') || 'itil4';
-        loadCertification(certId);
-        loadMaterials(certId);
-        setupFilters();
-        setupUpload();
-    });
+        // Fecha modal de upload
+        function closeUploadModal() {
+            const modal = document.getElementById('uploadModal');
+            if (modal) modal.remove();
+            currentUploadFile = null;
+        }
+
+        // Baixa material
+        async function downloadMaterial(materialId, fileUrl, fileName) {
+            try {
+                // Registrar download no banco
+                await supabaseClient
+                    .from('materiais')
+                    .update({ 
+                        downloads: supabaseClient.raw('downloads + 1')
+                    })
+                    .eq('id', materialId);
+                
+                // Baixar arquivo
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.download = fileName;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                console.log('✅ Download iniciado:', fileName);
+                
+                // Atualizar estatísticas localmente
+                setTimeout(() => {
+                    const certId = getUrlParameter('cert') || 'itil4';
+                    const filterType = document.getElementById('filterType').value;
+                    const sortBy = document.getElementById('filterSort').value;
+                    const searchTerm = document.getElementById('searchMaterial').value;
+                    loadMaterialsFromSupabase(certId, filterType, sortBy, searchTerm);
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ Erro ao baixar:', error);
+                // Fallback: abrir em nova aba
+                window.open(fileUrl, '_blank');
+            }
+        }
+
+        // Exclui material
+        async function deleteMaterial(materialId) {
+            if (!confirm('Tem certeza que deseja excluir este material?')) return;
+            
+            try {
+                // Primeiro buscar informações do material
+                const { data: material, error: fetchError } = await supabaseClient
+                    .from('materiais')
+                    .select('*')
+                    .eq('id', materialId)
+                    .single();
+                
+                if (fetchError || !material) {
+                    throw new Error('Material não encontrado.');
+                }
+                
+                // Verificar se o usuário é o dono
+                if (material.usuario_id !== currentUser.id) {
+                    alert('Você só pode excluir seus próprios materiais.');
+                    return;
+                }
+                
+                // Extrair caminho do arquivo da URL
+                const fileUrl = material.arquivo_url;
+                const bucketName = 'materiais';
+                const filePath = fileUrl.split(`/${bucketName}/`)[1];
+                
+                if (!filePath) {
+                    throw new Error('Não foi possível determinar o caminho do arquivo.');
+                }
+                
+                // 1. Remover do storage
+                const { error: storageError } = await supabaseClient.storage
+                    .from(bucketName)
+                    .remove([filePath]);
+                
+                if (storageError) {
+                    console.warn('⚠️ Não foi possível remover do storage:', storageError);
+                }
+                
+                // 2. Remover do banco de dados
+                const { error: dbError } = await supabaseClient
+                    .from('materiais')
+                    .delete()
+                    .eq('id', materialId);
+                
+                if (dbError) {
+                    throw new Error(`Erro ao excluir do banco: ${dbError.message}`);
+                }
+                
+                console.log('✅ Material excluído com sucesso');
+                alert('✅ Material excluído com sucesso!');
+                
+                // Recarregar lista
+                const certId = getUrlParameter('cert') || 'itil4';
+                const filterType = document.getElementById('filterType').value;
+                const sortBy = document.getElementById('filterSort').value;
+                const searchTerm = document.getElementById('searchMaterial').value;
+                loadMaterialsFromSupabase(certId, filterType, sortBy, searchTerm);
+                
+            } catch (error) {
+                console.error('❌ Erro ao excluir material:', error);
+                alert('❌ Erro: ' + error.message);
+            }
+        }
+
+        // Adiciona evento para fechar modal ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'uploadModal') {
+                closeUploadModal();
+            }
+        });
     </script>
 </body>
 </html>
