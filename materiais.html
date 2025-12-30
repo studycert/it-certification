@@ -9,209 +9,47 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
     <style>
-        /* Estilos específicos para a página de materiais */
-        .materials-page {
-            padding: 2rem 0;
-        }
-
-        .certification-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .certification-icon {
-            font-size: 4rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
-
-        .certification-header h1 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .certification-header .cert-level {
-            display: inline-block;
-            background: var(--secondary);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Filtros */
-        .filters-container {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .filter-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .filter-select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--secondary);
-        }
-
-        /* Grid de materiais */
-        .materials-grid-page {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .material-card-page {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--secondary);
-        }
-
-        .material-card-page:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-
-        .card-header-page {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .file-icon-page {
-            font-size: 2rem;
-        }
-
-        .card-body-page {
-            padding: 1.5rem;
-        }
-
-        .card-body-page h3 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .card-body-page p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
-
-        .file-info-page {
-            display: flex;
-            justify-content: space-between;
-            color: #95a5a6;
-            font-size: 0.8rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-        }
-
-        /* Cores por tipo de arquivo */
+        /* Seus estilos CSS permanecem iguais */
+        .materials-page { padding: 2rem 0; }
+        .certification-header { text-align: center; margin-bottom: 3rem; padding: 2rem; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .certification-icon { font-size: 4rem; color: var(--secondary); margin-bottom: 1rem; }
+        .certification-header h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        .certification-header .cert-level { display: inline-block; background: var(--secondary); color: white; padding: 0.5rem 1.5rem; border-radius: 20px; font-size: 1rem; margin-bottom: 1rem; }
+        .filters-container { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .filter-group { flex: 1; min-width: 200px; }
+        .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); }
+        .filter-select { width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
+        .filter-select:focus { outline: none; border-color: var(--secondary); }
+        .materials-grid-page { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+        .material-card-page { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; border-left: 4px solid var(--secondary); position: relative; }
+        .material-card-page:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .card-header-page { background: #f8f9fa; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+        .file-icon-page { font-size: 2rem; }
+        .card-body-page { padding: 1.5rem; }
+        .card-body-page h3 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.2rem; }
+        .card-body-page p { color: #666; font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; }
+        .file-info-page { display: flex; justify-content: space-between; color: #95a5a6; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
         .pdf-color { color: #e74c3c; }
         .ppt-color { color: #e67e22; }
         .doc-color { color: #3498db; }
         .zip-color { color: #9b59b6; }
         .video-color { color: #27ae60; }
-
-        /* Seção de upload */
-        .upload-section-page {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            margin: 3rem 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .upload-area-page {
-            border: 2px dashed #3498db;
-            border-radius: 8px;
-            padding: 3rem 2rem;
-            text-align: center;
-            margin: 2rem 0;
-            background: #f8fafc;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .upload-area-page:hover {
-            background: #e8f4fc;
-            border-color: #2980b9;
-        }
-
-        /* Responsivo */
+        .upload-section-page { background: white; border-radius: 10px; padding: 2rem; margin: 3rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .upload-area-page { border: 2px dashed #3498db; border-radius: 8px; padding: 3rem 2rem; text-align: center; margin: 2rem 0; background: #f8fafc; transition: all 0.3s; cursor: pointer; }
+        .upload-area-page:hover { background: #e8f4fc; border-color: #2980b9; }
         @media (max-width: 768px) {
-            .materials-grid-page {
-                grid-template-columns: 1fr;
-            }
-            
-            .filters-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .certification-header h1 {
-                font-size: 2rem;
-            }
+            .materials-grid-page { grid-template-columns: 1fr; }
+            .filters-container { flex-direction: column; gap: 1rem; }
+            .certification-header h1 { font-size: 2rem; }
         }
-
-        /* Breadcrumb */
-        .breadcrumb-page {
-            background: #e9ecef;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-        }
-
-        .breadcrumb-page a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .breadcrumb-page a:hover {
-            color: var(--secondary);
-        }
-
-        /* Barra de autenticação */
+        .breadcrumb-page { background: #e9ecef; padding: 1rem 0; margin-bottom: 2rem; }
+        .breadcrumb-page a { color: var(--primary); text-decoration: none; }
+        .breadcrumb-page a:hover { color: var(--secondary); }
         .auth-bar {
             background: #f8f9fa;
             padding: 0.8rem 0;
             border-bottom: 1px solid #dee2e6;
         }
-
-        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -224,7 +62,6 @@
             justify-content: center;
             z-index: 1000;
         }
-
         .modal-content {
             background: white;
             padding: 2rem;
@@ -233,7 +70,6 @@
             width: 90%;
             position: relative;
         }
-
         .close-modal {
             position: absolute;
             top: 1rem;
@@ -244,18 +80,46 @@
             cursor: pointer;
             color: #666;
         }
-
-        /* Loading */
         .loading-message {
             grid-column: 1 / -1;
             text-align: center;
             padding: 3rem;
             color: #666;
         }
-
         .loading-message i {
             font-size: 2rem;
             margin-bottom: 1rem;
+        }
+        
+        /* Botão de excluir */
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        
+        .delete-btn:hover {
+            opacity: 1;
+            background: #c0392b;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -282,9 +146,7 @@
                 <div id="authStatus">
                     <i class="fas fa-spinner fa-spin"></i> Verificando autenticação...
                 </div>
-                <div id="authContainer">
-                    <!-- Preenchido pelo JavaScript -->
-                </div>
+                <div id="authContainer"></div>
             </div>
         </div>
     </div>
@@ -466,6 +328,28 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 1rem; color: var(--primary);">
+                <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Confirmar Exclusão
+            </h3>
+            
+            <div id="deleteMaterialInfo" style="margin-bottom: 1.5rem;">
+                <p>Tem certeza que deseja excluir este material?</p>
+                <p id="deleteMaterialName" style="font-weight: bold; color: #e74c3c; margin: 0.5rem 0;"></p>
+                <p style="color: #666; font-size: 0.9rem;">Esta ação não pode ser desfeita.</p>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button onclick="closeDeleteModal()" class="btn btn-outline">Cancelar</button>
+                <button onclick="confirmDeleteMaterial()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Configurações
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
@@ -520,6 +404,7 @@
         let currentUploadFile = null;
         let currentCertId = 'itil4';
         let currentFileType = 'pdf';
+        let materialToDelete = null; // Para armazenar o material que será excluído
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', async function() {
@@ -576,6 +461,19 @@
             document.getElementById('filterType').addEventListener('change', handleFilterChange);
             document.getElementById('filterSort').addEventListener('change', handleFilterChange);
             document.getElementById('searchMaterial').addEventListener('input', handleFilterChange);
+            
+            // Modais - fechar ao clicar fora
+            document.getElementById('uploadModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeUploadModal();
+                }
+            });
+            
+            document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeDeleteModal();
+                }
+            });
         }
 
         // Inicializar Supabase
@@ -928,34 +826,166 @@
 
         function updateMaterialsInterface(materials) {
             const container = document.getElementById('materialsContainer');
+            const currentUser = window.authManager?.getUser();
+            const currentUserId = currentUser?.id;
             
             if (!materials || materials.length === 0) {
                 showNoMaterials('Nenhum material encontrado.');
                 return;
             }
             
-            container.innerHTML = materials.map(material => `
-                <div class="material-card-page">
-                    <div class="card-header-page">
-                        <i class="fas fa-file-${material.tipo} ${material.tipo}-color file-icon-page"></i>
-                        <div>
-                            <h3>${material.titulo}</h3>
-                            <small>${material.tipo.toUpperCase()} • ${formatFileSize(material.arquivo_tamanho_kb)}</small>
+            container.innerHTML = materials.map(material => {
+                // Verificar se o usuário atual é o dono do material
+                const isOwner = currentUserId && material.usuario_id === currentUserId;
+                
+                return `
+                    <div class="material-card-page" data-id="${material.id}">
+                        ${isOwner ? `
+                            <button class="delete-btn" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : ''}
+                        
+                        <div class="card-header-page">
+                            <i class="fas fa-file-${material.tipo} ${material.tipo}-color file-icon-page"></i>
+                            <div>
+                                <h3>${material.titulo}</h3>
+                                <small>${material.tipo.toUpperCase()} • ${formatFileSize(material.arquivo_tamanho_kb)}</small>
+                            </div>
+                        </div>
+                        <div class="card-body-page">
+                            <p>${material.descricao || 'Material compartilhado pela comunidade.'}</p>
+                            <div class="file-info-page">
+                                <span><i class="far fa-clock"></i> ${formatDate(material.data_upload)}</span>
+                                <span><i class="far fa-eye"></i> ${material.visualizacoes || 0}</span>
+                                <span><i class="fas fa-download"></i> ${material.downloads || 0}</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')">
+                                    <i class="fas fa-download"></i> Baixar
+                                </button>
+                                ${isOwner ? `
+                                    <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')">
+                                        <i class="fas fa-trash"></i> Excluir
+                                    </button>
+                                ` : ''}
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body-page">
-                        <p>${material.descricao || 'Material compartilhado pela comunidade.'}</p>
-                        <div class="file-info-page">
-                            <span><i class="far fa-clock"></i> ${formatDate(material.data_upload)}</span>
-                            <span><i class="far fa-eye"></i> ${material.visualizacoes || 0}</span>
-                            <span><i class="fas fa-download"></i> ${material.downloads || 0}</span>
-                        </div>
-                        <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" style="margin-top: 1rem;">
-                            <i class="fas fa-download"></i> Baixar
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        // Função para mostrar modal de exclusão
+        function showDeleteModal(materialId, materialTitle) {
+            materialToDelete = {
+                id: materialId,
+                title: materialTitle
+            };
+            
+            document.getElementById('deleteMaterialName').textContent = materialTitle;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Fechar modal de exclusão
+        function closeDeleteModal() {
+            materialToDelete = null;
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        // Confirmar exclusão do material
+        async function confirmDeleteMaterial() {
+            if (!materialToDelete) {
+                alert('Erro: Nenhum material selecionado para exclusão.');
+                closeDeleteModal();
+                return;
+            }
+            
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                alert('Sessão expirada. Faça login novamente.');
+                closeDeleteModal();
+                window.location.href = 'index.html#login';
+                return;
+            }
+            
+            const currentUser = window.authManager.getUser();
+            if (!currentUser || !currentUser.id) {
+                alert('Erro: usuário não identificado.');
+                closeDeleteModal();
+                return;
+            }
+            
+            try {
+                console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
+                
+                // 1. Primeiro buscar o material para obter informações
+                const { data: material, error: fetchError } = await supabaseClient
+                    .from('materiais')
+                    .select('*')
+                    .eq('id', materialToDelete.id)
+                    .single();
+                
+                if (fetchError) {
+                    console.error('❌ Erro ao buscar material:', fetchError);
+                    throw new Error('Material não encontrado.');
+                }
+                
+                // 2. Verificar se o usuário é o dono
+                if (material.usuario_id !== currentUser.id) {
+                    alert('Você só pode excluir seus próprios materiais.');
+                    closeDeleteModal();
+                    return;
+                }
+                
+                // 3. Extrair caminho do arquivo da URL para excluir do Storage
+                const fileUrl = material.arquivo_url;
+                console.log('🔗 URL do arquivo:', fileUrl);
+                
+                // Extrair o caminho do arquivo do bucket
+                // A URL é algo como: https://uhbwudgdeyvbkqoflaqw.supabase.co/storage/v1/object/public/materiais/itil4/user-id/filename.pdf
+                const urlParts = fileUrl.split('/materiais/');
+                if (urlParts.length > 1) {
+                    const filePath = urlParts[1];
+                    console.log('📁 Caminho do arquivo no storage:', filePath);
+                    
+                    // Excluir do Storage
+                    const { error: storageError } = await supabaseClient.storage
+                        .from('materiais')
+                        .remove([filePath]);
+                    
+                    if (storageError) {
+                        console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                        // Continuar mesmo se falhar no storage
+                    } else {
+                        console.log('✅ Arquivo excluído do storage');
+                    }
+                }
+                
+                // 4. Excluir do banco de dados
+                const { error: deleteError } = await supabaseClient
+                    .from('materiais')
+                    .delete()
+                    .eq('id', materialToDelete.id);
+                
+                if (deleteError) {
+                    console.error('❌ Erro ao excluir do banco:', deleteError);
+                    throw new Error(`Erro ao excluir material: ${deleteError.message}`);
+                }
+                
+                console.log('✅ Material excluído com sucesso');
+                
+                // Fechar modal e mostrar mensagem
+                closeDeleteModal();
+                alert('✅ Material excluído com sucesso!');
+                
+                // Recarregar a lista de materiais
+                loadMaterialsFromSupabase(currentCertId);
+                
+            } catch (error) {
+                console.error('❌ Erro na exclusão:', error);
+                alert(`❌ Erro: ${error.message}`);
+                closeDeleteModal();
+            }
         }
 
         function showNoMaterials(message) {
@@ -1026,18 +1056,16 @@
                 
                 console.log('✅ Download iniciado:', fileName);
                 
+                // Atualizar contador localmente (opcional)
+                setTimeout(() => {
+                    loadMaterialsFromSupabase(currentCertId);
+                }, 1000);
+                
             } catch (error) {
                 console.error('❌ Erro ao baixar:', error);
                 window.open(fileUrl, '_blank');
             }
         }
-
-        // Fechar modal ao clicar fora
-        document.getElementById('uploadModal')?.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeUploadModal();
-            }
-        });
 
     </script>
 </body>
