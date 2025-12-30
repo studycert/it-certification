@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyCert - Materiais de Estudo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Estilos específicos para a página de materiais */
+        .materials-page {
+            padding: 2rem 0;
+        }
+
+        .certification-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .certification-icon {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .certification-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .certification-header .cert-level {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Filtros */
+        .filters-container {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        /* Grid de materiais */
+        .materials-grid-page {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .material-card-page {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .material-card-page:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .card-header-page {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-icon-page {
+            font-size: 2rem;
+        }
+
+        .card-body-page {
+            padding: 1.5rem;
+        }
+
+        .card-body-page h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .card-body-page p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .file-info-page {
+            display: flex;
+            justify-content: space-between;
+            color: #95a5a6;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Cores por tipo de arquivo */
+        .pdf-color { color: #e74c3c; }
+        .ppt-color { color: #e67e22; }
+        .doc-color { color: #3498db; }
+        .zip-color { color: #9b59b6; }
+        .video-color { color: #27ae60; }
+
+        /* Seção de upload */
+        .upload-section-page {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 3rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .upload-area-page {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 2rem 0;
+            background: #f8fafc;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-area-page:hover {
+            background: #e8f4fc;
+            border-color: #2980b9;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .materials-grid-page {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .certification-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-page {
+            background: #e9ecef;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb-page a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .breadcrumb-page a:hover {
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (igual ao index.html) -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Study<span>Cert</span></h1>
+                </div>
+                <div>
+                    <a href="index.html" class="btn btn-primary">Voltar para Home</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb-page">
+        <div class="container">
+            <a href="index.html">Home</a> > 
+            <a href="index.html#materiais">Material de Estudo</a> > 
+            <span id="currentCertification">Carregando...</span>
+        </div>
+    </section>
+
+    <!-- Conteúdo Principal -->
+    <main class="container materials-page">
+        <!-- Cabeçalho da Certificação -->
+        <section class="certification-header" id="certHeader">
+            <div class="certification-icon" id="certIcon">
+                <i class="fas fa-cube"></i>
+            </div>
+            <h1 id="certTitle">Carregando...</h1>
+            <div class="cert-level" id="certLevel">Nível: Foundation</div>
+            <p id="certDescription">Acesse guias, resumos, apresentações e outros recursos para sua preparação.</p>
+        </section>
+
+        <!-- Filtros -->
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="filterType">Tipo de Material</label>
+                <select id="filterType" class="filter-select">
+                    <option value="all">Todos os Tipos</option>
+                    <option value="pdf">PDF</option>
+                    <option value="ppt">Apresentações</option>
+                    <option value="doc">Documentos</option>
+                    <option value="video">Videoaulas</option>
+                    <option value="zip">Arquivos ZIP</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="filterSort">Ordenar por</label>
+                <select id="filterSort" class="filter-select">
+                    <option value="date_desc">Mais Recentes</option>
+                    <option value="date_asc">Mais Antigos</option>
+                    <option value="views_desc">Mais Visualizados</option>
+                    <option value="name_asc">Nome (A-Z)</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="searchMaterial">Buscar Material</label>
+                <input type="text" id="searchMaterial" class="filter-select" placeholder="Digite para buscar...">
+            </div>
+        </div>
+
+        <!-- Grid de Materiais -->
+        <div class="materials-grid-page" id="materialsContainer">
+            <!-- Os materiais serão carregados aqui via JavaScript -->
+            <div class="loading-message">
+                <i class="fas fa-spinner fa-spin"></i> Carregando materiais...
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="stats-container" style="background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: center;">
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">Estatísticas</h3>
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <div style="font-size: 2rem; color: var(--secondary); font-weight: bold;" id="totalMaterials">0</div>
+                    <div style="color: #666;">Materiais Disponíveis</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; color: #27ae60; font-weight: bold;" id="totalSize">0 MB</div>
+                    <div style="color: #666;">Total em Arquivos</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; color: #e74c3c; font-weight: bold;" id="totalViews">0</div>
+                    <div style="color: #666;">Visualizações</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Upload -->
+        <section class="upload-section-page">
+            <h2 style="color: var(--primary); margin-bottom: 1rem;">Compartilhar Material</h2>
+            <p style="color: #666; margin-bottom: 1rem;">Compartilhe seus materiais de estudo com a comunidade.</p>
+            
+            <div class="upload-area-page" id="uploadAreaPage">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Arraste e solte arquivos aqui</h3>
+                <p>ou clique para selecionar</p>
+                <p style="font-size: 0.9rem; color: #95a5a6;">
+                    Formatos suportados: PDF, PPT, DOC, ZIP, MP4 (máx. 100MB)
+                </p>
+                <div class="btn btn-primary" style="margin-top: 1rem;" onclick="document.getElementById('fileInputPage').click()">
+                    <i class="fas fa-upload"></i> Selecionar Arquivos
+                </div>
+                <input type="file" id="fileInputPage" multiple accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4" style="display: none;">
+            </div>
+
+            <div id="uploadProgressPage" style="display: none; margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Enviando...</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                    <div id="progressBar" style="height: 100%; background: var(--success); width: 0%; transition: width 0.3s;"></div>
+                </div>
+            </div>
+
+            <div id="uploadListPage" style="margin-top: 1rem;"></div>
+        </section>
+    </main>
+
+    <!-- Footer (igual ao index.html) -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>StudyCert</h3>
+                    <p>Sua plataforma completa para preparação e certificação em Tecnologia da Informação.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Links Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#certificacoes">Certificações</a></li>
+                        <li><a href="index.html#materiais">Material de Estudo</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 StudyCert. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dados das certificações (pode vir de um JSON externo)
+        const certifications = {
+            'itil4': {
+                title: 'ITIL 4 Foundation',
+                level: 'Foundation',
+                icon: 'fa-cube',
+                color: '#3498db',
+                description: 'Framework de gerenciamento de serviços de TI. Acesse guias, resumos e recursos para sua preparação.'
+            },
+            'azure': {
+                title: 'Microsoft Azure',
+                level: 'Cloud',
+                icon: 'fab fa-microsoft',
+                color: '#0078d4',
+                description: 'Guias de estudo, resumos e recursos para certificações Azure (AZ-900, AZ-104, etc.)'
+            },
+            'aws': {
+                title: 'Amazon AWS',
+                level: 'Cloud',
+                icon: 'fab fa-aws',
+                color: '#ff9900',
+                description: 'Material para Cloud Practitioner, Solutions Architect e outras certificações AWS'
+            },
+            'lpic': {
+                title: 'LPIC-1 e LPIC-2',
+                level: 'Linux',
+                icon: 'fas fa-server',
+                color: '#333333',
+                description: 'Recursos para certificações Linux Professional Institute'
+            },
+            'security': {
+                title: 'Security+',
+                level: 'Segurança',
+                icon: 'fas fa-shield-alt',
+                color: '#ff6b6b',
+                description: 'Material para preparação da certificação CompTIA Security+'
+            },
+            'ccna': {
+                title: 'CCNA',
+                level: 'Rede',
+                icon: 'fas fa-network-wired',
+                color: '#00a0d2',
+                description: 'Recursos para Cisco Certified Network Associate'
+            }
+        };
+
+        // Dados dos materiais (em um sistema real, viria de um banco de dados)
+        const materialsData = {
+            'itil4': [
+                {
+                    id: 1,
+                    title: 'Guia Completo ITIL 4',
+                    type: 'pdf',
+                    size: '5.2 MB',
+                    views: 1200,
+                    updated: '2024-03-15',
+                    description: 'Guia completo com todos os conceitos, princípios e práticas do ITIL 4 Foundation.',
+                    file: 'itil4-guia-completo.pdf'
+                },
+                {
+                    id: 2,
+                    title: 'Apresentação ITIL 4',
+                    type: 'ppt',
+                    size: '8.7 MB',
+                    views: 890,
+                    updated: '2024-03-10',
+                    description: 'Slides com resumo visual dos principais tópicos para estudo rápido.',
+                    file: 'itil4-apresentacao.pptx'
+                },
+                {
+                    id: 3,
+                    title: 'Questões Resolvidas',
+                    type: 'doc',
+                    size: '3.1 MB',
+                    views: 1500,
+                    updated: '2024-03-05',
+                    description: '200 questões comentadas para prática antes do exame.',
+                    file: 'itil4-questoes.docx'
+                }
+            ],
+            'azure': [
+                {
+                    id: 1,
+                    title: 'Azure Fundamentals Guide',
+                    type: 'pdf',
+                    size: '4.5 MB',
+                    views: 980,
+                    updated: '2024-03-12',
+                    description: 'Guia completo para AZ-900: Azure Fundamentals.',
+                    file: 'azure-fundamentals.pdf'
+                }
+            ],
+            'aws': [
+                {
+                    id: 1,
+                    title: 'AWS Cloud Practitioner',
+                    type: 'pdf',
+                    size: '6.1 MB',
+                    views: 1100,
+                    updated: '2024-03-14',
+                    description: 'Material completo para certificação AWS Cloud Practitioner.',
+                    file: 'aws-cloud-practitioner.pdf'
+                }
+            ]
+        };
+
+        // Função para obter o parâmetro da URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Inicialização da página
+        document.addEventListener('DOMContentLoaded', function() {
+            const certId = getUrlParameter('cert') || 'itil4';
+            loadCertification(certId);
+            loadMaterials(certId);
+            setupFilters();
+            setupUpload();
+        });
+
+        // Carrega informações da certificação
+        function loadCertification(certId) {
+            const cert = certifications[certId] || certifications['itil4'];
+            
+            // Atualiza o breadcrumb
+            document.getElementById('currentCertification').textContent = cert.title;
+            
+            // Atualiza o cabeçalho
+            document.getElementById('certIcon').innerHTML = `<i class="${cert.icon}"></i>`;
+            document.getElementById('certTitle').textContent = cert.title;
+            document.getElementById('certLevel').textContent = `Nível: ${cert.level}`;
+            document.getElementById('certDescription').textContent = cert.description;
+            
+            // Aplica a cor da certificação
+            document.getElementById('certHeader').style.borderLeft = `5px solid ${cert.color}`;
+        }
+
+        // Carrega os materiais
+        function loadMaterials(certId, filterType = 'all', sortBy = 'date_desc', searchTerm = '') {
+            const container = document.getElementById('materialsContainer');
+            const certMaterials = materialsData[certId] || [];
+            
+            // Aplica filtros
+            let filteredMaterials = certMaterials.filter(material => {
+                // Filtro por tipo
+                if (filterType !== 'all' && material.type !== filterType) {
+                    return false;
+                }
+                
+                // Filtro por busca
+                if (searchTerm && !material.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
+                    !material.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Ordenação
+            filteredMaterials.sort((a, b) => {
+                switch(sortBy) {
+                    case 'date_desc':
+                        return new Date(b.updated) - new Date(a.updated);
+                    case 'date_asc':
+                        return new Date(a.updated) - new Date(b.updated);
+                    case 'views_desc':
+                        return b.views - a.views;
+                    case 'name_asc':
+                        return a.title.localeCompare(b.title);
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Atualiza estatísticas
+            updateStats(filteredMaterials);
+            
+            // Renderiza os materiais
+            if (filteredMaterials.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                        <i class="fas fa-folder-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                        <h3>Nenhum material encontrado</h3>
+                        <p>Tente alterar os filtros ou compartilhe um material!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredMaterials.map(material => `
+                <div class="material-card-page">
+                    <div class="card-header-page">
+                        <i class="fas fa-file-${material.type} ${material.type}-color file-icon-page"></i>
+                        <div>
+                            <h3>${material.title}</h3>
+                            <small>${material.type.toUpperCase()} • ${material.size}</small>
+                        </div>
+                    </div>
+                    <div class="card-body-page">
+                        <p>${material.description}</p>
+                        <div class="file-info-page">
+                            <span><i class="far fa-clock"></i> Atualizado: ${formatDate(material.updated)}</span>
+                            <span><i class="far fa-eye"></i> ${material.views.toLocaleString()} visualizações</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="downloadMaterial('${material.file}')" style="margin-top: 1rem;">
+                            <i class="fas fa-download"></i> Baixar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Atualiza estatísticas
+        function updateStats(materials) {
+            const totalMaterials = materials.length;
+            const totalSize = materials.reduce((sum, material) => {
+                return sum + parseFloat(material.size);
+            }, 0);
+            const totalViews = materials.reduce((sum, material) => sum + material.views, 0);
+            
+            document.getElementById('totalMaterials').textContent = totalMaterials;
+            document.getElementById('totalSize').textContent = totalSize.toFixed(1) + ' MB';
+            document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+        }
+
+        // Formata data
+        function formatDate(dateString) {
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('pt-BR', options);
+        }
+
+        // Configura filtros
+        function setupFilters() {
+            document.getElementById('filterType').addEventListener('change', function() {
+                const certId = getUrlParameter('cert') || 'itil4';
+                const filterType = this.value;
+                const sortBy = document.getElementById('filterSort').value;
+                const searchTerm = document.getElementById('searchMaterial').value;
+                loadMaterials(certId, filterType, sortBy, searchTerm);
+            });
+            
+            document.getElementById('filterSort').addEventListener('change', function() {
+                const certId = getUrlParameter('cert') || 'itil4';
+                const filterType = document.getElementById('filterType').value;
+                const sortBy = this.value;
+                const searchTerm = document.getElementById('searchMaterial').value;
+                loadMaterials(certId, filterType, sortBy, searchTerm);
+            });
+            
+            document.getElementById('searchMaterial').addEventListener('input', function() {
+                const certId = getUrlParameter('cert') || 'itil4';
+                const filterType = document.getElementById('filterType').value;
+                const sortBy = document.getElementById('filterSort').value;
+                const searchTerm = this.value;
+                loadMaterials(certId, filterType, sortBy, searchTerm);
+            });
+        }
+
+        // Configura upload
+        function setupUpload() {
+            const uploadArea = document.getElementById('uploadAreaPage');
+            const fileInput = document.getElementById('fileInputPage');
+            
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.background = '#e8f4fc';
+                uploadArea.style.borderColor = '#2980b9';
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.background = '#f8fafc';
+                uploadArea.style.borderColor = '#3498db';
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.background = '#f8fafc';
+                uploadArea.style.borderColor = '#3498db';
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+        
+        function handleFiles(files) {
+            // Implementar upload real aqui
+            alert(`Simulação: ${files.length} arquivo(s) selecionado(s) para upload.\n\nEm um sistema real, enviaria para o servidor.`);
+        }
+        
+        function downloadMaterial(fileName) {
+            alert(`Simulação: Download do arquivo ${fileName}\n\nEm um sistema real, baixaria do servidor.`);
+        }
+    </script>
+</body>
+</html>
