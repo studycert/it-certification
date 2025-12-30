@@ -398,9 +398,15 @@
             <p>Recursos selecionados para sua preparação</p>
         </div>
 
+        <!-- Campo de busca -->
+        <div class="search-filter" style="margin-bottom: 2rem;">
+            <input type="text" id="searchMaterials" placeholder="🔍 Buscar certificação..." 
+                   style="width: 100%; padding: 0.8rem 1rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+        </div>
+
         <div id="materialsContent" class="materials-grid">
             <!-- Microsoft Azure -->
-            <div class="material-card">
+            <div class="material-card" data-name="Microsoft Azure">
                 <div class="material-icon">
                     <i class="fab fa-microsoft"></i>
                 </div>
@@ -412,7 +418,7 @@
             </div>
 
             <!-- Amazon AWS -->
-            <div class="material-card">
+            <div class="material-card" data-name="Amazon AWS">
                 <div class="material-icon">
                     <i class="fab fa-aws"></i>
                 </div>
@@ -424,7 +430,7 @@
             </div>
 
             <!-- LPIC -->
-            <div class="material-card">
+            <div class="material-card" data-name="LPIC">
                 <div class="material-icon">
                     <i class="fas fa-server"></i>
                 </div>
@@ -436,7 +442,7 @@
             </div>
 
             <!-- ITIL 4 -->
-            <div class="material-card">
+            <div class="material-card" data-name="ITIL 4">
                 <div class="material-icon">
                     <i class="fas fa-cube"></i>
                 </div>
@@ -448,7 +454,7 @@
             </div>
 
             <!-- Security+ -->
-            <div class="material-card">
+            <div class="material-card" data-name="Security+">
                 <div class="material-icon">
                     <i class="fas fa-shield-alt"></i>
                 </div>
@@ -460,7 +466,7 @@
             </div>
 
             <!-- CCNA -->
-            <div class="material-card">
+            <div class="material-card" data-name="CCNA">
                 <div class="material-icon">
                     <i class="fas fa-network-wired"></i>
                 </div>
@@ -518,6 +524,59 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript para busca em tempo real -->
+    <script>
+        // Versão mais completa do JavaScript (opcional)
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchMaterials');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('#materialsContent .material-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const cardName = card.getAttribute('data-name').toLowerCase();
+                const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+                const cardDescription = card.querySelector('p').textContent.toLowerCase();
+                
+                const matches = cardName.includes(searchTerm) || 
+                               cardTitle.includes(searchTerm) || 
+                               cardDescription.includes(searchTerm);
+                
+                if (matches || searchTerm === '') {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.3s ease';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Mostrar mensagem se nenhum resultado for encontrado
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            if (visibleCount === 0 && searchTerm !== '') {
+                if (!noResultsMessage) {
+                    const message = document.createElement('div');
+                    message.id = 'noResultsMessage';
+                    message.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: #666;">
+                            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                            <h3>Nenhuma certificação encontrada</h3>
+                            <p>Tente buscar por "Azure", "AWS", "LPIC", "ITIL", "Security" ou "CCNA"</p>
+                        </div>
+                    `;
+                    document.getElementById('materialsContent').appendChild(message);
+                }
+            } else if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+        });
+    }
+});
+    </script>
 </section>
 
     <!-- Simulados Content -->
