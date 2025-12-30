@@ -1975,3 +1975,91 @@ footer {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+/* Modal de upload */
+.upload-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-modal.active {
+    display: flex;
+}
+
+.upload-modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Progresso de upload */
+.upload-progress {
+    margin: 1rem 0;
+}
+
+.progress-bar-container {
+    height: 10px;
+    background: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--success);
+    width: 0%;
+    transition: width 0.3s;
+}
+
+/* Lista de arquivos para upload */
+.upload-list {
+    margin-top: 1rem;
+}
+
+.upload-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.upload-item.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.upload-item.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Botão de upload melhorado */
+.upload-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-btn input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
