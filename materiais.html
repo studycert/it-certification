@@ -8,260 +8,51 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
+    <script src="js/config.js" defer></script>
     <style>
-        /* Estilos específicos para a página de materiais */
-        .materials-page {
-            padding: 2rem 0;
-        }
-
-        .certification-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .certification-icon {
-            font-size: 4rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
-
-        .certification-header h1 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .certification-header .cert-level {
-            display: inline-block;
-            background: var(--secondary);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Filtros */
-        .filters-container {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .filter-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .filter-select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--secondary);
-        }
-
-        /* Grid de materiais */
-        .materials-grid-page {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .material-card-page {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--secondary);
-        }
-
-        .material-card-page:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-
-        .card-header-page {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .file-icon-page {
-            font-size: 2rem;
-        }
-
-        .card-body-page {
-            padding: 1.5rem;
-        }
-
-        .card-body-page h3 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .card-body-page p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
-
-        .file-info-page {
-            display: flex;
-            justify-content: space-between;
-            color: #95a5a6;
-            font-size: 0.8rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-        }
-
-        /* Cores por tipo de arquivo */
+        /* Mantenha seus estilos CSS existentes */
+        .materials-page { padding: 2rem 0; }
+        .certification-header { text-align: center; margin-bottom: 3rem; padding: 2rem; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .certification-icon { font-size: 4rem; color: var(--secondary); margin-bottom: 1rem; }
+        .certification-header h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        .certification-header .cert-level { display: inline-block; background: var(--secondary); color: white; padding: 0.5rem 1.5rem; border-radius: 20px; font-size: 1rem; margin-bottom: 1rem; }
+        .filters-container { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .filter-group { flex: 1; min-width: 200px; }
+        .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); }
+        .filter-select { width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
+        .filter-select:focus { outline: none; border-color: var(--secondary); }
+        .materials-grid-page { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+        .material-card-page { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; border-left: 4px solid var(--secondary); }
+        .material-card-page:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .card-header-page { background: #f8f9fa; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+        .file-icon-page { font-size: 2rem; }
+        .card-body-page { padding: 1.5rem; }
+        .card-body-page h3 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.2rem; }
+        .card-body-page p { color: #666; font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; }
+        .file-info-page { display: flex; justify-content: space-between; color: #95a5a6; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
         .pdf-color { color: #e74c3c; }
         .ppt-color { color: #e67e22; }
         .doc-color { color: #3498db; }
         .zip-color { color: #9b59b6; }
         .video-color { color: #27ae60; }
-
-        /* Seção de upload */
-        .upload-section-page {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            margin: 3rem 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .upload-area-page {
-            border: 2px dashed #3498db;
-            border-radius: 8px;
-            padding: 3rem 2rem;
-            text-align: center;
-            margin: 2rem 0;
-            background: #f8fafc;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .upload-area-page:hover {
-            background: #e8f4fc;
-            border-color: #2980b9;
-        }
-
-        /* Responsivo */
+        .upload-section-page { background: white; border-radius: 10px; padding: 2rem; margin: 3rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .upload-area-page { border: 2px dashed #3498db; border-radius: 8px; padding: 3rem 2rem; text-align: center; margin: 2rem 0; background: #f8fafc; transition: all 0.3s; cursor: pointer; }
+        .upload-area-page:hover { background: #e8f4fc; border-color: #2980b9; }
         @media (max-width: 768px) {
-            .materials-grid-page {
-                grid-template-columns: 1fr;
-            }
-            
-            .filters-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .certification-header h1 {
-                font-size: 2rem;
-            }
+            .materials-grid-page { grid-template-columns: 1fr; }
+            .filters-container { flex-direction: column; gap: 1rem; }
+            .certification-header h1 { font-size: 2rem; }
         }
-
-        /* Breadcrumb */
-        .breadcrumb-page {
-            background: #e9ecef;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-        }
-
-        .breadcrumb-page a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .breadcrumb-page a:hover {
-            color: var(--secondary);
-        }
-
+        .breadcrumb-page { background: #e9ecef; padding: 1rem 0; margin-bottom: 2rem; }
+        .breadcrumb-page a { color: var(--primary); text-decoration: none; }
+        .breadcrumb-page a:hover { color: var(--secondary); }
+        
         /* Barra de autenticação */
         .auth-bar {
             background: #f8f9fa;
-            padding: 0.8rem 0;
+            padding: 0.5rem 0;
             border-bottom: 1px solid #dee2e6;
-        }
-
-        /* Modal de login rápido */
-        .modal-auth {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .auth-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-        }
-
-        .close-auth-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .message {
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -281,15 +72,17 @@
         </div>
     </header>
 
-    <!-- Barra de Autenticação -->
+    <!-- Barra de Autenticação Simplificada -->
     <div class="auth-bar">
         <div class="container">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="font-size: 0.9rem; color: #666;">
+                <div>
                     <i class="fas fa-user"></i> 
-                    <span id="authStatus">Verificando autenticação...</span>
+                    <span id="authStatus">Verificando...</span>
                 </div>
-                <div id="authContainer"></div>
+                <div id="authContainer">
+                    <!-- Será preenchido pelo auth.js -->
+                </div>
             </div>
         </div>
     </div>
@@ -383,10 +176,10 @@
                 <p style="font-size: 0.9rem; color: #95a5a6;">
                     Formatos suportados: PDF, PPT, DOC, ZIP, MP4 (máx. 100MB)
                 </p>
-                <div class="btn btn-primary" style="margin-top: 1rem;" onclick="checkAuthBeforeUpload()">
+                <div class="btn btn-primary" style="margin-top: 1rem;" onclick="checkAuthAndUpload()">
                     <i class="fas fa-upload"></i> Selecionar Arquivos
                 </div>
-                <input type="file" id="fileInputPage" multiple accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4,.avi,.mov,.mkv" style="display: none;">
+                <input type="file" id="fileInputPage" multiple accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4" style="display: none;">
             </div>
 
             <div id="uploadProgressPage" style="display: none; margin-top: 1rem;">
@@ -426,297 +219,34 @@
         </div>
     </footer>
 
-    <!-- Modal de Login Rápido -->
-    <div id="quickLoginModal" class="modal-auth">
-        <div class="auth-container">
-            <button class="close-auth-modal" onclick="closeQuickLogin()">&times;</button>
-            <div class="auth-header">
-                <h2>Study<span style="color: #3498db;">Cert</span></h2>
-                <p>Faça login para continuar</p>
-            </div>
-            
-            <div id="quickLoginForm">
-                <div id="quickLoginMessage" class="message"></div>
-                <div class="form-group">
-                    <label for="quickLoginEmail">E-mail</label>
-                    <input type="email" id="quickLoginEmail" placeholder="seu@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="quickLoginPassword">Senha</label>
-                    <input type="password" id="quickLoginPassword" placeholder="Sua senha">
-                </div>
-                <button class="btn btn-primary" onclick="quickLogin()" style="width: 100%;">Entrar</button>
-                <div class="auth-footer" style="text-align: center; margin-top: 1rem;">
-                    <p>Não tem conta? <a href="index.html#register" style="color: var(--primary);">Cadastre-se</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Configuração
-        const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
-        
-        let supabaseClient = null;
-        let currentUser = null;
-        let currentUploadFile = null;
-
-        // Dados das certificações
+        // Configurações
         const certifications = {
-            'itil4': {
-                title: 'ITIL 4 Foundation',
-                level: 'Foundation',
-                icon: 'fas fa-cube',
-                color: '#3498db',
-                description: 'Framework de gerenciamento de serviços de TI. Acesse guias, resumos e recursos para sua preparação.'
-            },
-            'azure': {
-                title: 'Microsoft Azure',
-                level: 'Cloud',
-                icon: 'fab fa-microsoft',
-                color: '#0078d4',
-                description: 'Guias de estudo, resumos e recursos para certificações Azure (AZ-900, AZ-104, etc.)'
-            },
-            'aws': {
-                title: 'Amazon AWS',
-                level: 'Cloud',
-                icon: 'fab fa-aws',
-                color: '#ff9900',
-                description: 'Material para Cloud Practitioner, Solutions Architect e outras certificações AWS'
-            },
-            'lpic': {
-                title: 'LPIC-1 e LPIC-2',
-                level: 'Linux',
-                icon: 'fas fa-server',
-                color: '#333333',
-                description: 'Recursos para certificações Linux Professional Institute'
-            },
-            'security': {
-                title: 'Security+',
-                level: 'Segurança',
-                icon: 'fas fa-shield-alt',
-                color: '#ff6b6b',
-                description: 'Material para preparação da certificação CompTIA Security+'
-            },
-            'ccna': {
-                title: 'CCNA',
-                level: 'Rede',
-                icon: 'fas fa-network-wired',
-                color: '#00a0d2',
-                description: 'Recursos para Cisco Certified Network Associate'
-            }
+            'itil4': { title: 'ITIL 4 Foundation', level: 'Foundation', icon: 'fas fa-cube', color: '#3498db' },
+            'azure': { title: 'Microsoft Azure', level: 'Cloud', icon: 'fab fa-microsoft', color: '#0078d4' },
+            'aws': { title: 'Amazon AWS', level: 'Cloud', icon: 'fab fa-aws', color: '#ff9900' },
+            'lpic': { title: 'LPIC-1 e LPIC-2', level: 'Linux', icon: 'fas fa-server', color: '#333333' },
+            'security': { title: 'Security+', level: 'Segurança', icon: 'fas fa-shield-alt', color: '#ff6b6b' },
+            'ccna': { title: 'CCNA', level: 'Rede', icon: 'fas fa-network-wired', color: '#00a0d2' }
         };
 
-        // Inicializar Supabase e verificar autenticação
-        async function initSupabase() {
-            try {
-                // Primeiro, tentar usar o auth.js global
-                if (window.studyCertAuth && window.studyCertAuth.supabase) {
-                    supabaseClient = window.studyCertAuth.supabase;
-                    currentUser = window.studyCertAuth.getUser();
-                    console.log('✅ Usando auth.js global');
-                } else {
-                    // Fallback: inicializar diretamente
-                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                        auth: {
-                            persistSession: true,
-                            autoRefreshToken: true
-                        }
-                    });
-                    
-                    // Verificar sessão
-                    const { data: { session } } = await supabaseClient.auth.getSession();
-                    if (session) {
-                        currentUser = session.user;
-                        console.log('✅ Sessão encontrada:', currentUser.email);
-                    }
-                }
-                
-                // Atualizar interface de autenticação
-                updateAuthUI();
-                
-            } catch (error) {
-                console.error('❌ Erro ao inicializar Supabase:', error);
-            }
-        }
+        let supabaseClient = null;
+        let currentUploadFile = null;
 
-        // Atualizar interface de autenticação
-        function updateAuthUI() {
-            const authStatus = document.getElementById('authStatus');
-            const authContainer = document.getElementById('authContainer');
-            const uploadSection = document.getElementById('uploadSection');
-            
-            if (currentUser) {
-                const userName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
-                
-                authStatus.textContent = `Logado como: ${userName}`;
-                authStatus.style.color = '#27ae60';
-                
-                authContainer.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <div style="background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">
-                            ${userName.substring(0, 2).toUpperCase()}
-                        </div>
-                        <button onclick="logoutFromMaterials()" class="btn btn-outline btn-sm">
-                            <i class="fas fa-sign-out-alt"></i> Sair
-                        </button>
-                    </div>
-                `;
-                
-                if (uploadSection) {
-                    uploadSection.style.display = 'block';
-                }
-                
-                console.log('✅ Interface atualizada: usuário logado');
+        // Função para verificar autenticação antes do upload
+        function checkAuthAndUpload() {
+            // Usar o authManager global
+            if (window.authManager && window.authManager.isAuthenticated()) {
+                console.log('✅ Usuário autenticado, iniciando upload...');
+                document.getElementById('fileInputPage').click();
             } else {
-                authStatus.textContent = 'Não logado';
-                authStatus.style.color = '#e74c3c';
-                
-                authContainer.innerHTML = `
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button onclick="showQuickLoginModal()" class="btn btn-outline btn-sm">
-                            <i class="fas fa-sign-in-alt"></i> Entrar
-                        </button>
-                        <a href="index.html#register" class="btn btn-primary btn-sm">
-                            <i class="fas fa-user-plus"></i> Cadastrar
-                        </a>
-                    </div>
-                `;
-                
-                if (uploadSection) {
-                    uploadSection.style.display = 'block'; // Mantém visível, mas mostrará mensagem de login
-                }
-                
-                console.log('⚠️ Interface atualizada: usuário não logado');
+                console.log('❌ Usuário não autenticado');
+                alert('Faça login para compartilhar materiais. Redirecionando para página de login...');
+                window.location.href = 'index.html#login';
             }
         }
 
-        // Verificar autenticação antes do upload
-        function checkAuthBeforeUpload() {
-            if (!currentUser) {
-                showQuickLoginModal();
-                return;
-            }
-            
-            // Se estiver autenticado, prosseguir com upload
-            document.getElementById('fileInputPage').click();
-        }
-
-        // Funções do modal de login rápido
-        function showQuickLoginModal() {
-            document.getElementById('quickLoginModal').style.display = 'flex';
-        }
-
-        function closeQuickLogin() {
-            document.getElementById('quickLoginModal').style.display = 'none';
-            document.getElementById('quickLoginMessage').style.display = 'none';
-            document.getElementById('quickLoginEmail').value = '';
-            document.getElementById('quickLoginPassword').value = '';
-        }
-
-        async function quickLogin() {
-            const email = document.getElementById('quickLoginEmail').value;
-            const password = document.getElementById('quickLoginPassword').value;
-            const messageEl = document.getElementById('quickLoginMessage');
-            
-            if (!email || !password) {
-                messageEl.textContent = 'Por favor, preencha todos os campos';
-                messageEl.style.display = 'block';
-                messageEl.className = 'message error';
-                return;
-            }
-            
-            try {
-                // Criar cliente temporário para login
-                const tempSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                
-                const { data, error } = await tempSupabase.auth.signInWithPassword({
-                    email: email.toLowerCase().trim(),
-                    password: password
-                });
-                
-                if (error) throw error;
-                
-                messageEl.textContent = '✅ Login realizado com sucesso!';
-                messageEl.style.display = 'block';
-                messageEl.className = 'message success';
-                
-                // Atualizar usuário atual
-                currentUser = data.user;
-                
-                // Se o auth.js global estiver disponível, atualizar
-                if (window.studyCertAuth) {
-                    window.studyCertAuth.setUser(data.user);
-                }
-                
-                // Atualizar interface
-                updateAuthUI();
-                
-                setTimeout(() => {
-                    closeQuickLogin();
-                }, 1500);
-                
-            } catch (error) {
-                console.error('❌ Erro no login:', error);
-                messageEl.textContent = '❌ ' + (error.message || 'Erro ao fazer login');
-                messageEl.style.display = 'block';
-                messageEl.className = 'message error';
-            }
-        }
-
-        async function logoutFromMaterials() {
-            try {
-                if (supabaseClient) {
-                    await supabaseClient.auth.signOut();
-                }
-                
-                // Limpar usuário local
-                currentUser = null;
-                
-                // Se o auth.js global estiver disponível, limpar
-                if (window.studyCertAuth) {
-                    window.studyCertAuth.clearUser();
-                }
-                
-                // Atualizar interface
-                updateAuthUI();
-                
-                console.log('✅ Logout realizado');
-                
-            } catch (error) {
-                console.error('❌ Erro no logout:', error);
-            }
-        }
-
-        // Resto do código existente (carregar materiais, upload, etc.)
-        // ... mantenha as funções que você já tem para loadMaterialsFromSupabase, uploadMaterial, etc.
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', async function() {
-            await initSupabase();
-            
-            const certId = getUrlParameter('cert') || 'itil4';
-            loadCertification(certId);
-            await loadMaterialsFromSupabase(certId);
-            setupFilters();
-            setupUpload();
-            
-            // Configurar eventos do modal
-            document.getElementById('quickLoginModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeQuickLogin();
-                }
-            });
-            
-            document.getElementById('quickLoginPassword')?.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    quickLogin();
-                }
-            });
-        });
-
-        // Adicione as outras funções que você já tem (getUrlParameter, loadCertification, etc.)
+        // Função para obter parâmetro da URL
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -724,6 +254,7 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
+        // Carrega informações da certificação
         function loadCertification(certId) {
             const cert = certifications[certId] || certifications['itil4'];
             
@@ -731,11 +262,111 @@
             document.getElementById('certIcon').innerHTML = `<i class="${cert.icon}"></i>`;
             document.getElementById('certTitle').textContent = cert.title;
             document.getElementById('certLevel').textContent = `Nível: ${cert.level}`;
-            document.getElementById('certDescription').textContent = cert.description;
+            document.getElementById('certDescription').textContent = 'Acesse guias, resumos e recursos para sua preparação.';
             document.getElementById('certHeader').style.borderLeft = `5px solid ${cert.color}`;
         }
 
-        // Continue com as outras funções que você já tem...
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Aguardar authManager inicializar
+            setTimeout(async () => {
+                // Carregar certificação
+                const certId = getUrlParameter('cert') || 'itil4';
+                loadCertification(certId);
+                
+                // Configurar Supabase
+                await initSupabaseForMaterials();
+                
+                // Carregar materiais
+                await loadMaterialsFromSupabase(certId);
+                
+                // Configurar eventos
+                setupFilters();
+                setupUpload();
+                
+            }, 1000);
+        });
+
+        // Inicializar Supabase para materiais
+        async function initSupabaseForMaterials() {
+            try {
+                // Usar o Supabase do authManager se disponível
+                if (window.authManager && window.authManager.getSupabase()) {
+                    supabaseClient = window.authManager.getSupabase();
+                    console.log('✅ Usando Supabase do authManager');
+                } else {
+                    // Fallback: criar novo cliente
+                    const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
+                    const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
+                    
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                        auth: { persistSession: true }
+                    });
+                    console.log('✅ Criado novo cliente Supabase');
+                }
+            } catch (error) {
+                console.error('❌ Erro ao inicializar Supabase:', error);
+            }
+        }
+
+        // Resto das funções (loadMaterialsFromSupabase, uploadMaterial, etc.)
+        // Mantenha suas funções existentes aqui...
+
+        // Função simplificada para carregar materiais
+        async function loadMaterialsFromSupabase(certId) {
+            try {
+                if (!supabaseClient) {
+                    console.error('❌ Supabase não inicializado');
+                    return;
+                }
+                
+                const { data, error } = await supabaseClient
+                    .from('materiais')
+                    .select('*')
+                    .eq('certificacao', certId)
+                    .eq('publico', true)
+                    .order('data_upload', { ascending: false });
+                
+                if (error) throw error;
+                
+                console.log(`✅ ${data?.length || 0} materiais carregados`);
+                
+                // Atualizar interface
+                updateMaterialsInterface(data || []);
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar materiais:', error);
+            }
+        }
+
+        // Atualizar interface dos materiais
+        function updateMaterialsInterface(materials) {
+            const container = document.getElementById('materialsContainer');
+            
+            if (!materials || materials.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                        <i class="fas fa-folder-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                        <h3>Nenhum material encontrado</h3>
+                        <p>Seja o primeiro a compartilhar um material!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Renderizar materiais...
+            // (Mantenha seu código existente aqui)
+        }
+
+        // Configurar filtros
+        function setupFilters() {
+            // (Mantenha seu código existente aqui)
+        }
+
+        // Configurar upload
+        function setupUpload() {
+            // (Mantenha seu código existente aqui)
+        }
 
     </script>
 </body>
