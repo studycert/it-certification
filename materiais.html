@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
-        /* Reset e estilos globais */
         * {
             margin: 0;
             padding: 0;
@@ -18,23 +17,20 @@
             --primary: #3498db;
             --primary-dark: #2980b9;
             --secondary: #2ecc71;
-            --secondary-dark: #27ae60;
             --danger: #e74c3c;
-            --danger-dark: #c0392b;
-            --warning: #f39c12;
             --dark: #2c3e50;
             --light: #ecf0f1;
             --gray: #95a5a6;
-            --gray-light: #bdc3c7;
             --shadow: 0 4px 6px rgba(0,0,0,0.1);
             --radius: 8px;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
             background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
@@ -80,19 +76,50 @@
             color: var(--primary);
         }
 
+        /* Auth Bar */
+        .auth-bar {
+            background: var(--light);
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .auth-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
         /* Botões */
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: var(--radius);
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             border: none;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            transition: all 0.3s;
+            font-size: 0.95rem;
         }
 
         .btn-primary {
@@ -122,58 +149,16 @@
         }
 
         .btn-danger:hover {
-            background: var(--danger-dark);
+            background: #c0392b;
         }
 
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.9rem;
-        }
-
-        /* Barra de autenticação */
-        .auth-bar {
-            background: var(--light);
-            padding: 10px 0;
-            border-bottom: 1px solid var(--gray-light);
-        }
-
-        .auth-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* Conteúdo principal */
+        /* Conteúdo Principal */
         main {
-            min-height: calc(100vh - 200px);
+            flex: 1;
             padding: 2rem 0;
         }
 
-        /* Cabeçalho da certificação */
+        /* Cabeçalho da Certificação */
         .certification-header {
             text-align: center;
             background: white;
@@ -185,17 +170,18 @@
         }
 
         .cert-icon {
-            font-size: 4rem;
+            font-size: 3rem;
             color: var(--primary);
             margin-bottom: 1rem;
         }
 
         .cert-title {
+            font-size: 2rem;
             color: var(--dark);
             margin-bottom: 0.5rem;
         }
 
-        .cert-badge {
+        .cert-level {
             display: inline-block;
             background: var(--secondary);
             color: white;
@@ -230,7 +216,6 @@
             border: 2px solid #ddd;
             border-radius: var(--radius);
             font-size: 1rem;
-            transition: border-color 0.3s;
         }
 
         .filter-control:focus {
@@ -238,7 +223,7 @@
             border-color: var(--primary);
         }
 
-        /* Grid de materiais */
+        /* Grid de Materiais */
         .materials-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -251,7 +236,7 @@
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             position: relative;
         }
 
@@ -272,11 +257,11 @@
             font-size: 2.5rem;
         }
 
-        .file-icon.pdf { color: var(--danger); }
-        .file-icon.ppt { color: var(--warning); }
-        .file-icon.doc { color: var(--primary); }
+        .file-icon.pdf { color: #e74c3c; }
+        .file-icon.ppt { color: #e67e22; }
+        .file-icon.doc { color: #3498db; }
         .file-icon.zip { color: #9b59b6; }
-        .file-icon.video { color: var(--secondary); }
+        .file-icon.video { color: #27ae60; }
 
         .file-info h3 {
             color: var(--dark);
@@ -319,9 +304,9 @@
             left: 10px;
             background: rgba(52, 152, 219, 0.1);
             color: var(--primary);
-            padding: 3px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
         }
 
@@ -347,7 +332,7 @@
             opacity: 1;
         }
 
-        /* Seção de upload */
+        /* Upload Section */
         .upload-section {
             background: white;
             border-radius: var(--radius);
@@ -359,7 +344,7 @@
         .upload-area {
             border: 3px dashed var(--primary);
             border-radius: var(--radius);
-            padding: 3rem 2rem;
+            padding: 2rem;
             text-align: center;
             margin: 1.5rem 0;
             background: #f8fafc;
@@ -373,12 +358,12 @@
         }
 
         .upload-area i {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: var(--primary);
             margin-bottom: 1rem;
         }
 
-        /* Estatísticas */
+        /* Stats */
         .stats {
             background: white;
             border-radius: var(--radius);
@@ -414,15 +399,8 @@
         .stat-value.size { color: var(--secondary); }
         .stat-value.views { color: var(--danger); }
 
-        /* Estados de carregamento e vazio */
-        .loading-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 3rem;
-            color: var(--gray);
-        }
-
-        .empty-state {
+        /* States */
+        .loading-state, .empty-state {
             grid-column: 1 / -1;
             text-align: center;
             padding: 3rem;
@@ -435,7 +413,7 @@
             opacity: 0.5;
         }
 
-        /* Modais */
+        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -456,18 +434,6 @@
             max-width: 500px;
             width: 90%;
             position: relative;
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .close-modal {
@@ -507,12 +473,12 @@
             transition: width 0.3s;
         }
 
-        /* Toast notifications */
+        /* Toast */
         .toast {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px 20px;
+            padding: 12px 20px;
             border-radius: var(--radius);
             color: white;
             font-weight: 500;
@@ -521,14 +487,12 @@
             align-items: center;
             gap: 10px;
             animation: toastSlideIn 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             min-width: 300px;
         }
 
         .toast.success { background: var(--secondary); }
         .toast.error { background: var(--danger); }
         .toast.info { background: var(--primary); }
-        .toast.warning { background: var(--warning); }
 
         @keyframes toastSlideIn {
             from {
@@ -538,21 +502,6 @@
             to {
                 opacity: 1;
                 transform: translateX(0);
-            }
-        }
-
-        .toast-slide-out {
-            animation: toastSlideOut 0.3s ease forwards;
-        }
-
-        @keyframes toastSlideOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(100%);
             }
         }
 
@@ -587,7 +536,6 @@
         .footer-links a {
             color: #bdc3c7;
             text-decoration: none;
-            transition: color 0.3s;
         }
 
         .footer-links a:hover {
@@ -602,7 +550,7 @@
             font-size: 0.9rem;
         }
 
-        /* Responsividade */
+        /* Responsive */
         @media (max-width: 768px) {
             .materials-grid {
                 grid-template-columns: 1fr;
@@ -612,14 +560,10 @@
                 flex-direction: column;
             }
             
-            .auth-info {
+            .auth-content {
                 flex-direction: column;
                 gap: 10px;
                 text-align: center;
-            }
-            
-            .auth-buttons {
-                justify-content: center;
             }
         }
     </style>
@@ -640,29 +584,29 @@
         </div>
     </header>
 
-    <!-- Barra de Autenticação -->
+    <!-- Auth Bar -->
     <div class="auth-bar">
         <div class="container">
-            <div class="auth-info">
+            <div class="auth-content">
                 <div id="authStatus">Verificando autenticação...</div>
-                <div id="authContainer"></div>
+                <div id="authButtons"></div>
             </div>
         </div>
     </div>
 
-    <!-- Conteúdo Principal -->
+    <!-- Main Content -->
     <main class="container">
-        <!-- Cabeçalho da Certificação -->
-        <section class="certification-header" id="certHeader">
-            <div class="cert-icon" id="certIcon">
-                <i class="fas fa-cube"></i>
+        <!-- Certification Header -->
+        <section class="certification-header">
+            <div class="cert-icon">
+                <i class="fas fa-cube" id="certIcon"></i>
             </div>
-            <h1 class="cert-title" id="certTitle">Carregando...</h1>
-            <div class="cert-badge" id="certLevel">Nível: Foundation</div>
-            <p id="certDescription">Acesse guias, resumos, apresentações e outros recursos para sua preparação.</p>
+            <h1 class="cert-title" id="certTitle">ITIL 4 Foundation</h1>
+            <div class="cert-level" id="certLevel">Nível: Foundation</div>
+            <p id="certDescription">Framework de gerenciamento de serviços de TI. Acesse guias, resumos e recursos para sua preparação.</p>
         </section>
 
-        <!-- Filtros -->
+        <!-- Filters -->
         <div class="filters">
             <div class="filter-group">
                 <label for="filterType"><i class="fas fa-filter"></i> Tipo de Material</label>
@@ -692,7 +636,7 @@
             </div>
         </div>
 
-        <!-- Grid de Materiais -->
+        <!-- Materials Grid -->
         <div class="materials-grid" id="materialsContainer">
             <div class="loading-state">
                 <i class="fas fa-spinner fa-spin"></i>
@@ -700,7 +644,7 @@
             </div>
         </div>
 
-        <!-- Estatísticas -->
+        <!-- Statistics -->
         <div class="stats">
             <h3><i class="fas fa-chart-bar"></i> Estatísticas</h3>
             <div class="stats-grid">
@@ -719,8 +663,8 @@
             </div>
         </div>
 
-        <!-- Seção de Upload -->
-        <section class="upload-section" id="uploadSection">
+        <!-- Upload Section -->
+        <section class="upload-section" id="uploadSection" style="display: none;">
             <h2><i class="fas fa-share-alt"></i> Compartilhar Material</h2>
             <p>Compartilhe seus materiais de estudo com a comunidade.</p>
             
@@ -731,7 +675,7 @@
                 <p style="color: var(--gray); margin-top: 10px; font-size: 0.9rem;">
                     Formatos suportados: PDF, PPT, DOC, ZIP, MP4 (máx. 100MB)
                 </p>
-                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="initiateUpload()">
+                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="startUpload()">
                     <i class="fas fa-upload"></i> Selecionar Arquivos
                 </button>
                 <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4" style="display: none;">
@@ -762,7 +706,7 @@
         </div>
     </footer>
 
-    <!-- Modal de Upload -->
+    <!-- Upload Modal -->
     <div id="uploadModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('uploadModal')">&times;</button>
@@ -793,7 +737,7 @@
                 
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
                     <button onclick="closeModal('uploadModal')" class="btn btn-outline">Cancelar</button>
-                    <button onclick="uploadFile()" class="btn btn-primary">
+                    <button onclick="uploadMaterial()" class="btn btn-primary">
                         <i class="fas fa-paper-plane"></i> Enviar
                     </button>
                 </div>
@@ -801,7 +745,7 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
+    <!-- Delete Modal -->
     <div id="deleteModal" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-bottom: 1rem; color: var(--danger);">
@@ -832,160 +776,132 @@
         let supabase = null;
         let currentUser = null;
         let materialsCache = [];
-        let currentCertId = 'itil4';
-        let materialToDelete = null;
         let currentUploadFile = null;
+        let materialToDelete = null;
+        let authChecked = false;
 
-        // Mapeamento de certificações
-        const certifications = {
-            'itil4': { 
-                title: 'ITIL 4 Foundation', 
-                level: 'Foundation', 
-                icon: 'fas fa-cube', 
-                color: '#3498db',
-                description: 'Framework de gerenciamento de serviços de TI. Acesse guias, resumos e recursos para sua preparação.'
-            }
-        };
-
-        // Inicialização
+        // Inicialização simplificada
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🚀 Inicializando StudyCert Materiais...');
+            console.log('🚀 Inicializando StudyCert...');
             
-            // 1. Inicializar Supabase
-            await initSupabase();
-            
-            // 2. Verificar autenticação
-            await checkAuth();
-            
-            // 3. Carregar certificação atual
-            const urlParams = new URLSearchParams(window.location.search);
-            currentCertId = urlParams.get('cert') || 'itil4';
-            loadCertification(currentCertId);
-            
-            // 4. Configurar eventos
-            setupEventListeners();
-            
-            // 5. Carregar materiais
-            await loadMaterials();
-            
-            console.log('✅ Página inicializada com sucesso');
-        });
-
-        // 1. Inicializar Supabase
-        async function initSupabase() {
             try {
+                // 1. Inicializar Supabase de forma simples
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
                     auth: {
                         persistSession: true,
-                        autoRefreshToken: true,
-                        detectSessionInUrl: true
+                        autoRefreshToken: true
                     }
                 });
                 console.log('✅ Supabase inicializado');
+                
+                // 2. Verificar autenticação SIMPLIFICADA
+                await checkAuth();
+                
+                // 3. Carregar materiais
+                await loadMaterials();
+                
+                // 4. Configurar eventos
+                setupEventListeners();
+                
+                console.log('✅ Página inicializada');
+                
             } catch (error) {
-                console.error('❌ Erro ao inicializar Supabase:', error);
-                showToast('Erro de conexão com o servidor', 'error');
+                console.error('❌ Erro na inicialização:', error);
+                showToast('Erro ao inicializar a página', 'error');
             }
-        }
+        });
 
-        // 2. Verificar autenticação - CORRIGIDA
+        // Verificar autenticação - VERSÃO SIMPLIFICADA
         async function checkAuth() {
             try {
                 console.log('🔐 Verificando autenticação...');
                 
-                // Primeiro verificar localStorage
+                // Primeiro verificar localStorage (forma mais rápida)
                 const storedUser = localStorage.getItem('studycert_user');
                 if (storedUser) {
                     try {
                         const userData = JSON.parse(storedUser);
-                        if (userData && userData.id) {
+                        if (userData && userData.id && userData.email) {
                             currentUser = userData;
-                            console.log('✅ Usuário carregado do localStorage:', currentUser.email);
+                            console.log('✅ Usuário do localStorage:', currentUser.email);
                             updateAuthUI();
-                            return true;
+                            authChecked = true;
+                            return;
                         }
                     } catch (e) {
-                        console.warn('⚠️ Erro ao parse localStorage:', e);
+                        console.warn('⚠️ Erro ao ler localStorage:', e);
                     }
                 }
                 
                 // Se não tem no localStorage, verificar sessão do Supabase
-                if (!supabase) {
-                    await initSupabase();
-                }
-                
-                // Verificar sessão atual
                 const { data: { session }, error } = await supabase.auth.getSession();
                 
                 if (error) {
-                    console.warn('⚠️ Erro ao verificar sessão:', error.message);
-                    currentUser = null;
+                    console.warn('⚠️ Erro na sessão:', error.message);
                 } else if (session && session.user) {
-                    console.log('✅ Usuário autenticado via Supabase:', session.user.email);
+                    console.log('✅ Usuário do Supabase:', session.user.email);
                     
-                    // Salvar dados do usuário
                     currentUser = {
                         id: session.user.id,
                         email: session.user.email,
                         name: session.user.user_metadata?.full_name || 
-                              session.user.user_metadata?.name || 
                               session.user.email.split('@')[0]
                     };
                     
                     // Salvar no localStorage
                     localStorage.setItem('studycert_user', JSON.stringify(currentUser));
-                    localStorage.setItem('studycert_session', JSON.stringify(session));
                 } else {
-                    console.log('ℹ️ Nenhuma sessão ativa');
+                    console.log('ℹ️ Nenhum usuário logado');
                     currentUser = null;
+                    localStorage.removeItem('studycert_user');
                 }
                 
+                authChecked = true;
+                updateAuthUI();
+                
             } catch (error) {
-                console.error('❌ Erro ao verificar autenticação:', error);
+                console.error('❌ Erro ao verificar auth:', error);
                 currentUser = null;
-            } finally {
+                authChecked = true;
                 updateAuthUI();
             }
-            
-            return currentUser !== null;
         }
 
-        // 3. Atualizar interface de autenticação
+        // Atualizar interface de autenticação
         function updateAuthUI() {
             const authStatus = document.getElementById('authStatus');
-            const authContainer = document.getElementById('authContainer');
+            const authButtons = document.getElementById('authButtons');
             const uploadSection = document.getElementById('uploadSection');
             
-            if (!authStatus || !authContainer) return;
+            if (!authStatus || !authButtons) return;
             
             if (currentUser) {
                 // Usuário logado
                 authStatus.innerHTML = `
-                    <div class="user-display">
+                    <div class="auth-status">
                         <div class="user-avatar">${currentUser.name.substring(0, 2).toUpperCase()}</div>
-                        <span>Olá, <strong>${currentUser.name}</strong>!</span>
+                        <span>Olá, <strong>${currentUser.name}</strong></span>
                     </div>
                 `;
                 
-                authContainer.innerHTML = `
-                    <div class="auth-buttons">
-                        <button onclick="logout()" class="btn btn-outline btn-sm">
-                            <i class="fas fa-sign-out-alt"></i> Sair
-                        </button>
-                    </div>
+                authButtons.innerHTML = `
+                    <button onclick="logout()" class="btn btn-outline btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
                 `;
                 
                 if (uploadSection) {
                     uploadSection.style.display = 'block';
                 }
+                
             } else {
                 // Usuário não logado
                 authStatus.innerHTML = `
                     <span><i class="fas fa-user"></i> Visitante</span>
                 `;
                 
-                authContainer.innerHTML = `
-                    <div class="auth-buttons">
+                authButtons.innerHTML = `
+                    <div style="display: flex; gap: 8px;">
                         <button onclick="goToLogin()" class="btn btn-outline btn-sm">
                             <i class="fas fa-sign-in-alt"></i> Entrar
                         </button>
@@ -1001,9 +917,42 @@
             }
         }
 
-        // 4. Configurar eventos
+        // Funções de navegação
+        function goToLogin() {
+            localStorage.setItem('studycert_redirect', window.location.href);
+            window.location.href = 'index.html#login';
+        }
+
+        function goToRegister() {
+            localStorage.setItem('studycert_redirect', window.location.href);
+            window.location.href = 'index.html#register';
+        }
+
+        async function logout() {
+            try {
+                // Limpar localStorage
+                localStorage.removeItem('studycert_user');
+                
+                // Fazer logout do Supabase
+                if (supabase) {
+                    await supabase.auth.signOut();
+                }
+                
+                currentUser = null;
+                updateAuthUI();
+                await loadMaterials();
+                
+                showToast('✅ Logout realizado com sucesso', 'success');
+                
+            } catch (error) {
+                console.error('❌ Erro ao fazer logout:', error);
+                showToast('Erro ao fazer logout', 'error');
+            }
+        }
+
+        // Configurar eventos
         function setupEventListeners() {
-            // Input de arquivo
+            // File input
             const fileInput = document.getElementById('fileInput');
             if (fileInput) {
                 fileInput.addEventListener('change', handleFileSelect);
@@ -1012,70 +961,57 @@
             // Drag and drop
             const uploadArea = document.getElementById('uploadArea');
             if (uploadArea) {
-                uploadArea.addEventListener('dragover', handleDragOver);
-                uploadArea.addEventListener('dragleave', handleDragLeave);
-                uploadArea.addEventListener('drop', handleDrop);
+                uploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.style.background = '#e8f4fc';
+                });
+                
+                uploadArea.addEventListener('dragleave', function() {
+                    this.style.background = '#f8fafc';
+                });
+                
+                uploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.style.background = '#f8fafc';
+                    
+                    if (e.dataTransfer.files.length > 0) {
+                        const file = e.dataTransfer.files[0];
+                        handleFileSelect({ target: { files: [file] } });
+                    }
+                });
             }
             
             // Filtros
-            document.getElementById('filterType')?.addEventListener('change', applyFilters);
-            document.getElementById('filterSort')?.addEventListener('change', applyFilters);
-            document.getElementById('searchMaterial')?.addEventListener('input', applyFilters);
+            document.getElementById('filterType').addEventListener('change', applyFilters);
+            document.getElementById('filterSort').addEventListener('change', applyFilters);
+            document.getElementById('searchMaterial').addEventListener('input', applyFilters);
             
             // Modais
-            document.getElementById('uploadModal')?.addEventListener('click', function(e) {
+            document.getElementById('uploadModal').addEventListener('click', function(e) {
                 if (e.target === this) closeModal('uploadModal');
             });
             
-            document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+            document.getElementById('deleteModal').addEventListener('click', function(e) {
                 if (e.target === this) closeModal('deleteModal');
             });
-            
-            // Monitorar mudanças na sessão
-            if (supabase) {
-                supabase.auth.onAuthStateChange((event, session) => {
-                    console.log('🔄 Mudança de estado de autenticação:', event);
-                    checkAuth();
-                });
-            }
         }
 
-        // 5. Carregar certificação
-        function loadCertification(certId) {
-            const cert = certifications[certId] || certifications['itil4'];
-            
-            document.getElementById('certTitle').textContent = cert.title;
-            document.getElementById('certLevel').textContent = `Nível: ${cert.level}`;
-            document.getElementById('certDescription').textContent = cert.description;
-            document.getElementById('certIcon').innerHTML = `<i class="${cert.icon}"></i>`;
-            document.getElementById('certHeader').style.borderLeftColor = cert.color;
-        }
-
-        // 6. Carregar materiais
+        // Carregar materiais
         async function loadMaterials() {
             try {
                 console.log('📥 Carregando materiais...');
                 
-                // Mostrar estado de carregamento
                 const container = document.getElementById('materialsContainer');
-                if (container) {
-                    container.innerHTML = `
-                        <div class="loading-state">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <p>Carregando materiais...</p>
-                        </div>
-                    `;
-                }
+                if (!container) return;
                 
                 if (!supabase) {
                     throw new Error('Supabase não inicializado');
                 }
                 
-                // Carregar materiais do Supabase
+                // Carregar materiais
                 const { data, error } = await supabase
                     .from('materiais')
                     .select('*')
-                    .eq('certificacao', currentCertId)
                     .eq('publico', true)
                     .order('data_upload', { ascending: false });
                 
@@ -1088,17 +1024,17 @@
                 materialsCache = data || [];
                 console.log(`✅ ${materialsCache.length} materiais carregados`);
                 
-                // Atualizar interface
+                // Renderizar
                 renderMaterials(materialsCache);
                 updateStats(materialsCache);
                 
             } catch (error) {
                 console.error('❌ Erro:', error);
-                showNoMaterials('Erro na conexão com o servidor.');
+                showNoMaterials('Erro na conexão.');
             }
         }
 
-        // 7. Renderizar materiais
+        // Renderizar materiais
         function renderMaterials(materials) {
             const container = document.getElementById('materialsContainer');
             if (!container) return;
@@ -1172,7 +1108,7 @@
             }).join('');
         }
 
-        // 8. Mostrar estado vazio
+        // Mostrar estado vazio
         function showNoMaterials(message) {
             const container = document.getElementById('materialsContainer');
             if (!container) return;
@@ -1182,7 +1118,7 @@
                     <i class="fas fa-folder-open"></i>
                     <h3>${message}</h3>
                     ${currentUser ? `
-                        <button onclick="initiateUpload()" class="btn btn-primary" style="margin-top: 1rem;">
+                        <button onclick="startUpload()" class="btn btn-primary" style="margin-top: 1rem;">
                             <i class="fas fa-plus"></i> Compartilhar Material
                         </button>
                     ` : `
@@ -1196,7 +1132,7 @@
             updateStats([]);
         }
 
-        // 9. Atualizar estatísticas
+        // Atualizar estatísticas
         function updateStats(materials) {
             const total = materials.length;
             const totalSize = materials.reduce((sum, m) => sum + (m.arquivo_tamanho_kb || 0), 0) / 1024;
@@ -1207,66 +1143,20 @@
             document.getElementById('totalViews').textContent = totalViews;
         }
 
-        // 10. Funções de autenticação
-        function goToLogin() {
-            localStorage.setItem('studycert_redirect', window.location.href);
-            window.location.href = 'index.html#login';
-        }
-
-        function goToRegister() {
-            localStorage.setItem('studycert_redirect', window.location.href);
-            window.location.href = 'index.html#register';
-        }
-
-        async function logout() {
-            try {
-                // Limpar localStorage
-                localStorage.removeItem('studycert_user');
-                localStorage.removeItem('studycert_session');
-                
-                // Fazer logout do Supabase
-                if (supabase) {
-                    await supabase.auth.signOut();
-                }
-                
-                currentUser = null;
-                updateAuthUI();
-                await loadMaterials();
-                
-                showToast('✅ Logout realizado com sucesso', 'success');
-                
-            } catch (error) {
-                console.error('❌ Erro ao fazer logout:', error);
-                showToast('Erro ao fazer logout', 'error');
-            }
-        }
-
-        // 11. Upload de arquivos
-        function initiateUpload() {
-            console.log('📤 Iniciando upload...');
-            
+        // Upload functions
+        function startUpload() {
             if (!currentUser) {
                 showToast('Faça login para compartilhar materiais', 'error');
                 setTimeout(() => goToLogin(), 1500);
                 return;
             }
             
-            // Verificar se está realmente autenticado
-            if (!currentUser.id) {
-                showToast('Sessão expirada. Faça login novamente.', 'error');
-                setTimeout(() => goToLogin(), 1500);
-                return;
-            }
-            
-            console.log('✅ Usuário autenticado, abrindo seletor de arquivos...');
             document.getElementById('fileInput').click();
         }
 
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
-            
-            console.log('📄 Arquivo selecionado:', file.name, file.size);
             
             // Validar tamanho
             if (file.size > 100 * 1024 * 1024) {
@@ -1276,44 +1166,6 @@
             
             currentUploadFile = file;
             showUploadModal(file);
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            const uploadArea = document.getElementById('uploadArea');
-            if (uploadArea) {
-                uploadArea.style.background = '#e8f4fc';
-                uploadArea.style.borderColor = '#2980b9';
-            }
-        }
-
-        function handleDragLeave() {
-            const uploadArea = document.getElementById('uploadArea');
-            if (uploadArea) {
-                uploadArea.style.background = '#f8fafc';
-                uploadArea.style.borderColor = '#3498db';
-            }
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            handleDragLeave();
-            
-            if (!currentUser) {
-                showToast('Faça login para compartilhar materiais', 'error');
-                return;
-            }
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.size > 100 * 1024 * 1024) {
-                    showToast('Arquivo muito grande. O limite é 100MB.', 'error');
-                    return;
-                }
-                currentUploadFile = file;
-                showUploadModal(file);
-            }
         }
 
         function showUploadModal(file) {
@@ -1333,21 +1185,21 @@
             document.getElementById('materialTitle').value = file.name.replace(/\.[^/.]+$/, "");
             document.getElementById('materialDescription').value = '';
             
-            // Mostrar formulário, esconder progresso
+            // Mostrar formulário
             document.getElementById('uploadForm').style.display = 'block';
             document.getElementById('uploadProgress').style.display = 'none';
             
             // Abrir modal
-            openModal('uploadModal');
+            document.getElementById('uploadModal').style.display = 'flex';
         }
 
-        async function uploadFile() {
+        async function uploadMaterial() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
             const file = currentUploadFile;
             
             if (!title) {
-                showToast('Por favor, insira um título para o material.', 'error');
+                showToast('Por favor, insira um título.', 'error');
                 return;
             }
             
@@ -1356,72 +1208,45 @@
                 return;
             }
             
-            if (!currentUser || !currentUser.id) {
+            if (!currentUser) {
                 showToast('Sessão expirada. Faça login novamente.', 'error');
                 goToLogin();
                 return;
             }
             
-            // Validar tamanho do arquivo
-            if (file.size > 100 * 1024 * 1024) {
-                showToast('Arquivo muito grande. O limite é 100MB.', 'error');
-                return;
-            }
-            
-            // Mostrar progresso, esconder formulário
+            // Mostrar progresso
             document.getElementById('uploadForm').style.display = 'none';
             document.getElementById('uploadProgress').style.display = 'block';
             
             try {
-                console.log('🚀 Iniciando processo de upload...');
+                console.log('🚀 Iniciando upload...');
                 
-                // 1. Preparar dados
+                // Preparar dados
                 const fileType = getFileType(file.name);
                 const sanitizedFileName = sanitizeFileName(file.name);
-                const filePath = `${currentCertId}/${currentUser.id}/${sanitizedFileName}`;
+                const filePath = `materiais/${currentUser.id}/${sanitizedFileName}`;
                 
-                console.log('📤 Caminho do arquivo:', filePath);
-                
-                // 2. Fazer upload para o Storage
-                console.log('📤 Enviando para o Storage...');
+                // Fazer upload para o Storage
                 const { data: uploadData, error: uploadError } = await supabase.storage
                     .from('materiais')
-                    .upload(filePath, file, {
-                        cacheControl: '3600',
-                        upsert: false
-                    });
+                    .upload(filePath, file);
                 
-                if (uploadError) {
-                    console.error('❌ Erro no upload para Storage:', uploadError);
-                    
-                    // Verificar se é erro de policy
-                    if (uploadError.message.includes('policy') || uploadError.message.includes('row-level security')) {
-                        showToast('Erro de permissão no Storage. Configure as políticas no Supabase Dashboard.', 'error', 5000);
-                    } else {
-                        showToast(`Erro no upload: ${uploadError.message}`, 'error');
-                    }
-                    
-                    throw uploadError;
-                }
-                
-                console.log('✅ Upload para Storage concluído:', uploadData);
+                if (uploadError) throw uploadError;
                 
                 // Atualizar progresso
                 updateProgress(50);
                 
-                // 3. Obter URL pública
+                // Obter URL pública
                 const { data: urlData } = supabase.storage
                     .from('materiais')
                     .getPublicUrl(filePath);
                 
-                console.log('🔗 URL pública:', urlData);
-                
-                // 4. Salvar no banco de dados
+                // Salvar no banco
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
                     tipo: fileType,
-                    certificacao: currentCertId,
+                    certificacao: 'itil4',
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
@@ -1433,59 +1258,26 @@
                     file_path: filePath
                 };
                 
-                console.log('💾 Salvando no banco de dados:', materialData);
-                
                 const { data: dbData, error: dbError } = await supabase
                     .from('materiais')
-                    .insert([materialData])
-                    .select()
-                    .single();
+                    .insert([materialData]);
                 
-                if (dbError) {
-                    console.error('❌ Erro ao salvar no banco:', dbError);
-                    
-                    // Tentar remover o arquivo do Storage
-                    try {
-                        await supabase.storage
-                            .from('materiais')
-                            .remove([filePath]);
-                        console.log('🗑️ Arquivo removido do Storage após erro');
-                    } catch (cleanupError) {
-                        console.warn('⚠️ Não foi possível limpar arquivo:', cleanupError);
-                    }
-                    
-                    throw dbError;
-                }
+                if (dbError) throw dbError;
                 
-                console.log('✅ Material salvo no banco:', dbData);
-                
-                // Atualizar progresso
+                // Concluir
                 updateProgress(100);
                 
-                // Sucesso!
                 setTimeout(() => {
                     closeModal('uploadModal');
                     showToast('🎉 Material compartilhado com sucesso!', 'success');
-                    
-                    // Recarregar materiais
                     loadMaterials();
-                    
-                    // Resetar
                     currentUploadFile = null;
                     document.getElementById('fileInput').value = '';
-                    
                 }, 500);
                 
             } catch (error) {
-                console.error('❌ Erro no processo de upload:', error);
-                showToast(`❌ Erro: ${error.message || 'Falha no upload'}`, 'error');
-                
-                // Mostrar instruções se for erro de policy
-                if (error.message && (error.message.includes('policy') || error.message.includes('row-level security'))) {
-                    setTimeout(() => {
-                        showToast('💡 Configure as políticas no Supabase Dashboard: Storage > Policies', 'info', 5000);
-                    }, 1000);
-                }
+                console.error('❌ Erro no upload:', error);
+                showToast(`❌ Erro: ${error.message}`, 'error');
                 
                 // Voltar ao formulário
                 document.getElementById('uploadForm').style.display = 'block';
@@ -1493,7 +1285,7 @@
             }
         }
 
-        // 12. Exclusão de materiais
+        // Exclusão
         function showDeleteConfirmation(materialId, materialTitle) {
             if (!currentUser) {
                 showToast('Faça login para excluir materiais.', 'error');
@@ -1502,71 +1294,51 @@
             
             materialToDelete = { id: materialId, title: materialTitle };
             document.getElementById('deleteMaterialName').textContent = materialTitle;
-            openModal('deleteModal');
+            document.getElementById('deleteModal').style.display = 'flex';
         }
 
         async function confirmDelete() {
-            if (!materialToDelete || !currentUser) {
-                showToast('Erro: Dados insuficientes.', 'error');
-                closeModal('deleteModal');
-                return;
-            }
+            if (!materialToDelete || !currentUser) return;
             
             try {
-                console.log('🗑️ Excluindo material:', materialToDelete.id);
-                
-                // 1. Buscar material para verificar propriedade
+                // Buscar material
                 const { data: material, error: fetchError } = await supabase
                     .from('materiais')
                     .select('*')
                     .eq('id', materialToDelete.id)
                     .single();
                 
-                if (fetchError) {
-                    throw new Error('Material não encontrado.');
-                }
+                if (fetchError) throw fetchError;
                 
-                // 2. Verificar se o usuário é o proprietário
+                // Verificar propriedade
                 if (material.usuario_id !== currentUser.id) {
                     showToast('Você só pode excluir seus próprios materiais.', 'error');
                     closeModal('deleteModal');
                     return;
                 }
                 
-                // 3. Excluir do Storage (se tiver file_path)
+                // Excluir do Storage
                 if (material.file_path) {
                     try {
-                        const { error: storageError } = await supabase.storage
+                        await supabase.storage
                             .from('materiais')
                             .remove([material.file_path]);
-                        
-                        if (storageError) {
-                            console.warn('⚠️ Não foi possível excluir do Storage:', storageError);
-                            // Continuar mesmo se falhar no Storage
-                        } else {
-                            console.log('✅ Arquivo excluído do Storage');
-                        }
                     } catch (storageErr) {
                         console.warn('⚠️ Erro no Storage:', storageErr);
                     }
                 }
                 
-                // 4. Excluir do banco de dados
+                // Excluir do banco
                 const { error: deleteError } = await supabase
                     .from('materiais')
                     .delete()
                     .eq('id', materialToDelete.id);
                 
-                if (deleteError) {
-                    throw new Error(`Erro ao excluir: ${deleteError.message}`);
-                }
+                if (deleteError) throw deleteError;
                 
-                console.log('✅ Material excluído do banco');
-                
-                // 5. Atualizar interface
+                // Atualizar interface
                 materialsCache = materialsCache.filter(m => m.id !== materialToDelete.id);
                 
-                // Remover elemento com animação
                 const materialElement = document.getElementById(`material-${materialToDelete.id}`);
                 if (materialElement) {
                     materialElement.style.opacity = '0.5';
@@ -1575,16 +1347,14 @@
                     setTimeout(() => {
                         materialElement.remove();
                         
-                        // Verificar se ainda há materiais
                         if (materialsCache.length === 0) {
-                            showNoMaterials('Nenhum material encontrado. Seja o primeiro a compartilhar!');
+                            showNoMaterials('Nenhum material encontrado.');
                         } else {
                             updateStats(materialsCache);
                         }
                     }, 300);
                 }
                 
-                // 6. Fechar modal e mostrar mensagem
                 closeModal('deleteModal');
                 showToast('✅ Material excluído com sucesso!', 'success');
                 
@@ -1595,7 +1365,7 @@
             }
         }
 
-        // 13. Funções auxiliares
+        // Funções auxiliares
         function getFileType(fileName) {
             const ext = fileName.split('.').pop().toLowerCase();
             if (['pdf'].includes(ext)) return 'pdf';
@@ -1645,15 +1415,13 @@
             if (progressPercent) progressPercent.textContent = percent + '%';
         }
 
-        // 14. Contadores
+        // Contadores
         async function incrementViews(materialId) {
             try {
-                if (supabase) {
-                    await supabase
-                        .from('materiais')
-                        .update({ visualizacoes: supabase.raw('visualizacoes + 1') })
-                        .eq('id', materialId);
-                }
+                await supabase
+                    .from('materiais')
+                    .update({ visualizacoes: supabase.raw('visualizacoes + 1') })
+                    .eq('id', materialId);
             } catch (error) {
                 console.warn('⚠️ Erro ao incrementar visualizações:', error);
             }
@@ -1661,18 +1429,16 @@
 
         async function incrementDownloads(materialId) {
             try {
-                if (supabase) {
-                    await supabase
-                        .from('materiais')
-                        .update({ downloads: supabase.raw('downloads + 1') })
-                        .eq('id', materialId);
-                }
+                await supabase
+                    .from('materiais')
+                    .update({ downloads: supabase.raw('downloads + 1') })
+                    .eq('id', materialId);
             } catch (error) {
                 console.warn('⚠️ Erro ao incrementar downloads:', error);
             }
         }
 
-        // 15. Filtros
+        // Filtros
         function applyFilters() {
             const filterType = document.getElementById('filterType').value;
             const sortBy = document.getElementById('filterSort').value;
@@ -1713,29 +1479,20 @@
             updateStats(filtered);
         }
 
-        // 16. Modais
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.style.display = 'flex';
-            }
-        }
-
+        // Modais
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.style.display = 'none';
-                
-                // Resetar upload se for o modal de upload
-                if (modalId === 'uploadModal') {
-                    currentUploadFile = null;
-                    document.getElementById('fileInput').value = '';
-                }
+            }
+            
+            if (modalId === 'uploadModal') {
+                currentUploadFile = null;
             }
         }
 
-        // 17. Toast notifications
-        function showToast(message, type = 'success', duration = 3000) {
+        // Toast
+        function showToast(message, type = 'success') {
             // Remover toast existente
             const existingToast = document.querySelector('.toast');
             if (existingToast) {
@@ -1746,34 +1503,22 @@
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
-                <i class="fas fa-${getToastIcon(type)}"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
                 <span>${message}</span>
             `;
             
             document.body.appendChild(toast);
             
-            // Remover após duração
+            // Remover após 3 segundos
             setTimeout(() => {
-                toast.classList.add('toast-slide-out');
+                toast.style.animation = 'toastSlideIn 0.3s ease reverse';
                 setTimeout(() => {
                     if (toast.parentNode) {
                         toast.parentNode.removeChild(toast);
                     }
                 }, 300);
-            }, duration);
+            }, 3000);
         }
-
-        function getToastIcon(type) {
-            switch(type) {
-                case 'success': return 'check-circle';
-                case 'error': return 'exclamation-circle';
-                case 'warning': return 'exclamation-triangle';
-                default: return 'info-circle';
-            }
-        }
-
-        // 18. Inicializar
-        console.log('🎯 StudyCert Materiais - Pronto para uso!');
     </script>
 </body>
 </html>
