@@ -18,7 +18,7 @@
         .filter-group { flex: 1; min-width: 200px; }
         .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); }
         .filter-select { width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
-        .filter-select:focus { outline: none; border-color: var(--secondary); }
+        .filter-select:focus { outline: none; border-color = var(--secondary); }
         .materials-grid-page { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
         .material-card-page { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; border-left: 4px solid var(--secondary); position: relative; }
         .material-card-page:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
@@ -158,6 +158,20 @@
         @keyframes fadeOut {
             from { opacity: 1; transform: translateY(0); }
             to { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        /* Badge para materiais indisponíveis */
+        .unavailable-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 10;
         }
     </style>
 </head>
@@ -445,7 +459,7 @@
         let materialToDelete = null;
         let materialsCache = [];
         let currentUser = null;
-        let isAuthInitialized = false;
+        let isReallyAuthenticated = false;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', async function() {
@@ -454,10 +468,7 @@
             // Configurar eventos
             setupEventListeners();
             
-            // Aguardar authManager
-            await waitForAuthManager();
-            
-            // Inicializar Supabase
+            // Inicializar Supabase independente
             await initSupabase();
             
             // Carregar certificação
@@ -472,34 +483,6 @@
             
             console.log('✅ Página de materiais inicializada');
         });
-
-        // Aguardar authManager estar pronto
-        async function waitForAuthManager() {
-            let attempts = 0;
-            const maxAttempts = 30; // 30 tentativas (3 segundos)
-            
-            return new Promise((resolve) => {
-                const checkAuth = () => {
-                    attempts++;
-                    
-                    if (window.authManager && window.authManager.isInitialized) {
-                        console.log('✅ AuthManager pronto');
-                        currentUser = window.authManager.getUser();
-                        isAuthInitialized = true;
-                        resolve();
-                    } else if (attempts >= maxAttempts) {
-                        console.warn('⚠️ AuthManager não carregado após 3 segundos');
-                        isAuthInitialized = false;
-                        resolve();
-                    } else {
-                        console.log(`⏳ Aguardando authManager... (tentativa ${attempts}/${maxAttempts})`);
-                        setTimeout(checkAuth, 100);
-                    }
-                };
-                
-                checkAuth();
-            });
-        }
 
         // Configurar eventos
         function setupEventListeners() {
@@ -533,51 +516,49 @@
             document.getElementById('filterSort')?.addEventListener('change', handleFilterChange);
             document.getElementById('searchMaterial')?.addEventListener('input', handleFilterChange);
             
-            // Modais - fechar ao clicar fora
+            // Modais
             document.getElementById('uploadModal')?.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeUploadModal();
-                }
+                if (e.target === this) closeUploadModal();
             });
             
             document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeDeleteModal();
-                }
+                if (e.target === this) closeDeleteModal();
             });
         }
 
-        // Inicializar Supabase
+        // Inicializar Supabase independente
         async function initSupabase() {
             try {
-                // Se authManager está disponível e tem cliente Supabase
-                if (window.authManager && window.authManager.getSupabase()) {
-                    supabaseClient = window.authManager.getSupabase();
-                    console.log('✅ Usando Supabase do authManager');
-                } else {
-                    // Criar novo cliente independente
-                    console.log('🔄 Criando cliente Supabase independente');
-                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                        auth: { 
-                            persistSession: true,
-                            autoRefreshToken: true,
-                            detectSessionInUrl: false,
-                            storage: window.localStorage,
-                            storageKey: 'studycert-auth-materiais'
-                        },
-                        global: {
-                            headers: {
-                                'apikey': SUPABASE_KEY
-                            }
+                console.log('🔄 Inicializando Supabase...');
+                
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                    auth: { 
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: false
+                    },
+                    global: {
+                        headers: {
+                            'apikey': SUPABASE_KEY
                         }
-                    });
-                    
-                    // Verificar sessão atual
-                    const { data, error } = await supabaseClient.auth.getSession();
-                    if (!error && data.session) {
-                        console.log('✅ Sessão encontrada no cliente independente');
-                        currentUser = data.session.user;
                     }
+                });
+                
+                // Verificar sessão REAL
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
+                if (error) {
+                    console.warn('⚠️ Erro ao verificar sessão:', error.message);
+                    isReallyAuthenticated = false;
+                    currentUser = null;
+                } else if (session && session.user) {
+                    console.log('✅ Sessão encontrada:', session.user.email);
+                    isReallyAuthenticated = true;
+                    currentUser = session.user;
+                } else {
+                    console.log('ℹ️ Nenhuma sessão ativa');
+                    isReallyAuthenticated = false;
+                    currentUser = null;
                 }
                 
                 console.log('✅ Supabase inicializado');
@@ -594,37 +575,11 @@
             const authContainer = document.getElementById('authContainer');
             const uploadSection = document.getElementById('uploadSection');
             
-            // Verificar autenticação REAL (não apenas localStorage)
-            let isReallyAuthenticated = false;
-            let userDisplayName = 'Visitante';
-            
-            // Primeiro, verificar no authManager
-            if (window.authManager && window.authManager.isAuthenticated()) {
-                const user = window.authManager.getUser();
-                if (user && user.id) {
-                    isReallyAuthenticated = true;
-                    currentUser = user;
-                    userDisplayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário';
-                }
-            }
-            // Se não, verificar no localStorage (para compatibilidade)
-            else {
-                try {
-                    const userData = localStorage.getItem('studycert_user');
-                    if (userData) {
-                        const user = JSON.parse(userData);
-                        if (user && user.id) {
-                            userDisplayName = user.name || user.email?.split('@')[0] || 'Usuário';
-                            // Mas NÃO marcar como autenticado, pois não temos sessão válida
-                        }
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Erro ao ler localStorage:', e);
-                }
-            }
-            
-            // Atualizar status
-            if (isReallyAuthenticated) {
+            if (isReallyAuthenticated && currentUser) {
+                const userDisplayName = currentUser.user_metadata?.full_name || 
+                                      currentUser.email?.split('@')[0] || 
+                                      'Usuário';
+                
                 authStatus.innerHTML = `<i class="fas fa-check-circle" style="color: #27ae60;"></i> Logado como: ${userDisplayName}`;
                 
                 authContainer.innerHTML = `
@@ -638,10 +593,7 @@
                     </div>
                 `;
                 
-                // Mostrar seção de upload
-                if (uploadSection) {
-                    uploadSection.style.display = 'block';
-                }
+                if (uploadSection) uploadSection.style.display = 'block';
             } else {
                 authStatus.innerHTML = '<i class="fas fa-user" style="color: #95a5a6;"></i> Não logado';
                 
@@ -656,44 +608,25 @@
                     </div>
                 `;
                 
-                // Esconder seção de upload
-                if (uploadSection) {
-                    uploadSection.style.display = 'none';
-                }
+                if (uploadSection) uploadSection.style.display = 'none';
             }
             
             console.log('👤 Estado de autenticação:', { 
                 isReallyAuthenticated, 
-                userDisplayName,
-                hasAuthManager: !!window.authManager,
-                localStorageUser: localStorage.getItem('studycert_user') ? 'sim' : 'não'
+                userEmail: currentUser?.email || 'null'
             });
         }
 
         async function logoutFromPage() {
             try {
-                // Limpar do authManager
-                if (window.authManager) {
-                    await window.authManager.logout();
-                }
-                
-                // Limpar do cliente Supabase local
                 if (supabaseClient) {
                     await supabaseClient.auth.signOut();
                 }
                 
-                // Limpar localStorage
-                localStorage.removeItem('studycert_user');
-                localStorage.removeItem('studycert_auth');
-                localStorage.removeItem('studycert-auth-materiais');
-                
-                // Resetar estado
+                isReallyAuthenticated = false;
                 currentUser = null;
                 
-                // Atualizar UI
                 updateAuthUI();
-                
-                // Recarregar materiais (para remover botões de exclusão)
                 await loadMaterialsFromSupabase(currentCertId);
                 
                 showToast('✅ Logout realizado com sucesso', 'success');
@@ -704,7 +637,7 @@
             }
         }
 
-        // Funções principais
+        // Funções auxiliares
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -724,18 +657,7 @@
         }
 
         function checkAuthAndUpload() {
-            // Verificar autenticação REAL
-            let isAuthenticated = false;
-            
-            if (window.authManager && window.authManager.isAuthenticated()) {
-                const user = window.authManager.getUser();
-                if (user && user.id) {
-                    isAuthenticated = true;
-                    currentUser = user;
-                }
-            }
-            
-            if (!isAuthenticated) {
+            if (!isReallyAuthenticated || !currentUser) {
                 showToast('Faça login para compartilhar materiais', 'error');
                 setTimeout(() => {
                     window.location.href = 'index.html#login';
@@ -749,13 +671,11 @@
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
-            
             showUploadForm(file);
         }
 
         function handleFileDrop(files) {
             if (files.length === 0) return;
-            
             showUploadForm(files[0]);
         }
 
@@ -763,7 +683,6 @@
             currentUploadFile = file;
             currentFileType = detectFileType(file.name);
             
-            // Atualizar informações do arquivo no modal
             document.getElementById('selectedFileInfo').innerHTML = `
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <i class="fas fa-file-${currentFileType} ${currentFileType}-color" style="font-size: 2rem;"></i>
@@ -774,13 +693,11 @@
                 </div>
             `;
             
-            // Resetar formulário
-            document.getElementById('materialTitle').value = file.name.replace(/\.[^/.]+$/, ""); // Remover extensão
+            document.getElementById('materialTitle').value = file.name.replace(/\.[^/.]+$/, "");
             document.getElementById('materialDescription').value = '';
             document.getElementById('uploadFormContainer').style.display = 'block';
             document.getElementById('uploadProgressContainer').style.display = 'none';
             
-            // Mostrar modal
             document.getElementById('uploadModal').style.display = 'flex';
         }
 
@@ -807,6 +724,11 @@
             currentUploadFile = null;
         }
 
+        function closeDeleteModal() {
+            materialToDelete = null;
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
         // Sanitizar nome de arquivo
         function sanitizeFileName(fileName) {
             const nameWithoutExt = fileName.replace(/\.[^/.]+$/, "");
@@ -822,6 +744,7 @@
             return `${sanitized}_${Date.now()}.${ext}`;
         }
 
+        // Processar upload - AGORA SALVA file_path
         async function processUpload() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
@@ -832,37 +755,28 @@
                 return;
             }
             
-            // Verificar autenticação REAL
-            if (!window.authManager || !window.authManager.isAuthenticated()) {
+            if (!isReallyAuthenticated || !currentUser) {
                 showToast('Sessão expirada. Faça login novamente.', 'error');
                 window.location.href = 'index.html#login';
                 return;
             }
             
-            const user = window.authManager.getUser();
-            if (!user || !user.id) {
-                showToast('Erro: usuário não identificado.', 'error');
-                return;
-            }
-            
-            // Validar tamanho do arquivo
             if (file.size > 100 * 1024 * 1024) {
                 showToast('Arquivo muito grande. O limite é 100MB.', 'error');
                 return;
             }
             
-            // Mostrar progresso
             document.getElementById('uploadFormContainer').style.display = 'none';
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
-                console.log('🚀 Iniciando upload para usuário:', user.id);
+                console.log('🚀 Iniciando upload...');
                 
                 // 1. Sanitizar nome do arquivo
                 const sanitizedFileName = sanitizeFileName(file.name);
                 
-                // 2. Criar caminho seguro
-                const filePath = `${currentCertId}/${user.id}/${sanitizedFileName}`;
+                // 2. Criar caminho SIMPLES para o storage (com userId)
+                const filePath = `${currentCertId}/${currentUser.id}/${sanitizedFileName}`;
                 console.log('📤 Upload para:', filePath);
                 
                 // Simular progresso
@@ -874,7 +788,7 @@
                     document.getElementById('modalProgressPercent').textContent = `${progress}%`;
                 }, 100);
                 
-                // 3. Fazer upload real
+                // 3. Fazer upload
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('materiais')
                     .upload(filePath, file, {
@@ -887,7 +801,27 @@
                 
                 if (uploadError) {
                     console.error('❌ Erro no upload:', uploadError);
-                    throw new Error(`Falha no upload: ${uploadError.message}`);
+                    
+                    // Se arquivo já existe, tentar com nome diferente
+                    if (uploadError.message.includes('already exists')) {
+                        const newFilePath = `${currentCertId}/${currentUser.id}/${Date.now()}_${sanitizedFileName}`;
+                        console.log('🔄 Tentando com novo nome:', newFilePath);
+                        
+                        const { data: retryData, error: retryError } = await supabaseClient.storage
+                            .from('materiais')
+                            .upload(newFilePath, file, {
+                                cacheControl: '3600',
+                                upsert: false
+                            });
+                        
+                        if (retryError) {
+                            throw new Error(`Falha no upload: ${retryError.message}`);
+                        }
+                        
+                        filePath = newFilePath;
+                    } else {
+                        throw new Error(`Falha no upload: ${uploadError.message}`);
+                    }
                 }
                 
                 console.log('✅ Upload bem-sucedido');
@@ -901,7 +835,7 @@
                 
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
-                // 5. Preparar dados para o banco
+                // 5. Preparar dados para o banco - AGORA COM file_path
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
@@ -910,17 +844,17 @@
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: sanitizedFileName,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
-                    usuario_id: user.id,
+                    usuario_id: currentUser.id,
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
                     data_upload: new Date().toISOString(),
-                    file_path: filePath
+                    file_path: filePath // SALVANDO O CAMINHO PARA EXCLUSÃO FUTURA
                 };
                 
                 console.log('💾 Salvando no banco...');
                 
-                // 6. Salvar no banco de dados
+                // 6. Salvar no banco
                 const { data: dbData, error: dbError } = await supabaseClient
                     .from('materiais')
                     .insert([materialData])
@@ -930,16 +864,17 @@
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
                     
-                    // Tentar sem campos opcionais
+                    // Tentar sem campos opcionais (mas mantendo file_path)
                     const essentialData = {
                         titulo: title,
                         tipo: currentFileType,
                         certificacao: currentCertId,
                         arquivo_url: urlData.publicUrl,
                         arquivo_nome: sanitizedFileName,
-                        usuario_id: user.id,
+                        usuario_id: currentUser.id,
                         publico: true,
-                        data_upload: new Date().toISOString()
+                        data_upload: new Date().toISOString(),
+                        file_path: filePath
                     };
                     
                     const { data: simpleData, error: simpleError } = await supabaseClient
@@ -964,8 +899,6 @@
                 setTimeout(() => {
                     closeUploadModal();
                     showToast('🎉 Material compartilhado com sucesso!', 'success');
-                    
-                    // Recarregar materiais
                     loadMaterialsFromSupabase(currentCertId);
                 }, 1000);
                 
@@ -986,14 +919,13 @@
                     return;
                 }
                 
-                // Construir consulta
+                // Construir consulta - AGORA INCLUINDO file_path
                 let query = supabaseClient
                     .from('materiais')
                     .select('*')
                     .eq('certificacao', certId)
                     .eq('publico', true);
                 
-                // Aplicar filtros
                 if (filterType !== 'all') {
                     query = query.eq('tipo', filterType);
                 }
@@ -1002,7 +934,6 @@
                     query = query.or(`titulo.ilike.%${searchTerm}%,descricao.ilike.%${searchTerm}%`);
                 }
                 
-                // Ordenação
                 switch(sortBy) {
                     case 'date_desc': query = query.order('data_upload', { ascending: false }); break;
                     case 'date_asc': query = query.order('data_upload', { ascending: true }); break;
@@ -1010,7 +941,6 @@
                     case 'name_asc': query = query.order('titulo', { ascending: true }); break;
                 }
                 
-                // Executar consulta
                 const { data, error } = await query;
                 
                 if (error) {
@@ -1020,14 +950,48 @@
                 }
                 
                 console.log(`✅ ${data?.length || 0} materiais carregados`);
-                materialsCache = data || [];
-                updateMaterialsInterface(data || []);
-                updateStats(data || []);
+                
+                // Verificar quais arquivos realmente existem
+                const verifiedData = await verifyFilesExistence(data || []);
+                
+                materialsCache = verifiedData;
+                updateMaterialsInterface(verifiedData);
+                updateStats(verifiedData);
                 
             } catch (error) {
                 console.error('❌ Erro:', error);
                 showNoMaterials('Erro na conexão.');
             }
+        }
+
+        // Verificar se arquivos existem no storage
+        async function verifyFilesExistence(materials) {
+            const verifiedMaterials = [];
+            
+            for (const material of materials) {
+                try {
+                    if (material.arquivo_url) {
+                        // Tentar acessar o arquivo
+                        const response = await fetch(material.arquivo_url, { method: 'HEAD' });
+                        if (response.ok) {
+                            verifiedMaterials.push(material);
+                        } else {
+                            console.warn(`⚠️ Arquivo não encontrado: ${material.arquivo_url}`);
+                            material.unavailable = true;
+                            verifiedMaterials.push(material);
+                        }
+                    } else {
+                        material.unavailable = true;
+                        verifiedMaterials.push(material);
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ Erro ao verificar arquivo:`, error);
+                    material.unavailable = true;
+                    verifiedMaterials.push(material);
+                }
+            }
+            
+            return verifiedMaterials;
         }
 
         function updateMaterialsInterface(materials) {
@@ -1038,25 +1002,20 @@
                 return;
             }
             
-            // Verificar qual usuário está REALMENTE logado
-            let currentUserId = null;
-            if (window.authManager && window.authManager.isAuthenticated()) {
-                const user = window.authManager.getUser();
-                if (user && user.id) {
-                    currentUserId = user.id;
-                }
-            }
-            
-            console.log('👤 Verificando propriedade - User ID atual:', currentUserId);
+            const currentUserId = currentUser?.id || null;
             
             container.innerHTML = materials.map(material => {
-                // Verificar se o usuário atual é o dono do material
                 const isOwner = currentUserId && material.usuario_id === currentUserId;
-                
-                console.log(`📄 Material ${material.id}: usuario_id=${material.usuario_id}, isOwner=${isOwner}`);
+                const isUnavailable = material.unavailable;
                 
                 return `
                     <div class="material-card-page" data-id="${material.id}" id="material-${material.id}">
+                        ${isUnavailable ? `
+                            <div class="unavailable-badge">
+                                <i class="fas fa-exclamation-triangle"></i> Indisponível
+                            </div>
+                        ` : ''}
+                        
                         ${isOwner ? `
                             <button class="delete-btn" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
                                 <i class="fas fa-times"></i>
@@ -1078,12 +1037,18 @@
                                 <span><i class="fas fa-download"></i> ${material.downloads || 0}</span>
                             </div>
                             <div class="action-buttons">
-                                <a href="${material.arquivo_url}" target="_blank" class="btn btn-primary" onclick="incrementViews('${material.id}')">
-                                    <i class="fas fa-external-link-alt"></i> Abrir
-                                </a>
-                                <a href="${material.arquivo_url}" download="${material.titulo}" class="btn btn-success" onclick="incrementDownloads('${material.id}')">
-                                    <i class="fas fa-download"></i> Baixar
-                                </a>
+                                ${!isUnavailable ? `
+                                    <a href="${material.arquivo_url}" target="_blank" class="btn btn-primary" onclick="incrementViews('${material.id}')">
+                                        <i class="fas fa-external-link-alt"></i> Abrir
+                                    </a>
+                                    <a href="${material.arquivo_url}" download="${material.titulo}" class="btn btn-success" onclick="incrementDownloads('${material.id}')">
+                                        <i class="fas fa-download"></i> Baixar
+                                    </a>
+                                ` : `
+                                    <button class="btn btn-primary" disabled>
+                                        <i class="fas fa-exclamation-triangle"></i> Indisponível
+                                    </button>
+                                `}
                                 ${isOwner ? `
                                     <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')">
                                         <i class="fas fa-trash"></i> Excluir
@@ -1096,10 +1061,8 @@
             }).join('');
         }
 
-        // Função para mostrar modal de exclusão
         function showDeleteModal(materialId, materialTitle) {
-            // Verificar autenticação REAL antes de mostrar modal
-            if (!window.authManager || !window.authManager.isAuthenticated()) {
+            if (!isReallyAuthenticated || !currentUser) {
                 showToast('Faça login para excluir materiais.', 'error');
                 return;
             }
@@ -1113,40 +1076,25 @@
             document.getElementById('deleteConfirmModal').style.display = 'flex';
         }
 
-        // Fechar modal de exclusão
-        function closeDeleteModal() {
-            materialToDelete = null;
-            document.getElementById('deleteConfirmModal').style.display = 'none';
-        }
-
-        // Confirmar exclusão do material
+        // Excluir material - AGORA USA file_path
         async function confirmDeleteMaterial() {
             if (!materialToDelete) {
-                showToast('Erro: Nenhum material selecionado para exclusão.', 'error');
+                showToast('Erro: Nenhum material selecionado.', 'error');
                 closeDeleteModal();
                 return;
             }
             
-            // Verificar autenticação REAL
-            if (!window.authManager || !window.authManager.isAuthenticated()) {
+            if (!isReallyAuthenticated || !currentUser) {
                 showToast('Sessão expirada. Faça login novamente.', 'error');
                 closeDeleteModal();
                 window.location.href = 'index.html#login';
                 return;
             }
             
-            const user = window.authManager.getUser();
-            if (!user || !user.id) {
-                showToast('Erro: usuário não identificado.', 'error');
-                closeDeleteModal();
-                return;
-            }
-            
             try {
-                console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
-                console.log('👤 Usuário autenticado:', user.id);
+                console.log('🗑️ Iniciando exclusão:', materialToDelete.id);
                 
-                // 1. Buscar o material para verificar propriedade
+                // 1. Buscar o material - AGORA COM file_path
                 const { data: material, error: fetchError } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -1160,27 +1108,67 @@
                 
                 console.log('📄 Material encontrado:', {
                     id: material.id,
-                    titulo: material.titulo,
                     usuario_id: material.usuario_id,
-                    currentUserId: user.id
+                    currentUserId: currentUser.id,
+                    file_path: material.file_path,
+                    arquivo_url: material.arquivo_url
                 });
                 
-                // 2. Verificar se o usuário é o dono (COMPARAÇÃO STRICT)
-                if (material.usuario_id !== user.id) {
-                    console.error('❌ IDs não correspondem:', {
-                        materialUserId: material.usuario_id,
-                        currentUserId: user.id,
-                        match: material.usuario_id === user.id
-                    });
+                // 2. Verificar propriedade
+                if (material.usuario_id !== currentUser.id) {
+                    console.error('❌ Usuário não autorizado');
                     showToast('Você só pode excluir seus próprios materiais.', 'error');
                     closeDeleteModal();
                     return;
                 }
                 
-                console.log('✅ Usuário autorizado a excluir');
+                // 3. Excluir do Storage USANDO file_path (SE EXISTIR)
+                if (material.file_path) {
+                    console.log('🗑️ Excluindo do storage usando file_path:', material.file_path);
+                    
+                    try {
+                        const { error: storageError } = await supabaseClient.storage
+                            .from('materiais')
+                            .remove([material.file_path]);
+                        
+                        if (storageError) {
+                            console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                            // Continuar mesmo se falhar no storage
+                        } else {
+                            console.log('✅ Arquivo excluído do storage');
+                        }
+                    } catch (storageErr) {
+                        console.warn('⚠️ Erro ao excluir do storage:', storageErr);
+                    }
+                } else {
+                    console.warn('⚠️ Material não tem file_path, tentando extrair da URL');
+                    
+                    // Tentar extrair da URL como fallback
+                    if (material.arquivo_url) {
+                        const urlParts = material.arquivo_url.split('/materiais/');
+                        if (urlParts.length > 1) {
+                            const filePathFromUrl = urlParts[1];
+                            console.log('📁 Extraído da URL:', filePathFromUrl);
+                            
+                            try {
+                                const { error: storageError } = await supabaseClient.storage
+                                    .from('materiais')
+                                    .remove([filePathFromUrl]);
+                                
+                                if (storageError) {
+                                    console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                                } else {
+                                    console.log('✅ Arquivo excluído do storage (via URL)');
+                                }
+                            } catch (storageErr) {
+                                console.warn('⚠️ Erro ao excluir do storage:', storageErr);
+                            }
+                        }
+                    }
+                }
                 
-                // 3. Excluir do banco de dados (primeiro, pois é mais importante)
-                console.log('🗑️ Excluindo do banco de dados...');
+                // 4. Excluir do banco (MAIS IMPORTANTE)
+                console.log('🗑️ Excluindo do banco...');
                 const { error: deleteError } = await supabaseClient
                     .from('materiais')
                     .delete()
@@ -1188,42 +1176,12 @@
                 
                 if (deleteError) {
                     console.error('❌ Erro ao excluir do banco:', deleteError);
-                    throw new Error(`Erro ao excluir material: ${deleteError.message}`);
+                    throw new Error(`Erro ao excluir: ${deleteError.message}`);
                 }
                 
                 console.log('✅ Material excluído do banco');
                 
-                // 4. Tentar excluir do Storage (se tiver file_path ou puder extrair da URL)
-                try {
-                    let filePath = null;
-                    
-                    if (material.file_path) {
-                        filePath = material.file_path;
-                    } else if (material.arquivo_url) {
-                        // Tentar extrair da URL
-                        const urlParts = material.arquivo_url.split('/materiais/');
-                        if (urlParts.length > 1) {
-                            filePath = urlParts[1];
-                        }
-                    }
-                    
-                    if (filePath) {
-                        console.log('🗑️ Tentando excluir do storage:', filePath);
-                        const { error: storageError } = await supabaseClient.storage
-                            .from('materiais')
-                            .remove([filePath]);
-                        
-                        if (storageError) {
-                            console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
-                        } else {
-                            console.log('✅ Arquivo excluído do storage');
-                        }
-                    }
-                } catch (storageErr) {
-                    console.warn('⚠️ Erro ao excluir do storage:', storageErr);
-                }
-                
-                // 5. Remover da interface LOCALMENTE
+                // 5. Remover da interface
                 const materialElement = document.getElementById(`material-${materialToDelete.id}`);
                 if (materialElement) {
                     materialElement.style.animation = 'fadeOut 0.3s ease forwards';
@@ -1234,25 +1192,22 @@
                     }, 300);
                 }
                 
-                // 6. Atualizar cache local
+                // 6. Atualizar cache e estatísticas
                 materialsCache = materialsCache.filter(m => m.id !== materialToDelete.id);
-                
-                // 7. Atualizar estatísticas
                 updateStats(materialsCache);
                 
-                // 8. Verificar se ainda há materiais
                 if (materialsCache.length === 0) {
                     showNoMaterials('Nenhum material encontrado.');
                 }
                 
-                // 9. Fechar modal e mostrar mensagem
+                // 7. Finalizar
                 closeDeleteModal();
                 showToast('✅ Material excluído com sucesso!', 'success');
                 
-                // 10. Forçar recarga dos dados do servidor
+                // 8. Recarregar dados para garantir sincronização
                 setTimeout(() => {
                     loadMaterialsFromSupabase(currentCertId);
-                }, 1000);
+                }, 500);
                 
             } catch (error) {
                 console.error('❌ Erro na exclusão:', error);
@@ -1261,7 +1216,6 @@
             }
         }
 
-        // Funções auxiliares para views e downloads
         async function incrementViews(materialId) {
             try {
                 if (supabaseClient) {
@@ -1290,14 +1244,13 @@
 
         function showNoMaterials(message) {
             const container = document.getElementById('materialsContainer');
-            const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
             
             container.innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
                     <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
                     <h3>${message}</h3>
                     <p>Seja o primeiro a compartilhar um material!</p>
-                    ${isAuthenticated ? 
+                    ${isReallyAuthenticated ? 
                         `<button class="btn btn-primary" onclick="checkAuthAndUpload()" style="margin-top: 1rem;">
                             <i class="fas fa-plus"></i> Compartilhar Material
                         </button>` : 
