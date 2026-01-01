@@ -186,7 +186,7 @@
             color: #666;
         }
         
-        /* Estilos para botões de autenticação - CORRIGIDOS */
+        /* Estilos para botões de autenticação */
         .auth-buttons-container {
             display: flex;
             gap: 0.5rem;
@@ -205,7 +205,7 @@
         
         .auth-buttons-container .btn-outline:hover {
             background: var(--primary);
-            color: white !important; /* Força a cor branca no hover */
+            color: white !important;
         }
         
         .auth-buttons-container .btn-primary {
@@ -222,7 +222,7 @@
         .auth-buttons-container .btn-primary:hover {
             background: var(--primary-dark);
             border-color: var(--primary-dark);
-            color: white !important; /* Força a cor branca no hover */
+            color: white !important;
         }
         
         .user-info-display {
@@ -260,7 +260,6 @@
             border-color: #c0392b;
         }
         
-        /* Forçar cores nos botões para evitar herança incorreta */
         .auth-container button {
             color: inherit !important;
         }
@@ -405,16 +404,7 @@
                 <input type="file" id="fileInputPage" accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4" style="display: none;">
             </div>
 
-            <div id="uploadProgressPage" style="display: none; margin-top: 1rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span>Enviando...</span>
-                    <span id="progressPercent">0%</span>
-                </div>
-                <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
-                    <div id="progressBar" style="height: 100%; background: var(--success); width: 0%; transition: width 0.3s;"></div>
-                </div>
-            </div>
-
+            <div id="uploadProgressPage" style="display: none; margin-top: 1rem;"></div>
             <div id="uploadListPage" style="margin-top: 1rem;"></div>
         </section>
     </main>
@@ -461,9 +451,7 @@
             </div>
             
             <div id="uploadFormContainer">
-                <div id="selectedFileInfo" style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px;">
-                    <!-- Informações do arquivo serão preenchidas aqui -->
-                </div>
+                <div id="selectedFileInfo" style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px;"></div>
                 
                 <div style="margin-bottom: 1rem;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Título *</label>
@@ -566,6 +554,7 @@
         let materialsCache = [];
         let currentUser = null;
         let isAuthenticated = false;
+        let currentSession = null;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', async function() {
@@ -574,15 +563,12 @@
             // Inicializar Supabase
             await initSupabase();
             
-            // Verificar autenticação usando localStorage também
+            // Verificar autenticação
             await checkAuth();
             
             // Carregar certificação
             currentCertId = getUrlParameter('cert') || 'itil4';
             loadCertification(currentCertId);
-            
-            // Atualizar interface de autenticação
-            updateAuthUI();
             
             // Configurar eventos
             setupEventListeners();
@@ -603,12 +589,7 @@
                     auth: { 
                         persistSession: true,
                         autoRefreshToken: true,
-                        detectSessionInUrl: false
-                    },
-                    global: {
-                        headers: {
-                            'apikey': SUPABASE_KEY
-                        }
+                        detectSessionInUrl: true
                     }
                 });
                 
@@ -620,28 +601,31 @@
             }
         }
 
-        // Verificar autenticação - CORRIGIDO PARA USAR LOCALSTORAGE TAMBÉM
+        // Verificar autenticação - CORRIGIDA
         async function checkAuth() {
             try {
-                // Primeiro tentar carregar do localStorage (compartilhado com index.html)
-                try {
-                    const userData = localStorage.getItem('studycert_user');
-                    if (userData) {
-                        const user = JSON.parse(userData);
-                        currentUser = {
-                            id: user.id,
-                            email: user.email,
-                            user_metadata: { full_name: user.name }
-                        };
-                        isAuthenticated = true;
-                        console.log('📱 Usuário carregado do localStorage:', user.email);
-                        return;
+                // Tentar carregar do localStorage primeiro
+                const storedUser = localStorage.getItem('studycert_user');
+                if (storedUser) {
+                    try {
+                        const userData = JSON.parse(storedUser);
+                        if (userData && userData.id) {
+                            currentUser = {
+                                id: userData.id,
+                                email: userData.email,
+                                user_metadata: { full_name: userData.name || userData.email }
+                            };
+                            isAuthenticated = true;
+                            console.log('📱 Usuário carregado do localStorage:', currentUser.email);
+                            updateAuthUI();
+                            return;
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ Erro ao parse localStorage:', e);
                     }
-                } catch (e) {
-                    console.warn('⚠️ Erro ao carregar do localStorage:', e);
                 }
                 
-                // Se não tem no localStorage, tentar sessão do Supabase
+                // Se não tem no localStorage, verificar sessão do Supabase
                 if (!supabaseClient) await initSupabase();
                 
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -654,6 +638,7 @@
                     console.log('✅ Usuário autenticado via Supabase:', session.user.email);
                     isAuthenticated = true;
                     currentUser = session.user;
+                    currentSession = session;
                     
                     // Salvar no localStorage para compartilhar com outras páginas
                     const userData = {
@@ -662,6 +647,7 @@
                         name: session.user.user_metadata?.full_name || session.user.email.split('@')[0]
                     };
                     localStorage.setItem('studycert_user', JSON.stringify(userData));
+                    localStorage.setItem('studycert_session', JSON.stringify(session));
                 } else {
                     console.log('ℹ️ Nenhuma sessão ativa');
                     isAuthenticated = false;
@@ -672,6 +658,8 @@
                 console.error('❌ Erro ao verificar autenticação:', error);
                 isAuthenticated = false;
                 currentUser = null;
+            } finally {
+                updateAuthUI();
             }
         }
 
@@ -693,7 +681,7 @@
                         <div class="user-avatar-small">
                             ${userDisplayName.substring(0, 2).toUpperCase()}
                         </div>
-                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm" style="border-color: var(--primary); color: var(--primary);">
+                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
                             <i class="fas fa-sign-out-alt"></i> Sair
                         </button>
                     </div>
@@ -705,10 +693,10 @@
                 
                 authContainer.innerHTML = `
                     <div class="auth-buttons-container">
-                        <button onclick="goToLogin()" class="btn btn-outline btn-sm" style="border-color: var(--primary); color: var(--primary);">
+                        <button onclick="goToLogin()" class="btn btn-outline btn-sm">
                             <i class="fas fa-sign-in-alt"></i> Entrar
                         </button>
-                        <button onclick="goToRegister()" class="btn btn-primary btn-sm" style="background: var(--primary); color: white; border-color: var(--primary);">
+                        <button onclick="goToRegister()" class="btn btn-primary btn-sm">
                             <i class="fas fa-user-plus"></i> Cadastrar
                         </button>
                     </div>
@@ -716,11 +704,6 @@
                 
                 if (uploadSection) uploadSection.style.display = 'none';
             }
-            
-            console.log('👤 Estado de autenticação:', { 
-                isAuthenticated, 
-                userEmail: currentUser?.email || 'null'
-            });
         }
 
         function goToLogin() {
@@ -735,15 +718,21 @@
 
         async function logoutFromPage() {
             try {
+                // Limpar localStorage primeiro
+                localStorage.removeItem('studycert_user');
+                localStorage.removeItem('studycert_session');
+                
+                // Fazer logout do Supabase
                 if (supabaseClient) {
-                    await supabaseClient.auth.signOut();
+                    const { error } = await supabaseClient.auth.signOut();
+                    if (error) {
+                        console.warn('⚠️ Erro no signOut do Supabase:', error);
+                    }
                 }
                 
                 isAuthenticated = false;
                 currentUser = null;
-                
-                // Limpar localStorage
-                localStorage.removeItem('studycert_user');
+                currentSession = null;
                 
                 updateAuthUI();
                 await loadMaterialsFromSupabase(currentCertId);
@@ -795,6 +784,13 @@
             
             document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
                 if (e.target === this) closeDeleteModal();
+            });
+            
+            // Atualizar autenticação quando a sessão mudar
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'studycert_user' || e.key === 'studycert_session') {
+                    checkAuth();
+                }
             });
         }
 
@@ -904,7 +900,7 @@
             return `${sanitized}_${Date.now()}.${ext}`;
         }
 
-        // Processar upload
+        // Processar upload - CORRIGIDA
         async function processUpload() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
@@ -940,33 +936,25 @@
                 const filePath = `${currentCertId}/${currentUser.id}/${sanitizedFileName}`;
                 console.log('📤 Upload para:', filePath);
                 
-                // Simular progresso
-                let progress = 0;
-                const progressInterval = setInterval(() => {
-                    progress += 5;
-                    if (progress > 70) clearInterval(progressInterval);
-                    document.getElementById('modalProgressBar').style.width = progress + '%';
-                    document.getElementById('modalProgressPercent').textContent = `${progress}%`;
-                }, 100);
-                
-                // 3. Fazer upload PARA O STORAGE
+                // 3. Fazer upload PARA O STORAGE com progresso real
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('materiais')
                     .upload(filePath, file, {
                         cacheControl: '3600',
-                        upsert: false
+                        upsert: false,
+                        onUploadProgress: (progress) => {
+                            const percent = Math.round((progress.loaded / progress.total) * 100);
+                            document.getElementById('modalProgressBar').style.width = percent + '%';
+                            document.getElementById('modalProgressPercent').textContent = `${percent}%`;
+                        }
                     });
-                
-                clearInterval(progressInterval);
                 
                 if (uploadError) {
                     console.error('❌ Erro no upload:', uploadError);
-                    throw new Error(`Falha no upload: ${uploadError.message}`);
+                    throw new Error(`Falha no upload: ${uploadError.message}. Verifique as policies do Supabase Storage.`);
                 }
                 
                 console.log('✅ Upload bem-sucedido');
-                document.getElementById('modalProgressBar').style.width = '80%';
-                document.getElementById('modalProgressPercent').textContent = '80%';
                 
                 // 4. Obter URL pública
                 const { data: urlData } = supabaseClient.storage
@@ -997,14 +985,26 @@
                 // 6. Salvar no banco
                 const { data: dbData, error: dbError } = await supabaseClient
                     .from('materiais')
-                    .insert([materialData]);
+                    .insert([materialData])
+                    .select()
+                    .single();
                 
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
+                    
+                    // Tentar excluir o arquivo do storage se falhou no banco
+                    try {
+                        await supabaseClient.storage
+                            .from('materiais')
+                            .remove([filePath]);
+                    } catch (cleanupError) {
+                        console.warn('⚠️ Não foi possível limpar arquivo do storage:', cleanupError);
+                    }
+                    
                     throw new Error(`Erro ao salvar no banco: ${dbError.message}`);
                 }
                 
-                console.log('✅ Material salvo no banco');
+                console.log('✅ Material salvo no banco:', dbData);
                 
                 // Concluir
                 document.getElementById('modalProgressBar').style.width = '100%';
@@ -1014,12 +1014,15 @@
                     closeUploadModal();
                     showToast('🎉 Material compartilhado com sucesso!', 'success');
                     loadMaterialsFromSupabase(currentCertId);
-                }, 1000);
+                }, 500);
                 
             } catch (error) {
                 console.error('❌ Erro no processo de upload:', error);
                 showToast(`❌ ${error.message}`, 'error');
-                closeUploadModal();
+                
+                setTimeout(() => {
+                    closeUploadModal();
+                }, 2000);
             }
         }
 
@@ -1141,7 +1144,7 @@
             document.getElementById('deleteConfirmModal').style.display = 'flex';
         }
 
-        // Excluir material
+        // Excluir material - CORRIGIDA
         async function confirmDeleteMaterial() {
             if (!materialToDelete) {
                 showToast('Erro: Nenhum material selecionado.', 'error');
@@ -1157,9 +1160,9 @@
             }
             
             try {
-                console.log('🗑️ Iniciando exclusão:', materialToDelete.id);
+                console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
                 
-                // 1. Buscar o material para obter o file_path
+                // 1. Buscar o material para obter o file_path e verificar propriedade
                 const { data: material, error: fetchError } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -1214,27 +1217,28 @@
                 
                 console.log('✅ Material excluído do banco');
                 
-                // 5. Remover da interface
+                // 5. Atualizar cache e interface IMEDIATAMENTE
+                materialsCache = materialsCache.filter(m => m.id !== materialToDelete.id);
+                
+                // 6. Remover da interface
                 const materialElement = document.getElementById(`material-${materialToDelete.id}`);
                 if (materialElement) {
                     materialElement.style.opacity = '0.5';
                     materialElement.style.transform = 'scale(0.95)';
                     setTimeout(() => {
-                        if (materialElement.parentNode) {
-                            materialElement.parentNode.removeChild(materialElement);
-                        }
+                        materialElement.remove();
                     }, 300);
                 }
                 
-                // 6. Atualizar cache e estatísticas
-                materialsCache = materialsCache.filter(m => m.id !== materialToDelete.id);
+                // 7. Atualizar estatísticas
                 updateStats(materialsCache);
                 
+                // 8. Se não houver mais materiais, mostrar mensagem
                 if (materialsCache.length === 0) {
                     showNoMaterials('Nenhum material encontrado.');
                 }
                 
-                // 7. Finalizar
+                // 9. Finalizar
                 closeDeleteModal();
                 showToast('✅ Material excluído com sucesso!', 'success');
                 
