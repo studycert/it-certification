@@ -186,7 +186,7 @@
             color: #666;
         }
         
-        /* Estilos para botões de autenticação */
+        /* Estilos para botões de autenticação - CORRIGIDOS */
         .auth-buttons-container {
             display: flex;
             gap: 0.5rem;
@@ -196,22 +196,33 @@
             border: 2px solid var(--primary);
             color: var(--primary);
             background: transparent;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
         
         .auth-buttons-container .btn-outline:hover {
             background: var(--primary);
-            color: white;
+            color: white !important; /* Força a cor branca no hover */
         }
         
         .auth-buttons-container .btn-primary {
             background: var(--primary);
             color: white;
             border: 2px solid var(--primary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
         
         .auth-buttons-container .btn-primary:hover {
             background: var(--primary-dark);
             border-color: var(--primary-dark);
+            color: white !important; /* Força a cor branca no hover */
         }
         
         .user-info-display {
@@ -247,6 +258,27 @@
         .btn-danger:hover {
             background: #c0392b;
             border-color: #c0392b;
+        }
+        
+        /* Forçar cores nos botões para evitar herança incorreta */
+        .auth-container button {
+            color: inherit !important;
+        }
+        
+        .auth-container .btn-outline {
+            color: var(--primary) !important;
+        }
+        
+        .auth-container .btn-outline:hover {
+            color: white !important;
+        }
+        
+        .auth-container .btn-primary {
+            color: white !important;
+        }
+        
+        .auth-container .btn-primary:hover {
+            color: white !important;
         }
     </style>
 </head>
@@ -542,7 +574,7 @@
             // Inicializar Supabase
             await initSupabase();
             
-            // Verificar autenticação
+            // Verificar autenticação usando localStorage também
             await checkAuth();
             
             // Carregar certificação
@@ -588,9 +620,28 @@
             }
         }
 
-        // Verificar autenticação
+        // Verificar autenticação - CORRIGIDO PARA USAR LOCALSTORAGE TAMBÉM
         async function checkAuth() {
             try {
+                // Primeiro tentar carregar do localStorage (compartilhado com index.html)
+                try {
+                    const userData = localStorage.getItem('studycert_user');
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        currentUser = {
+                            id: user.id,
+                            email: user.email,
+                            user_metadata: { full_name: user.name }
+                        };
+                        isAuthenticated = true;
+                        console.log('📱 Usuário carregado do localStorage:', user.email);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Erro ao carregar do localStorage:', e);
+                }
+                
+                // Se não tem no localStorage, tentar sessão do Supabase
                 if (!supabaseClient) await initSupabase();
                 
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -600,9 +651,17 @@
                     isAuthenticated = false;
                     currentUser = null;
                 } else if (session && session.user) {
-                    console.log('✅ Usuário autenticado:', session.user.email);
+                    console.log('✅ Usuário autenticado via Supabase:', session.user.email);
                     isAuthenticated = true;
                     currentUser = session.user;
+                    
+                    // Salvar no localStorage para compartilhar com outras páginas
+                    const userData = {
+                        id: session.user.id,
+                        email: session.user.email,
+                        name: session.user.user_metadata?.full_name || session.user.email.split('@')[0]
+                    };
+                    localStorage.setItem('studycert_user', JSON.stringify(userData));
                 } else {
                     console.log('ℹ️ Nenhuma sessão ativa');
                     isAuthenticated = false;
@@ -634,7 +693,7 @@
                         <div class="user-avatar-small">
                             ${userDisplayName.substring(0, 2).toUpperCase()}
                         </div>
-                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
+                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm" style="border-color: var(--primary); color: var(--primary);">
                             <i class="fas fa-sign-out-alt"></i> Sair
                         </button>
                     </div>
@@ -646,10 +705,10 @@
                 
                 authContainer.innerHTML = `
                     <div class="auth-buttons-container">
-                        <button onclick="goToLogin()" class="btn btn-outline btn-sm">
+                        <button onclick="goToLogin()" class="btn btn-outline btn-sm" style="border-color: var(--primary); color: var(--primary);">
                             <i class="fas fa-sign-in-alt"></i> Entrar
                         </button>
-                        <button onclick="goToRegister()" class="btn btn-primary btn-sm">
+                        <button onclick="goToRegister()" class="btn btn-primary btn-sm" style="background: var(--primary); color: white; border-color: var(--primary);">
                             <i class="fas fa-user-plus"></i> Cadastrar
                         </button>
                     </div>
@@ -682,6 +741,9 @@
                 
                 isAuthenticated = false;
                 currentUser = null;
+                
+                // Limpar localStorage
+                localStorage.removeItem('studycert_user');
                 
                 updateAuthUI();
                 await loadMaterialsFromSupabase(currentCertId);
@@ -842,7 +904,7 @@
             return `${sanitized}_${Date.now()}.${ext}`;
         }
 
-        // Processar upload - SIMPLIFICADO E CORRIGIDO
+        // Processar upload
         async function processUpload() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
@@ -899,29 +961,7 @@
                 
                 if (uploadError) {
                     console.error('❌ Erro no upload:', uploadError);
-                    
-                    // Se arquivo já existe, tentar com nome diferente
-                    if (uploadError.message.includes('already exists')) {
-                        const newFileName = `${Date.now()}_${sanitizedFileName}`;
-                        const newFilePath = `${currentCertId}/${currentUser.id}/${newFileName}`;
-                        console.log('🔄 Tentando com novo nome:', newFilePath);
-                        
-                        const { data: retryData, error: retryError } = await supabaseClient.storage
-                            .from('materiais')
-                            .upload(newFilePath, file, {
-                                cacheControl: '3600',
-                                upsert: false
-                            });
-                        
-                        if (retryError) {
-                            throw new Error(`Falha no upload: ${retryError.message}`);
-                        }
-                        
-                        // Usar novo caminho
-                        filePath = newFilePath;
-                    } else {
-                        throw new Error(`Falha no upload: ${uploadError.message}`);
-                    }
+                    throw new Error(`Falha no upload: ${uploadError.message}`);
                 }
                 
                 console.log('✅ Upload bem-sucedido');
@@ -954,10 +994,10 @@
                 
                 console.log('💾 Salvando no banco...', materialData);
                 
-                // 6. Salvar no banco - FORMA SIMPLES
+                // 6. Salvar no banco
                 const { data: dbData, error: dbError } = await supabaseClient
                     .from('materiais')
-                    .insert(materialData);
+                    .insert([materialData]);
                 
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
@@ -1101,7 +1141,7 @@
             document.getElementById('deleteConfirmModal').style.display = 'flex';
         }
 
-        // Excluir material - CORRIGIDO E SIMPLIFICADO
+        // Excluir material
         async function confirmDeleteMaterial() {
             if (!materialToDelete) {
                 showToast('Erro: Nenhum material selecionado.', 'error');
@@ -1317,29 +1357,6 @@
                     }
                 }, 300);
             }, 3000);
-        }
-
-        // Testar conexão com Supabase
-        async function testConnection() {
-            try {
-                console.log('🔍 Testando conexão com Supabase...');
-                
-                // Testar autenticação
-                const { data: authData, error: authError } = await supabaseClient.auth.getSession();
-                console.log('✅ Autenticação:', authError ? `Erro: ${authError.message}` : 'OK');
-                
-                // Testar banco de dados
-                const { data: dbData, error: dbError } = await supabaseClient
-                    .from('materiais')
-                    .select('count')
-                    .limit(1);
-                console.log('✅ Banco de dados:', dbError ? `Erro: ${dbError.message}` : 'OK');
-                
-                return true;
-            } catch (error) {
-                console.error('❌ Erro no teste de conexão:', error);
-                return false;
-            }
         }
 
     </script>
