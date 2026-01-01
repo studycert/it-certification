@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
+        /* Estilos mantidos do original com algumas melhorias */
         .materials-page { padding: 2rem 0; }
         .certification-header { text-align: center; margin-bottom: 3rem; padding: 2rem; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .certification-icon { font-size: 4rem; color: var(--secondary); margin-bottom: 1rem; }
@@ -278,6 +279,34 @@
         
         .auth-container .btn-primary:hover {
             color: white !important;
+        }
+        
+        /* Novo: Indicador de propriedade */
+        .owner-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 9;
+        }
+        
+        /* Novo: Mensagens de estado */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -748,7 +777,10 @@
         // Configurar eventos
         function setupEventListeners() {
             // Input de arquivo
-            document.getElementById('fileInputPage').addEventListener('change', handleFileSelect);
+            const fileInput = document.getElementById('fileInputPage');
+            if (fileInput) {
+                fileInput.addEventListener('change', handleFileSelect);
+            }
             
             // Drag and drop
             const uploadArea = document.getElementById('uploadAreaPage');
@@ -773,18 +805,29 @@
             }
             
             // Filtros
-            document.getElementById('filterType')?.addEventListener('change', handleFilterChange);
-            document.getElementById('filterSort')?.addEventListener('change', handleFilterChange);
-            document.getElementById('searchMaterial')?.addEventListener('input', handleFilterChange);
+            const filterType = document.getElementById('filterType');
+            const filterSort = document.getElementById('filterSort');
+            const searchMaterial = document.getElementById('searchMaterial');
+            
+            if (filterType) filterType.addEventListener('change', handleFilterChange);
+            if (filterSort) filterSort.addEventListener('change', handleFilterChange);
+            if (searchMaterial) searchMaterial.addEventListener('input', handleFilterChange);
             
             // Modais
-            document.getElementById('uploadModal')?.addEventListener('click', function(e) {
-                if (e.target === this) closeUploadModal();
-            });
+            const uploadModal = document.getElementById('uploadModal');
+            const deleteModal = document.getElementById('deleteConfirmModal');
             
-            document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
-                if (e.target === this) closeDeleteModal();
-            });
+            if (uploadModal) {
+                uploadModal.addEventListener('click', function(e) {
+                    if (e.target === this) closeUploadModal();
+                });
+            }
+            
+            if (deleteModal) {
+                deleteModal.addEventListener('click', function(e) {
+                    if (e.target === this) closeDeleteModal();
+                });
+            }
             
             // Atualizar autenticação quando a sessão mudar
             window.addEventListener('storage', (e) => {
@@ -820,7 +863,10 @@
                 return;
             }
             
-            document.getElementById('fileInputPage').click();
+            const fileInput = document.getElementById('fileInputPage');
+            if (fileInput) {
+                fileInput.click();
+            }
         }
 
         function handleFileSelect(e) {
@@ -838,22 +884,36 @@
             currentUploadFile = file;
             const fileType = detectFileType(file.name);
             
-            document.getElementById('selectedFileInfo').innerHTML = `
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <i class="fas fa-file-${fileType} ${fileType}-color" style="font-size: 2rem;"></i>
-                    <div>
-                        <strong>${file.name}</strong><br>
-                        <small>${formatFileSize(file.size)} • ${fileType.toUpperCase()}</small>
+            const selectedFileInfo = document.getElementById('selectedFileInfo');
+            if (selectedFileInfo) {
+                selectedFileInfo.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <i class="fas fa-file-${fileType} ${fileType}-color" style="font-size: 2rem;"></i>
+                        <div>
+                            <strong>${file.name}</strong><br>
+                            <small>${formatFileSize(file.size)} • ${fileType.toUpperCase()}</small>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
             
-            document.getElementById('materialTitle').value = file.name.replace(/\.[^/.]+$/, "");
-            document.getElementById('materialDescription').value = '';
-            document.getElementById('uploadFormContainer').style.display = 'block';
-            document.getElementById('uploadProgressContainer').style.display = 'none';
+            const materialTitle = document.getElementById('materialTitle');
+            if (materialTitle) {
+                materialTitle.value = file.name.replace(/\.[^/.]+$/, "");
+            }
             
-            document.getElementById('uploadModal').style.display = 'flex';
+            const materialDescription = document.getElementById('materialDescription');
+            if (materialDescription) {
+                materialDescription.value = '';
+            }
+            
+            const uploadFormContainer = document.getElementById('uploadFormContainer');
+            const uploadProgressContainer = document.getElementById('uploadProgressContainer');
+            const uploadModal = document.getElementById('uploadModal');
+            
+            if (uploadFormContainer) uploadFormContainer.style.display = 'block';
+            if (uploadProgressContainer) uploadProgressContainer.style.display = 'none';
+            if (uploadModal) uploadModal.style.display = 'flex';
         }
 
         function detectFileType(fileName) {
@@ -875,14 +935,19 @@
         }
 
         function closeUploadModal() {
-            document.getElementById('uploadModal').style.display = 'none';
-            document.getElementById('fileInputPage').value = '';
+            const uploadModal = document.getElementById('uploadModal');
+            if (uploadModal) uploadModal.style.display = 'none';
+            
+            const fileInput = document.getElementById('fileInputPage');
+            if (fileInput) fileInput.value = '';
+            
             currentUploadFile = null;
         }
 
         function closeDeleteModal() {
             materialToDelete = null;
-            document.getElementById('deleteConfirmModal').style.display = 'none';
+            const deleteModal = document.getElementById('deleteConfirmModal');
+            if (deleteModal) deleteModal.style.display = 'none';
         }
 
         // Sanitizar nome de arquivo
@@ -902,8 +967,13 @@
 
         // Processar upload - CORRIGIDA
         async function processUpload() {
-            const title = document.getElementById('materialTitle').value.trim();
-            const description = document.getElementById('materialDescription').value.trim();
+            const materialTitle = document.getElementById('materialTitle');
+            const materialDescription = document.getElementById('materialDescription');
+            
+            if (!materialTitle || !currentUploadFile) return;
+            
+            const title = materialTitle.value.trim();
+            const description = materialDescription ? materialDescription.value.trim() : '';
             const file = currentUploadFile;
             
             if (!title) {
@@ -922,8 +992,13 @@
                 return;
             }
             
-            document.getElementById('uploadFormContainer').style.display = 'none';
-            document.getElementById('uploadProgressContainer').style.display = 'block';
+            const uploadFormContainer = document.getElementById('uploadFormContainer');
+            const uploadProgressContainer = document.getElementById('uploadProgressContainer');
+            const modalProgressBar = document.getElementById('modalProgressBar');
+            const modalProgressPercent = document.getElementById('modalProgressPercent');
+            
+            if (uploadFormContainer) uploadFormContainer.style.display = 'none';
+            if (uploadProgressContainer) uploadProgressContainer.style.display = 'block';
             
             try {
                 console.log('🚀 Iniciando upload...');
@@ -936,32 +1011,33 @@
                 const filePath = `${currentCertId}/${currentUser.id}/${sanitizedFileName}`;
                 console.log('📤 Upload para:', filePath);
                 
-                // 3. Fazer upload PARA O STORAGE com progresso real
+                // 3. Fazer upload PARA O STORAGE
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('materiais')
                     .upload(filePath, file, {
                         cacheControl: '3600',
-                        upsert: false,
-                        onUploadProgress: (progress) => {
-                            const percent = Math.round((progress.loaded / progress.total) * 100);
-                            document.getElementById('modalProgressBar').style.width = percent + '%';
-                            document.getElementById('modalProgressPercent').textContent = `${percent}%`;
-                        }
+                        upsert: false
                     });
                 
                 if (uploadError) {
                     console.error('❌ Erro no upload:', uploadError);
-                    throw new Error(`Falha no upload: ${uploadError.message}. Verifique as policies do Supabase Storage.`);
+                    
+                    // Verificar se é erro de policy
+                    if (uploadError.message.includes('policy') || uploadError.message.includes('row-level security')) {
+                        throw new Error('Erro de permissão. Configure as políticas do Supabase Storage para permitir uploads autenticados.');
+                    }
+                    
+                    throw new Error(`Falha no upload: ${uploadError.message}`);
                 }
                 
-                console.log('✅ Upload bem-sucedido');
+                console.log('✅ Upload bem-sucedido:', uploadData);
                 
                 // 4. Obter URL pública
                 const { data: urlData } = supabaseClient.storage
                     .from('materiais')
                     .getPublicUrl(filePath);
                 
-                console.log('🔗 URL pública:', urlData.publicUrl);
+                console.log('🔗 URL pública:', urlData);
                 
                 // 5. Preparar dados para o banco
                 const materialData = {
@@ -997,6 +1073,7 @@
                         await supabaseClient.storage
                             .from('materiais')
                             .remove([filePath]);
+                        console.log('✅ Arquivo removido do storage após erro no banco');
                     } catch (cleanupError) {
                         console.warn('⚠️ Não foi possível limpar arquivo do storage:', cleanupError);
                     }
@@ -1006,10 +1083,11 @@
                 
                 console.log('✅ Material salvo no banco:', dbData);
                 
-                // Concluir
-                document.getElementById('modalProgressBar').style.width = '100%';
-                document.getElementById('modalProgressPercent').textContent = '100%';
+                // Atualizar barra de progresso
+                if (modalProgressBar) modalProgressBar.style.width = '100%';
+                if (modalProgressPercent) modalProgressPercent.textContent = '100%';
                 
+                // Concluir
                 setTimeout(() => {
                     closeUploadModal();
                     showToast('🎉 Material compartilhado com sucesso!', 'success');
@@ -1020,6 +1098,13 @@
                 console.error('❌ Erro no processo de upload:', error);
                 showToast(`❌ ${error.message}`, 'error');
                 
+                // Mostrar instruções para configurar policies
+                if (error.message.includes('política') || error.message.includes('policy')) {
+                    setTimeout(() => {
+                        showToast('💡 Acesse o Dashboard do Supabase > Storage > Policies para configurar permissões', 'info', 5000);
+                    }, 1000);
+                }
+                
                 setTimeout(() => {
                     closeUploadModal();
                 }, 2000);
@@ -1029,6 +1114,15 @@
         async function loadMaterialsFromSupabase(certId, filterType = 'all', sortBy = 'date_desc', searchTerm = '') {
             try {
                 console.log('📥 Carregando materiais para:', certId);
+                
+                const container = document.getElementById('materialsContainer');
+                if (!container) return;
+                
+                container.innerHTML = `
+                    <div class="loading-message">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando materiais...
+                    </div>
+                `;
                 
                 if (!supabaseClient) {
                     console.error('❌ Supabase não inicializado');
@@ -1080,6 +1174,7 @@
 
         function updateMaterialsInterface(materials) {
             const container = document.getElementById('materialsContainer');
+            if (!container) return;
             
             if (!materials || materials.length === 0) {
                 showNoMaterials('Nenhum material encontrado.');
@@ -1094,6 +1189,7 @@
                 return `
                     <div class="material-card-page" data-id="${material.id}" id="material-${material.id}">
                         ${isOwner ? `
+                            <div class="owner-badge">Seu material</div>
                             <button class="delete-btn" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -1114,12 +1210,15 @@
                                 <span><i class="fas fa-download"></i> ${material.downloads || 0}</span>
                             </div>
                             <div class="action-buttons">
-                                <a href="${material.arquivo_url}" download="${material.arquivo_nome}" class="btn btn-primary" onclick="incrementDownloads('${material.id}')">
+                                <a href="${material.arquivo_url}" target="_blank" class="btn btn-primary" onclick="incrementViews('${material.id}')">
+                                    <i class="fas fa-external-link-alt"></i> Visualizar
+                                </a>
+                                <a href="${material.arquivo_url}" download="${material.arquivo_nome}" class="btn btn-outline" onclick="incrementDownloads('${material.id}')">
                                     <i class="fas fa-download"></i> Baixar
                                 </a>
                                 ${isOwner ? `
-                                    <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')">
-                                        <i class="fas fa-trash"></i> Excluir
+                                    <button class="btn btn-danger btn-sm" onclick="showDeleteModal('${material.id}', '${material.titulo}')">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 ` : ''}
                             </div>
@@ -1140,8 +1239,15 @@
                 title: materialTitle
             };
             
-            document.getElementById('deleteMaterialName').textContent = materialTitle;
-            document.getElementById('deleteConfirmModal').style.display = 'flex';
+            const deleteMaterialName = document.getElementById('deleteMaterialName');
+            if (deleteMaterialName) {
+                deleteMaterialName.textContent = materialTitle;
+            }
+            
+            const deleteModal = document.getElementById('deleteConfirmModal');
+            if (deleteModal) {
+                deleteModal.style.display = 'flex';
+            }
         }
 
         // Excluir material - CORRIGIDA
@@ -1195,6 +1301,11 @@
                         
                         if (storageError) {
                             console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                            
+                            // Se for erro de policy, dar instruções
+                            if (storageError.message.includes('policy')) {
+                                showToast('💡 Configure as políticas do Storage no Supabase Dashboard', 'info', 5000);
+                            }
                         } else {
                             console.log('✅ Arquivo excluído do storage');
                         }
@@ -1217,28 +1328,30 @@
                 
                 console.log('✅ Material excluído do banco');
                 
-                // 5. Atualizar cache e interface IMEDIATAMENTE
+                // 5. Atualizar cache e interface
                 materialsCache = materialsCache.filter(m => m.id !== materialToDelete.id);
                 
-                // 6. Remover da interface
+                // 6. Remover da interface com animação
                 const materialElement = document.getElementById(`material-${materialToDelete.id}`);
                 if (materialElement) {
                     materialElement.style.opacity = '0.5';
                     materialElement.style.transform = 'scale(0.95)';
+                    materialElement.style.transition = 'all 0.3s ease';
+                    
                     setTimeout(() => {
                         materialElement.remove();
+                        
+                        // Se não houver mais materiais, mostrar mensagem
+                        if (materialsCache.length === 0) {
+                            showNoMaterials('Nenhum material encontrado.');
+                        }
                     }, 300);
                 }
                 
                 // 7. Atualizar estatísticas
                 updateStats(materialsCache);
                 
-                // 8. Se não houver mais materiais, mostrar mensagem
-                if (materialsCache.length === 0) {
-                    showNoMaterials('Nenhum material encontrado.');
-                }
-                
-                // 9. Finalizar
+                // 8. Finalizar
                 closeDeleteModal();
                 showToast('✅ Material excluído com sucesso!', 'success');
                 
@@ -1246,6 +1359,19 @@
                 console.error('❌ Erro na exclusão:', error);
                 showToast(`❌ Erro: ${error.message}`, 'error');
                 closeDeleteModal();
+            }
+        }
+
+        async function incrementViews(materialId) {
+            try {
+                if (supabaseClient) {
+                    await supabaseClient
+                        .from('materiais')
+                        .update({ visualizacoes: supabaseClient.raw('visualizacoes + 1') })
+                        .eq('id', materialId);
+                }
+            } catch (error) {
+                console.warn('⚠️ Erro ao incrementar visualizações:', error);
             }
         }
 
@@ -1264,10 +1390,11 @@
 
         function showNoMaterials(message) {
             const container = document.getElementById('materialsContainer');
+            if (!container) return;
             
             container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
-                    <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
                     <h3>${message}</h3>
                     <p>Seja o primeiro a compartilhar um material!</p>
                     ${isAuthenticated ? 
@@ -1280,6 +1407,9 @@
                     }
                 </div>
             `;
+            
+            // Atualizar estatísticas para zero
+            updateStats([]);
         }
 
         function updateStats(materials) {
@@ -1287,9 +1417,13 @@
             const totalSize = materials.reduce((sum, material) => sum + (material.arquivo_tamanho_kb || 0), 0) / 1024;
             const totalViews = materials.reduce((sum, material) => sum + (material.visualizacoes || 0), 0);
             
-            document.getElementById('totalMaterials').textContent = totalMaterials;
-            document.getElementById('totalSize').textContent = totalSize.toFixed(1) + ' MB';
-            document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+            const totalMaterialsEl = document.getElementById('totalMaterials');
+            const totalSizeEl = document.getElementById('totalSize');
+            const totalViewsEl = document.getElementById('totalViews');
+            
+            if (totalMaterialsEl) totalMaterialsEl.textContent = totalMaterials;
+            if (totalSizeEl) totalSizeEl.textContent = totalSize.toFixed(1) + ' MB';
+            if (totalViewsEl) totalViewsEl.textContent = totalViews.toLocaleString();
         }
 
         function formatDate(dateString) {
@@ -1302,9 +1436,15 @@
         }
 
         function handleFilterChange() {
-            const filterType = document.getElementById('filterType').value;
-            const sortBy = document.getElementById('filterSort').value;
-            const searchTerm = document.getElementById('searchMaterial').value.toLowerCase();
+            const filterTypeEl = document.getElementById('filterType');
+            const filterSortEl = document.getElementById('filterSort');
+            const searchMaterialEl = document.getElementById('searchMaterial');
+            
+            if (!filterTypeEl || !filterSortEl || !searchMaterialEl) return;
+            
+            const filterType = filterTypeEl.value;
+            const sortBy = filterSortEl.value;
+            const searchTerm = searchMaterialEl.value.toLowerCase();
             
             let filtered = [...materialsCache];
             
@@ -1338,7 +1478,7 @@
             updateStats(filtered);
         }
 
-        function showToast(message, type = 'success') {
+        function showToast(message, type = 'success', duration = 3000) {
             const existingToast = document.querySelector('.toast');
             if (existingToast) {
                 existingToast.remove();
@@ -1347,7 +1487,7 @@
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
                 <span>${message}</span>
             `;
             
@@ -1360,7 +1500,7 @@
                         toast.parentNode.removeChild(toast);
                     }
                 }, 300);
-            }, 3000);
+            }, duration);
         }
 
     </script>
