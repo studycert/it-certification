@@ -121,26 +121,6 @@
             gap: 0.5rem;
             margin-top: 1rem;
         }
-        
-        /* Animações para exclusão */
-        .material-fade-out {
-            animation: fadeOut 0.3s ease forwards;
-        }
-        
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-                transform: scale(1);
-            }
-            to {
-                opacity: 0;
-                transform: scale(0.8);
-                height: 0;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-            }
-        }
     </style>
 </head>
 <body>
@@ -425,22 +405,28 @@
         let currentCertId = 'itil4';
         let currentFileType = 'pdf';
         let materialToDelete = null;
-        let currentMaterials = []; // Array para armazenar os materiais carregados
+        let materialsCache = []; // Cache para armazenar materiais
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Iniciando página de materiais...');
             
+            // Configurar eventos
             setupEventListeners();
             
+            // Aguardar authManager
             setTimeout(async () => {
+                // Inicializar Supabase
                 await initSupabase();
                 
+                // Carregar certificação
                 currentCertId = getUrlParameter('cert') || 'itil4';
                 loadCertification(currentCertId);
                 
+                // Atualizar interface de autenticação
                 updateAuthUI();
                 
+                // Carregar materiais
                 await loadMaterialsFromSupabase(currentCertId);
                 
                 console.log('✅ Página de materiais inicializada');
@@ -449,8 +435,10 @@
 
         // Configurar eventos
         function setupEventListeners() {
+            // Input de arquivo
             document.getElementById('fileInputPage').addEventListener('change', handleFileSelect);
             
+            // Drag and drop
             const uploadArea = document.getElementById('uploadAreaPage');
             uploadArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -470,10 +458,12 @@
                 handleFileDrop(e.dataTransfer.files);
             });
             
+            // Filtros
             document.getElementById('filterType').addEventListener('change', handleFilterChange);
             document.getElementById('filterSort').addEventListener('change', handleFilterChange);
             document.getElementById('searchMaterial').addEventListener('input', handleFilterChange);
             
+            // Modais - fechar ao clicar fora
             document.getElementById('uploadModal')?.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeUploadModal();
@@ -490,16 +480,19 @@
         // Inicializar Supabase
         async function initSupabase() {
             try {
+                // Usar authManager se disponível
                 if (window.authManager && window.authManager.getSupabase()) {
                     supabaseClient = window.authManager.getSupabase();
                     console.log('✅ Usando Supabase do authManager');
                 } else {
+                    // Criar novo cliente
                     supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
                         auth: { persistSession: true }
                     });
                     console.log('✅ Criado novo cliente Supabase');
                 }
                 
+                // Testar conexão
                 const { data, error } = await supabaseClient
                     .from('materiais')
                     .select('count')
@@ -612,6 +605,7 @@
             currentUploadFile = file;
             currentFileType = detectFileType(file.name);
             
+            // Atualizar informações do arquivo no modal
             document.getElementById('selectedFileInfo').innerHTML = `
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <i class="fas fa-file-${currentFileType} ${currentFileType}-color" style="font-size: 2rem;"></i>
@@ -622,11 +616,13 @@
                 </div>
             `;
             
+            // Resetar formulário
             document.getElementById('materialTitle').value = '';
             document.getElementById('materialDescription').value = '';
             document.getElementById('uploadFormContainer').style.display = 'block';
             document.getElementById('uploadProgressContainer').style.display = 'none';
             
+            // Mostrar modal
             document.getElementById('uploadModal').style.display = 'flex';
         }
 
@@ -653,7 +649,6 @@
             currentUploadFile = null;
         }
 
-        // CORREÇÃO: Função de upload com sanitização de nome de arquivo
         async function processUpload() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
@@ -676,27 +671,23 @@
                 return;
             }
             
+            // Mostrar progresso
             document.getElementById('uploadFormContainer').style.display = 'none';
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
                 console.log('🚀 Iniciando upload...');
+                console.log('📄 Arquivo:', file.name);
+                console.log('👤 Usuário ID:', user.id);
+                console.log('📁 Certificação:', currentCertId);
                 
-                // CORREÇÃO: Sanitizar nome do arquivo para remover caracteres especiais
-                const sanitizedFileName = file.name
-                    .normalize('NFD') // Normalizar caracteres acentuados
-                    .replace(/[\u0300-\u036f]/g, '') // Remover acentos
-                    .replace(/[^a-zA-Z0-9.\-_]/g, '_') // Substituir caracteres especiais por _
-                    .replace(/_+/g, '_') // Evitar múltiplos underscores seguidos
-                    .toLowerCase();
-                
-                const fileName = `material_${Date.now()}_${sanitizedFileName}`;
-                let filePath = `${currentCertId}/${user.id}/${fileName}`;
+                // 1. Upload para Storage
+                const fileName = `material_${Date.now()}_${file.name.replace(/\s+/g, '_').toLowerCase()}`;
+                const filePath = `${currentCertId}/${user.id}/${fileName}`;
                 
                 console.log('📤 Upload para:', filePath);
-                console.log('📄 Nome original:', file.name);
-                console.log('📄 Nome sanitizado:', sanitizedFileName);
                 
+                // Simular progresso
                 let progress = 0;
                 const progressInterval = setInterval(() => {
                     progress += 5;
@@ -705,7 +696,7 @@
                     document.getElementById('modalProgressPercent').textContent = `${progress}%`;
                 }, 100);
                 
-                // Upload real para o Supabase Storage
+                // Fazer upload real
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('materiais')
                     .upload(filePath, file, {
@@ -717,42 +708,21 @@
                 
                 if (uploadError) {
                     console.error('❌ Erro no upload:', uploadError);
-                    
-                    // Tentar com nome mais simples se falhar
-                    const fallbackFileName = `material_${Date.now()}.${file.name.split('.').pop()}`;
-                    const fallbackPath = `${currentCertId}/${user.id}/${fallbackFileName}`;
-                    
-                    console.log('🔄 Tentando fallback:', fallbackPath);
-                    
-                    const { data: fallbackData, error: fallbackError } = await supabaseClient.storage
-                        .from('materiais')
-                        .upload(fallbackPath, file, {
-                            cacheControl: '3600',
-                            upsert: false
-                        });
-                    
-                    if (fallbackError) {
-                        throw new Error(`Falha no upload: ${fallbackError.message}`);
-                    }
-                    
-                    // Usar fallback se bem-sucedido
-                    filePath = fallbackPath;
-                    console.log('✅ Upload fallback bem-sucedido');
-                } else {
-                    console.log('✅ Upload bem-sucedido:', uploadData);
+                    throw new Error(`Falha no upload: ${uploadError.message}`);
                 }
                 
+                console.log('✅ Upload bem-sucedido:', uploadData);
                 document.getElementById('modalProgressBar').style.width = '80%';
                 document.getElementById('modalProgressPercent').textContent = '80%';
                 
-                // Obter URL pública
+                // 2. Obter URL pública
                 const { data: urlData } = supabaseClient.storage
                     .from('materiais')
                     .getPublicUrl(filePath);
                 
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
-                // Salvar no banco de dados
+                // 3. Salvar no banco de dados - USANDO A ESTRUTURA CORRETA
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
@@ -766,7 +736,8 @@
                     downloads: 0,
                     publico: true,
                     data_upload: new Date().toISOString(),
-                    storage_path: filePath // Salvar caminho do storage para exclusão
+                    // Adicionando coluna file_path para rastreamento
+                    file_path: filePath // IMPORTANTE: Adicione esta coluna no Supabase
                 };
                 
                 console.log('💾 Salvando no banco:', materialData);
@@ -780,27 +751,54 @@
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
                     
-                    // Tentar excluir o arquivo do storage se falhou no banco
-                    try {
-                        await supabaseClient.storage
+                    // Verificar se o erro é sobre colunas ausentes
+                    if (dbError.message.includes('column')) {
+                        console.log('⚠️ Tabela pode ter estrutura diferente');
+                        
+                        // Tentar inserir sem a coluna problemática
+                        const simplifiedData = {
+                            titulo: title,
+                            descricao: description || null,
+                            tipo: currentFileType,
+                            certificacao: currentCertId,
+                            arquivo_url: urlData.publicUrl,
+                            arquivo_nome: file.name,
+                            arquivo_tamanho_kb: Math.round(file.size / 1024),
+                            usuario_id: user.id,
+                            visualizacoes: 0,
+                            downloads: 0,
+                            publico: true,
+                            data_upload: new Date().toISOString()
+                        };
+                        
+                        const { data: simpleData, error: simpleError } = await supabaseClient
                             .from('materiais')
-                            .remove([filePath]);
-                        console.log('🗑️ Arquivo removido do storage devido a erro no banco');
-                    } catch (cleanupError) {
-                        console.error('⚠️ Erro ao limpar arquivo:', cleanupError);
+                            .insert([simplifiedData])
+                            .select()
+                            .single();
+                            
+                        if (simpleError) {
+                            throw new Error(`Erro ao salvar: ${simpleError.message}`);
+                        } else {
+                            console.log('✅ Material salvo (estrutura simplificada)');
+                            dbData = simpleData;
+                        }
+                    } else {
+                        throw new Error(`Erro ao salvar informações: ${dbError.message}`);
                     }
-                    
-                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
                 }
                 
                 console.log('✅ Material salvo no banco:', dbData);
                 
+                // Concluir
                 document.getElementById('modalProgressBar').style.width = '100%';
                 document.getElementById('modalProgressPercent').textContent = '100%';
                 
                 setTimeout(() => {
                     closeUploadModal();
                     alert('🎉 Material compartilhado com sucesso!');
+                    
+                    // Recarregar materiais
                     loadMaterialsFromSupabase(currentCertId);
                 }, 1000);
                 
@@ -821,12 +819,14 @@
                     return;
                 }
                 
+                // Construir consulta
                 let query = supabaseClient
                     .from('materiais')
                     .select('*')
                     .eq('certificacao', certId)
                     .eq('publico', true);
                 
+                // Aplicar filtros
                 if (filterType !== 'all') {
                     query = query.eq('tipo', filterType);
                 }
@@ -835,6 +835,7 @@
                     query = query.or(`titulo.ilike.%${searchTerm}%,descricao.ilike.%${searchTerm}%`);
                 }
                 
+                // Ordenação
                 switch(sortBy) {
                     case 'date_desc': query = query.order('data_upload', { ascending: false }); break;
                     case 'date_asc': query = query.order('data_upload', { ascending: true }); break;
@@ -842,6 +843,7 @@
                     case 'name_asc': query = query.order('titulo', { ascending: true }); break;
                 }
                 
+                // Executar consulta
                 const { data, error } = await query;
                 
                 if (error) {
@@ -851,12 +853,9 @@
                 }
                 
                 console.log(`✅ ${data?.length || 0} materiais carregados`);
-                
-                // Atualizar array global de materiais
-                currentMaterials = data || [];
-                
-                updateMaterialsInterface(currentMaterials);
-                updateStats(currentMaterials);
+                materialsCache = data || []; // Armazenar em cache
+                updateMaterialsInterface(data || []);
+                updateStats(data || []);
                 
             } catch (error) {
                 console.error('❌ Erro:', error);
@@ -875,12 +874,13 @@
             }
             
             container.innerHTML = materials.map(material => {
+                // Verificar se o usuário atual é o dono do material
                 const isOwner = currentUserId && material.usuario_id === currentUserId;
                 
                 return `
-                    <div class="material-card-page" data-id="${material.id}">
+                    <div class="material-card-page" data-id="${material.id}" id="material-${material.id}">
                         ${isOwner ? `
-                            <button class="delete-btn" onclick="showDeleteModal('${material.id}', '${material.titulo}', '${material.storage_path || ''}')" title="Excluir material">
+                            <button class="delete-btn" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
                                 <i class="fas fa-times"></i>
                             </button>
                         ` : ''}
@@ -904,7 +904,7 @@
                                     <i class="fas fa-download"></i> Baixar
                                 </button>
                                 ${isOwner ? `
-                                    <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}', '${material.storage_path || ''}')">
+                                    <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')">
                                         <i class="fas fa-trash"></i> Excluir
                                     </button>
                                 ` : ''}
@@ -915,24 +915,24 @@
             }).join('');
         }
 
-        // CORREÇÃO: Função melhorada para mostrar modal de exclusão
-        function showDeleteModal(materialId, materialTitle, storagePath) {
+        // Função para mostrar modal de exclusão
+        function showDeleteModal(materialId, materialTitle) {
             materialToDelete = {
                 id: materialId,
-                title: materialTitle,
-                storagePath: storagePath
+                title: materialTitle
             };
             
             document.getElementById('deleteMaterialName').textContent = materialTitle;
             document.getElementById('deleteConfirmModal').style.display = 'flex';
         }
 
+        // Fechar modal de exclusão
         function closeDeleteModal() {
             materialToDelete = null;
             document.getElementById('deleteConfirmModal').style.display = 'none';
         }
 
-        // CORREÇÃO COMPLETA: Função de exclusão com remoção visual imediata
+        // Confirmar exclusão do material
         async function confirmDeleteMaterial() {
             if (!materialToDelete) {
                 alert('Erro: Nenhum material selecionado para exclusão.');
@@ -957,16 +957,7 @@
             try {
                 console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
                 
-                // 1. Remover visualmente do DOM imediatamente
-                const materialElement = document.querySelector(`.material-card-page[data-id="${materialToDelete.id}"]`);
-                if (materialElement) {
-                    materialElement.classList.add('material-fade-out');
-                }
-                
-                // 2. Fechar modal rapidamente
-                closeDeleteModal();
-                
-                // 3. Buscar material para verificar propriedade
+                // 1. Primeiro buscar o material para obter informações
                 const { data: material, error: fetchError } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -975,60 +966,50 @@
                 
                 if (fetchError) {
                     console.error('❌ Erro ao buscar material:', fetchError);
-                    
-                    // Restaurar elemento se falhou
-                    if (materialElement) {
-                        materialElement.classList.remove('material-fade-out');
-                        alert('Material não encontrado no banco de dados.');
-                    }
-                    
-                    return;
+                    throw new Error('Material não encontrado.');
                 }
                 
-                // 4. Verificar se o usuário é o dono
+                // 2. Verificar se o usuário é o dono
                 if (material.usuario_id !== currentUser.id) {
-                    console.warn('⚠️ Tentativa de excluir material de outro usuário');
-                    
-                    // Restaurar elemento se não é o dono
-                    if (materialElement) {
-                        materialElement.classList.remove('material-fade-out');
-                        alert('Você só pode excluir seus próprios materiais.');
-                    }
-                    
+                    alert('Você só pode excluir seus próprios materiais.');
+                    closeDeleteModal();
                     return;
                 }
                 
-                // 5. Excluir do Storage (se tiver caminho salvo)
-                let storagePath = materialToDelete.storagePath || material.storage_path;
+                // 3. Tentar extrair caminho do arquivo da URL ou usar file_path se disponível
+                let filePathToDelete = null;
                 
-                if (!storagePath) {
-                    // Tentar extrair do URL se não tiver caminho salvo
-                    const fileUrl = material.arquivo_url;
-                    const urlParts = fileUrl.split('/materiais/');
+                if (material.file_path) {
+                    // Se temos o file_path salvo no banco
+                    filePathToDelete = material.file_path;
+                } else if (material.arquivo_url) {
+                    // Tentar extrair da URL
+                    const urlParts = material.arquivo_url.split('/materiais/');
                     if (urlParts.length > 1) {
-                        storagePath = urlParts[1];
+                        filePathToDelete = urlParts[1];
                     }
                 }
                 
-                if (storagePath) {
-                    console.log('🗑️ Excluindo do storage:', storagePath);
-                    
-                    const { error: storageError } = await supabaseClient.storage
-                        .from('materiais')
-                        .remove([storagePath]);
-                    
-                    if (storageError) {
-                        console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
-                        // Continuar mesmo se falhar no storage
-                    } else {
-                        console.log('✅ Arquivo excluído do storage');
+                console.log('📁 Caminho do arquivo para exclusão:', filePathToDelete);
+                
+                // 4. Excluir do Storage se tivermos o caminho
+                if (filePathToDelete) {
+                    try {
+                        const { error: storageError } = await supabaseClient.storage
+                            .from('materiais')
+                            .remove([filePathToDelete]);
+                        
+                        if (storageError) {
+                            console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                        } else {
+                            console.log('✅ Arquivo excluído do storage');
+                        }
+                    } catch (storageErr) {
+                        console.warn('⚠️ Erro no storage:', storageErr);
                     }
-                } else {
-                    console.warn('⚠️ Nenhum caminho de storage encontrado para exclusão');
                 }
                 
-                // 6. Excluir do banco de dados
-                console.log('🗑️ Excluindo do banco de dados');
+                // 5. Excluir do banco de dados
                 const { error: deleteError } = await supabaseClient
                     .from('materiais')
                     .delete()
@@ -1036,105 +1017,34 @@
                 
                 if (deleteError) {
                     console.error('❌ Erro ao excluir do banco:', deleteError);
-                    
-                    // Restaurar elemento se falhou
-                    if (materialElement) {
-                        materialElement.classList.remove('material-fade-out');
-                        alert(`Erro ao excluir material: ${deleteError.message}`);
-                    }
-                    
-                    return;
+                    throw new Error(`Erro ao excluir material: ${deleteError.message}`);
                 }
                 
                 console.log('✅ Material excluído com sucesso');
                 
-                // 7. Remover completamente do DOM após animação
-                setTimeout(() => {
-                    if (materialElement) {
-                        materialElement.remove();
-                    }
-                    
-                    // Atualizar array local
-                    currentMaterials = currentMaterials.filter(m => m.id !== materialToDelete.id);
-                    
-                    // Atualizar estatísticas
-                    updateStats(currentMaterials);
-                    
-                    // Se não houver mais materiais, mostrar mensagem
-                    if (currentMaterials.length === 0) {
-                        showNoMaterials('Nenhum material encontrado.');
-                    }
-                    
-                    // Feedback para o usuário
-                    showSuccessMessage('Material excluído com sucesso!');
-                    
-                }, 300);
+                // 6. Remover da interface imediatamente
+                const materialElement = document.getElementById(`material-${materialToDelete.id}`);
+                if (materialElement) {
+                    materialElement.remove();
+                }
+                
+                // 7. Atualizar cache local
+                materialsCache = materialsCache.filter(m => m.id !== materialToDelete.id);
+                updateStats(materialsCache);
+                
+                // 8. Verificar se ainda há materiais
+                if (materialsCache.length === 0) {
+                    showNoMaterials('Nenhum material encontrado.');
+                }
+                
+                // 9. Fechar modal e mostrar mensagem
+                closeDeleteModal();
+                showToast('✅ Material excluído com sucesso!', 'success');
                 
             } catch (error) {
                 console.error('❌ Erro na exclusão:', error);
-                
-                // Restaurar elemento em caso de erro
-                const materialElement = document.querySelector(`.material-card-page[data-id="${materialToDelete.id}"]`);
-                if (materialElement) {
-                    materialElement.classList.remove('material-fade-out');
-                }
-                
                 alert(`❌ Erro: ${error.message}`);
-            }
-        }
-
-        // Função para mostrar mensagem de sucesso
-        function showSuccessMessage(message) {
-            // Criar mensagem flutuante
-            const successDiv = document.createElement('div');
-            successDiv.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #27ae60;
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                animation: slideIn 0.3s ease;
-            `;
-            
-            successDiv.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                <span>${message}</span>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            // Remover após 3 segundos
-            setTimeout(() => {
-                successDiv.style.animation = 'slideOut 0.3s ease forwards';
-                setTimeout(() => {
-                    if (successDiv.parentNode) {
-                        successDiv.parentNode.removeChild(successDiv);
-                    }
-                }, 300);
-            }, 3000);
-            
-            // Adicionar CSS para animações
-            if (!document.querySelector('#success-animations')) {
-                const style = document.createElement('style');
-                style.id = 'success-animations';
-                style.textContent = `
-                    @keyframes slideIn {
-                        from { transform: translateX(100%); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                    @keyframes slideOut {
-                        from { transform: translateX(0); opacity: 1; }
-                        to { transform: translateX(100%); opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
+                closeDeleteModal();
             }
         }
 
@@ -1183,18 +1093,67 @@
             const sortBy = document.getElementById('filterSort').value;
             const searchTerm = document.getElementById('searchMaterial').value;
             
-            loadMaterialsFromSupabase(currentCertId, filterType, sortBy, searchTerm);
+            // Filtrar do cache local
+            let filtered = [...materialsCache];
+            
+            if (filterType !== 'all') {
+                filtered = filtered.filter(m => m.tipo === filterType);
+            }
+            
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filtered = filtered.filter(m => 
+                    m.titulo.toLowerCase().includes(term) || 
+                    (m.descricao && m.descricao.toLowerCase().includes(term))
+                );
+            }
+            
+            // Ordenar
+            switch(sortBy) {
+                case 'date_desc':
+                    filtered.sort((a, b) => new Date(b.data_upload) - new Date(a.data_upload));
+                    break;
+                case 'date_asc':
+                    filtered.sort((a, b) => new Date(a.data_upload) - new Date(b.data_upload));
+                    break;
+                case 'views_desc':
+                    filtered.sort((a, b) => (b.visualizacoes || 0) - (a.visualizacoes || 0));
+                    break;
+                case 'name_asc':
+                    filtered.sort((a, b) => a.titulo.localeCompare(b.titulo));
+                    break;
+            }
+            
+            updateMaterialsInterface(filtered);
+            updateStats(filtered);
         }
 
         async function downloadMaterial(materialId, fileUrl, fileName) {
             try {
+                // Registrar download no banco
                 if (supabaseClient) {
                     await supabaseClient
                         .from('materiais')
                         .update({ downloads: supabaseClient.raw('downloads + 1') })
                         .eq('id', materialId);
+                    
+                    // Atualizar cache local
+                    const materialIndex = materialsCache.findIndex(m => m.id === materialId);
+                    if (materialIndex !== -1) {
+                        materialsCache[materialIndex].downloads = (materialsCache[materialIndex].downloads || 0) + 1;
+                        
+                        // Atualizar interface
+                        const downloadElement = document.querySelector(`#material-${materialId} .fa-download`);
+                        if (downloadElement) {
+                            const parentSpan = downloadElement.closest('span');
+                            if (parentSpan) {
+                                parentSpan.textContent = materialsCache[materialIndex].downloads;
+                            }
+                        }
+                    }
                 }
                 
+                // Baixar arquivo
                 const link = document.createElement('a');
                 link.href = fileUrl;
                 link.download = fileName;
@@ -1203,23 +1162,66 @@
                 document.body.removeChild(link);
                 
                 console.log('✅ Download iniciado:', fileName);
-                
-                // Atualizar contador localmente
-                const materialElement = document.querySelector(`.material-card-page[data-id="${materialId}"]`);
-                if (materialElement) {
-                    const downloadCountElement = materialElement.querySelector('.fa-download').parentElement;
-                    const currentCount = parseInt(downloadCountElement.textContent.trim()) || 0;
-                    downloadCountElement.innerHTML = `<i class="fas fa-download"></i> ${currentCount + 1}`;
-                }
-                
-                // Recarregar dados após 2 segundos
-                setTimeout(() => {
-                    loadMaterialsFromSupabase(currentCertId);
-                }, 2000);
+                showToast('Download iniciado!', 'success');
                 
             } catch (error) {
                 console.error('❌ Erro ao baixar:', error);
+                // Abrir em nova aba como fallback
                 window.open(fileUrl, '_blank');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            // Criar elemento de toast
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+            
+            // Adicionar estilos de animação se não existirem
+            if (!document.getElementById('toast-styles')) {
+                const style = document.createElement('style');
+                style.id = 'toast-styles';
+                style.textContent = `
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translateY(-20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    @keyframes fadeOut {
+                        from { opacity: 1; transform: translateY(0); }
+                        to { opacity: 0; transform: translateY(-20px); }
+                    }
+                `;
+                document.head.appendChild(style);
             }
         }
 
