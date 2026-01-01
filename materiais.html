@@ -159,20 +159,6 @@
             to { opacity: 0; transform: translateY(-20px); }
         }
         
-        /* Badge para materiais indisponíveis */
-        .unavailable-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #e74c3c;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            z-index: 10;
-        }
-        
         /* Barra de progresso */
         .progress-container {
             margin: 1rem 0;
@@ -245,6 +231,22 @@
             justify-content: center;
             font-weight: bold;
             font-size: 0.9rem;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            border: 2px solid #e74c3c;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+            border-color: #c0392b;
         }
     </style>
 </head>
@@ -874,7 +876,7 @@
             return `${sanitized}_${Date.now()}.${ext}`;
         }
 
-        // Processar upload
+        // Processar upload - CORRIGIDO
         async function processUpload() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
@@ -1137,7 +1139,7 @@
                                         <i class="fas fa-external-link-alt"></i> Abrir
                                     </a>
                                 ` : ''}
-                                <a href="${material.arquivo_url}" download="${material.titulo}" class="btn btn-success" onclick="incrementDownloads('${material.id}')">
+                                <a href="${material.arquivo_url}" download="${material.arquivo_nome}" class="btn btn-success" onclick="incrementDownloads('${material.id}')">
                                     <i class="fas fa-download"></i> Baixar
                                 </a>
                                 ${isOwner ? `
@@ -1167,7 +1169,7 @@
             document.getElementById('deleteConfirmModal').style.display = 'flex';
         }
 
-        // Excluir material
+        // Excluir material - CORRIGIDO
         async function confirmDeleteMaterial() {
             if (!materialToDelete) {
                 showToast('Erro: Nenhum material selecionado.', 'error');
@@ -1185,7 +1187,7 @@
             try {
                 console.log('🗑️ Iniciando exclusão:', materialToDelete.id);
                 
-                // 1. Buscar o material
+                // 1. Buscar o material para obter o file_path
                 const { data: material, error: fetchError } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -1213,6 +1215,7 @@
                 }
                 
                 // 3. Excluir do Storage (se file_path existir)
+                let storageDeleted = false;
                 if (material.file_path) {
                     console.log('🗑️ Excluindo do storage:', material.file_path);
                     
@@ -1225,6 +1228,7 @@
                             console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
                         } else {
                             console.log('✅ Arquivo excluído do storage');
+                            storageDeleted = true;
                         }
                     } catch (storageErr) {
                         console.warn('⚠️ Erro ao excluir do storage:', storageErr);
@@ -1240,7 +1244,7 @@
                 
                 if (deleteError) {
                     console.error('❌ Erro ao excluir do banco:', deleteError);
-                    throw new Error(`Erro ao excluir: ${deleteError.message}`);
+                    throw new Error(`Erro ao excluir do banco: ${deleteError.message}`);
                 }
                 
                 console.log('✅ Material excluído do banco');
@@ -1269,9 +1273,14 @@
                 closeDeleteModal();
                 showToast('✅ Material excluído com sucesso!', 'success');
                 
+                // 8. Recarregar para garantir sincronização
+                setTimeout(() => {
+                    loadMaterialsFromSupabase(currentCertId);
+                }, 1000);
+                
             } catch (error) {
                 console.error('❌ Erro na exclusão:', error);
-                showToast(`❌ ${error.message}`, 'error');
+                showToast(`❌ Erro: ${error.message}`, 'error');
                 closeDeleteModal();
             }
         }
@@ -1402,6 +1411,50 @@
                 }, 300);
             }, 3000);
         }
+
+        // Adicionar função para testar conexão com Supabase
+        async function testSupabaseConnection() {
+            try {
+                console.log('🔍 Testando conexão com Supabase...');
+                
+                // Testar autenticação
+                const { data: authData, error: authError } = await supabaseClient.auth.getSession();
+                console.log('✅ Autenticação:', authError ? `Erro: ${authError.message}` : 'OK');
+                
+                // Testar banco de dados
+                const { data: dbData, error: dbError } = await supabaseClient
+                    .from('materiais')
+                    .select('count')
+                    .limit(1);
+                console.log('✅ Banco de dados:', dbError ? `Erro: ${dbError.message}` : 'OK');
+                
+                // Testar storage
+                const { data: storageData, error: storageError } = await supabaseClient.storage
+                    .from('materiais')
+                    .list();
+                console.log('✅ Storage:', storageError ? `Erro: ${storageError.message}` : 'OK');
+                
+                return {
+                    auth: !authError,
+                    database: !dbError,
+                    storage: !storageError
+                };
+                
+            } catch (error) {
+                console.error('❌ Erro no teste de conexão:', error);
+                return {
+                    auth: false,
+                    database: false,
+                    storage: false
+                };
+            }
+        }
+
+        // Testar conexão quando a página carrega
+        setTimeout(async () => {
+            const connection = await testSupabaseConnection();
+            console.log('🔗 Status da conexão:', connection);
+        }, 2000);
 
     </script>
 </body>
