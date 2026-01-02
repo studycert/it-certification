@@ -9,141 +9,176 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
     <style>
-        /* Estilos otimizados */
-        .materials-page { padding: 2rem 0; }
+        /* Estilos otimizados para layout de lista */
+        .materials-page { 
+            padding: 1.5rem 0; 
+            max-width: 1200px;
+            margin: 0 auto;
+        }
         
         .certification-header { 
             text-align: center; 
-            margin-bottom: 2rem; 
-            padding: 1.5rem; 
+            margin-bottom: 1.5rem; 
+            padding: 1rem; 
             background: white; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--secondary);
         }
         
         .certification-icon { 
-            font-size: 3rem; 
+            font-size: 2rem; 
             color: var(--secondary); 
             margin-bottom: 0.5rem; 
         }
         
         .certification-header h1 { 
-            font-size: 2rem; 
+            font-size: 1.5rem; 
             color: var(--primary); 
-            margin-bottom: 0.5rem; 
+            margin-bottom: 0.3rem; 
         }
         
         .certification-header .cert-level { 
             display: inline-block; 
             background: var(--secondary); 
             color: white; 
-            padding: 0.4rem 1.2rem; 
-            border-radius: 20px; 
-            font-size: 0.9rem; 
+            padding: 0.2rem 0.8rem; 
+            border-radius: 12px; 
+            font-size: 0.8rem; 
             margin-bottom: 0.5rem; 
+        }
+        
+        .certification-header p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
         }
         
         .filters-container { 
             display: flex; 
-            gap: 1.5rem; 
-            margin-bottom: 1.5rem; 
-            flex-wrap: wrap; 
+            gap: 1rem; 
+            margin-bottom: 1rem; 
+            flex-wrap: wrap;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .filter-group { 
             flex: 1; 
-            min-width: 180px; 
+            min-width: 150px; 
         }
         
         .filter-group label { 
             display: block; 
-            margin-bottom: 0.3rem; 
+            margin-bottom: 0.2rem; 
             font-weight: 600; 
             color: var(--primary); 
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         
         .filter-select { 
             width: 100%; 
-            padding: 0.6rem; 
-            border: 2px solid #ddd; 
-            border-radius: 8px; 
-            font-size: 0.9rem; 
+            padding: 0.5rem; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            font-size: 0.85rem; 
             transition: border-color 0.3s; 
         }
         
         .filter-select:focus { 
             outline: none; 
             border-color: var(--secondary); 
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         
-        .materials-grid-page { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-            gap: 1.5rem; 
-            margin-bottom: 2rem; 
+        /* Layout de LISTA em vez de grid */
+        .materials-list-page { 
+            margin-bottom: 1.5rem; 
         }
         
-        .material-card-page { 
+        .material-item-page { 
             background: white; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             overflow: hidden; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-            transition: all 0.3s ease; 
-            border-left: 4px solid var(--secondary); 
-            position: relative;
-            height: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            transition: all 0.2s ease; 
+            border-left: 3px solid var(--secondary);
+            margin-bottom: 0.5rem;
+            padding: 0.8rem 1rem;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
         
-        .material-card-page:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.15); 
+        .material-item-page:hover { 
+            transform: translateX(2px); 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15); 
         }
         
-        .card-header-page { 
-            background: #f8f9fa; 
-            padding: 1rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 0.8rem; 
+        .file-icon-item { 
+            font-size: 1.2rem; 
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        .file-info-item { 
+            flex-grow: 1;
+            min-width: 0; /* Permite que o texto quebre */
+        }
+        
+        .file-info-item h3 { 
+            color: var(--primary); 
+            margin: 0 0 0.2rem 0; 
+            font-size: 0.95rem; 
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-meta { 
+            display: flex;
+            gap: 0.8rem;
+            color: #666; 
+            font-size: 0.75rem; 
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        
+        .file-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        
+        .file-meta i {
+            font-size: 0.7rem;
+        }
+        
+        .file-description {
+            color: #666; 
+            font-size: 0.8rem; 
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 0.2rem;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
             flex-shrink: 0;
         }
         
-        .file-icon-page { 
-            font-size: 1.5rem; 
-        }
-        
-        .card-body-page { 
-            padding: 1rem; 
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .card-body-page h3 { 
-            color: var(--primary); 
-            margin-bottom: 0.3rem; 
-            font-size: 1.1rem; 
-        }
-        
-        .card-body-page p { 
-            color: #666; 
-            font-size: 0.85rem; 
-            margin-bottom: 0.8rem; 
-            line-height: 1.4;
-            flex-grow: 1;
-        }
-        
-        .file-info-page { 
-            display: flex; 
-            justify-content: space-between; 
-            color: #95a5a6; 
-            font-size: 0.75rem; 
-            margin-top: 0.8rem; 
-            padding-top: 0.8rem; 
-            border-top: 1px solid #eee; 
+        .file-actions .btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
         }
         
         .pdf-color { color: #e74c3c; }
@@ -152,27 +187,37 @@
         .zip-color { color: #9b59b6; }
         .video-color { color: #27ae60; }
         
-        /* Seção de Upload Melhorada */
+        /* Seção de Upload Compacta */
         .upload-section-page { 
             background: white; 
-            border-radius: 10px; 
-            padding: 1.5rem; 
-            margin: 2rem 0; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            border-radius: 8px; 
+            padding: 1rem; 
+            margin: 1.5rem 0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        
+        .upload-section-page h2 {
+            color: var(--primary); 
+            margin-bottom: 0.3rem; 
+            font-size: 1.1rem;
+        }
+        
+        .upload-section-page p {
+            color: #666; 
+            margin-bottom: 0.8rem; 
+            font-size: 0.85rem;
         }
         
         .upload-area-page { 
-            border: 2px dashed #3498db; 
-            border-radius: 8px; 
-            padding: 1.5rem; 
+            border: 1px dashed #3498db; 
+            border-radius: 6px; 
+            padding: 1rem; 
             text-align: center; 
-            margin: 1rem 0; 
+            margin: 0.5rem 0; 
             background: #f8fafc; 
             transition: all 0.3s; 
             cursor: pointer;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 400px;
         }
         
         .upload-area-page:hover { 
@@ -181,31 +226,34 @@
         }
         
         .upload-area-page i {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
             color: #3498db;
         }
         
         .upload-area-page h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
             color: var(--primary);
         }
         
         .upload-area-page p {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #666;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
         
         .upload-area-page .btn {
-            margin-top: 0.5rem;
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
         }
         
         .breadcrumb-page { 
             background: #e9ecef; 
-            padding: 0.8rem 0; 
-            margin-bottom: 1.5rem; 
+            padding: 0.5rem 0; 
+            margin-bottom: 1rem; 
+            font-size: 0.85rem;
         }
         
         .breadcrumb-page a { 
@@ -219,9 +267,28 @@
         
         .auth-bar {
             background: #f8f9fa;
-            padding: 0.6rem 0;
+            padding: 0.4rem 0;
             border-bottom: 1px solid #dee2e6;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+        }
+        
+        .auth-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        #authStatus {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        #authContainer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .modal-overlay {
@@ -239,9 +306,9 @@
         
         .modal-content {
             background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            max-width: 450px;
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 400px;
             width: 90%;
             position: relative;
             max-height: 90vh;
@@ -250,20 +317,30 @@
         
         .close-modal {
             position: absolute;
-            top: 0.8rem;
-            right: 0.8rem;
+            top: 0.5rem;
+            right: 0.5rem;
             background: none;
             border: none;
             font-size: 1.2rem;
             cursor: pointer;
             color: #666;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-modal:hover {
+            background: #f5f5f5;
         }
         
         .loading-message {
-            grid-column: 1 / -1;
             text-align: center;
             padding: 2rem;
             color: #666;
+            font-size: 0.9rem;
         }
         
         .loading-message i {
@@ -271,87 +348,82 @@
             margin-bottom: 0.5rem;
         }
         
-        /* Botão de excluir */
-        .delete-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-            z-index: 10;
-            font-size: 0.8rem;
+        .no-materials-message {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
-        .delete-btn:hover {
-            opacity: 1;
-            background: #c0392b;
+        .no-materials-message i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #95a5a6;
         }
         
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
+        .no-materials-message h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
         }
         
-        .action-buttons .btn {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
+        .no-materials-message p {
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
         }
         
         .stats-container {
             background: white; 
-            padding: 1rem; 
+            padding: 0.8rem; 
             border-radius: 8px; 
-            margin-bottom: 1.5rem; 
+            margin-bottom: 1rem; 
             text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .stats-container h3 {
             color: var(--primary); 
-            margin-bottom: 0.8rem; 
-            font-size: 1.1rem;
+            margin-bottom: 0.5rem; 
+            font-size: 1rem;
         }
         
-        .stats-container > div {
+        .stats-grid {
             display: flex; 
             justify-content: space-around; 
             flex-wrap: wrap; 
-            gap: 1rem;
+            gap: 0.5rem;
         }
         
-        .stats-container > div > div {
-            min-width: 100px;
+        .stat-item {
+            min-width: 80px;
         }
         
-        .stats-container > div > div > div:first-child {
-            font-size: 1.5rem; 
+        .stat-value {
+            font-size: 1.2rem; 
             font-weight: bold;
+            display: block;
         }
         
-        .stats-container > div > div > div:last-child {
+        .stat-label {
             color: #666;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            display: block;
         }
         
         /* Modal de Upload Compacto */
         #uploadModal .modal-content {
-            max-width: 400px;
+            max-width: 380px;
         }
         
         #uploadModal h3 {
             margin-bottom: 0.8rem; 
             color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         #selectedFileInfo {
@@ -359,21 +431,90 @@
             padding: 0.8rem; 
             background: #f8f9fa; 
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         
         #materialTitle, #materialDescription {
-            font-size: 0.9rem;
-            padding: 0.6rem;
+            font-size: 0.85rem;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
         }
         
+        #materialTitle:focus, #materialDescription:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        
+        .modal-actions .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Ícones coloridos por tipo */
+        .file-icon-pdf { color: #e74c3c; }
+        .file-icon-ppt { color: #e67e22; }
+        .file-icon-doc { color: #3498db; }
+        .file-icon-zip { color: #9b59b6; }
+        .file-icon-video { color: #27ae60; }
+        .file-icon-other { color: #7f8c8d; }
+        
+        /* Responsividade */
         @media (max-width: 768px) {
-            .materials-grid-page { grid-template-columns: 1fr; }
-            .filters-container { flex-direction: column; gap: 1rem; }
-            .certification-header h1 { font-size: 1.5rem; }
-            .certification-header { padding: 1rem; }
-            .upload-area-page { padding: 1rem; }
-            .modal-content { padding: 1rem; }
+            .materials-page {
+                padding: 1rem;
+            }
+            
+            .material-item-page {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                padding: 0.8rem;
+            }
+            
+            .file-actions {
+                align-self: flex-end;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .filters-container {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .upload-area-page {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .file-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .file-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .material-item-page {
+                padding: 0.6rem;
+            }
         }
     </style>
 </head>
@@ -398,12 +539,10 @@
     <!-- Barra de Autenticação -->
     <div class="auth-bar">
         <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div id="authStatus">
-                    <i class="fas fa-spinner fa-spin"></i> Verificando autenticação...
-                </div>
-                <div id="authContainer"></div>
+            <div id="authStatus">
+                <i class="fas fa-spinner fa-spin"></i> Verificando autenticação...
             </div>
+            <div id="authContainer"></div>
         </div>
     </div>
 
@@ -458,8 +597,8 @@
             </div>
         </div>
 
-        <!-- Grid de Materiais -->
-        <div class="materials-grid-page" id="materialsContainer">
+        <!-- Lista de Materiais -->
+        <div class="materials-list-page" id="materialsContainer">
             <div class="loading-message">
                 <i class="fas fa-spinner fa-spin"></i> Carregando materiais...
             </div>
@@ -468,28 +607,28 @@
         <!-- Estatísticas -->
         <div class="stats-container">
             <h3>Estatísticas</h3>
-            <div>
-                <div>
-                    <div style="color: var(--secondary);" id="totalMaterials">0</div>
-                    <div>Materiais Disponíveis</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-value" id="totalMaterials" style="color: var(--secondary);">0</span>
+                    <span class="stat-label">Materiais</span>
                 </div>
-                <div>
-                    <div style="color: #27ae60;" id="totalSize">0 MB</div>
-                    <div>Total em Arquivos</div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalSize" style="color: #27ae60;">0 MB</span>
+                    <span class="stat-label">Tamanho Total</span>
                 </div>
-                <div>
-                    <div style="color: #e74c3c;" id="totalViews">0</div>
-                    <div>Visualizações</div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalViews" style="color: #e74c3c;">0</span>
+                    <span class="stat-label">Visualizações</span>
                 </div>
             </div>
         </div>
 
         <!-- Seção de Upload Compacta -->
         <section class="upload-section-page" id="uploadSection">
-            <h2 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.2rem;">
+            <h2>
                 <i class="fas fa-share-alt"></i> Compartilhar Material
             </h2>
-            <p style="color: #666; margin-bottom: 1rem; font-size: 0.9rem;">
+            <p>
                 Compartilhe seus materiais de estudo com a comunidade.
             </p>
             
@@ -497,7 +636,7 @@
                 <i class="fas fa-cloud-upload-alt"></i>
                 <h3>Arraste ou clique para selecionar</h3>
                 <p>Formatos suportados: PDF, PPT, DOC, ZIP, MP4</p>
-                <p style="font-size: 0.8rem; color: #95a5a6;">
+                <p style="font-size: 0.75rem; color: #95a5a6;">
                     Tamanho máximo: 100MB
                 </p>
                 <button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()">
@@ -507,12 +646,12 @@
             </div>
 
             <div id="uploadProgressPage" style="display: none; margin-top: 0.8rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.85rem;">
                     <span>Enviando...</span>
                     <span id="progressPercent">0%</span>
                 </div>
-                <div style="height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
-                    <div id="progressBar" style="height: 100%; background: var(--success); width: 0%; transition: width 0.3s;"></div>
+                <div style="height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
+                    <div id="progressBar" style="height: 100%; background: #27ae60; width: 0%; transition: width 0.3s;"></div>
                 </div>
             </div>
 
@@ -552,33 +691,31 @@
             </h3>
             
             <div id="uploadProgressContainer" style="display: none; margin-bottom: 0.8rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.85rem;">
                     <span>Enviando...</span>
                     <span id="modalProgressPercent">0%</span>
                 </div>
-                <div style="height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
+                <div style="height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
                     <div id="modalProgressBar" style="height: 100%; background: #27ae60; width: 0%; transition: width 0.3s;"></div>
                 </div>
             </div>
             
             <div id="uploadFormContainer">
-                <div id="selectedFileInfo" style="margin-bottom: 0.8rem; font-size: 0.9rem;">
+                <div id="selectedFileInfo" style="margin-bottom: 0.8rem; font-size: 0.85rem;">
                     <!-- Informações do arquivo serão preenchidas aqui -->
                 </div>
                 
                 <div style="margin-bottom: 0.8rem;">
-                    <label style="display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.9rem;">Título *</label>
-                    <input type="text" id="materialTitle" placeholder="Ex: Guia Completo ITIL 4" 
-                           style="width: 100%; padding: 0.6rem; border: 2px solid #ddd; border-radius: 8px; font-size: 0.9rem;" required>
+                    <label style="display: block; margin-bottom: 0.2rem; font-weight: 600; font-size: 0.85rem;">Título *</label>
+                    <input type="text" id="materialTitle" placeholder="Ex: Guia Completo ITIL 4" required>
                 </div>
                 
                 <div style="margin-bottom: 0.8rem;">
-                    <label style="display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.9rem;">Descrição</label>
-                    <textarea id="materialDescription" rows="2" placeholder="Descreva o material..." 
-                              style="width: 100%; padding: 0.6rem; border: 2px solid #ddd; border-radius: 8px; font-size: 0.9rem;"></textarea>
+                    <label style="display: block; margin-bottom: 0.2rem; font-weight: 600; font-size: 0.85rem;">Descrição</label>
+                    <textarea id="materialDescription" rows="2" placeholder="Descreva o material..."></textarea>
                 </div>
                 
-                <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                <div class="modal-actions">
                     <button onclick="closeUploadModal()" class="btn btn-outline btn-sm">Cancelar</button>
                     <button onclick="processUpload()" class="btn btn-primary btn-sm">
                         <i class="fas fa-paper-plane"></i> Enviar
@@ -591,17 +728,17 @@
     <!-- Modal de Confirmação de Exclusão -->
     <div id="deleteConfirmModal" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-bottom: 0.8rem; color: var(--primary); font-size: 1.1rem;">
+            <h3 style="margin-bottom: 0.8rem; color: var(--primary); font-size: 1rem;">
                 <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Confirmar Exclusão
             </h3>
             
-            <div id="deleteMaterialInfo" style="margin-bottom: 1rem; font-size: 0.9rem;">
+            <div id="deleteMaterialInfo" style="margin-bottom: 0.8rem; font-size: 0.85rem;">
                 <p>Tem certeza que deseja excluir este material?</p>
                 <p id="deleteMaterialName" style="font-weight: bold; color: #e74c3c; margin: 0.3rem 0;"></p>
                 <p style="color: #666; font-size: 0.8rem;">Esta ação não pode ser desfeita.</p>
             </div>
             
-            <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
                 <button onclick="closeDeleteModal()" class="btn btn-outline btn-sm">Cancelar</button>
                 <button onclick="confirmDeleteMaterial()" class="btn btn-danger btn-sm">
                     <i class="fas fa-trash"></i> Excluir
@@ -689,10 +826,15 @@
                 await loadMaterialsFromSupabase(currentCertId);
                 
                 console.log('✅ Página de materiais inicializada');
-            }, 1000);
+            }, 100);
             
             // Adicionar listener para eventos de auth
-            window.addEventListener('studycert-auth-changed', updateAuthUI);
+            window.addEventListener('studycert-auth-update', updateAuthUI);
+            
+            // Forçar verificação de sessão ao carregar a página
+            if (window.refreshAuthSession) {
+                window.refreshAuthSession();
+            }
         });
 
         // Configurar eventos
@@ -773,6 +915,8 @@
 
         // Atualizar interface de autenticação
         function updateAuthUI() {
+            console.log('🔄 Atualizando UI de autenticação...');
+            
             const authStatus = document.getElementById('authStatus');
             const authContainer = document.getElementById('authContainer');
             
@@ -781,15 +925,21 @@
                 return;
             }
             
+            // Forçar verificação de sessão
+            window.authManager.refreshSession?.();
+            
             if (window.authManager.isAuthenticated()) {
                 const user = window.authManager.getUser();
                 const userName = user.user_metadata?.full_name || user.email.split('@')[0];
                 
-                authStatus.innerHTML = `<i class="fas fa-check-circle" style="color: #27ae60;"></i> Logado como: ${userName}`;
+                authStatus.innerHTML = `
+                    <i class="fas fa-check-circle" style="color: #27ae60;"></i>
+                    <span>Logado como: ${userName}</span>
+                `;
                 
                 authContainer.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <div style="background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
+                        <div style="background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.7rem;">
                             ${userName.substring(0, 2).toUpperCase()}
                         </div>
                         <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
@@ -797,8 +947,13 @@
                         </button>
                     </div>
                 `;
+                
+                console.log('✅ UI atualizada: usuário logado');
             } else {
-                authStatus.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i> Não logado';
+                authStatus.innerHTML = `
+                    <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+                    <span>Não logado</span>
+                `;
                 
                 authContainer.innerHTML = `
                     <div style="display: flex; gap: 0.5rem;">
@@ -810,6 +965,8 @@
                         </a>
                     </div>
                 `;
+                
+                console.log('✅ UI atualizada: usuário não logado');
             }
         }
 
@@ -838,7 +995,7 @@
             document.getElementById('certTitle').textContent = cert.title;
             document.getElementById('certLevel').textContent = `Nível: ${cert.level}`;
             document.getElementById('certDescription').textContent = cert.description;
-            document.getElementById('certHeader').style.borderLeft = `5px solid ${cert.color}`;
+            document.getElementById('certHeader').style.borderLeft = `4px solid ${cert.color}`;
         }
 
         function checkAuthAndUpload() {
@@ -881,8 +1038,8 @@
             
             // Atualizar informações do arquivo no modal
             document.getElementById('selectedFileInfo').innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <i class="fas fa-file-${currentFileType} ${currentFileType}-color" style="font-size: 1.5rem;"></i>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-file-${currentFileType} file-icon-${currentFileType}" style="font-size: 1.2rem;"></i>
                     <div>
                         <strong>${file.name}</strong><br>
                         <small style="color: #666;">${formatFileSize(file.size)} • ${currentFileType.toUpperCase()}</small>
@@ -955,8 +1112,6 @@
             
             try {
                 console.log('🚀 Iniciando upload...');
-                console.log('📄 Arquivo:', file.name);
-                console.log('👤 Usuário ID:', user.id);
                 
                 // Limpar nome do arquivo
                 const cleanFileName = file.name
@@ -1022,8 +1177,6 @@
                     data_upload: new Date().toISOString()
                 };
                 
-                console.log('💾 Salvando no banco:', materialData);
-                
                 const { data: dbData, error: dbError } = await supabaseClient
                     .from('materiais')
                     .insert([materialData])
@@ -1047,7 +1200,7 @@
                     
                     // Recarregar materiais
                     loadMaterialsFromSupabase(currentCertId);
-                }, 1000);
+                }, 800);
                 
             } catch (error) {
                 console.error('❌ Erro no processo de upload:', error);
@@ -1122,39 +1275,41 @@
             container.innerHTML = materials.map(material => {
                 // Verificar se o usuário atual é o dono do material
                 const isOwner = currentUserId && material.usuario_id === currentUserId;
+                const fileIconClass = `file-icon-${material.tipo}`;
                 
                 return `
-                    <div class="material-card-page" data-id="${material.id}">
-                        ${isOwner ? `
-                            <button class="delete-btn" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        ` : ''}
-                        
-                        <div class="card-header-page">
-                            <i class="fas fa-file-${material.tipo} ${material.tipo}-color file-icon-page"></i>
-                            <div>
-                                <h3>${material.titulo}</h3>
-                                <small>${material.tipo.toUpperCase()} • ${formatFileSize(material.arquivo_tamanho_kb * 1024)}</small>
-                            </div>
+                    <div class="material-item-page" data-id="${material.id}">
+                        <div class="file-icon-item">
+                            <i class="fas fa-file-${material.tipo} ${fileIconClass}"></i>
                         </div>
-                        <div class="card-body-page">
-                            <p>${material.descricao || 'Material compartilhado pela comunidade.'}</p>
-                            <div class="file-info-page">
-                                <span><i class="far fa-clock"></i> ${formatDate(material.data_upload)}</span>
-                                <span><i class="far fa-eye"></i> ${material.visualizacoes || 0}</span>
-                                <span><i class="fas fa-download"></i> ${material.downloads || 0}</span>
+                        
+                        <div class="file-info-item">
+                            <h3 title="${material.titulo}">${material.titulo}</h3>
+                            <div class="file-meta">
+                                <span class="file-type">${material.tipo.toUpperCase()}</span>
+                                <span class="file-size">${formatFileSize(material.arquivo_tamanho_kb * 1024)}</span>
+                                <span class="file-date">
+                                    <i class="far fa-clock"></i> ${formatDate(material.data_upload)}
+                                </span>
+                                <span class="file-views">
+                                    <i class="far fa-eye"></i> ${material.visualizacoes || 0}
+                                </span>
+                                <span class="file-downloads">
+                                    <i class="fas fa-download"></i> ${material.downloads || 0}
+                                </span>
                             </div>
-                            <div class="action-buttons">
-                                <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')">
-                                    <i class="fas fa-download"></i> Baixar
+                            ${material.descricao ? `<div class="file-description" title="${material.descricao}">${material.descricao}</div>` : ''}
+                        </div>
+                        
+                        <div class="file-actions">
+                            <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" title="Baixar arquivo">
+                                <i class="fas fa-download"></i> Baixar
+                            </button>
+                            ${isOwner ? `
+                                <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
+                                    <i class="fas fa-trash"></i> Excluir
                                 </button>
-                                ${isOwner ? `
-                                    <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')">
-                                        <i class="fas fa-trash"></i> Excluir
-                                    </button>
-                                ` : ''}
-                            </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -1277,15 +1432,15 @@
             const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
             
             container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #666;">
-                    <i class="fas fa-folder-open" style="font-size: 2.5rem; margin-bottom: 0.8rem;"></i>
-                    <h3 style="font-size: 1.2rem;">${message}</h3>
-                    <p style="font-size: 0.9rem;">Seja o primeiro a compartilhar um material!</p>
+                <div class="no-materials-message">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>${message}</h3>
+                    <p>Seja o primeiro a compartilhar um material!</p>
                     ${isAuthenticated ? 
-                        `<button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()" style="margin-top: 0.8rem;">
+                        `<button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()">
                             <i class="fas fa-plus"></i> Compartilhar Material
                         </button>` : 
-                        `<a href="index.html#login" class="btn btn-primary btn-sm" style="margin-top: 0.8rem;">
+                        `<a href="index.html#login" class="btn btn-primary btn-sm">
                             <i class="fas fa-sign-in-alt"></i> Faça login para compartilhar
                         </a>`
                     }
@@ -1311,7 +1466,11 @@
                 const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
                 
                 if (diffDays === 0) {
-                    return 'Hoje';
+                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                    if (diffHours < 1) {
+                        return 'Agora mesmo';
+                    }
+                    return `Hoje às ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
                 } else if (diffDays === 1) {
                     return 'Ontem';
                 } else if (diffDays < 7) {
@@ -1363,6 +1522,9 @@
                 window.open(fileUrl, '_blank');
             }
         }
+
+        // Adicionar função global para atualização de UI
+        window.updateAuthUI = updateAuthUI;
 
     </script>
 </body>
