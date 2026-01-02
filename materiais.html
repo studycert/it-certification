@@ -241,7 +241,7 @@
         .upload-section-page p {
             color: #666; 
             margin-bottom: 0.8rem; 
-            font-size: 0.85rem;
+font-size: 0.85rem;
         }
         
         .upload-area-page { 
@@ -731,9 +731,7 @@
     </div>
 
     <script>
-        // ===== SISTEMA DE AUTENTICAÇÃO DIRETO NO HTML =====
-        
-        // Configurações
+        // ===== CONFIGURAÇÕES =====
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
         
@@ -787,171 +785,35 @@
         let currentCertId = 'itil4';
         let currentFileType = 'pdf';
         let materialToDelete = null;
-        let currentUserEmail = null;
-        let currentUserName = null;
-        let currentUserId = null;
+        let currentUser = null;
 
-        // Inicialização
+        // ===== INICIALIZAÇÃO =====
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Iniciando página de materiais...');
             
             // Configurar eventos
             setupEventListeners();
             
-            // Inicializar Supabase
-            await initSupabase();
-            
-            // Carregar certificação
-            currentCertId = getUrlParameter('cert') || 'itil4';
-            loadCertification(currentCertId);
-            
-            // Atualizar interface de autenticação IMEDIATAMENTE
-            updateAuthUI();
-            
-            // Carregar materiais
-            await loadMaterialsFromSupabase(currentCertId);
-            
-            console.log('✅ Página de materiais inicializada');
-            
-            // Verificar a cada 2 segundos
-            setInterval(updateAuthUI, 2000);
+            // Aguardar authManager
+            setTimeout(async () => {
+                // Inicializar Supabase
+                await initSupabase();
+                
+                // Carregar certificação
+                currentCertId = getUrlParameter('cert') || 'itil4';
+                loadCertification(currentCertId);
+                
+                // Atualizar interface de autenticação
+                updateAuthUI();
+                
+                // Carregar materiais
+                await loadMaterialsFromSupabase(currentCertId);
+                
+                console.log('✅ Página de materiais inicializada');
+            }, 1000);
         });
 
-        // ===== FUNÇÃO PRINCIPAL DE AUTENTICAÇÃO =====
-        function updateAuthUI() {
-            console.log('🔄 Atualizando UI de autenticação...');
-            
-            const authStatus = document.getElementById('authStatus');
-            const authContainer = document.getElementById('authContainer');
-            
-            // Resetar dados do usuário
-            currentUserEmail = null;
-            currentUserName = null;
-            currentUserId = null;
-            
-            // TENTAR OBTER DADOS DO USUÁRIO DE MÚLTIPLAS FONTES
-            
-            // 1. Tentar do localStorage do Supabase (PRINCIPAL)
-            try {
-                const supabaseSession = localStorage.getItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
-                if (supabaseSession) {
-                    const session = JSON.parse(supabaseSession);
-                    console.log('🔐 Sessão Supabase encontrada:', session);
-                    
-                    if (session.currentSession && session.currentSession.user) {
-                        currentUserEmail = session.currentSession.user.email;
-                        currentUserName = session.currentSession.user.user_metadata?.full_name || 
-                                        currentUserEmail.split('@')[0];
-                        currentUserId = session.currentSession.user.id;
-                        
-                        console.log('✅ Usuário do Supabase:', currentUserEmail);
-                    }
-                }
-            } catch (e) {
-                console.warn('⚠️ Erro ao ler sessão Supabase:', e);
-            }
-            
-            // 2. Tentar do authManager (se disponível)
-            if (!currentUserEmail && window.authManager && window.authManager.currentUser) {
-                currentUserEmail = window.authManager.currentUser.email;
-                currentUserName = window.authManager.currentUser.user_metadata?.full_name || 
-                                currentUserEmail.split('@')[0];
-                currentUserId = window.authManager.currentUser.id;
-                console.log('👤 Usuário do authManager:', currentUserEmail);
-            }
-            
-            // 3. Tentar do localStorage do StudyCert
-            if (!currentUserEmail) {
-                try {
-                    const studycertData = localStorage.getItem('studycert-auth-data');
-                    if (studycertData) {
-                        const user = JSON.parse(studycertData);
-                        currentUserEmail = user.email;
-                        currentUserName = user.name || user.email.split('@')[0];
-                        currentUserId = user.id;
-                        console.log('💾 Usuário do StudyCert localStorage:', currentUserEmail);
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Erro ao ler studycert-auth-data:', e);
-                }
-            }
-            
-            // ATUALIZAR A INTERFACE
-            if (currentUserEmail) {
-                authStatus.innerHTML = `
-                    <i class="fas fa-check-circle" style="color: #27ae60;"></i>
-                    <span>Logado como: ${currentUserName}</span>
-                `;
-                
-                authContainer.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <div style="background: #3498db; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.7rem;">
-                            ${currentUserName.substring(0, 2).toUpperCase()}
-                        </div>
-                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
-                            <i class="fas fa-sign-out-alt"></i> Sair
-                        </button>
-                    </div>
-                `;
-                
-                console.log('✅ UI atualizada: usuário logado', currentUserEmail);
-                
-            } else {
-                authStatus.innerHTML = `
-                    <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
-                    <span>Não logado</span>
-                `;
-                
-                authContainer.innerHTML = `
-                    <div style="display: flex; gap: 0.5rem;">
-                        <a href="index.html#login" class="btn btn-outline btn-sm">
-                            <i class="fas fa-sign-in-alt"></i> Entrar
-                        </a>
-                        <a href="index.html#register" class="btn btn-primary btn-sm">
-                            <i class="fas fa-user-plus"></i> Cadastrar
-                        </a>
-                    </div>
-                `;
-                
-                console.log('✅ UI atualizada: usuário não logado');
-            }
-        }
-
-        // ===== LOGOUT SIMPLES =====
-        async function logoutFromPage() {
-            try {
-                console.log('🚪 Fazendo logout...');
-                
-                // Limpar localStorage
-                localStorage.removeItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
-                localStorage.removeItem('studycert-auth-data');
-                
-                // Logout do Supabase se tiver cliente
-                if (supabaseClient && supabaseClient.auth) {
-                    await supabaseClient.auth.signOut();
-                }
-                
-                // Limpar variáveis
-                currentUserEmail = null;
-                currentUserName = null;
-                currentUserId = null;
-                
-                // Atualizar UI
-                updateAuthUI();
-                
-                // Recarregar página
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
-                
-            } catch (error) {
-                console.error('❌ Erro no logout:', error);
-                updateAuthUI();
-            }
-        }
-
-        // ===== FUNÇÕES RESTANTES (MESMAS DE ANTES) =====
-        
+        // ===== FUNÇÕES DE CONFIGURAÇÃO =====
         function setupEventListeners() {
             // Input de arquivo
             document.getElementById('fileInputPage').addEventListener('change', handleFileSelect);
@@ -993,14 +855,6 @@
                     closeDeleteModal();
                 }
             });
-            
-            // Evento para sincronização entre abas
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'studycert-auth-data' || e.key.includes('supabase.auth.token')) {
-                    console.log('🔄 Evento de storage detectado, atualizando UI...');
-                    setTimeout(updateAuthUI, 100);
-                }
-            });
         }
 
         async function initSupabase() {
@@ -1034,6 +888,58 @@
             }
         }
 
+        // ===== AUTENTICAÇÃO =====
+        function updateAuthUI() {
+            const authStatus = document.getElementById('authStatus');
+            const authContainer = document.getElementById('authContainer');
+            
+            if (!window.authManager) {
+                authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> AuthManager não carregado';
+                return;
+            }
+            
+            if (window.authManager.isAuthenticated()) {
+                currentUser = window.authManager.getUser();
+                const userName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0];
+                
+                authStatus.innerHTML = `<i class="fas fa-check-circle" style="color: #27ae60;"></i> Logado como: ${userName}`;
+                
+                authContainer.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="background: #3498db; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.7rem;">
+                            ${userName.substring(0, 2).toUpperCase()}
+                        </div>
+                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                `;
+            } else {
+                currentUser = null;
+                authStatus.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i> Não logado';
+                
+                authContainer.innerHTML = `
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="index.html#login" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </a>
+                        <a href="index.html#register" class="btn btn-primary btn-sm">
+                            <i class="fas fa-user-plus"></i> Cadastrar
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        async function logoutFromPage() {
+            if (window.authManager) {
+                await window.authManager.logout();
+                updateAuthUI();
+                window.location.reload();
+            }
+        }
+
+        // ===== FUNÇÕES PRINCIPAIS =====
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -1053,7 +959,7 @@
         }
 
         function checkAuthAndUpload() {
-            if (!currentUserEmail) {
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
                 alert('Faça login para compartilhar materiais. Redirecionando para página de login...');
                 window.location.href = 'index.html#login';
                 return;
@@ -1066,24 +972,13 @@
             const file = e.target.files[0];
             if (!file) return;
             
-            if (file.size > 100 * 1024 * 1024) {
-                alert('Arquivo muito grande. O tamanho máximo é 100MB.');
-                return;
-            }
-            
             showUploadForm(file);
         }
 
         function handleFileDrop(files) {
             if (files.length === 0) return;
             
-            const file = files[0];
-            if (file.size > 100 * 1024 * 1024) {
-                alert('Arquivo muito grande. O tamanho máximo é 100MB.');
-                return;
-            }
-            
-            showUploadForm(file);
+            showUploadForm(files[0]);
         }
 
         function showUploadForm(file) {
@@ -1120,27 +1015,17 @@
         function detectFileType(fileName) {
             const ext = fileName.split('.').pop().toLowerCase();
             
-            // Mapeamento completo de extensões
             const typeMap = {
-                // PDF
                 'pdf': 'pdf',
-                
-                // Documentos Word
                 'doc': 'doc',
                 'docx': 'doc',
-                
-                // Apresentações PowerPoint
                 'ppt': 'ppt',
                 'pptx': 'ppt',
-                
-                // Arquivos compactados
                 'zip': 'zip',
                 'rar': 'zip',
                 '7z': 'zip',
                 'tar': 'zip',
                 'gz': 'zip',
-                
-                // Vídeos
                 'mp4': 'video',
                 'avi': 'video',
                 'mov': 'video',
@@ -1190,9 +1075,15 @@
                 return;
             }
             
-            if (!currentUserEmail || !currentUserId) {
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
                 alert('Sessão expirada. Faça login novamente.');
                 window.location.href = 'index.html#login';
+                return;
+            }
+            
+            const user = window.authManager.getUser();
+            if (!user || !user.id) {
+                alert('Erro: usuário não identificado.');
                 return;
             }
             
@@ -1201,7 +1092,7 @@
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
-                console.log('🚀 Iniciando upload para usuário:', currentUserEmail);
+                console.log('🚀 Iniciando upload para usuário:', user.email);
                 
                 // Limpar nome do arquivo
                 const cleanFileName = file.name
@@ -1212,7 +1103,7 @@
                     .replace(/^_+|_+$/g, '');
                 
                 const fileName = `material_${Date.now()}_${cleanFileName}`;
-                const filePath = `${currentCertId}/${currentUserId}/${fileName}`;
+                const filePath = `${currentCertId}/${user.id}/${fileName}`;
                 
                 console.log('📤 Upload para:', filePath);
                 
@@ -1260,8 +1151,7 @@
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
-                    usuario_id: currentUserId,
-                    usuario_email: currentUserEmail,
+                    usuario_id: user.id,
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
@@ -1355,15 +1245,7 @@
 
         function updateMaterialsInterface(materials) {
             const container = document.getElementById('materialsContainer');
-            
-            console.log('👤 Email do usuário atual:', currentUserEmail);
-            
-            // Verificar se é o André (admin) ou outro usuário
-            const isAndreAdmin = currentUserEmail && 
-                                (currentUserEmail.toLowerCase() === 'andre.martins05@gmail.com' || 
-                                 currentUserEmail.toLowerCase() === 'admin@example.com');
-            
-            console.log('👑 É André Admin?', isAndreAdmin);
+            const currentUserId = currentUser?.id;
             
             if (!materials || materials.length === 0) {
                 showNoMaterials('Nenhum material encontrado.');
@@ -1375,10 +1257,8 @@
                 const fileIconClass = `file-icon-${material.tipo}`;
                 const fileIconName = getFileIcon(material.tipo);
                 
-                // Botão excluir: apenas para André
-                const canDelete = isAndreAdmin;
-                
-                console.log(`📄 ${material.titulo} | Tipo: ${material.tipo} | Dono: ${material.usuario_email} | Eu: ${currentUserEmail} | CanDelete: ${canDelete}`);
+                // Verificar se o usuário atual é o dono do material
+                const isOwner = currentUserId && material.usuario_id === currentUserId;
                 
                 return `
                     <div class="material-item-page" data-id="${material.id}">
@@ -1402,14 +1282,13 @@
                                 </span>
                             </div>
                             ${material.descricao ? `<div class="file-description" title="${material.descricao}">${material.descricao}</div>` : ''}
-                            ${material.usuario_email ? `<div style="font-size: 0.7rem; color: #888; margin-top: 0.2rem;">Por: ${material.usuario_email}</div>` : ''}
                         </div>
                         
                         <div class="file-actions">
                             <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" title="Baixar arquivo">
                                 <i class="fas fa-download"></i> Baixar
                             </button>
-                            ${canDelete ? `
+                            ${isOwner ? `
                                 <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
                                     <i class="fas fa-trash"></i> Excluir
                                 </button>
@@ -1437,7 +1316,7 @@
             document.getElementById('deleteConfirmModal').style.display = 'none';
         }
 
-        // Confirmar exclusão do material (apenas André)
+        // Confirmar exclusão do material
         async function confirmDeleteMaterial() {
             if (!materialToDelete) {
                 alert('Erro: Nenhum material selecionado para exclusão.');
@@ -1445,19 +1324,24 @@
                 return;
             }
             
-            // Verificar novamente se é o André
-            if (!currentUserEmail || 
-                (currentUserEmail.toLowerCase() !== 'andre.martins05@gmail.com' && 
-                 currentUserEmail.toLowerCase() !== 'admin@example.com')) {
-                alert('Apenas administradores podem excluir materiais.');
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                alert('Sessão expirada. Faça login novamente.');
+                closeDeleteModal();
+                window.location.href = 'index.html#login';
+                return;
+            }
+            
+            const currentUser = window.authManager.getUser();
+            if (!currentUser || !currentUser.id) {
+                alert('Erro: usuário não identificado.');
                 closeDeleteModal();
                 return;
             }
             
             try {
-                console.log('🗑️ André iniciando exclusão do material:', materialToDelete.id);
+                console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
                 
-                // Buscar o material para obter informações
+                // 1. Primeiro buscar o material para obter informações
                 const { data: material, error: fetchError } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -1469,7 +1353,14 @@
                     throw new Error('Material não encontrado.');
                 }
                 
-                // Extrair caminho do arquivo da URL para excluir do Storage
+                // 2. Verificar se o usuário é o dono
+                if (material.usuario_id !== currentUser.id) {
+                    alert('Você só pode excluir seus próprios materiais.');
+                    closeDeleteModal();
+                    return;
+                }
+                
+                // 3. Extrair caminho do arquivo da URL para excluir do Storage
                 const fileUrl = material.arquivo_url;
                 console.log('🔗 URL do arquivo:', fileUrl);
                 
@@ -1492,7 +1383,7 @@
                     }
                 }
                 
-                // Excluir do banco de dados
+                // 4. Excluir do banco de dados
                 const { error: deleteError } = await supabaseClient
                     .from('materiais')
                     .delete()
@@ -1521,13 +1412,14 @@
 
         function showNoMaterials(message) {
             const container = document.getElementById('materialsContainer');
+            const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
             
             container.innerHTML = `
                 <div class="no-materials-message">
                     <i class="fas fa-folder-open"></i>
                     <h3>${message}</h3>
                     <p>Seja o primeiro a compartilhar um material!</p>
-                    ${currentUserEmail ? 
+                    ${isAuthenticated ? 
                         `<button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()">
                             <i class="fas fa-plus"></i> Compartilhar Material
                         </button>` : 
