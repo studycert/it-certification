@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
-    <script src="js/auth-sync.js" defer></script>
+    <script src="js/sync-auth.js" defer></script>
     <style>
-        /* ===== CORREÇÕES DE COR DOS BOTÕES ===== */
+        /* ===== CORREÇÕES DE COR DOS BOTÕES - CORRIGIDO ===== */
         .auth-bar .btn-outline {
             color: var(--primary) !important;
             border: 1px solid var(--primary) !important;
@@ -31,6 +31,7 @@
         .auth-bar .btn-primary:hover {
             background: var(--primary-dark) !important;
             border-color: var(--primary-dark) !important;
+            color: white !important; /* GARANTIR que o texto fica branco */
         }
         
         /* ===== ESTILOS PRINCIPAIS ===== */
@@ -775,7 +776,7 @@
         let currentCertId = 'itil4';
         let currentFileType = 'pdf';
         let materialToDelete = null;
-        let currentUserEmail = null; // Para verificar se é o André
+        let currentUserEmail = null;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', async function() {
@@ -802,15 +803,11 @@
                 console.log('✅ Página de materiais inicializada');
             }, 100);
             
-            // Adicionar listener para eventos de sincronização
-            window.addEventListener('studycert-ui-update', function() {
-                console.log('🔄 Evento de UI update recebido');
-                updateAuthUI();
-                loadMaterialsFromSupabase(currentCertId);
-            });
+            // Forçar verificação inicial
+            setTimeout(updateAuthUI, 500);
             
-            // Forçar verificação inicial após 1 segundo
-            setTimeout(updateAuthUI, 1000);
+            // Verificar a cada 3 segundos
+            setInterval(updateAuthUI, 3000);
         });
 
         // Configurar eventos
@@ -855,6 +852,14 @@
                     closeDeleteModal();
                 }
             });
+            
+            // Evento para sincronização entre abas
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'studycert-auth-data' || e.key.includes('supabase.auth.token')) {
+                    console.log('🔄 Evento de storage detectado, atualizando UI...');
+                    setTimeout(updateAuthUI, 100);
+                }
+            });
         }
 
         // Inicializar Supabase
@@ -889,7 +894,7 @@
             }
         }
 
-        // Atualizar interface de autenticação - FUNÇÃO MELHORADA
+        // Atualizar interface de autenticação - FUNÇÃO SIMPLIFICADA
         function updateAuthUI() {
             console.log('🔄 Atualizando UI de autenticação...');
             
@@ -898,48 +903,57 @@
             
             // Resetar email do usuário atual
             currentUserEmail = null;
+            let userName = null;
             
-            // Tentar múltiplas formas de obter dados do usuário
-            let userData = null;
-            
-            // 1. Tentar do authSync localStorage
+            // 1. Tentar do localStorage (múltiplas fontes)
             try {
-                const syncData = localStorage.getItem('studycert-auth-sync');
-                if (syncData) {
-                    userData = JSON.parse(syncData);
-                    currentUserEmail = userData.email;
-                    console.log('📱 Usuário do auth-sync:', currentUserEmail);
+                // Fonte 1: studycert-auth-data
+                const authData = localStorage.getItem('studycert-auth-data');
+                if (authData) {
+                    const user = JSON.parse(authData);
+                    currentUserEmail = user.email;
+                    userName = user.name || user.user_metadata?.full_name || currentUserEmail.split('@')[0];
+                    console.log('💾 Usuário do localStorage:', currentUserEmail);
                 }
-            } catch (e) {
-                console.warn('⚠️ Erro ao ler auth-sync:', e);
-            }
-            
-            // 2. Tentar do authManager
-            if (!userData && window.authManager) {
-                if (window.authManager.currentUser) {
-                    userData = window.authManager.currentUser;
-                    currentUserEmail = userData.email;
+                
+                // Fonte 2: Supabase session
+                if (!currentUserEmail) {
+                    const supabaseSession = localStorage.getItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
+                    if (supabaseSession) {
+                        try {
+                            const session = JSON.parse(supabaseSession);
+                            if (session.currentSession && session.currentSession.user) {
+                                currentUserEmail = session.currentSession.user.email;
+                                userName = session.currentSession.user.user_metadata?.full_name || currentUserEmail.split('@')[0];
+                                console.log('🔐 Usuário do Supabase:', currentUserEmail);
+                                
+                                // Salvar também no formato studycert
+                                const userData = {
+                                    id: session.currentSession.user.id,
+                                    email: currentUserEmail,
+                                    name: userName,
+                                    metadata: session.currentSession.user.user_metadata
+                                };
+                                localStorage.setItem('studycert-auth-data', JSON.stringify(userData));
+                            }
+                        } catch (e) {
+                            console.warn('⚠️ Erro ao parsear sessão Supabase:', e);
+                        }
+                    }
+                }
+                
+                // Fonte 3: authManager
+                if (!currentUserEmail && window.authManager && window.authManager.currentUser) {
+                    currentUserEmail = window.authManager.currentUser.email;
+                    userName = window.authManager.currentUser.user_metadata?.full_name || currentUserEmail.split('@')[0];
                     console.log('👤 Usuário do authManager:', currentUserEmail);
                 }
-            }
-            
-            // 3. Tentar do localStorage padrão
-            if (!userData) {
-                try {
-                    const localData = localStorage.getItem('studycert-auth-data');
-                    if (localData) {
-                        userData = JSON.parse(localData);
-                        currentUserEmail = userData.email;
-                        console.log('💾 Usuário do localStorage:', currentUserEmail);
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Erro ao ler localStorage:', e);
-                }
-            }
-            
-            if (userData && currentUserEmail) {
-                const userName = userData.name || userData.user_metadata?.full_name || currentUserEmail.split('@')[0];
                 
+            } catch (error) {
+                console.error('❌ Erro ao obter dados do usuário:', error);
+            }
+            
+            if (currentUserEmail) {
                 authStatus.innerHTML = `
                     <i class="fas fa-check-circle" style="color: #27ae60;"></i>
                     <span>Logado como: ${userName}</span>
@@ -982,19 +996,28 @@
         async function logoutFromPage() {
             try {
                 // Limpar todos os dados locais
-                localStorage.removeItem('studycert-auth-sync');
                 localStorage.removeItem('studycert-auth-data');
+                localStorage.removeItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
+                localStorage.removeItem('studycert-auth-sync');
                 
                 // Logout do authManager se disponível
                 if (window.authManager && window.authManager.logout) {
                     await window.authManager.logout();
                 }
                 
+                // Logout do Supabase se tiver cliente
+                if (supabaseClient && supabaseClient.auth) {
+                    await supabaseClient.auth.signOut();
+                }
+                
                 // Atualizar UI
+                currentUserEmail = null;
                 updateAuthUI();
                 
                 // Recarregar para garantir sincronização
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
                 
             } catch (error) {
                 console.error('❌ Erro no logout:', error);
@@ -1061,9 +1084,11 @@
             
             // Atualizar informações do arquivo no modal
             const fileIconClass = `file-icon-${currentFileType}`;
+            const fileIconName = getFileIcon(currentFileType);
+            
             document.getElementById('selectedFileInfo').innerHTML = `
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-file-${getFileIcon(currentFileType)} ${fileIconClass}" style="font-size: 1.2rem;"></i>
+                    <i class="fas fa-${fileIconName} ${fileIconClass}" style="font-size: 1.2rem;"></i>
                     <div>
                         <strong>${file.name}</strong><br>
                         <small style="color: #666;">${formatFileSize(file.size)} • ${currentFileType.toUpperCase()}</small>
@@ -1084,18 +1109,19 @@
             document.getElementById('uploadModal').style.display = 'flex';
         }
 
-        // FUNÇÃO CORRIGIDA: Detecta tipo de arquivo corretamente
         function detectFileType(fileName) {
             const ext = fileName.split('.').pop().toLowerCase();
             
             // Mapeamento completo de extensões
             const typeMap = {
-                // Documentos
+                // PDF
                 'pdf': 'pdf',
+                
+                // Documentos Word
                 'doc': 'doc',
                 'docx': 'doc',
                 
-                // Apresentações
+                // Apresentações PowerPoint
                 'ppt': 'ppt',
                 'pptx': 'ppt',
                 
@@ -1119,7 +1145,6 @@
             return typeMap[ext] || 'other';
         }
 
-        // FUNÇÃO NOVA: Obtém o ícone correto para cada tipo
         function getFileIcon(fileType) {
             const iconMap = {
                 'pdf': 'file-pdf',
@@ -1165,23 +1190,23 @@
             
             // Obter ID do usuário atual
             let userId = null;
-            if (window.authManager && window.authManager.currentUser) {
-                userId = window.authManager.currentUser.id;
-            } else {
+            let userEmail = currentUserEmail;
+            
+            try {
                 // Tentar obter do localStorage
-                try {
-                    const userData = localStorage.getItem('studycert-auth-data');
-                    if (userData) {
-                        const parsed = JSON.parse(userData);
-                        userId = parsed.id;
-                    }
-                } catch (e) {
-                    console.error('❌ Erro ao obter userId:', e);
+                const userData = localStorage.getItem('studycert-auth-data');
+                if (userData) {
+                    const parsed = JSON.parse(userData);
+                    userId = parsed.id;
+                    userEmail = parsed.email || userEmail;
                 }
+            } catch (e) {
+                console.error('❌ Erro ao obter userId:', e);
             }
             
             if (!userId) {
-                alert('Erro: usuário não identificado.');
+                alert('Erro: usuário não identificado. Faça login novamente.');
+                window.location.href = 'index.html#login';
                 return;
             }
             
@@ -1190,7 +1215,7 @@
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
-                console.log('🚀 Iniciando upload...');
+                console.log('🚀 Iniciando upload para usuário:', userEmail);
                 
                 // Limpar nome do arquivo
                 const cleanFileName = file.name
@@ -1250,6 +1275,7 @@
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
                     usuario_id: userId,
+                    usuario_email: userEmail, // Adicionar email para referência
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
@@ -1344,10 +1370,9 @@
         function updateMaterialsInterface(materials) {
             const container = document.getElementById('materialsContainer');
             
-            // Obter email do usuário atual (já obtido em updateAuthUI)
             console.log('👤 Email do usuário atual:', currentUserEmail);
             
-            // Verificar se é o André (admin)
+            // Verificar se é o André (admin) ou outro usuário
             const isAndreAdmin = currentUserEmail && 
                                 (currentUserEmail.toLowerCase() === 'andre.martins05@gmail.com' || 
                                  currentUserEmail.toLowerCase() === 'admin@example.com');
@@ -1364,12 +1389,15 @@
                 const fileIconClass = `file-icon-${material.tipo}`;
                 const fileIconName = getFileIcon(material.tipo);
                 
-                // VERIFICAÇÃO CORRIGIDA: Botão excluir só para André
-                // Como não temos email do dono do material no banco, vamos assumir
-                // que André pode excluir tudo, ou verificar por ID se tivermos
-                const canDelete = isAndreAdmin; // Apenas André pode excluir
+                // Botão excluir: apenas para André
+                const canDelete = isAndreAdmin;
                 
-                console.log(`📄 Material: ${material.titulo}, Tipo: ${material.tipo}, CanDelete: ${canDelete}`);
+                // Verificar se este material pertence ao usuário atual
+                const isOwner = currentUserEmail && 
+                              (material.usuario_email === currentUserEmail || 
+                               material.usuario_id === currentUserEmail); // Fallback
+                
+                console.log(`📄 ${material.titulo} | Tipo: ${material.tipo} | Dono: ${material.usuario_email} | Eu: ${currentUserEmail} | CanDelete: ${canDelete} | IsOwner: ${isOwner}`);
                 
                 return `
                     <div class="material-item-page" data-id="${material.id}">
@@ -1393,6 +1421,7 @@
                                 </span>
                             </div>
                             ${material.descricao ? `<div class="file-description" title="${material.descricao}">${material.descricao}</div>` : ''}
+                            ${material.usuario_email ? `<div style="font-size: 0.7rem; color: #888; margin-top: 0.2rem;">Por: ${material.usuario_email}</div>` : ''}
                         </div>
                         
                         <div class="file-actions">
