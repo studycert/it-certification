@@ -680,11 +680,21 @@
                 console.log('👤 Usuário ID:', user.id);
                 console.log('📁 Certificação:', currentCertId);
                 
-                // 1. Upload para Storage
-                const fileName = `material_${Date.now()}_${file.name.replace(/\s+/g, '_').toLowerCase()}`;
+                // 1. Limpar o nome do arquivo - CORREÇÃO AQUI
+                // Remove caracteres especiais que causam erro no Supabase Storage
+                const cleanFileName = file.name
+                    .toLowerCase()
+                    .replace(/\s+/g, '_')
+                    .replace(/[^\w\.\-]/g, '') // Remove caracteres não alfanuméricos exceto ponto e hífen
+                    .replace(/_{2,}/g, '_') // Remove múltiplos underscores consecutivos
+                    .replace(/^_+|_+$/g, ''); // Remove underscores no início/fim
+                
+                const fileName = `material_${Date.now()}_${cleanFileName}`;
                 const filePath = `${currentCertId}/${user.id}/${fileName}`;
                 
                 console.log('📤 Upload para:', filePath);
+                console.log('📁 Nome original:', file.name);
+                console.log('📁 Nome limpo:', cleanFileName);
                 
                 // Simular progresso
                 let progress = 0;
