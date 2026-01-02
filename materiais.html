@@ -8,30 +8,39 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
-    <script src="js/sync-auth.js" defer></script>
     <style>
-        /* ===== CORREÇÕES DE COR DOS BOTÕES - CORRIGIDO ===== */
+        /* ===== CORREÇÕES DE COR DOS BOTÕES - FINAL ===== */
         .auth-bar .btn-outline {
-            color: var(--primary) !important;
-            border: 1px solid var(--primary) !important;
+            color: #3498db !important;
+            border: 1px solid #3498db !important;
             background: transparent !important;
         }
         
         .auth-bar .btn-outline:hover {
-            background: var(--primary) !important;
+            background: #3498db !important;
             color: white !important;
         }
         
         .auth-bar .btn-primary {
-            background: var(--primary) !important;
+            background: #3498db !important;
             color: white !important;
-            border: 1px solid var(--primary) !important;
+            border: 1px solid #3498db !important;
         }
         
         .auth-bar .btn-primary:hover {
-            background: var(--primary-dark) !important;
-            border-color: var(--primary-dark) !important;
-            color: white !important; /* GARANTIR que o texto fica branco */
+            background: #2980b9 !important;
+            border-color: #2980b9 !important;
+            color: white !important;
+        }
+        
+        /* Garantir que os links também tenham cor */
+        .auth-bar a.btn-outline,
+        .auth-bar a.btn-primary {
+            text-decoration: none;
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
         }
         
         /* ===== ESTILOS PRINCIPAIS ===== */
@@ -48,24 +57,24 @@
             background: white; 
             border-radius: 8px; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--secondary);
+            border-left: 4px solid #2ecc71;
         }
         
         .certification-icon { 
             font-size: 2rem; 
-            color: var(--secondary); 
+            color: #2ecc71; 
             margin-bottom: 0.5rem; 
         }
         
         .certification-header h1 { 
             font-size: 1.5rem; 
-            color: var(--primary); 
+            color: #2c3e50; 
             margin-bottom: 0.3rem; 
         }
         
         .certification-header .cert-level { 
             display: inline-block; 
-            background: var(--secondary); 
+            background: #2ecc71; 
             color: white; 
             padding: 0.2rem 0.8rem; 
             border-radius: 12px; 
@@ -99,7 +108,7 @@
             display: block; 
             margin-bottom: 0.2rem; 
             font-weight: 600; 
-            color: var(--primary); 
+            color: #2c3e50; 
             font-size: 0.85rem;
         }
         
@@ -114,7 +123,7 @@
         
         .filter-select:focus { 
             outline: none; 
-            border-color: var(--secondary); 
+            border-color: #3498db; 
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         
@@ -129,7 +138,7 @@
             overflow: hidden; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
             transition: all 0.2s ease; 
-            border-left: 3px solid var(--secondary);
+            border-left: 3px solid #2ecc71;
             margin-bottom: 0.5rem;
             padding: 0.8rem 1rem;
             display: flex;
@@ -162,7 +171,7 @@
         }
         
         .file-info-item h3 { 
-            color: var(--primary); 
+            color: #2c3e50; 
             margin: 0 0 0.2rem 0; 
             font-size: 0.95rem; 
             font-weight: 600;
@@ -224,7 +233,7 @@
         }
         
         .upload-section-page h2 {
-            color: var(--primary); 
+            color: #2c3e50; 
             margin-bottom: 0.3rem; 
             font-size: 1.1rem;
         }
@@ -261,7 +270,7 @@
         .upload-area-page h3 {
             font-size: 0.95rem;
             margin-bottom: 0.3rem;
-            color: var(--primary);
+            color: #2c3e50;
         }
         
         .upload-area-page p {
@@ -285,12 +294,12 @@
         }
         
         .breadcrumb-page a { 
-            color: var(--primary); 
+            color: #2c3e50; 
             text-decoration: none; 
         }
         
         .breadcrumb-page a:hover { 
-            color: var(--secondary); 
+            color: #3498db; 
         }
         
         .auth-bar {
@@ -395,7 +404,7 @@
         .no-materials-message h3 {
             font-size: 1rem;
             margin-bottom: 0.5rem;
-            color: var(--primary);
+            color: #2c3e50;
         }
         
         .no-materials-message p {
@@ -414,7 +423,7 @@
         }
         
         .stats-container h3 {
-            color: var(--primary); 
+            color: #2c3e50; 
             margin-bottom: 0.5rem; 
             font-size: 1rem;
         }
@@ -583,7 +592,7 @@
             <h3>Estatísticas</h3>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <span class="stat-value" id="totalMaterials" style="color: var(--secondary);">0</span>
+                    <span class="stat-value" id="totalMaterials" style="color: #2ecc71;">0</span>
                     <span class="stat-label">Materiais</span>
                 </div>
                 <div class="stat-item">
@@ -702,7 +711,7 @@
     <!-- Modal de Confirmação de Exclusão -->
     <div id="deleteConfirmModal" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-bottom: 0.8rem; color: var(--primary); font-size: 1rem;">
+            <h3 style="margin-bottom: 0.8rem; color: #2c3e50; font-size: 1rem;">
                 <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Confirmar Exclusão
             </h3>
             
@@ -722,6 +731,8 @@
     </div>
 
     <script>
+        // ===== SISTEMA DE AUTENTICAÇÃO DIRETO NO HTML =====
+        
         // Configurações
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
@@ -777,6 +788,8 @@
         let currentFileType = 'pdf';
         let materialToDelete = null;
         let currentUserEmail = null;
+        let currentUserName = null;
+        let currentUserId = null;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', async function() {
@@ -785,32 +798,160 @@
             // Configurar eventos
             setupEventListeners();
             
-            // Aguardar authManager
-            setTimeout(async () => {
-                // Inicializar Supabase
-                await initSupabase();
-                
-                // Carregar certificação
-                currentCertId = getUrlParameter('cert') || 'itil4';
-                loadCertification(currentCertId);
-                
-                // Atualizar interface de autenticação IMEDIATAMENTE
-                updateAuthUI();
-                
-                // Carregar materiais
-                await loadMaterialsFromSupabase(currentCertId);
-                
-                console.log('✅ Página de materiais inicializada');
-            }, 100);
+            // Inicializar Supabase
+            await initSupabase();
             
-            // Forçar verificação inicial
-            setTimeout(updateAuthUI, 500);
+            // Carregar certificação
+            currentCertId = getUrlParameter('cert') || 'itil4';
+            loadCertification(currentCertId);
             
-            // Verificar a cada 3 segundos
-            setInterval(updateAuthUI, 3000);
+            // Atualizar interface de autenticação IMEDIATAMENTE
+            updateAuthUI();
+            
+            // Carregar materiais
+            await loadMaterialsFromSupabase(currentCertId);
+            
+            console.log('✅ Página de materiais inicializada');
+            
+            // Verificar a cada 2 segundos
+            setInterval(updateAuthUI, 2000);
         });
 
-        // Configurar eventos
+        // ===== FUNÇÃO PRINCIPAL DE AUTENTICAÇÃO =====
+        function updateAuthUI() {
+            console.log('🔄 Atualizando UI de autenticação...');
+            
+            const authStatus = document.getElementById('authStatus');
+            const authContainer = document.getElementById('authContainer');
+            
+            // Resetar dados do usuário
+            currentUserEmail = null;
+            currentUserName = null;
+            currentUserId = null;
+            
+            // TENTAR OBTER DADOS DO USUÁRIO DE MÚLTIPLAS FONTES
+            
+            // 1. Tentar do localStorage do Supabase (PRINCIPAL)
+            try {
+                const supabaseSession = localStorage.getItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
+                if (supabaseSession) {
+                    const session = JSON.parse(supabaseSession);
+                    console.log('🔐 Sessão Supabase encontrada:', session);
+                    
+                    if (session.currentSession && session.currentSession.user) {
+                        currentUserEmail = session.currentSession.user.email;
+                        currentUserName = session.currentSession.user.user_metadata?.full_name || 
+                                        currentUserEmail.split('@')[0];
+                        currentUserId = session.currentSession.user.id;
+                        
+                        console.log('✅ Usuário do Supabase:', currentUserEmail);
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ Erro ao ler sessão Supabase:', e);
+            }
+            
+            // 2. Tentar do authManager (se disponível)
+            if (!currentUserEmail && window.authManager && window.authManager.currentUser) {
+                currentUserEmail = window.authManager.currentUser.email;
+                currentUserName = window.authManager.currentUser.user_metadata?.full_name || 
+                                currentUserEmail.split('@')[0];
+                currentUserId = window.authManager.currentUser.id;
+                console.log('👤 Usuário do authManager:', currentUserEmail);
+            }
+            
+            // 3. Tentar do localStorage do StudyCert
+            if (!currentUserEmail) {
+                try {
+                    const studycertData = localStorage.getItem('studycert-auth-data');
+                    if (studycertData) {
+                        const user = JSON.parse(studycertData);
+                        currentUserEmail = user.email;
+                        currentUserName = user.name || user.email.split('@')[0];
+                        currentUserId = user.id;
+                        console.log('💾 Usuário do StudyCert localStorage:', currentUserEmail);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Erro ao ler studycert-auth-data:', e);
+                }
+            }
+            
+            // ATUALIZAR A INTERFACE
+            if (currentUserEmail) {
+                authStatus.innerHTML = `
+                    <i class="fas fa-check-circle" style="color: #27ae60;"></i>
+                    <span>Logado como: ${currentUserName}</span>
+                `;
+                
+                authContainer.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="background: #3498db; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.7rem;">
+                            ${currentUserName.substring(0, 2).toUpperCase()}
+                        </div>
+                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                `;
+                
+                console.log('✅ UI atualizada: usuário logado', currentUserEmail);
+                
+            } else {
+                authStatus.innerHTML = `
+                    <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+                    <span>Não logado</span>
+                `;
+                
+                authContainer.innerHTML = `
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="index.html#login" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </a>
+                        <a href="index.html#register" class="btn btn-primary btn-sm">
+                            <i class="fas fa-user-plus"></i> Cadastrar
+                        </a>
+                    </div>
+                `;
+                
+                console.log('✅ UI atualizada: usuário não logado');
+            }
+        }
+
+        // ===== LOGOUT SIMPLES =====
+        async function logoutFromPage() {
+            try {
+                console.log('🚪 Fazendo logout...');
+                
+                // Limpar localStorage
+                localStorage.removeItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
+                localStorage.removeItem('studycert-auth-data');
+                
+                // Logout do Supabase se tiver cliente
+                if (supabaseClient && supabaseClient.auth) {
+                    await supabaseClient.auth.signOut();
+                }
+                
+                // Limpar variáveis
+                currentUserEmail = null;
+                currentUserName = null;
+                currentUserId = null;
+                
+                // Atualizar UI
+                updateAuthUI();
+                
+                // Recarregar página
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+                
+            } catch (error) {
+                console.error('❌ Erro no logout:', error);
+                updateAuthUI();
+            }
+        }
+
+        // ===== FUNÇÕES RESTANTES (MESMAS DE ANTES) =====
+        
         function setupEventListeners() {
             // Input de arquivo
             document.getElementById('fileInputPage').addEventListener('change', handleFileSelect);
@@ -862,7 +1003,6 @@
             });
         }
 
-        // Inicializar Supabase
         async function initSupabase() {
             try {
                 // Usar authManager se disponível
@@ -894,138 +1034,6 @@
             }
         }
 
-        // Atualizar interface de autenticação - FUNÇÃO SIMPLIFICADA
-        function updateAuthUI() {
-            console.log('🔄 Atualizando UI de autenticação...');
-            
-            const authStatus = document.getElementById('authStatus');
-            const authContainer = document.getElementById('authContainer');
-            
-            // Resetar email do usuário atual
-            currentUserEmail = null;
-            let userName = null;
-            
-            // 1. Tentar do localStorage (múltiplas fontes)
-            try {
-                // Fonte 1: studycert-auth-data
-                const authData = localStorage.getItem('studycert-auth-data');
-                if (authData) {
-                    const user = JSON.parse(authData);
-                    currentUserEmail = user.email;
-                    userName = user.name || user.user_metadata?.full_name || currentUserEmail.split('@')[0];
-                    console.log('💾 Usuário do localStorage:', currentUserEmail);
-                }
-                
-                // Fonte 2: Supabase session
-                if (!currentUserEmail) {
-                    const supabaseSession = localStorage.getItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
-                    if (supabaseSession) {
-                        try {
-                            const session = JSON.parse(supabaseSession);
-                            if (session.currentSession && session.currentSession.user) {
-                                currentUserEmail = session.currentSession.user.email;
-                                userName = session.currentSession.user.user_metadata?.full_name || currentUserEmail.split('@')[0];
-                                console.log('🔐 Usuário do Supabase:', currentUserEmail);
-                                
-                                // Salvar também no formato studycert
-                                const userData = {
-                                    id: session.currentSession.user.id,
-                                    email: currentUserEmail,
-                                    name: userName,
-                                    metadata: session.currentSession.user.user_metadata
-                                };
-                                localStorage.setItem('studycert-auth-data', JSON.stringify(userData));
-                            }
-                        } catch (e) {
-                            console.warn('⚠️ Erro ao parsear sessão Supabase:', e);
-                        }
-                    }
-                }
-                
-                // Fonte 3: authManager
-                if (!currentUserEmail && window.authManager && window.authManager.currentUser) {
-                    currentUserEmail = window.authManager.currentUser.email;
-                    userName = window.authManager.currentUser.user_metadata?.full_name || currentUserEmail.split('@')[0];
-                    console.log('👤 Usuário do authManager:', currentUserEmail);
-                }
-                
-            } catch (error) {
-                console.error('❌ Erro ao obter dados do usuário:', error);
-            }
-            
-            if (currentUserEmail) {
-                authStatus.innerHTML = `
-                    <i class="fas fa-check-circle" style="color: #27ae60;"></i>
-                    <span>Logado como: ${userName}</span>
-                `;
-                
-                authContainer.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <div style="background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.7rem;">
-                            ${userName.substring(0, 2).toUpperCase()}
-                        </div>
-                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
-                            <i class="fas fa-sign-out-alt"></i> Sair
-                        </button>
-                    </div>
-                `;
-                
-                console.log('✅ UI atualizada: usuário logado', currentUserEmail);
-                
-            } else {
-                authStatus.innerHTML = `
-                    <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
-                    <span>Não logado</span>
-                `;
-                
-                authContainer.innerHTML = `
-                    <div style="display: flex; gap: 0.5rem;">
-                        <a href="index.html#login" class="btn btn-outline btn-sm">
-                            <i class="fas fa-sign-in-alt"></i> Entrar
-                        </a>
-                        <a href="index.html#register" class="btn btn-primary btn-sm">
-                            <i class="fas fa-user-plus"></i> Cadastrar
-                        </a>
-                    </div>
-                `;
-                
-                console.log('✅ UI atualizada: usuário não logado');
-            }
-        }
-
-        async function logoutFromPage() {
-            try {
-                // Limpar todos os dados locais
-                localStorage.removeItem('studycert-auth-data');
-                localStorage.removeItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
-                localStorage.removeItem('studycert-auth-sync');
-                
-                // Logout do authManager se disponível
-                if (window.authManager && window.authManager.logout) {
-                    await window.authManager.logout();
-                }
-                
-                // Logout do Supabase se tiver cliente
-                if (supabaseClient && supabaseClient.auth) {
-                    await supabaseClient.auth.signOut();
-                }
-                
-                // Atualizar UI
-                currentUserEmail = null;
-                updateAuthUI();
-                
-                // Recarregar para garantir sincronização
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
-                
-            } catch (error) {
-                console.error('❌ Erro no logout:', error);
-                updateAuthUI();
-            }
-        }
-
-        // Funções principais
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -1182,30 +1190,8 @@
                 return;
             }
             
-            if (!currentUserEmail) {
+            if (!currentUserEmail || !currentUserId) {
                 alert('Sessão expirada. Faça login novamente.');
-                window.location.href = 'index.html#login';
-                return;
-            }
-            
-            // Obter ID do usuário atual
-            let userId = null;
-            let userEmail = currentUserEmail;
-            
-            try {
-                // Tentar obter do localStorage
-                const userData = localStorage.getItem('studycert-auth-data');
-                if (userData) {
-                    const parsed = JSON.parse(userData);
-                    userId = parsed.id;
-                    userEmail = parsed.email || userEmail;
-                }
-            } catch (e) {
-                console.error('❌ Erro ao obter userId:', e);
-            }
-            
-            if (!userId) {
-                alert('Erro: usuário não identificado. Faça login novamente.');
                 window.location.href = 'index.html#login';
                 return;
             }
@@ -1215,7 +1201,7 @@
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
-                console.log('🚀 Iniciando upload para usuário:', userEmail);
+                console.log('🚀 Iniciando upload para usuário:', currentUserEmail);
                 
                 // Limpar nome do arquivo
                 const cleanFileName = file.name
@@ -1226,7 +1212,7 @@
                     .replace(/^_+|_+$/g, '');
                 
                 const fileName = `material_${Date.now()}_${cleanFileName}`;
-                const filePath = `${currentCertId}/${userId}/${fileName}`;
+                const filePath = `${currentCertId}/${currentUserId}/${fileName}`;
                 
                 console.log('📤 Upload para:', filePath);
                 
@@ -1274,8 +1260,8 @@
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
-                    usuario_id: userId,
-                    usuario_email: userEmail, // Adicionar email para referência
+                    usuario_id: currentUserId,
+                    usuario_email: currentUserEmail,
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
@@ -1392,12 +1378,7 @@
                 // Botão excluir: apenas para André
                 const canDelete = isAndreAdmin;
                 
-                // Verificar se este material pertence ao usuário atual
-                const isOwner = currentUserEmail && 
-                              (material.usuario_email === currentUserEmail || 
-                               material.usuario_id === currentUserEmail); // Fallback
-                
-                console.log(`📄 ${material.titulo} | Tipo: ${material.tipo} | Dono: ${material.usuario_email} | Eu: ${currentUserEmail} | CanDelete: ${canDelete} | IsOwner: ${isOwner}`);
+                console.log(`📄 ${material.titulo} | Tipo: ${material.tipo} | Dono: ${material.usuario_email} | Eu: ${currentUserEmail} | CanDelete: ${canDelete}`);
                 
                 return `
                     <div class="material-item-page" data-id="${material.id}">
@@ -1632,9 +1613,6 @@
                 window.open(fileUrl, '_blank');
             }
         }
-
-        // Adicionar função global para atualização de UI
-        window.updateAuthUI = updateAuthUI;
 
     </script>
 </body>
