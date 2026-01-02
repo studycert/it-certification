@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
-    <script src="js/sync-auth.js" defer></script>
+    <script src="js/auth-sync.js" defer></script>
     <style>
-        /* CORREÇÃO DO BOTÃO ENTRAR - Adicione ao seu CSS existente */
+        /* ===== CORREÇÕES DE COR DOS BOTÕES ===== */
         .auth-bar .btn-outline {
             color: var(--primary) !important;
-            border-color: var(--primary) !important;
+            border: 1px solid var(--primary) !important;
             background: transparent !important;
         }
         
@@ -25,7 +25,7 @@
         .auth-bar .btn-primary {
             background: var(--primary) !important;
             color: white !important;
-            border-color: var(--primary) !important;
+            border: 1px solid var(--primary) !important;
         }
         
         .auth-bar .btn-primary:hover {
@@ -33,7 +33,7 @@
             border-color: var(--primary-dark) !important;
         }
         
-        /* Estilos otimizados para layout de lista */
+        /* ===== ESTILOS PRINCIPAIS ===== */
         .materials-page { 
             padding: 1.5rem 0; 
             max-width: 1200px;
@@ -117,7 +117,7 @@
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         
-        /* Layout de LISTA em vez de grid */
+        /* ===== LAYOUT DE LISTA ===== */
         .materials-list-page { 
             margin-bottom: 1.5rem; 
         }
@@ -142,10 +142,18 @@
         }
         
         .file-icon-item { 
-            font-size: 1.2rem; 
-            min-width: 30px;
+            font-size: 1.3rem; 
+            min-width: 35px;
             text-align: center;
         }
+        
+        /* ===== ÍCONES COLORIDOS PARA TODOS OS TIPOS ===== */
+        .file-icon-pdf { color: #e74c3c; }
+        .file-icon-doc { color: #3498db; }
+        .file-icon-ppt { color: #e67e22; }
+        .file-icon-zip { color: #9b59b6; }
+        .file-icon-video { color: #27ae60; }
+        .file-icon-other { color: #7f8c8d; }
         
         .file-info-item { 
             flex-grow: 1;
@@ -205,13 +213,7 @@
             white-space: nowrap;
         }
         
-        .pdf-color { color: #e74c3c; }
-        .ppt-color { color: #e67e22; }
-        .doc-color { color: #3498db; }
-        .zip-color { color: #9b59b6; }
-        .video-color { color: #27ae60; }
-        
-        /* Seção de Upload Compacta */
+        /* ===== SEÇÃO DE UPLOAD ===== */
         .upload-section-page { 
             background: white; 
             border-radius: 8px; 
@@ -273,6 +275,7 @@
             font-size: 0.8rem;
         }
         
+        /* ===== BARRA DE AUTENTICAÇÃO ===== */
         .breadcrumb-page { 
             background: #e9ecef; 
             padding: 0.5rem 0; 
@@ -315,6 +318,7 @@
             gap: 0.5rem;
         }
         
+        /* ===== MODAIS ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -398,6 +402,7 @@
             margin-bottom: 1rem;
         }
         
+        /* ===== ESTATÍSTICAS ===== */
         .stats-container {
             background: white; 
             padding: 0.8rem; 
@@ -436,63 +441,7 @@
             display: block;
         }
         
-        /* Modal de Upload Compacto */
-        #uploadModal .modal-content {
-            max-width: 380px;
-        }
-        
-        #uploadModal h3 {
-            margin-bottom: 0.8rem; 
-            color: var(--primary);
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        #selectedFileInfo {
-            margin-bottom: 0.8rem; 
-            padding: 0.8rem; 
-            background: #f8f9fa; 
-            border-radius: 6px;
-            font-size: 0.85rem;
-        }
-        
-        #materialTitle, #materialDescription {
-            font-size: 0.85rem;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 100%;
-        }
-        
-        #materialTitle:focus, #materialDescription:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-            margin-top: 1rem;
-        }
-        
-        .modal-actions .btn {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-        }
-        
-        /* Ícones coloridos por tipo */
-        .file-icon-pdf { color: #e74c3c; }
-        .file-icon-ppt { color: #e67e22; }
-        .file-icon-doc { color: #3498db; }
-        .file-icon-zip { color: #9b59b6; }
-        .file-icon-video { color: #27ae60; }
-        .file-icon-other { color: #7f8c8d; }
-        
-        /* Responsividade */
+        /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 768px) {
             .materials-page {
                 padding: 1rem;
@@ -647,7 +596,7 @@
             </div>
         </div>
 
-        <!-- Seção de Upload Compacta -->
+        <!-- Seção de Upload -->
         <section class="upload-section-page" id="uploadSection">
             <h2>
                 <i class="fas fa-share-alt"></i> Compartilhar Material
@@ -706,7 +655,7 @@
         </div>
     </footer>
 
-    <!-- Modal de Upload Compacto -->
+    <!-- Modal de Upload -->
     <div id="uploadModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeUploadModal()">&times;</button>
@@ -826,6 +775,7 @@
         let currentCertId = 'itil4';
         let currentFileType = 'pdf';
         let materialToDelete = null;
+        let currentUserEmail = null; // Para verificar se é o André
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', async function() {
@@ -853,15 +803,14 @@
             }, 100);
             
             // Adicionar listener para eventos de sincronização
-            window.addEventListener('studycert-sync-update', function() {
-                console.log('🔄 Evento de sincronização recebido');
+            window.addEventListener('studycert-ui-update', function() {
+                console.log('🔄 Evento de UI update recebido');
                 updateAuthUI();
-                // Recarregar materiais para mostrar botão de excluir se necessário
                 loadMaterialsFromSupabase(currentCertId);
             });
             
-            // Forçar verificação inicial
-            setTimeout(updateAuthUI, 500);
+            // Forçar verificação inicial após 1 segundo
+            setTimeout(updateAuthUI, 1000);
         });
 
         // Configurar eventos
@@ -940,51 +889,56 @@
             }
         }
 
-        // Atualizar interface de autenticação - FUNÇÃO CORRIGIDA
+        // Atualizar interface de autenticação - FUNÇÃO MELHORADA
         function updateAuthUI() {
             console.log('🔄 Atualizando UI de autenticação...');
             
             const authStatus = document.getElementById('authStatus');
             const authContainer = document.getElementById('authContainer');
             
-            if (!window.authManager) {
-                console.warn('⚠️ authManager não disponível');
-                authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Sistema em manutenção';
-                return;
+            // Resetar email do usuário atual
+            currentUserEmail = null;
+            
+            // Tentar múltiplas formas de obter dados do usuário
+            let userData = null;
+            
+            // 1. Tentar do authSync localStorage
+            try {
+                const syncData = localStorage.getItem('studycert-auth-sync');
+                if (syncData) {
+                    userData = JSON.parse(syncData);
+                    currentUserEmail = userData.email;
+                    console.log('📱 Usuário do auth-sync:', currentUserEmail);
+                }
+            } catch (e) {
+                console.warn('⚠️ Erro ao ler auth-sync:', e);
             }
             
-            // Verificar sessão diretamente
-            let isAuthenticated = false;
-            let user = null;
+            // 2. Tentar do authManager
+            if (!userData && window.authManager) {
+                if (window.authManager.currentUser) {
+                    userData = window.authManager.currentUser;
+                    currentUserEmail = userData.email;
+                    console.log('👤 Usuário do authManager:', currentUserEmail);
+                }
+            }
             
-            // Tentar múltiplas formas de verificar autenticação
-            if (window.authManager.isAuthenticated && window.authManager.isAuthenticated()) {
-                isAuthenticated = true;
-                user = window.authManager.getUser();
-            } else {
-                // Tentar carregar do localStorage como fallback
+            // 3. Tentar do localStorage padrão
+            if (!userData) {
                 try {
-                    const authData = localStorage.getItem('studycert-auth-data');
-                    if (authData) {
-                        const parsed = JSON.parse(authData);
-                        if (parsed && parsed.id) {
-                            isAuthenticated = true;
-                            user = {
-                                id: parsed.id,
-                                email: parsed.email,
-                                user_metadata: parsed.metadata || { full_name: parsed.name }
-                            };
-                            // Atualizar authManager
-                            window.authManager.currentUser = user;
-                        }
+                    const localData = localStorage.getItem('studycert-auth-data');
+                    if (localData) {
+                        userData = JSON.parse(localData);
+                        currentUserEmail = userData.email;
+                        console.log('💾 Usuário do localStorage:', currentUserEmail);
                     }
                 } catch (e) {
                     console.warn('⚠️ Erro ao ler localStorage:', e);
                 }
             }
             
-            if (isAuthenticated && user) {
-                const userName = user.user_metadata?.full_name || user.email.split('@')[0];
+            if (userData && currentUserEmail) {
+                const userName = userData.name || userData.user_metadata?.full_name || currentUserEmail.split('@')[0];
                 
                 authStatus.innerHTML = `
                     <i class="fas fa-check-circle" style="color: #27ae60;"></i>
@@ -1002,12 +956,7 @@
                     </div>
                 `;
                 
-                console.log('✅ UI atualizada: usuário logado', userName);
-                
-                // Sincronizar com outras abas
-                if (window.authSync && window.authSync.broadcastAuthState) {
-                    window.authSync.broadcastAuthState(user);
-                }
+                console.log('✅ UI atualizada: usuário logado', currentUserEmail);
                 
             } else {
                 authStatus.innerHTML = `
@@ -1017,7 +966,7 @@
                 
                 authContainer.innerHTML = `
                     <div style="display: flex; gap: 0.5rem;">
-                        <a href="index.html#login" class="btn btn-outline btn-sm" style="color: var(--primary) !important; border-color: var(--primary) !important;">
+                        <a href="index.html#login" class="btn btn-outline btn-sm">
                             <i class="fas fa-sign-in-alt"></i> Entrar
                         </a>
                         <a href="index.html#register" class="btn btn-primary btn-sm">
@@ -1031,11 +980,25 @@
         }
 
         async function logoutFromPage() {
-            if (window.authManager) {
-                await window.authManager.logout();
+            try {
+                // Limpar todos os dados locais
+                localStorage.removeItem('studycert-auth-sync');
+                localStorage.removeItem('studycert-auth-data');
+                
+                // Logout do authManager se disponível
+                if (window.authManager && window.authManager.logout) {
+                    await window.authManager.logout();
+                }
+                
+                // Atualizar UI
                 updateAuthUI();
+                
                 // Recarregar para garantir sincronização
                 window.location.reload();
+                
+            } catch (error) {
+                console.error('❌ Erro no logout:', error);
+                updateAuthUI();
             }
         }
 
@@ -1059,7 +1022,7 @@
         }
 
         function checkAuthAndUpload() {
-            if (!window.authManager || !window.authManager.isAuthenticated()) {
+            if (!currentUserEmail) {
                 alert('Faça login para compartilhar materiais. Redirecionando para página de login...');
                 window.location.href = 'index.html#login';
                 return;
@@ -1097,9 +1060,10 @@
             currentFileType = detectFileType(file.name);
             
             // Atualizar informações do arquivo no modal
+            const fileIconClass = `file-icon-${currentFileType}`;
             document.getElementById('selectedFileInfo').innerHTML = `
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-file-${currentFileType} file-icon-${currentFileType}" style="font-size: 1.2rem;"></i>
+                    <i class="fas fa-file-${getFileIcon(currentFileType)} ${fileIconClass}" style="font-size: 1.2rem;"></i>
                     <div>
                         <strong>${file.name}</strong><br>
                         <small style="color: #666;">${formatFileSize(file.size)} • ${currentFileType.toUpperCase()}</small>
@@ -1120,14 +1084,53 @@
             document.getElementById('uploadModal').style.display = 'flex';
         }
 
+        // FUNÇÃO CORRIGIDA: Detecta tipo de arquivo corretamente
         function detectFileType(fileName) {
             const ext = fileName.split('.').pop().toLowerCase();
-            if (['pdf'].includes(ext)) return 'pdf';
-            if (['ppt', 'pptx'].includes(ext)) return 'ppt';
-            if (['doc', 'docx'].includes(ext)) return 'doc';
-            if (['zip', 'rar', '7z'].includes(ext)) return 'zip';
-            if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) return 'video';
-            return 'other';
+            
+            // Mapeamento completo de extensões
+            const typeMap = {
+                // Documentos
+                'pdf': 'pdf',
+                'doc': 'doc',
+                'docx': 'doc',
+                
+                // Apresentações
+                'ppt': 'ppt',
+                'pptx': 'ppt',
+                
+                // Arquivos compactados
+                'zip': 'zip',
+                'rar': 'zip',
+                '7z': 'zip',
+                'tar': 'zip',
+                'gz': 'zip',
+                
+                // Vídeos
+                'mp4': 'video',
+                'avi': 'video',
+                'mov': 'video',
+                'mkv': 'video',
+                'webm': 'video',
+                'wmv': 'video',
+                'flv': 'video'
+            };
+            
+            return typeMap[ext] || 'other';
+        }
+
+        // FUNÇÃO NOVA: Obtém o ícone correto para cada tipo
+        function getFileIcon(fileType) {
+            const iconMap = {
+                'pdf': 'file-pdf',
+                'doc': 'file-word',
+                'ppt': 'file-powerpoint',
+                'zip': 'file-archive',
+                'video': 'file-video',
+                'other': 'file'
+            };
+            
+            return iconMap[fileType] || 'file';
         }
 
         function formatFileSize(bytes) {
@@ -1154,14 +1157,30 @@
                 return;
             }
             
-            if (!window.authManager || !window.authManager.isAuthenticated()) {
+            if (!currentUserEmail) {
                 alert('Sessão expirada. Faça login novamente.');
                 window.location.href = 'index.html#login';
                 return;
             }
             
-            const user = window.authManager.getUser();
-            if (!user || !user.id) {
+            // Obter ID do usuário atual
+            let userId = null;
+            if (window.authManager && window.authManager.currentUser) {
+                userId = window.authManager.currentUser.id;
+            } else {
+                // Tentar obter do localStorage
+                try {
+                    const userData = localStorage.getItem('studycert-auth-data');
+                    if (userData) {
+                        const parsed = JSON.parse(userData);
+                        userId = parsed.id;
+                    }
+                } catch (e) {
+                    console.error('❌ Erro ao obter userId:', e);
+                }
+            }
+            
+            if (!userId) {
                 alert('Erro: usuário não identificado.');
                 return;
             }
@@ -1182,7 +1201,7 @@
                     .replace(/^_+|_+$/g, '');
                 
                 const fileName = `material_${Date.now()}_${cleanFileName}`;
-                const filePath = `${currentCertId}/${user.id}/${fileName}`;
+                const filePath = `${currentCertId}/${userId}/${fileName}`;
                 
                 console.log('📤 Upload para:', filePath);
                 
@@ -1230,7 +1249,7 @@
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
-                    usuario_id: user.id,
+                    usuario_id: userId,
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
@@ -1325,25 +1344,15 @@
         function updateMaterialsInterface(materials) {
             const container = document.getElementById('materialsContainer');
             
-            // Obter usuário atual de forma robusta
-            let currentUserId = null;
-            if (window.authManager && window.authManager.isAuthenticated && window.authManager.isAuthenticated()) {
-                const user = window.authManager.getUser();
-                currentUserId = user?.id;
-            } else {
-                // Tentar obter do localStorage como fallback
-                try {
-                    const authData = localStorage.getItem('studycert-auth-data');
-                    if (authData) {
-                        const parsed = JSON.parse(authData);
-                        currentUserId = parsed?.id;
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Erro ao ler userId do localStorage:', e);
-                }
-            }
+            // Obter email do usuário atual (já obtido em updateAuthUI)
+            console.log('👤 Email do usuário atual:', currentUserEmail);
             
-            console.log('👤 User ID atual:', currentUserId);
+            // Verificar se é o André (admin)
+            const isAndreAdmin = currentUserEmail && 
+                                (currentUserEmail.toLowerCase() === 'andre.martins05@gmail.com' || 
+                                 currentUserEmail.toLowerCase() === 'admin@example.com');
+            
+            console.log('👑 É André Admin?', isAndreAdmin);
             
             if (!materials || materials.length === 0) {
                 showNoMaterials('Nenhum material encontrado.');
@@ -1351,16 +1360,21 @@
             }
             
             container.innerHTML = materials.map(material => {
-                // Verificar se o usuário atual é o dono do material - CORREÇÃO AQUI
-                const isOwner = currentUserId && material.usuario_id && material.usuario_id.toString() === currentUserId.toString();
+                // Determinar classe do ícone baseada no tipo
                 const fileIconClass = `file-icon-${material.tipo}`;
+                const fileIconName = getFileIcon(material.tipo);
                 
-                console.log(`📄 Material: ${material.titulo}, Dono: ${material.usuario_id}, Eu: ${currentUserId}, isOwner: ${isOwner}`);
+                // VERIFICAÇÃO CORRIGIDA: Botão excluir só para André
+                // Como não temos email do dono do material no banco, vamos assumir
+                // que André pode excluir tudo, ou verificar por ID se tivermos
+                const canDelete = isAndreAdmin; // Apenas André pode excluir
+                
+                console.log(`📄 Material: ${material.titulo}, Tipo: ${material.tipo}, CanDelete: ${canDelete}`);
                 
                 return `
                     <div class="material-item-page" data-id="${material.id}">
                         <div class="file-icon-item">
-                            <i class="fas fa-file-${material.tipo} ${fileIconClass}"></i>
+                            <i class="fas fa-${fileIconName} ${fileIconClass}"></i>
                         </div>
                         
                         <div class="file-info-item">
@@ -1385,7 +1399,7 @@
                             <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" title="Baixar arquivo">
                                 <i class="fas fa-download"></i> Baixar
                             </button>
-                            ${isOwner ? `
+                            ${canDelete ? `
                                 <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
                                     <i class="fas fa-trash"></i> Excluir
                                 </button>
@@ -1413,7 +1427,7 @@
             document.getElementById('deleteConfirmModal').style.display = 'none';
         }
 
-        // Confirmar exclusão do material
+        // Confirmar exclusão do material (apenas André)
         async function confirmDeleteMaterial() {
             if (!materialToDelete) {
                 alert('Erro: Nenhum material selecionado para exclusão.');
@@ -1421,22 +1435,17 @@
                 return;
             }
             
-            if (!window.authManager || !window.authManager.isAuthenticated()) {
-                alert('Sessão expirada. Faça login novamente.');
-                closeDeleteModal();
-                window.location.href = 'index.html#login';
-                return;
-            }
-            
-            const currentUser = window.authManager.getUser();
-            if (!currentUser || !currentUser.id) {
-                alert('Erro: usuário não identificado.');
+            // Verificar novamente se é o André
+            if (!currentUserEmail || 
+                (currentUserEmail.toLowerCase() !== 'andre.martins05@gmail.com' && 
+                 currentUserEmail.toLowerCase() !== 'admin@example.com')) {
+                alert('Apenas administradores podem excluir materiais.');
                 closeDeleteModal();
                 return;
             }
             
             try {
-                console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
+                console.log('🗑️ André iniciando exclusão do material:', materialToDelete.id);
                 
                 // Buscar o material para obter informações
                 const { data: material, error: fetchError } = await supabaseClient
@@ -1448,13 +1457,6 @@
                 if (fetchError) {
                     console.error('❌ Erro ao buscar material:', fetchError);
                     throw new Error('Material não encontrado.');
-                }
-                
-                // Verificar se o usuário é o dono
-                if (material.usuario_id !== currentUser.id) {
-                    alert('Você só pode excluir seus próprios materiais.');
-                    closeDeleteModal();
-                    return;
                 }
                 
                 // Extrair caminho do arquivo da URL para excluir do Storage
@@ -1510,28 +1512,12 @@
         function showNoMaterials(message) {
             const container = document.getElementById('materialsContainer');
             
-            // Verificar autenticação de forma robusta
-            let isAuthenticated = false;
-            if (window.authManager && window.authManager.isAuthenticated && window.authManager.isAuthenticated()) {
-                isAuthenticated = true;
-            } else {
-                try {
-                    const authData = localStorage.getItem('studycert-auth-data');
-                    if (authData) {
-                        const parsed = JSON.parse(authData);
-                        isAuthenticated = !!(parsed && parsed.id);
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Erro ao verificar autenticação:', e);
-                }
-            }
-            
             container.innerHTML = `
                 <div class="no-materials-message">
                     <i class="fas fa-folder-open"></i>
                     <h3>${message}</h3>
                     <p>Seja o primeiro a compartilhar um material!</p>
-                    ${isAuthenticated ? 
+                    ${currentUserEmail ? 
                         `<button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()">
                             <i class="fas fa-plus"></i> Compartilhar Material
                         </button>` : 
