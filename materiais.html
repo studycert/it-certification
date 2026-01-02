@@ -57,12 +57,12 @@
             background: white; 
             border-radius: 8px; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid #2ecc71;
+            border-left: 4px solid #3498db; /* AZUL ORIGINAL */
         }
         
         .certification-icon { 
             font-size: 2rem; 
-            color: #2ecc71; 
+            color: #3498db !important; /* AZUL ORIGINAL */
             margin-bottom: 0.5rem; 
         }
         
@@ -74,7 +74,7 @@
         
         .certification-header .cert-level { 
             display: inline-block; 
-            background: #2ecc71; 
+            background: #3498db !important; /* AZUL ORIGINAL */
             color: white; 
             padding: 0.2rem 0.8rem; 
             border-radius: 12px; 
@@ -127,75 +127,101 @@
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         
-        /* ===== LAYOUT EM GRADE (CARDS) IGUAL DO MATERIAIS(4).html ===== */
-        .materials-grid-page { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
-            gap: 2rem; 
-            margin-bottom: 3rem; 
+        /* ===== LAYOUT DE LISTA (ORIGINAL) ===== */
+        .materials-list-page { 
+            margin-bottom: 1.5rem; 
         }
         
-        .material-card-page { 
+        .material-item-page { 
             background: white; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             overflow: hidden; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-            transition: all 0.3s ease; 
-            border-left: 4px solid #2ecc71; 
-            position: relative; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            transition: all 0.2s ease; 
+            border-left: 3px solid #3498db; /* AZUL ORIGINAL */
+            margin-bottom: 0.5rem;
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
         
-        .material-card-page:hover { 
-            transform: translateY(-5px); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15); 
+        .material-item-page:hover { 
+            transform: translateX(2px); 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15); 
         }
         
-        .card-header-page { 
-            background: #f8f9fa; 
-            padding: 1.5rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 1rem; 
-        }
-        
-        .file-icon-page { 
-            font-size: 2rem; 
-        }
-        
-        .card-body-page { 
-            padding: 1.5rem; 
-        }
-        
-        .card-body-page h3 { 
-            color: #2c3e50; 
-            margin-bottom: 0.5rem; 
-            font-size: 1.2rem; 
-        }
-        
-        .card-body-page p { 
-            color: #666; 
-            font-size: 0.9rem; 
-            margin-bottom: 1rem; 
-            line-height: 1.5; 
-        }
-        
-        .file-info-page { 
-            display: flex; 
-            justify-content: space-between; 
-            color: #95a5a6; 
-            font-size: 0.8rem; 
-            margin-top: 1rem; 
-            padding-top: 1rem; 
-            border-top: 1px solid #eee; 
+        .file-icon-item { 
+            font-size: 1.3rem; 
+            min-width: 35px;
+            text-align: center;
         }
         
         /* ===== ÍCONES COLORIDOS PARA TODOS OS TIPOS ===== */
-        .pdf-color { color: #e74c3c; }
-        .doc-color { color: #3498db; }
-        .ppt-color { color: #e67e22; }
-        .zip-color { color: #9b59b6; }
-        .video-color { color: #27ae60; }
-        .other-color { color: #7f8c8d; }
+        .file-icon-pdf { color: #e74c3c; }
+        .file-icon-doc { color: #3498db; }
+        .file-icon-ppt { color: #e67e22; }
+        .file-icon-zip { color: #9b59b6; }
+        .file-icon-video { color: #27ae60; }
+        .file-icon-other { color: #7f8c8d; }
+        
+        .file-info-item { 
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .file-info-item h3 { 
+            color: #2c3e50; 
+            margin: 0 0 0.2rem 0; 
+            font-size: 0.95rem; 
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-meta { 
+            display: flex;
+            gap: 0.8rem;
+            color: #666; 
+            font-size: 0.75rem; 
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        
+        .file-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        
+        .file-meta i {
+            font-size: 0.7rem;
+        }
+        
+        .file-description {
+            color: #666; 
+            font-size: 0.8rem; 
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 0.2rem;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .file-actions .btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
         
         /* ===== SEÇÃO DE UPLOAD ===== */
         .upload-section-page { 
@@ -300,37 +326,6 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-        
-        /* Botão de excluir - igual do materiais(4) */
-        .delete-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-            z-index: 10;
-        }
-        
-        .delete-btn:hover {
-            opacity: 1;
-            background: #c0392b;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
         }
         
         /* ===== MODAIS ===== */
@@ -462,9 +457,17 @@
                 padding: 1rem;
             }
             
-            .materials-grid-page {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+            .material-item-page {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                padding: 0.8rem;
+            }
+            
+            .file-actions {
+                align-self: flex-end;
+                width: 100%;
+                justify-content: flex-end;
             }
             
             .filters-container {
@@ -482,17 +485,17 @@
         }
         
         @media (max-width: 480px) {
-            .action-buttons {
+            .file-actions {
                 flex-direction: column;
                 width: 100%;
             }
             
-            .action-buttons .btn {
+            .file-actions .btn {
                 width: 100%;
                 justify-content: center;
             }
             
-            .material-card-page {
+            .material-item-page {
                 padding: 0.6rem;
             }
         }
@@ -579,8 +582,8 @@
             </div>
         </div>
 
-        <!-- Grid de Materiais EM CARDS igual materiais(4).html -->
-        <div class="materials-grid-page" id="materialsContainer">
+        <!-- Lista de Materiais (ORIGINAL EM LISTA) -->
+        <div class="materials-list-page" id="materialsContainer">
             <div class="loading-message">
                 <i class="fas fa-spinner fa-spin"></i> Carregando materiais...
             </div>
@@ -591,7 +594,7 @@
             <h3>Estatísticas</h3>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <span class="stat-value" id="totalMaterials" style="color: #2ecc71;">0</span>
+                    <span class="stat-value" id="totalMaterials" style="color: #3498db;">0</span> <!-- AZUL -->
                     <span class="stat-label">Materiais</span>
                 </div>
                 <div class="stat-item">
@@ -739,7 +742,7 @@
                 title: 'ITIL 4 Foundation', 
                 level: 'Foundation', 
                 icon: 'fas fa-cube', 
-                color: '#3498db',
+                color: '#3498db', // AZUL ORIGINAL
                 description: 'Framework de gerenciamento de serviços de TI. Acesse guias, resumos e recursos para sua preparação.'
             },
             'azure': { 
@@ -887,7 +890,7 @@
             }
         }
 
-        // ===== AUTENTICAÇÃO - MANTENDO A LÓGICA ORIGINAL MAS COM ESTILO DO MATERIAIS(4) =====
+        // ===== AUTENTICAÇÃO - SISTEMA DO MATERIAIS(4) =====
         function updateAuthUI() {
             const authStatus = document.getElementById('authStatus');
             const authContainer = document.getElementById('authContainer');
@@ -986,7 +989,7 @@
             currentFileType = detectFileType(file.name);
             
             // Atualizar informações do arquivo no modal
-            const fileIconClass = `${currentFileType}-color`;
+            const fileIconClass = `file-icon-${currentFileType}`;
             const fileIconName = getFileIcon(currentFileType);
             
             document.getElementById('selectedFileInfo').innerHTML = `
@@ -1243,7 +1246,7 @@
             }
         }
 
-        // ===== FUNÇÃO ATUALIZADA PARA MOSTRAR CARDS IGUAL AO MATERIAIS(4) =====
+        // ===== FUNÇÃO PARA MOSTRAR LISTA (ORIGINAL) =====
         function updateMaterialsInterface(materials) {
             const container = document.getElementById('materialsContainer');
             const currentUserId = currentUser?.id;
@@ -1254,41 +1257,46 @@
             }
             
             container.innerHTML = materials.map(material => {
+                // Determinar classe do ícone baseada no tipo
+                const fileIconClass = `file-icon-${material.tipo}`;
+                const fileIconName = getFileIcon(material.tipo);
+                
                 // Verificar se o usuário atual é o dono do material
                 const isOwner = currentUserId && material.usuario_id === currentUserId;
                 
                 return `
-                    <div class="material-card-page" data-id="${material.id}">
-                        ${isOwner ? `
-                            <button class="delete-btn" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        ` : ''}
-                        
-                        <div class="card-header-page">
-                            <i class="fas fa-${getFileIcon(material.tipo)} ${material.tipo}-color file-icon-page"></i>
-                            <div>
-                                <h3>${material.titulo}</h3>
-                                <small>${material.tipo.toUpperCase()} • ${formatFileSize(material.arquivo_tamanho_kb * 1024)}</small>
-                            </div>
+                    <div class="material-item-page" data-id="${material.id}">
+                        <div class="file-icon-item">
+                            <i class="fas fa-${fileIconName} ${fileIconClass}"></i>
                         </div>
-                        <div class="card-body-page">
-                            <p>${material.descricao || 'Material compartilhado pela comunidade.'}</p>
-                            <div class="file-info-page">
-                                <span><i class="far fa-clock"></i> ${formatDate(material.data_upload)}</span>
-                                <span><i class="far fa-eye"></i> ${material.visualizacoes || 0}</span>
-                                <span><i class="fas fa-download"></i> ${material.downloads || 0}</span>
+                        
+                        <div class="file-info-item">
+                            <h3 title="${material.titulo}">${material.titulo}</h3>
+                            <div class="file-meta">
+                                <span class="file-type">${material.tipo.toUpperCase()}</span>
+                                <span class="file-size">${formatFileSize(material.arquivo_tamanho_kb * 1024)}</span>
+                                <span class="file-date">
+                                    <i class="far fa-clock"></i> ${formatDate(material.data_upload)}
+                                </span>
+                                <span class="file-views">
+                                    <i class="far fa-eye"></i> ${material.visualizacoes || 0}
+                                </span>
+                                <span class="file-downloads">
+                                    <i class="fas fa-download"></i> ${material.downloads || 0}
+                                </span>
                             </div>
-                            <div class="action-buttons">
-                                <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')">
-                                    <i class="fas fa-download"></i> Baixar
+                            ${material.descricao ? `<div class="file-description" title="${material.descricao}">${material.descricao}</div>` : ''}
+                        </div>
+                        
+                        <div class="file-actions">
+                            <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" title="Baixar arquivo">
+                                <i class="fas fa-download"></i> Baixar
+                            </button>
+                            ${isOwner ? `
+                                <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
+                                    <i class="fas fa-trash"></i> Excluir
                                 </button>
-                                ${isOwner ? `
-                                    <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')">
-                                        <i class="fas fa-trash"></i> Excluir
-                                    </button>
-                                ` : ''}
-                            </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -1411,15 +1419,15 @@
             const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
             
             container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
-                    <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; color: #95a5a6;"></i>
+                <div class="no-materials-message">
+                    <i class="fas fa-folder-open"></i>
                     <h3>${message}</h3>
                     <p>Seja o primeiro a compartilhar um material!</p>
                     ${isAuthenticated ? 
-                        `<button class="btn btn-primary" onclick="checkAuthAndUpload()" style="margin-top: 1rem;">
+                        `<button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()">
                             <i class="fas fa-plus"></i> Compartilhar Material
                         </button>` : 
-                        `<a href="index.html#login" class="btn btn-primary" style="margin-top: 1rem;">
+                        `<a href="index.html#login" class="btn btn-primary btn-sm">
                             <i class="fas fa-sign-in-alt"></i> Faça login para compartilhar
                         </a>`
                     }
