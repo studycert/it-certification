@@ -4,67 +4,8 @@ class AuthManager {
         this.supabase = null;
         this.currentUser = null;
         this.isInitialized = false;
-        this.STORAGE_KEY = 'studycert-auth-data';
-        this.SESSION_KEY = 'studycert-session';
         this.init();
     }
-    // js/auth.js - Adicionar este método à classe AuthManager
-
-// Dentro da classe AuthManager, adicione:
-broadcastAuthChange() {
-    if (this.currentUser) {
-        const authData = {
-            id: this.currentUser.id,
-            email: this.currentUser.email,
-            name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0],
-            metadata: this.currentUser.user_metadata,
-            timestamp: Date.now()
-        };
-        localStorage.setItem('studycert-auth-broadcast', JSON.stringify(authData));
-        
-        // Disparar evento manualmente (para a mesma aba)
-        window.dispatchEvent(new StorageEvent('storage', {
-            key: 'studycert-auth-broadcast',
-            newValue: JSON.stringify(authData)
-        }));
-    } else {
-        localStorage.removeItem('studycert-auth-broadcast');
-        window.dispatchEvent(new StorageEvent('storage', {
-            key: 'studycert-auth-broadcast',
-            newValue: null
-        }));
-    }
-}
-
-// E modifique os métodos login e logout para chamar broadcast:
-async login(email, password) {
-    try {
-        // ... código existente ...
-        
-        this.currentUser = data.user;
-        this.saveToLocalStorage();
-        this.broadcastAuthChange(); // ← ADICIONE ESTA LINHA
-        
-        return { success: true, user: data.user };
-    } catch (error) {
-        // ... código existente ...
-    }
-}
-
-async logout() {
-    try {
-        // ... código existente ...
-        
-        this.currentUser = null;
-        localStorage.removeItem(this.STORAGE_KEY);
-        localStorage.removeItem(this.SESSION_KEY);
-        this.broadcastAuthChange(); // ← ADICIONE ESTA LINHA
-        
-        return { success: true };
-    } catch (error) {
-        // ... código existente ...
-    }
-}
 
     async init() {
         if (this.isInitialized) return;
@@ -79,9 +20,9 @@ async logout() {
                     auth: {
                         autoRefreshToken: true,
                         persistSession: true,
-                        detectSessionInUrl: true,
+                        detectSessionInUrl: false,
                         storage: window.localStorage,
-                        storageKey: this.SESSION_KEY
+                        storageKey: 'studycert-auth'
                     },
                     global: {
                         headers: {
@@ -96,8 +37,8 @@ async logout() {
                 
                 console.log('✅ AuthManager inicializado com sucesso');
                 
-                // Configurar sincronização entre abas
-                this.setupCrossTabSync();
+                // Disparar evento de inicialização
+                window.dispatchEvent(new CustomEvent('studycert-auth-ready'));
                 
             } else {
                 console.warn('⚠️ Supabase não disponível, usando localStorage');
@@ -110,10 +51,7 @@ async logout() {
 
     async checkSession() {
         try {
-            if (!this.supabase) {
-                this.loadFromLocalStorage();
-                return;
-            }
+            if (!this.supabase) return;
             
             const { data: { session }, error } = await this.supabase.auth.getSession();
             
@@ -142,74 +80,28 @@ async logout() {
             const userData = {
                 id: this.currentUser.id,
                 email: this.currentUser.email,
-                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0],
-                metadata: this.currentUser.user_metadata,
-                timestamp: Date.now()
+                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0]
             };
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(userData));
-        } else {
-            localStorage.removeItem(this.STORAGE_KEY);
+            localStorage.setItem('studycert_user', JSON.stringify(userData));
+            localStorage.setItem('studycert_auth', 'true');
         }
     }
 
     loadFromLocalStorage() {
         try {
-            const userData = localStorage.getItem(this.STORAGE_KEY);
+            const userData = localStorage.getItem('studycert_user');
             if (userData) {
                 const user = JSON.parse(userData);
-                // Verificar se os dados não são muito antigos (1 hora)
-                if (user.timestamp && (Date.now() - user.timestamp < 3600000)) {
-                    this.currentUser = {
-                        id: user.id,
-                        email: user.email,
-                        user_metadata: user.metadata || { full_name: user.name }
-                    };
-                    console.log('📱 Usuário carregado do localStorage:', user.email);
-                } else {
-                    console.log('⚠️ Dados de usuário expirados');
-                    localStorage.removeItem(this.STORAGE_KEY);
-                }
+                this.currentUser = {
+                    id: user.id,
+                    email: user.email,
+                    user_metadata: { full_name: user.name }
+                };
+                console.log('📱 Usuário carregado do localStorage:', user.email);
             }
         } catch (e) {
             console.warn('⚠️ Erro ao carregar do localStorage:', e);
-            localStorage.removeItem(this.STORAGE_KEY);
         }
-    }
-
-    setupCrossTabSync() {
-        // Sincronizar login/logout entre abas
-        window.addEventListener('storage', (e) => {
-            if (e.key === this.STORAGE_KEY) {
-                console.log('🔄 Evento de storage detectado:', e.key);
-                
-                if (e.newValue) {
-                    try {
-                        const user = JSON.parse(e.newValue);
-                        this.currentUser = {
-                            id: user.id,
-                            email: user.email,
-                            user_metadata: user.metadata || { full_name: user.name }
-                        };
-                        console.log('🔄 Usuário sincronizado de outra aba:', user.email);
-                    } catch (error) {
-                        console.error('❌ Erro ao analisar dados de sincronização:', error);
-                    }
-                } else {
-                    this.currentUser = null;
-                    console.log('🔄 Logout sincronizado de outra aba');
-                }
-                
-                // Disparar evento para atualizar UI
-                window.dispatchEvent(new CustomEvent('studycert-auth-update'));
-            }
-        });
-        
-        // Também ouvir nossos próprios eventos customizados
-        window.addEventListener('studycert-auth-change', () => {
-            this.saveToLocalStorage();
-            // Forçar atualização em outras abas
-            localStorage.setItem('auth-sync-trigger', Date.now().toString());
-        });
     }
 
     async login(email, password) {
@@ -226,13 +118,10 @@ async logout() {
             this.currentUser = data.user;
             this.saveToLocalStorage();
             
-            // Disparar eventos para sincronização
+            // Disparar evento
             window.dispatchEvent(new CustomEvent('studycert-auth-login', {
                 detail: { user: data.user }
             }));
-            
-            // Forçar sincronização com outras abas
-            localStorage.setItem('auth-sync-trigger', Date.now().toString());
             
             return { success: true, user: data.user };
             
@@ -249,14 +138,11 @@ async logout() {
             }
             
             this.currentUser = null;
-            localStorage.removeItem(this.STORAGE_KEY);
-            localStorage.removeItem(this.SESSION_KEY);
+            localStorage.removeItem('studycert_user');
+            localStorage.removeItem('studycert_auth');
             
-            // Disparar eventos para sincronização
+            // Disparar evento
             window.dispatchEvent(new CustomEvent('studycert-auth-logout'));
-            
-            // Forçar sincronização com outras abas
-            localStorage.setItem('auth-sync-trigger', Date.now().toString());
             
             return { success: true };
         } catch (error) {
@@ -277,21 +163,15 @@ async logout() {
         return this.supabase;
     }
 
-    // Método para forçar verificação de sessão
-    async refreshSession() {
-        try {
-            if (this.supabase) {
-                const { data, error } = await this.supabase.auth.getSession();
-                if (!error && data.session) {
-                    this.currentUser = data.session.user;
-                    this.saveToLocalStorage();
-                    return true;
-                }
-            }
-        } catch (error) {
-            console.error('❌ Erro ao atualizar sessão:', error);
-        }
-        return false;
+    setUser(user) {
+        this.currentUser = user;
+        this.saveToLocalStorage();
+    }
+
+    clearUser() {
+        this.currentUser = null;
+        localStorage.removeItem('studycert_user');
+        localStorage.removeItem('studycert_auth');
     }
 }
 
@@ -302,20 +182,16 @@ const authManager = new AuthManager();
 document.addEventListener('DOMContentLoaded', async () => {
     // Expor para uso global
     window.authManager = authManager;
-    
-    // Configurar listener para eventos de auth
-    window.addEventListener('studycert-auth-update', () => {
-        console.log('🔄 Evento de atualização de auth recebido');
-        if (window.updateAuthUI) {
-            window.updateAuthUI();
-        }
-    });
+    window.studyCertAuth = authManager;
     
     console.log('🎯 AuthManager carregado e pronto');
 });
 
-// Funções globais
-window.checkAuth = () => authManager.isAuthenticated();
+// Função para verificar se está logado (para uso em outras páginas)
+function checkAuth() {
+    return authManager.isAuthenticated();
+}
+
+// Exportar para uso global
+window.checkAuth = checkAuth;
 window.logoutGlobal = () => authManager.logout();
-window.getCurrentUser = () => authManager.getUser();
-window.refreshAuthSession = () => authManager.refreshSession();
