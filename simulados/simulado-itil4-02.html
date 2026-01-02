@@ -1478,42 +1478,47 @@
         }
 
         function showFullReport() {
-            let report = "📊 RELATÓRIO COMPLETO DO SIMULADO ITIL 4 - PMG ACADEMY\n\n";
-            report += "=".repeat(60) + "\n\n";
-            
-            const score = userAnswers.reduce((acc, answer, index) => 
-                answer === questions[index].correct ? acc + 1 : acc, 0);
-            const percentage = (score / questions.length) * 100;
-            
-            report += `RESULTADO FINAL: ${score}/${questions.length} (${percentage.toFixed(1)}%)\n\n`;
-            report += "=".repeat(60) + "\n\n";
-            
-            questions.forEach((question, index) => {
-                const userAnswer = userAnswers[index];
-                const isCorrect = userAnswer === question.correct;
-                
-                report += `🔍 QUESTÃO ${question.number}\n`;
-                report += `${question.text}\n\n`;
-                report += `SUA RESPOSTA: ${userAnswer !== null ? 
-                    `${String.fromCharCode(65 + userAnswer)} - ${question.options[userAnswer]}` : 
-                    '❌ NÃO RESPONDIDA'}\n`;
-                report += `RESPOSTA CORRETA: ${String.fromCharCode(65 + question.correct)} - ${question.options[question.correct]}\n`;
-                report += `STATUS: ${isCorrect ? '✅ CORRETO' : '❌ INCORRETO'}\n\n`;
-                report += `💡 EXPLICAÇÃO:\n${question.explanation}\n\n`;
-                report += "=".repeat(60) + "\n\n";
-            });
-            
-            // Criar e baixar arquivo
-            const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `relatorio-simulado-itil-pmg-academy-${new Date().toLocaleDateString('pt-BR')}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
+    // ADICIONE ESTA LINHA:
+    const BOM = '\uFEFF';
+    
+    // MODIFIQUE ESTA LINHA:
+    let report = BOM + "📊 RELATÓRIO COMPLETO DO SIMULADO ITIL 4 - PMG ACADEMY\n\n";
+    
+    report += "=".repeat(60) + "\n\n";
+    
+    const score = userAnswers.reduce((acc, answer, index) => 
+        answer === questions[index].correct ? acc + 1 : acc, 0);
+    const percentage = (score / questions.length) * 100;
+    
+    report += `RESULTADO FINAL: ${score}/${questions.length} (${percentage.toFixed(1)}%)\n\n`;
+    report += "=".repeat(60) + "\n\n";
+    
+    questions.forEach((question, index) => {
+        const userAnswer = userAnswers[index];
+        const isCorrect = userAnswer === question.correct;
+        
+        report += `🔍 QUESTÃO ${question.number}\n`;
+        report += `${question.text}\n\n`;
+        report += `SUA RESPOSTA: ${userAnswer !== null ? 
+            `${String.fromCharCode(65 + userAnswer)} - ${question.options[userAnswer]}` : 
+            '❌ NÃO RESPONDIDA'}\n`;
+        report += `RESPOSTA CORRETA: ${String.fromCharCode(65 + question.correct)} - ${question.options[question.correct]}\n`;
+        report += `STATUS: ${isCorrect ? '✅ CORRETO' : '❌ INCORRETO'}\n\n`;
+        report += `💡 EXPLICAÇÃO:\n${question.explanation}\n\n`;
+        report += "=".repeat(60) + "\n\n";
+    });
+    
+    // Criar e baixar arquivo
+    const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `relatorio-simulado-itil-pmg-academy-${new Date().toLocaleDateString('pt-BR')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
 
         function toggleMark() {
             markedQuestions[currentQuestion] = !markedQuestions[currentQuestion];
