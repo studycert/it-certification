@@ -1,9 +1,10 @@
-// js/auth.js - Sistema de autenticação global CORRIGIDO
+// js/auth.js - Sistema de autenticação global MELHORADO
 class AuthManager {
     constructor() {
         this.supabase = null;
         this.currentUser = null;
         this.isInitialized = false;
+        this.STORAGE_KEY = 'studycert-auth-v2';
         this.init();
     }
 
@@ -20,9 +21,9 @@ class AuthManager {
                     auth: {
                         autoRefreshToken: true,
                         persistSession: true,
-                        detectSessionInUrl: false,
+                        detectSessionInUrl: true,
                         storage: window.localStorage,
-                        storageKey: 'studycert-auth'
+                        storageKey: this.STORAGE_KEY
                     },
                     global: {
                         headers: {
@@ -40,6 +41,9 @@ class AuthManager {
                 // Disparar evento de inicialização
                 window.dispatchEvent(new CustomEvent('studycert-auth-ready'));
                 
+                // Sincronizar com outras abas
+                this.setupStorageSync();
+                
             } else {
                 console.warn('⚠️ Supabase não disponível, usando localStorage');
                 this.loadFromLocalStorage();
@@ -51,7 +55,10 @@ class AuthManager {
 
     async checkSession() {
         try {
-            if (!this.supabase) return;
+            if (!this.supabase) {
+                this.loadFromLocalStorage();
+                return;
+            }
             
             const { data: { session }, error } = await this.supabase.auth.getSession();
             
@@ -80,28 +87,59 @@ class AuthManager {
             const userData = {
                 id: this.currentUser.id,
                 email: this.currentUser.email,
-                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0]
+                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0],
+                metadata: this.currentUser.user_metadata
             };
-            localStorage.setItem('studycert_user', JSON.stringify(userData));
-            localStorage.setItem('studycert_auth', 'true');
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(userData));
+        } else {
+            localStorage.removeItem(this.STORAGE_KEY);
         }
     }
 
     loadFromLocalStorage() {
         try {
-            const userData = localStorage.getItem('studycert_user');
+            const userData = localStorage.getItem(this.STORAGE_KEY);
             if (userData) {
                 const user = JSON.parse(userData);
                 this.currentUser = {
                     id: user.id,
                     email: user.email,
-                    user_metadata: { full_name: user.name }
+                    user_metadata: user.metadata || { full_name: user.name }
                 };
                 console.log('📱 Usuário carregado do localStorage:', user.email);
             }
         } catch (e) {
             console.warn('⚠️ Erro ao carregar do localStorage:', e);
+            localStorage.removeItem(this.STORAGE_KEY);
         }
+    }
+
+    setupStorageSync() {
+        // Sincronizar login/logout entre abas
+        window.addEventListener('storage', (e) => {
+            if (e.key === this.STORAGE_KEY) {
+                if (e.newValue) {
+                    const user = JSON.parse(e.newValue);
+                    this.currentUser = {
+                        id: user.id,
+                        email: user.email,
+                        user_metadata: user.metadata || { full_name: user.name }
+                    };
+                } else {
+                    this.currentUser = null;
+                }
+                
+                // Disparar evento para atualizar UI
+                window.dispatchEvent(new CustomEvent('studycert-auth-changed', {
+                    detail: { user: this.currentUser }
+                }));
+                
+                // Forçar atualização da UI
+                if (window.updateAuthUI) {
+                    window.updateAuthUI();
+                }
+            }
+        });
     }
 
     async login(email, password) {
@@ -123,6 +161,17 @@ class AuthManager {
                 detail: { user: data.user }
             }));
             
+            // Sincronizar com outras abas
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: this.STORAGE_KEY,
+                newValue: JSON.stringify({
+                    id: data.user.id,
+                    email: data.user.email,
+                    name: data.user.user_metadata?.full_name || data.user.email.split('@')[0],
+                    metadata: data.user.user_metadata
+                })
+            }));
+            
             return { success: true, user: data.user };
             
         } catch (error) {
@@ -138,11 +187,16 @@ class AuthManager {
             }
             
             this.currentUser = null;
-            localStorage.removeItem('studycert_user');
-            localStorage.removeItem('studycert_auth');
+            localStorage.removeItem(this.STORAGE_KEY);
             
-            // Disparar evento
+            // Disparar evento para sincronizar
             window.dispatchEvent(new CustomEvent('studycert-auth-logout'));
+            
+            // Sincronizar com outras abas
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: this.STORAGE_KEY,
+                newValue: null
+            }));
             
             return { success: true };
         } catch (error) {
@@ -166,12 +220,28 @@ class AuthManager {
     setUser(user) {
         this.currentUser = user;
         this.saveToLocalStorage();
+        
+        // Sincronizar
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: this.STORAGE_KEY,
+            newValue: JSON.stringify({
+                id: user.id,
+                email: user.email,
+                name: user.user_metadata?.full_name || user.email.split('@')[0],
+                metadata: user.user_metadata
+            })
+        }));
     }
 
     clearUser() {
         this.currentUser = null;
-        localStorage.removeItem('studycert_user');
-        localStorage.removeItem('studycert_auth');
+        localStorage.removeItem(this.STORAGE_KEY);
+        
+        // Sincronizar
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: this.STORAGE_KEY,
+            newValue: null
+        }));
     }
 }
 
@@ -184,14 +254,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.authManager = authManager;
     window.studyCertAuth = authManager;
     
+    // Configurar listener para eventos de auth
+    window.addEventListener('studycert-auth-changed', () => {
+        if (window.updateAuthUI) {
+            window.updateAuthUI();
+        }
+    });
+    
     console.log('🎯 AuthManager carregado e pronto');
 });
 
-// Função para verificar se está logado (para uso em outras páginas)
-function checkAuth() {
-    return authManager.isAuthenticated();
-}
-
-// Exportar para uso global
-window.checkAuth = checkAuth;
+// Funções globais
+window.checkAuth = () => authManager.isAuthenticated();
 window.logoutGlobal = () => authManager.logout();
+window.getCurrentUser = () => authManager.getUser();
