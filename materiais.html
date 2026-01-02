@@ -8,7 +8,31 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
+    <script src="js/sync-auth.js" defer></script>
     <style>
+        /* CORREÇÃO DO BOTÃO ENTRAR - Adicione ao seu CSS existente */
+        .auth-bar .btn-outline {
+            color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            background: transparent !important;
+        }
+        
+        .auth-bar .btn-outline:hover {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+        
+        .auth-bar .btn-primary {
+            background: var(--primary) !important;
+            color: white !important;
+            border-color: var(--primary) !important;
+        }
+        
+        .auth-bar .btn-primary:hover {
+            background: var(--primary-dark) !important;
+            border-color: var(--primary-dark) !important;
+        }
+        
         /* Estilos otimizados para layout de lista */
         .materials-page { 
             padding: 1.5rem 0; 
@@ -125,7 +149,7 @@
         
         .file-info-item { 
             flex-grow: 1;
-            min-width: 0; /* Permite que o texto quebre */
+            min-width: 0;
         }
         
         .file-info-item h3 { 
@@ -819,7 +843,7 @@
                 currentCertId = getUrlParameter('cert') || 'itil4';
                 loadCertification(currentCertId);
                 
-                // Atualizar interface de autenticação
+                // Atualizar interface de autenticação IMEDIATAMENTE
                 updateAuthUI();
                 
                 // Carregar materiais
@@ -828,13 +852,16 @@
                 console.log('✅ Página de materiais inicializada');
             }, 100);
             
-            // Adicionar listener para eventos de auth
-            window.addEventListener('studycert-auth-update', updateAuthUI);
+            // Adicionar listener para eventos de sincronização
+            window.addEventListener('studycert-sync-update', function() {
+                console.log('🔄 Evento de sincronização recebido');
+                updateAuthUI();
+                // Recarregar materiais para mostrar botão de excluir se necessário
+                loadMaterialsFromSupabase(currentCertId);
+            });
             
-            // Forçar verificação de sessão ao carregar a página
-            if (window.refreshAuthSession) {
-                window.refreshAuthSession();
-            }
+            // Forçar verificação inicial
+            setTimeout(updateAuthUI, 500);
         });
 
         // Configurar eventos
@@ -913,7 +940,7 @@
             }
         }
 
-        // Atualizar interface de autenticação
+        // Atualizar interface de autenticação - FUNÇÃO CORRIGIDA
         function updateAuthUI() {
             console.log('🔄 Atualizando UI de autenticação...');
             
@@ -921,15 +948,42 @@
             const authContainer = document.getElementById('authContainer');
             
             if (!window.authManager) {
-                authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> AuthManager não carregado';
+                console.warn('⚠️ authManager não disponível');
+                authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Sistema em manutenção';
                 return;
             }
             
-            // Forçar verificação de sessão
-            window.authManager.refreshSession?.();
+            // Verificar sessão diretamente
+            let isAuthenticated = false;
+            let user = null;
             
-            if (window.authManager.isAuthenticated()) {
-                const user = window.authManager.getUser();
+            // Tentar múltiplas formas de verificar autenticação
+            if (window.authManager.isAuthenticated && window.authManager.isAuthenticated()) {
+                isAuthenticated = true;
+                user = window.authManager.getUser();
+            } else {
+                // Tentar carregar do localStorage como fallback
+                try {
+                    const authData = localStorage.getItem('studycert-auth-data');
+                    if (authData) {
+                        const parsed = JSON.parse(authData);
+                        if (parsed && parsed.id) {
+                            isAuthenticated = true;
+                            user = {
+                                id: parsed.id,
+                                email: parsed.email,
+                                user_metadata: parsed.metadata || { full_name: parsed.name }
+                            };
+                            // Atualizar authManager
+                            window.authManager.currentUser = user;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Erro ao ler localStorage:', e);
+                }
+            }
+            
+            if (isAuthenticated && user) {
                 const userName = user.user_metadata?.full_name || user.email.split('@')[0];
                 
                 authStatus.innerHTML = `
@@ -948,7 +1002,13 @@
                     </div>
                 `;
                 
-                console.log('✅ UI atualizada: usuário logado');
+                console.log('✅ UI atualizada: usuário logado', userName);
+                
+                // Sincronizar com outras abas
+                if (window.authSync && window.authSync.broadcastAuthState) {
+                    window.authSync.broadcastAuthState(user);
+                }
+                
             } else {
                 authStatus.innerHTML = `
                     <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
@@ -957,7 +1017,7 @@
                 
                 authContainer.innerHTML = `
                     <div style="display: flex; gap: 0.5rem;">
-                        <a href="index.html#login" class="btn btn-outline btn-sm">
+                        <a href="index.html#login" class="btn btn-outline btn-sm" style="color: var(--primary) !important; border-color: var(--primary) !important;">
                             <i class="fas fa-sign-in-alt"></i> Entrar
                         </a>
                         <a href="index.html#register" class="btn btn-primary btn-sm">
@@ -1012,7 +1072,7 @@
             const file = e.target.files[0];
             if (!file) return;
             
-            if (file.size > 100 * 1024 * 1024) { // 100MB
+            if (file.size > 100 * 1024 * 1024) {
                 alert('Arquivo muito grande. O tamanho máximo é 100MB.');
                 return;
             }
@@ -1264,8 +1324,26 @@
 
         function updateMaterialsInterface(materials) {
             const container = document.getElementById('materialsContainer');
-            const currentUser = window.authManager?.getUser();
-            const currentUserId = currentUser?.id;
+            
+            // Obter usuário atual de forma robusta
+            let currentUserId = null;
+            if (window.authManager && window.authManager.isAuthenticated && window.authManager.isAuthenticated()) {
+                const user = window.authManager.getUser();
+                currentUserId = user?.id;
+            } else {
+                // Tentar obter do localStorage como fallback
+                try {
+                    const authData = localStorage.getItem('studycert-auth-data');
+                    if (authData) {
+                        const parsed = JSON.parse(authData);
+                        currentUserId = parsed?.id;
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Erro ao ler userId do localStorage:', e);
+                }
+            }
+            
+            console.log('👤 User ID atual:', currentUserId);
             
             if (!materials || materials.length === 0) {
                 showNoMaterials('Nenhum material encontrado.');
@@ -1273,9 +1351,11 @@
             }
             
             container.innerHTML = materials.map(material => {
-                // Verificar se o usuário atual é o dono do material
-                const isOwner = currentUserId && material.usuario_id === currentUserId;
+                // Verificar se o usuário atual é o dono do material - CORREÇÃO AQUI
+                const isOwner = currentUserId && material.usuario_id && material.usuario_id.toString() === currentUserId.toString();
                 const fileIconClass = `file-icon-${material.tipo}`;
+                
+                console.log(`📄 Material: ${material.titulo}, Dono: ${material.usuario_id}, Eu: ${currentUserId}, isOwner: ${isOwner}`);
                 
                 return `
                     <div class="material-item-page" data-id="${material.id}">
@@ -1429,7 +1509,22 @@
 
         function showNoMaterials(message) {
             const container = document.getElementById('materialsContainer');
-            const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
+            
+            // Verificar autenticação de forma robusta
+            let isAuthenticated = false;
+            if (window.authManager && window.authManager.isAuthenticated && window.authManager.isAuthenticated()) {
+                isAuthenticated = true;
+            } else {
+                try {
+                    const authData = localStorage.getItem('studycert-auth-data');
+                    if (authData) {
+                        const parsed = JSON.parse(authData);
+                        isAuthenticated = !!(parsed && parsed.id);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Erro ao verificar autenticação:', e);
+                }
+            }
             
             container.innerHTML = `
                 <div class="no-materials-message">
