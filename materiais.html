@@ -9,47 +9,221 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
     <style>
-        /* Seus estilos CSS permanecem iguais */
+        /* Estilos otimizados */
         .materials-page { padding: 2rem 0; }
-        .certification-header { text-align: center; margin-bottom: 3rem; padding: 2rem; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .certification-icon { font-size: 4rem; color: var(--secondary); margin-bottom: 1rem; }
-        .certification-header h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
-        .certification-header .cert-level { display: inline-block; background: var(--secondary); color: white; padding: 0.5rem 1.5rem; border-radius: 20px; font-size: 1rem; margin-bottom: 1rem; }
-        .filters-container { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
-        .filter-group { flex: 1; min-width: 200px; }
-        .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); }
-        .filter-select { width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
-        .filter-select:focus { outline: none; border-color: var(--secondary); }
-        .materials-grid-page { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
-        .material-card-page { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; border-left: 4px solid var(--secondary); position: relative; }
-        .material-card-page:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-        .card-header-page { background: #f8f9fa; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; }
-        .file-icon-page { font-size: 2rem; }
-        .card-body-page { padding: 1.5rem; }
-        .card-body-page h3 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.2rem; }
-        .card-body-page p { color: #666; font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; }
-        .file-info-page { display: flex; justify-content: space-between; color: #95a5a6; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
+        
+        .certification-header { 
+            text-align: center; 
+            margin-bottom: 2rem; 
+            padding: 1.5rem; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+        
+        .certification-icon { 
+            font-size: 3rem; 
+            color: var(--secondary); 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .certification-header h1 { 
+            font-size: 2rem; 
+            color: var(--primary); 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .certification-header .cert-level { 
+            display: inline-block; 
+            background: var(--secondary); 
+            color: white; 
+            padding: 0.4rem 1.2rem; 
+            border-radius: 20px; 
+            font-size: 0.9rem; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .filters-container { 
+            display: flex; 
+            gap: 1.5rem; 
+            margin-bottom: 1.5rem; 
+            flex-wrap: wrap; 
+        }
+        
+        .filter-group { 
+            flex: 1; 
+            min-width: 180px; 
+        }
+        
+        .filter-group label { 
+            display: block; 
+            margin-bottom: 0.3rem; 
+            font-weight: 600; 
+            color: var(--primary); 
+            font-size: 0.9rem;
+        }
+        
+        .filter-select { 
+            width: 100%; 
+            padding: 0.6rem; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 0.9rem; 
+            transition: border-color 0.3s; 
+        }
+        
+        .filter-select:focus { 
+            outline: none; 
+            border-color: var(--secondary); 
+        }
+        
+        .materials-grid-page { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 1.5rem; 
+            margin-bottom: 2rem; 
+        }
+        
+        .material-card-page { 
+            background: white; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease; 
+            border-left: 4px solid var(--secondary); 
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .material-card-page:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15); 
+        }
+        
+        .card-header-page { 
+            background: #f8f9fa; 
+            padding: 1rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.8rem; 
+            flex-shrink: 0;
+        }
+        
+        .file-icon-page { 
+            font-size: 1.5rem; 
+        }
+        
+        .card-body-page { 
+            padding: 1rem; 
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-body-page h3 { 
+            color: var(--primary); 
+            margin-bottom: 0.3rem; 
+            font-size: 1.1rem; 
+        }
+        
+        .card-body-page p { 
+            color: #666; 
+            font-size: 0.85rem; 
+            margin-bottom: 0.8rem; 
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+        
+        .file-info-page { 
+            display: flex; 
+            justify-content: space-between; 
+            color: #95a5a6; 
+            font-size: 0.75rem; 
+            margin-top: 0.8rem; 
+            padding-top: 0.8rem; 
+            border-top: 1px solid #eee; 
+        }
+        
         .pdf-color { color: #e74c3c; }
         .ppt-color { color: #e67e22; }
         .doc-color { color: #3498db; }
         .zip-color { color: #9b59b6; }
         .video-color { color: #27ae60; }
-        .upload-section-page { background: white; border-radius: 10px; padding: 2rem; margin: 3rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .upload-area-page { border: 2px dashed #3498db; border-radius: 8px; padding: 3rem 2rem; text-align: center; margin: 2rem 0; background: #f8fafc; transition: all 0.3s; cursor: pointer; }
-        .upload-area-page:hover { background: #e8f4fc; border-color: #2980b9; }
-        @media (max-width: 768px) {
-            .materials-grid-page { grid-template-columns: 1fr; }
-            .filters-container { flex-direction: column; gap: 1rem; }
-            .certification-header h1 { font-size: 2rem; }
+        
+        /* Seção de Upload Melhorada */
+        .upload-section-page { 
+            background: white; 
+            border-radius: 10px; 
+            padding: 1.5rem; 
+            margin: 2rem 0; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
         }
-        .breadcrumb-page { background: #e9ecef; padding: 1rem 0; margin-bottom: 2rem; }
-        .breadcrumb-page a { color: var(--primary); text-decoration: none; }
-        .breadcrumb-page a:hover { color: var(--secondary); }
+        
+        .upload-area-page { 
+            border: 2px dashed #3498db; 
+            border-radius: 8px; 
+            padding: 1.5rem; 
+            text-align: center; 
+            margin: 1rem 0; 
+            background: #f8fafc; 
+            transition: all 0.3s; 
+            cursor: pointer;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .upload-area-page:hover { 
+            background: #e8f4fc; 
+            border-color: #2980b9; 
+        }
+        
+        .upload-area-page i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #3498db;
+        }
+        
+        .upload-area-page h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .upload-area-page p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-area-page .btn {
+            margin-top: 0.5rem;
+        }
+        
+        .breadcrumb-page { 
+            background: #e9ecef; 
+            padding: 0.8rem 0; 
+            margin-bottom: 1.5rem; 
+        }
+        
+        .breadcrumb-page a { 
+            color: var(--primary); 
+            text-decoration: none; 
+        }
+        
+        .breadcrumb-page a:hover { 
+            color: var(--secondary); 
+        }
+        
         .auth-bar {
             background: #f8f9fa;
-            padding: 0.8rem 0;
+            padding: 0.6rem 0;
             border-bottom: 1px solid #dee2e6;
+            font-size: 0.9rem;
         }
+        
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -62,45 +236,51 @@
             justify-content: center;
             z-index: 1000;
         }
+        
         .modal-content {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 10px;
-            max-width: 500px;
+            max-width: 450px;
             width: 90%;
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
+        
         .close-modal {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 0.8rem;
+            right: 0.8rem;
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
             color: #666;
         }
+        
         .loading-message {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
             color: #666;
         }
+        
         .loading-message i {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
         
         /* Botão de excluir */
         .delete-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: #e74c3c;
             color: white;
             border: none;
-            width: 30px;
-            height: 30px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -109,6 +289,7 @@
             opacity: 0.7;
             transition: opacity 0.3s;
             z-index: 10;
+            font-size: 0.8rem;
         }
         
         .delete-btn:hover {
@@ -119,7 +300,80 @@
         .action-buttons {
             display: flex;
             gap: 0.5rem;
-            margin-top: 1rem;
+            margin-top: 0.8rem;
+        }
+        
+        .action-buttons .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        .stats-container {
+            background: white; 
+            padding: 1rem; 
+            border-radius: 8px; 
+            margin-bottom: 1.5rem; 
+            text-align: center;
+        }
+        
+        .stats-container h3 {
+            color: var(--primary); 
+            margin-bottom: 0.8rem; 
+            font-size: 1.1rem;
+        }
+        
+        .stats-container > div {
+            display: flex; 
+            justify-content: space-around; 
+            flex-wrap: wrap; 
+            gap: 1rem;
+        }
+        
+        .stats-container > div > div {
+            min-width: 100px;
+        }
+        
+        .stats-container > div > div > div:first-child {
+            font-size: 1.5rem; 
+            font-weight: bold;
+        }
+        
+        .stats-container > div > div > div:last-child {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        /* Modal de Upload Compacto */
+        #uploadModal .modal-content {
+            max-width: 400px;
+        }
+        
+        #uploadModal h3 {
+            margin-bottom: 0.8rem; 
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        #selectedFileInfo {
+            margin-bottom: 0.8rem; 
+            padding: 0.8rem; 
+            background: #f8f9fa; 
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        #materialTitle, #materialDescription {
+            font-size: 0.9rem;
+            padding: 0.6rem;
+        }
+        
+        @media (max-width: 768px) {
+            .materials-grid-page { grid-template-columns: 1fr; }
+            .filters-container { flex-direction: column; gap: 1rem; }
+            .certification-header h1 { font-size: 1.5rem; }
+            .certification-header { padding: 1rem; }
+            .upload-area-page { padding: 1rem; }
+            .modal-content { padding: 1rem; }
         }
     </style>
 </head>
@@ -133,7 +387,9 @@
                     <h1>Study<span>Cert</span></h1>
                 </div>
                 <div>
-                    <a href="index.html" class="btn btn-primary">Voltar para Home</a>
+                    <a href="index.html" class="btn btn-primary btn-sm">
+                        <i class="fas fa-home"></i> Voltar para Home
+                    </a>
                 </div>
             </div>
         </div>
@@ -210,53 +466,57 @@
         </div>
 
         <!-- Estatísticas -->
-        <div class="stats-container" style="background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: center;">
-            <h3 style="color: var(--primary); margin-bottom: 1rem;">Estatísticas</h3>
-            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem;">
+        <div class="stats-container">
+            <h3>Estatísticas</h3>
+            <div>
                 <div>
-                    <div style="font-size: 2rem; color: var(--secondary); font-weight: bold;" id="totalMaterials">0</div>
-                    <div style="color: #666;">Materiais Disponíveis</div>
+                    <div style="color: var(--secondary);" id="totalMaterials">0</div>
+                    <div>Materiais Disponíveis</div>
                 </div>
                 <div>
-                    <div style="font-size: 2rem; color: #27ae60; font-weight: bold;" id="totalSize">0 MB</div>
-                    <div style="color: #666;">Total em Arquivos</div>
+                    <div style="color: #27ae60;" id="totalSize">0 MB</div>
+                    <div>Total em Arquivos</div>
                 </div>
                 <div>
-                    <div style="font-size: 2rem; color: #e74c3c; font-weight: bold;" id="totalViews">0</div>
-                    <div style="color: #666;">Visualizações</div>
+                    <div style="color: #e74c3c;" id="totalViews">0</div>
+                    <div>Visualizações</div>
                 </div>
             </div>
         </div>
 
-        <!-- Seção de Upload -->
+        <!-- Seção de Upload Compacta -->
         <section class="upload-section-page" id="uploadSection">
-            <h2 style="color: var(--primary); margin-bottom: 1rem;">Compartilhar Material</h2>
-            <p style="color: #666; margin-bottom: 1rem;">Compartilhe seus materiais de estudo com a comunidade.</p>
+            <h2 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.2rem;">
+                <i class="fas fa-share-alt"></i> Compartilhar Material
+            </h2>
+            <p style="color: #666; margin-bottom: 1rem; font-size: 0.9rem;">
+                Compartilhe seus materiais de estudo com a comunidade.
+            </p>
             
             <div class="upload-area-page" id="uploadAreaPage">
                 <i class="fas fa-cloud-upload-alt"></i>
-                <h3>Arraste e solte arquivos aqui</h3>
-                <p>ou clique para selecionar</p>
-                <p style="font-size: 0.9rem; color: #95a5a6;">
-                    Formatos suportados: PDF, PPT, DOC, ZIP, MP4 (máx. 100MB)
+                <h3>Arraste ou clique para selecionar</h3>
+                <p>Formatos suportados: PDF, PPT, DOC, ZIP, MP4</p>
+                <p style="font-size: 0.8rem; color: #95a5a6;">
+                    Tamanho máximo: 100MB
                 </p>
-                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="checkAuthAndUpload()">
-                    <i class="fas fa-upload"></i> Selecionar Arquivos
+                <button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()">
+                    <i class="fas fa-upload"></i> Selecionar Arquivo
                 </button>
                 <input type="file" id="fileInputPage" accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4" style="display: none;">
             </div>
 
-            <div id="uploadProgressPage" style="display: none; margin-top: 1rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <div id="uploadProgressPage" style="display: none; margin-top: 0.8rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.9rem;">
                     <span>Enviando...</span>
                     <span id="progressPercent">0%</span>
                 </div>
-                <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                <div style="height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
                     <div id="progressBar" style="height: 100%; background: var(--success); width: 0%; transition: width 0.3s;"></div>
                 </div>
             </div>
 
-            <div id="uploadListPage" style="margin-top: 1rem;"></div>
+            <div id="uploadListPage" style="margin-top: 0.8rem;"></div>
         </section>
     </main>
 
@@ -283,44 +543,44 @@
         </div>
     </footer>
 
-    <!-- Modal de Upload -->
+    <!-- Modal de Upload Compacto -->
     <div id="uploadModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeUploadModal()">&times;</button>
-            <h3 style="margin-bottom: 1rem; color: var(--primary);">
+            <h3>
                 <i class="fas fa-upload"></i> Compartilhar Material
             </h3>
             
-            <div id="uploadProgressContainer" style="display: none; margin-bottom: 1rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <div id="uploadProgressContainer" style="display: none; margin-bottom: 0.8rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.9rem;">
                     <span>Enviando...</span>
                     <span id="modalProgressPercent">0%</span>
                 </div>
-                <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                <div style="height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
                     <div id="modalProgressBar" style="height: 100%; background: #27ae60; width: 0%; transition: width 0.3s;"></div>
                 </div>
             </div>
             
             <div id="uploadFormContainer">
-                <div id="selectedFileInfo" style="margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px;">
+                <div id="selectedFileInfo" style="margin-bottom: 0.8rem; font-size: 0.9rem;">
                     <!-- Informações do arquivo serão preenchidas aqui -->
                 </div>
                 
-                <div style="margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Título *</label>
+                <div style="margin-bottom: 0.8rem;">
+                    <label style="display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.9rem;">Título *</label>
                     <input type="text" id="materialTitle" placeholder="Ex: Guia Completo ITIL 4" 
-                           style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;" required>
+                           style="width: 100%; padding: 0.6rem; border: 2px solid #ddd; border-radius: 8px; font-size: 0.9rem;" required>
                 </div>
                 
-                <div style="margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Descrição</label>
-                    <textarea id="materialDescription" rows="3" placeholder="Descreva o material..." 
-                              style="width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;"></textarea>
+                <div style="margin-bottom: 0.8rem;">
+                    <label style="display: block; margin-bottom: 0.3rem; font-weight: 600; font-size: 0.9rem;">Descrição</label>
+                    <textarea id="materialDescription" rows="2" placeholder="Descreva o material..." 
+                              style="width: 100%; padding: 0.6rem; border: 2px solid #ddd; border-radius: 8px; font-size: 0.9rem;"></textarea>
                 </div>
                 
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button onclick="closeUploadModal()" class="btn btn-outline">Cancelar</button>
-                    <button onclick="processUpload()" class="btn btn-primary">
+                <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                    <button onclick="closeUploadModal()" class="btn btn-outline btn-sm">Cancelar</button>
+                    <button onclick="processUpload()" class="btn btn-primary btn-sm">
                         <i class="fas fa-paper-plane"></i> Enviar
                     </button>
                 </div>
@@ -331,19 +591,19 @@
     <!-- Modal de Confirmação de Exclusão -->
     <div id="deleteConfirmModal" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-bottom: 1rem; color: var(--primary);">
+            <h3 style="margin-bottom: 0.8rem; color: var(--primary); font-size: 1.1rem;">
                 <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Confirmar Exclusão
             </h3>
             
-            <div id="deleteMaterialInfo" style="margin-bottom: 1.5rem;">
+            <div id="deleteMaterialInfo" style="margin-bottom: 1rem; font-size: 0.9rem;">
                 <p>Tem certeza que deseja excluir este material?</p>
-                <p id="deleteMaterialName" style="font-weight: bold; color: #e74c3c; margin: 0.5rem 0;"></p>
-                <p style="color: #666; font-size: 0.9rem;">Esta ação não pode ser desfeita.</p>
+                <p id="deleteMaterialName" style="font-weight: bold; color: #e74c3c; margin: 0.3rem 0;"></p>
+                <p style="color: #666; font-size: 0.8rem;">Esta ação não pode ser desfeita.</p>
             </div>
             
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button onclick="closeDeleteModal()" class="btn btn-outline">Cancelar</button>
-                <button onclick="confirmDeleteMaterial()" class="btn btn-danger">
+            <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                <button onclick="closeDeleteModal()" class="btn btn-outline btn-sm">Cancelar</button>
+                <button onclick="confirmDeleteMaterial()" class="btn btn-danger btn-sm">
                     <i class="fas fa-trash"></i> Excluir
                 </button>
             </div>
@@ -404,7 +664,7 @@
         let currentUploadFile = null;
         let currentCertId = 'itil4';
         let currentFileType = 'pdf';
-        let materialToDelete = null; // Para armazenar o material que será excluído
+        let materialToDelete = null;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', async function() {
@@ -430,6 +690,9 @@
                 
                 console.log('✅ Página de materiais inicializada');
             }, 1000);
+            
+            // Adicionar listener para eventos de auth
+            window.addEventListener('studycert-auth-changed', updateAuthUI);
         });
 
         // Configurar eventos
@@ -526,7 +789,7 @@
                 
                 authContainer.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <div style="background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">
+                        <div style="background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
                             ${userName.substring(0, 2).toUpperCase()}
                         </div>
                         <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
@@ -554,6 +817,7 @@
             if (window.authManager) {
                 await window.authManager.logout();
                 updateAuthUI();
+                // Recarregar para garantir sincronização
                 window.location.reload();
             }
         }
@@ -591,13 +855,24 @@
             const file = e.target.files[0];
             if (!file) return;
             
+            if (file.size > 100 * 1024 * 1024) { // 100MB
+                alert('Arquivo muito grande. O tamanho máximo é 100MB.');
+                return;
+            }
+            
             showUploadForm(file);
         }
 
         function handleFileDrop(files) {
             if (files.length === 0) return;
             
-            showUploadForm(files[0]);
+            const file = files[0];
+            if (file.size > 100 * 1024 * 1024) {
+                alert('Arquivo muito grande. O tamanho máximo é 100MB.');
+                return;
+            }
+            
+            showUploadForm(file);
         }
 
         function showUploadForm(file) {
@@ -606,17 +881,20 @@
             
             // Atualizar informações do arquivo no modal
             document.getElementById('selectedFileInfo').innerHTML = `
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <i class="fas fa-file-${currentFileType} ${currentFileType}-color" style="font-size: 2rem;"></i>
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <i class="fas fa-file-${currentFileType} ${currentFileType}-color" style="font-size: 1.5rem;"></i>
                     <div>
                         <strong>${file.name}</strong><br>
-                        <small>${formatFileSize(file.size / 1024)} • ${currentFileType.toUpperCase()}</small>
+                        <small style="color: #666;">${formatFileSize(file.size)} • ${currentFileType.toUpperCase()}</small>
                     </div>
                 </div>
             `;
             
-            // Resetar formulário
-            document.getElementById('materialTitle').value = '';
+            // Preencher título automaticamente
+            const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+            document.getElementById('materialTitle').value = fileNameWithoutExt;
+            
+            // Resetar descrição
             document.getElementById('materialDescription').value = '';
             document.getElementById('uploadFormContainer').style.display = 'block';
             document.getElementById('uploadProgressContainer').style.display = 'none';
@@ -631,15 +909,16 @@
             if (['ppt', 'pptx'].includes(ext)) return 'ppt';
             if (['doc', 'docx'].includes(ext)) return 'doc';
             if (['zip', 'rar', '7z'].includes(ext)) return 'zip';
-            if (['mp4', 'avi', 'mov', 'mkv'].includes(ext)) return 'video';
+            if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) return 'video';
             return 'other';
         }
 
-        function formatFileSize(kb) {
-            if (!kb) return 'Tamanho desconhecido';
-            if (kb < 1024) return `${kb} KB`;
-            if (kb < 1024 * 1024) return `${(kb / 1024).toFixed(1)} MB`;
-            return `${(kb / (1024 * 1024)).toFixed(2)} GB`;
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
 
         function closeUploadModal() {
@@ -678,23 +957,19 @@
                 console.log('🚀 Iniciando upload...');
                 console.log('📄 Arquivo:', file.name);
                 console.log('👤 Usuário ID:', user.id);
-                console.log('📁 Certificação:', currentCertId);
                 
-                // 1. Limpar o nome do arquivo - CORREÇÃO AQUI
-                // Remove caracteres especiais que causam erro no Supabase Storage
+                // Limpar nome do arquivo
                 const cleanFileName = file.name
                     .toLowerCase()
                     .replace(/\s+/g, '_')
-                    .replace(/[^\w\.\-]/g, '') // Remove caracteres não alfanuméricos exceto ponto e hífen
-                    .replace(/_{2,}/g, '_') // Remove múltiplos underscores consecutivos
-                    .replace(/^_+|_+$/g, ''); // Remove underscores no início/fim
+                    .replace(/[^\w\.\-]/g, '')
+                    .replace(/_{2,}/g, '_')
+                    .replace(/^_+|_+$/g, '');
                 
                 const fileName = `material_${Date.now()}_${cleanFileName}`;
                 const filePath = `${currentCertId}/${user.id}/${fileName}`;
                 
                 console.log('📤 Upload para:', filePath);
-                console.log('📁 Nome original:', file.name);
-                console.log('📁 Nome limpo:', cleanFileName);
                 
                 // Simular progresso
                 let progress = 0;
@@ -724,14 +999,14 @@
                 document.getElementById('modalProgressBar').style.width = '80%';
                 document.getElementById('modalProgressPercent').textContent = '80%';
                 
-                // 2. Obter URL pública
+                // Obter URL pública
                 const { data: urlData } = supabaseClient.storage
                     .from('materiais')
                     .getPublicUrl(filePath);
                 
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
-                // 3. Salvar no banco de dados
+                // Salvar no banco de dados
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
@@ -860,7 +1135,7 @@
                             <i class="fas fa-file-${material.tipo} ${material.tipo}-color file-icon-page"></i>
                             <div>
                                 <h3>${material.titulo}</h3>
-                                <small>${material.tipo.toUpperCase()} • ${formatFileSize(material.arquivo_tamanho_kb)}</small>
+                                <small>${material.tipo.toUpperCase()} • ${formatFileSize(material.arquivo_tamanho_kb * 1024)}</small>
                             </div>
                         </div>
                         <div class="card-body-page">
@@ -928,7 +1203,7 @@
             try {
                 console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
                 
-                // 1. Primeiro buscar o material para obter informações
+                // Buscar o material para obter informações
                 const { data: material, error: fetchError } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -940,19 +1215,18 @@
                     throw new Error('Material não encontrado.');
                 }
                 
-                // 2. Verificar se o usuário é o dono
+                // Verificar se o usuário é o dono
                 if (material.usuario_id !== currentUser.id) {
                     alert('Você só pode excluir seus próprios materiais.');
                     closeDeleteModal();
                     return;
                 }
                 
-                // 3. Extrair caminho do arquivo da URL para excluir do Storage
+                // Extrair caminho do arquivo da URL para excluir do Storage
                 const fileUrl = material.arquivo_url;
                 console.log('🔗 URL do arquivo:', fileUrl);
                 
                 // Extrair o caminho do arquivo do bucket
-                // A URL é algo como: https://uhbwudgdeyvbkqoflaqw.supabase.co/storage/v1/object/public/materiais/itil4/user-id/filename.pdf
                 const urlParts = fileUrl.split('/materiais/');
                 if (urlParts.length > 1) {
                     const filePath = urlParts[1];
@@ -971,7 +1245,7 @@
                     }
                 }
                 
-                // 4. Excluir do banco de dados
+                // Excluir do banco de dados
                 const { error: deleteError } = await supabaseClient
                     .from('materiais')
                     .delete()
@@ -1003,15 +1277,15 @@
             const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
             
             container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
-                    <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                    <h3>${message}</h3>
-                    <p>Seja o primeiro a compartilhar um material!</p>
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #666;">
+                    <i class="fas fa-folder-open" style="font-size: 2.5rem; margin-bottom: 0.8rem;"></i>
+                    <h3 style="font-size: 1.2rem;">${message}</h3>
+                    <p style="font-size: 0.9rem;">Seja o primeiro a compartilhar um material!</p>
                     ${isAuthenticated ? 
-                        `<button class="btn btn-primary" onclick="checkAuthAndUpload()" style="margin-top: 1rem;">
+                        `<button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()" style="margin-top: 0.8rem;">
                             <i class="fas fa-plus"></i> Compartilhar Material
                         </button>` : 
-                        `<a href="index.html#login" class="btn btn-primary" style="margin-top: 1rem;">
+                        `<a href="index.html#login" class="btn btn-primary btn-sm" style="margin-top: 0.8rem;">
                             <i class="fas fa-sign-in-alt"></i> Faça login para compartilhar
                         </a>`
                     }
@@ -1032,7 +1306,19 @@
         function formatDate(dateString) {
             try {
                 const date = new Date(dateString);
-                return date.toLocaleDateString('pt-BR');
+                const now = new Date();
+                const diffMs = now - date;
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) {
+                    return 'Hoje';
+                } else if (diffDays === 1) {
+                    return 'Ontem';
+                } else if (diffDays < 7) {
+                    return `${diffDays} dias atrás`;
+                } else {
+                    return date.toLocaleDateString('pt-BR');
+                }
             } catch (e) {
                 return 'Data desconhecida';
             }
@@ -1066,13 +1352,14 @@
                 
                 console.log('✅ Download iniciado:', fileName);
                 
-                // Atualizar contador localmente (opcional)
+                // Atualizar contador localmente
                 setTimeout(() => {
                     loadMaterialsFromSupabase(currentCertId);
                 }, 1000);
                 
             } catch (error) {
                 console.error('❌ Erro ao baixar:', error);
+                // Fallback: abrir em nova aba
                 window.open(fileUrl, '_blank');
             }
         }
