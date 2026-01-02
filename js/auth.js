@@ -8,6 +8,63 @@ class AuthManager {
         this.SESSION_KEY = 'studycert-session';
         this.init();
     }
+    // js/auth.js - Adicionar este método à classe AuthManager
+
+// Dentro da classe AuthManager, adicione:
+broadcastAuthChange() {
+    if (this.currentUser) {
+        const authData = {
+            id: this.currentUser.id,
+            email: this.currentUser.email,
+            name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0],
+            metadata: this.currentUser.user_metadata,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('studycert-auth-broadcast', JSON.stringify(authData));
+        
+        // Disparar evento manualmente (para a mesma aba)
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: 'studycert-auth-broadcast',
+            newValue: JSON.stringify(authData)
+        }));
+    } else {
+        localStorage.removeItem('studycert-auth-broadcast');
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: 'studycert-auth-broadcast',
+            newValue: null
+        }));
+    }
+}
+
+// E modifique os métodos login e logout para chamar broadcast:
+async login(email, password) {
+    try {
+        // ... código existente ...
+        
+        this.currentUser = data.user;
+        this.saveToLocalStorage();
+        this.broadcastAuthChange(); // ← ADICIONE ESTA LINHA
+        
+        return { success: true, user: data.user };
+    } catch (error) {
+        // ... código existente ...
+    }
+}
+
+async logout() {
+    try {
+        // ... código existente ...
+        
+        this.currentUser = null;
+        localStorage.removeItem(this.STORAGE_KEY);
+        localStorage.removeItem(this.SESSION_KEY);
+        this.broadcastAuthChange(); // ← ADICIONE ESTA LINHA
+        
+        return { success: true };
+    } catch (error) {
+        // ... código existente ...
+    }
+}
 
     async init() {
         if (this.isInitialized) return;
