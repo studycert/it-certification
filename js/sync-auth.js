@@ -1,108 +1,65 @@
-// Sistema de sincronização de autenticação entre páginas
-class AuthSync {
-    constructor() {
-        this.STORAGE_KEY = 'studycert-sync-auth';
-        this.init();
-    }
-
-    init() {
-        // Ouvir mudanças no storage (entre abas)
-        window.addEventListener('storage', this.handleStorageChange.bind(this));
+// Sistema de sincronização SIMPLES e EFETIVO
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔄 Sistema de sincronização carregado');
+    
+    // Função para verificar e atualizar autenticação
+    function checkAndSyncAuth() {
+        console.log('🔄 Verificando autenticação...');
         
-        // Configurar heartbeat para manter sessão sincronizada
-        this.setupHeartbeat();
+        // 1. Primeiro, verificar se temos dados no localStorage
+        const authData = localStorage.getItem('studycert-auth-data');
+        const userSession = localStorage.getItem('sb-uhbwudgdeyvbkqoflaqw-auth-token');
         
-        console.log('🔄 AuthSync inicializado');
-    }
-
-    handleStorageChange(e) {
-        if (e.key === this.STORAGE_KEY) {
-            console.log('🔄 Mudança de autenticação detectada em outra aba');
-            
+        console.log('📱 Auth Data:', authData ? 'Presente' : 'Ausente');
+        console.log('📱 Session:', userSession ? 'Presente' : 'Ausente');
+        
+        if (authData) {
             try {
-                const authData = JSON.parse(e.newValue);
-                this.syncWithOtherTab(authData);
-            } catch (error) {
-                console.error('❌ Erro ao processar sincronização:', error);
-            }
-        }
-    }
-
-    syncWithOtherTab(authData) {
-        if (!authData) {
-            // Logout em outra aba
-            if (window.authManager) {
-                window.authManager.currentUser = null;
-                window.authManager.saveToLocalStorage?.();
-            }
-            this.triggerAuthUpdate();
-            return;
-        }
-
-        // Login em outra aba
-        if (window.authManager) {
-            window.authManager.currentUser = {
-                id: authData.id,
-                email: authData.email,
-                user_metadata: authData.metadata || { full_name: authData.name }
-            };
-            window.authManager.saveToLocalStorage?.();
-        }
-        
-        this.triggerAuthUpdate();
-    }
-
-    triggerAuthUpdate() {
-        // Disparar evento para atualizar UI
-        const event = new CustomEvent('studycert-sync-update');
-        window.dispatchEvent(event);
-        
-        // Também forçar update da UI se a função existir
-        if (typeof updateAuthUI === 'function') {
-            updateAuthUI();
-        }
-    }
-
-    setupHeartbeat() {
-        // Verificar sessão a cada 2 segundos
-        setInterval(() => {
-            this.checkSession();
-        }, 2000);
-    }
-
-    async checkSession() {
-        if (window.authManager && window.authManager.supabase) {
-            try {
-                const { data, error } = await window.authManager.supabase.auth.getSession();
-                if (!error && data.session) {
-                    // Atualizar localmente
-                    window.authManager.currentUser = data.session.user;
-                    window.authManager.saveToLocalStorage?.();
-                    
-                    // Sincronizar com outras abas
-                    this.broadcastAuthState(data.session.user);
+                const user = JSON.parse(authData);
+                console.log('✅ Usuário encontrado:', user.email);
+                
+                // Se tiver authManager, atualizar
+                if (window.authManager) {
+                    window.authManager.currentUser = {
+                        id: user.id,
+                        email: user.email,
+                        user_metadata: user.metadata || { full_name: user.name }
+                    };
+                    console.log('✅ AuthManager atualizado');
                 }
-            } catch (error) {
-                console.warn('⚠️ Erro ao verificar sessão:', error);
+                
+                // Forçar atualização da UI
+                if (typeof window.updateAuthUI === 'function') {
+                    window.updateAuthUI();
+                    console.log('✅ UI atualizada');
+                }
+                
+                return true;
+            } catch (e) {
+                console.error('❌ Erro ao parsear auth data:', e);
             }
         }
-    }
-
-    broadcastAuthState(user) {
-        if (!user) return;
         
-        const authData = {
-            id: user.id,
-            email: user.email,
-            name: user.user_metadata?.full_name || user.email.split('@')[0],
-            metadata: user.user_metadata,
-            timestamp: Date.now()
-        };
-        
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(authData));
+        console.log('⚠️ Nenhum usuário autenticado');
+        return false;
     }
-}
-
-// Inicializar sincronização
-const authSync = new AuthSync();
-window.authSync = authSync;
+    
+    // Verificar imediatamente
+    checkAndSyncAuth();
+    
+    // Configurar listener para storage events (sincronização entre abas)
+    window.addEventListener('storage', function(e) {
+        console.log('🔄 Evento storage detectado:', e.key);
+        
+        if (e.key === 'studycert-auth-data' || e.key === 'sb-uhbwudgdeyvbkqoflaqw-auth-token') {
+            console.log('🔄 Mudança de autenticação detectada');
+            setTimeout(checkAndSyncAuth, 100);
+        }
+    });
+    
+    // Verificar a cada 2 segundos
+    setInterval(checkAndSyncAuth, 2000);
+    
+    // Expor função globalmente
+    window.syncAuth = checkAndSyncAuth;
+});
