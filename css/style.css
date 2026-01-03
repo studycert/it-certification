@@ -10,8 +10,6 @@
     --light: #ecf0f1;
     --dark: #2c3e50;
     --gray: #95a5a6;
-    --google-red: #DB4437;
-    --microsoft-blue: #00A4EF;
 }
 
 * {
@@ -40,7 +38,7 @@ body {
 }
 
 /* ============================
-   HEADER - COM BORDA AZUL NO TOPO
+   HEADER - DESKTOP
    ============================ */
 header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
@@ -50,7 +48,6 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-top: 4px solid var(--secondary);
 }
 
 .header-content {
@@ -59,95 +56,42 @@ header {
     align-items: center;
     padding: 0.8rem 0;
     min-height: 60px;
-    gap: 1rem;
 }
 
-/* Logo com destaque */
+/* Logo */
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-shrink: 0;
-    position: relative;
 }
 
-.logo-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
-    transition: all 0.3s;
-}
-
-.logo:hover .logo-icon {
-    transform: rotate(15deg) scale(1.1);
-    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
-}
-
-.logo-icon i {
-    font-size: 1.5rem;
-    color: white;
+.logo i {
+    font-size: 2rem;
+    color: var(--secondary);
 }
 
 .logo h1 {
     font-size: 1.8rem;
     font-weight: 700;
-    background: linear-gradient(to right, white, #ecf0f1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .logo span {
     color: var(--secondary);
-    -webkit-text-fill-color: var(--secondary);
 }
 
 /* ============================
-   NAVEGAÇÃO COM SCROLL
+   NAVEGAÇÃO DESKTOP - EFEITOS DIFERENCIADOS COM BARRA AZUL
    ============================ */
 nav {
     display: flex;
-    margin: 0 1rem;
-    position: relative;
-    max-height: 50px;
-    overflow: hidden;
-    flex: 1;
-}
-
-.nav-scroll-container {
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--secondary) transparent;
-    max-height: 200px;
-    padding-right: 5px;
-    width: 100%;
-}
-
-.nav-scroll-container::-webkit-scrollbar {
-    width: 4px;
-}
-
-.nav-scroll-container::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.nav-scroll-container::-webkit-scrollbar-thumb {
-    background: var(--secondary);
-    border-radius: 2px;
+    margin: 0 2rem;
 }
 
 nav ul {
     display: flex;
     list-style: none;
     gap: 1.5rem;
-    padding: 0.5rem 1rem;
-    min-width: max-content;
 }
 
 nav a {
@@ -160,7 +104,6 @@ nav a {
     position: relative;
     background-color: transparent;
     overflow: hidden;
-    white-space: nowrap;
 }
 
 /* Efeito de fundo sutil ao passar o mouse (HOVER) */
@@ -171,7 +114,7 @@ nav a::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--secondary);
+    background-color: var(--secondary); /* Azul */
     opacity: 0;
     border-radius: 6px;
     transition: opacity 0.3s ease;
@@ -186,7 +129,7 @@ nav a::after {
     left: 50%;
     width: 0;
     height: 3px;
-    background-color: var(--secondary);
+    background-color: var(--secondary); /* AZUL - mais harmonioso */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(-50%);
     border-radius: 3px 3px 0 0;
@@ -209,69 +152,75 @@ nav a:hover {
    ============================ */
 nav a.active::after {
     width: 80% !important;
-    background-color: var(--secondary) !important;
+    background-color: var(--secondary) !important; /* AZUL */
 }
 
 nav a.active {
     color: white !important;
     font-weight: 600 !important;
-    background-color: rgba(52, 152, 219, 0.1) !important;
+    background-color: rgba(52, 152, 219, 0.1) !important; /* Fundo azul muito sutil */
 }
 
-.scroll-indicator {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    overflow: hidden;
+/* Efeito de "brilho" sutil nos cantos */
+nav a:hover {
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2) !important;
 }
 
-.scroll-progress {
-    height: 100%;
-    background: linear-gradient(to right, var(--secondary), #2980b9);
-    width: 0%;
-    transition: width 0.3s;
-    border-radius: 3px;
+nav a.active {
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2) !important;
 }
 
 /* ============================
-   BOTÕES DE AUTENTICAÇÃO
+   MOBILE - EFEITOS SIMPLIFICADOS
    ============================ */
-.auth-buttons {
-    display: flex !important;
-    align-items: center;
-    gap: 0.8rem;
-    flex-shrink: 0;
+@media (max-width: 992px) {
+    nav.active a {
+        border-radius: 4px;
+        margin: 2px 0;
+    }
+    
+    nav.active a::before {
+        opacity: 0;
+    }
+    
+    nav.active a:hover::before {
+        opacity: 0.1 !important;
+    }
+    
+    nav.active a::after {
+        height: 2px;
+        bottom: 0;
+        width: 0;
+    }
+    
+    /* Hover no mobile - deslocamento */
+    nav.active a:hover::after {
+        width: 60% !important;
+        left: 20px !important;
+        transform: translateX(0) !important;
+        background-color: var(--secondary) !important; /* Azul */
+    }
+    
+    /* Ativo no mobile - barra AZUL */
+    nav.active a.active::after {
+        width: 60% !important;
+        left: 20px !important;
+        transform: translateX(0) !important;
+        background-color: var(--secondary) !important; /* AZUL */
+    }
+    
+    nav.active a:hover {
+        color: white !important;
+        transform: translateX(5px) !important;
+        background-color: rgba(52, 152, 219, 0.1) !important;
+    }
+    
+    nav.active a.active {
+        color: white !important;
+        transform: translateX(5px) !important;
+        background-color: rgba(52, 152, 219, 0.1) !important;
+    }
 }
-
-.auth-buttons .btn {
-    padding: 0.5rem 1.2rem;
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-/* ============================
-   MENU HAMBÚRGUER
-   ============================ */
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-
-.menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
 /* ============================
    HERO SECTION
    ============================ */
@@ -294,6 +243,108 @@ nav a.active {
     font-size: 1.1rem;
     max-width: 700px;
     margin: 0 auto 2rem;
+}
+
+/* ============================
+   MOBILE (até 992px)
+   ============================ */
+@media (max-width: 992px) {
+    /* HEADER MOBILE */
+    .header-content {
+        padding: 0.5rem 0;
+        min-height: 50px;
+    }
+    
+    /* Logo à esquerda */
+    .logo {
+        flex: 1;
+    }
+    
+    /* MOSTRA botões Entrar/Cadastrar no mobile */
+    .auth-buttons {
+        display: flex !important;
+        margin-left: auto;
+        margin-right: 10px;
+        gap: 0.5rem;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    /* MOSTRA botão hambúrguer */
+    .menu-toggle {
+        display: flex;
+        order: 3;
+    }
+    
+    /* Esconde navegação desktop */
+    nav {
+        display: none !important;
+    }
+    
+    /* Menu hambúrguer quando ativo */
+    nav.active {
+        display: block !important;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        padding: 1rem 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+    
+    nav.active ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+    }
+    
+    nav.active li {
+        width: 100%;
+    }
+    
+    nav.active a {
+        display: block;
+        padding: 1rem 1.5rem;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    nav.active a:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    /* Hero mobile */
+    .hero {
+        padding: 2rem 0;
+    }
+    
+    .hero h2 {
+        font-size: 1.6rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .hero p {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* ============================
+   DESKTOP (acima de 992px)
+   ============================ */
+@media (min-width: 993px) {
+    .menu-toggle {
+        display: none !important;
+    }
+    
+    nav {
+        display: flex !important;
+    }
 }
 
 /* ============================
@@ -842,8 +893,9 @@ footer {
 }
 
 /* ============================
-   MODAL DE AUTENTICAÇÃO MELHORADO
+   MODAIS
    ============================ */
+/* Modal de Login/Cadastro */
 .modal-auth {
     display: none;
     position: fixed;
@@ -857,7 +909,6 @@ footer {
     align-items: center;
     opacity: 0;
     transition: opacity 0.3s ease;
-    padding: 15px;
 }
 
 .modal-auth.active {
@@ -869,9 +920,8 @@ footer {
     background: white;
     border-radius: 12px;
     width: 100%;
-    max-width: 450px;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-width: 400px;
+    padding: 30px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
     position: relative;
@@ -904,7 +954,6 @@ footer {
     justify-content: center;
     border-radius: 50%;
     transition: all 0.3s;
-    z-index: 1;
 }
 
 .close-auth-modal:hover {
@@ -912,66 +961,30 @@ footer {
     color: #333;
 }
 
-/* Logo no modal */
-.auth-logo {
+.auth-header {
     text-align: center;
-    margin-bottom: 2rem;
-    padding: 0 20px;
-    padding-top: 10px;
+    margin-bottom: 30px;
+    padding-right: 30px;
 }
 
-.auth-logo-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    border: 3px solid rgba(52, 152, 219, 0.2);
-    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.2);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 6px 12px rgba(52, 152, 219, 0.2); }
-    50% { box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4); }
-    100% { box-shadow: 0 6px 12px rgba(52, 152, 219, 0.2); }
-}
-
-.auth-logo-icon i {
-    font-size: 2rem;
-    color: white;
-}
-
-.auth-logo h2 {
-    font-size: 1.8rem;
+.auth-header h2 {
     color: var(--primary);
-    margin-bottom: 0.5rem;
-}
-
-.auth-logo p {
-    color: var(--gray);
-    font-size: 0.9rem;
+    margin-bottom: 10px;
 }
 
 .auth-tabs {
     display: flex;
     margin-bottom: 20px;
     border-bottom: 2px solid #eee;
-    padding: 0 20px;
 }
 
 .auth-tab {
     flex: 1;
-    padding: 12px;
+    padding: 10px;
     text-align: center;
     cursor: pointer;
     border-bottom: 3px solid transparent;
     font-weight: 600;
-    color: #666;
-    transition: all 0.3s;
 }
 
 .auth-tab.active {
@@ -979,13 +992,8 @@ footer {
     border-bottom-color: var(--secondary);
 }
 
-.auth-tab:hover {
-    color: var(--secondary);
-}
-
 .auth-form {
     display: none;
-    padding: 0 20px 20px;
 }
 
 .auth-form.active {
@@ -1001,9 +1009,6 @@ footer {
     margin-bottom: 8px;
     font-weight: 600;
     color: #555;
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 
 .form-group input {
@@ -1020,241 +1025,18 @@ footer {
     border-color: var(--secondary);
 }
 
-/* Inputs de senha com botão de visualizar */
-.password-input {
-    position: relative;
-}
-
-.password-input input {
-    padding-right: 40px;
-}
-
-.toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--gray);
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 4px;
-    transition: color 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.toggle-password:hover {
-    color: var(--secondary);
-    background: rgba(52, 152, 219, 0.1);
-}
-
-/* Checkboxes personalizados */
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    user-select: none;
-    font-size: 0.9rem;
-    color: #555;
-}
-
-.remember-me input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--secondary);
-    cursor: pointer;
-}
-
-.remember-forgot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 1rem 0;
-}
-
-.forgot-password {
-    color: var(--secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.3s;
-}
-
-.forgot-password:hover {
-    color: #2980b9;
-    text-decoration: underline;
-}
-
-/* Termos e condições */
-.terms {
-    background: #f8f9fa;
-    padding: 12px;
-    border-radius: 8px;
-    margin: 1rem 0;
-}
-
-.terms label {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 0.85rem;
-    color: #555;
-    line-height: 1.4;
-    cursor: pointer;
-    font-weight: normal;
-}
-
-.terms input[type="checkbox"] {
-    margin-top: 3px;
-    flex-shrink: 0;
-    accent-color: var(--success);
-    width: 16px;
-    height: 16px;
-}
-
-.terms a {
-    color: var(--secondary);
-    text-decoration: none;
-}
-
-.terms a:hover {
-    text-decoration: underline;
-}
-
-/* Botões de login */
-.login-btn, .register-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 1rem 0;
-    transition: all 0.3s;
-}
-
-.login-btn:hover, .register-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
-}
-
-/* Divisor */
-.divider {
-    display: flex;
-    align-items: center;
-    margin: 1.5rem 0;
-    color: var(--gray);
-    font-size: 0.9rem;
-}
-
-.divider::before,
-.divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #e1e1e1;
-}
-
-.divider span {
-    padding: 0 15px;
-}
-
-/* Botões de login social */
-.social-login {
-    display: flex;
-    gap: 10px;
-    margin: 1rem 0;
-}
-
-.social-btn {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s;
-    font-size: 0.9rem;
-}
-
-.social-btn.google {
-    background: #fff;
-    color: #333;
-    border: 2px solid #ddd;
-}
-
-.social-btn.google:hover {
-    background: #f8f9fa;
-    border-color: #DB4437;
-    color: #DB4437;
-    transform: translateY(-2px);
-}
-
-.social-btn.microsoft {
-    background: #fff;
-    color: #333;
-    border: 2px solid #ddd;
-}
-
-.social-btn.microsoft:hover {
-    background: #f8f9fa;
-    border-color: #00A4EF;
-    color: #00A4EF;
-    transform: translateY(-2px);
-}
-
 .auth-footer {
     text-align: center;
     margin-top: 20px;
     color: #666;
-    font-size: 0.9rem;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
 }
 
 .auth-footer a {
     color: var(--secondary);
     text-decoration: none;
-    font-weight: 600;
 }
 
-.auth-footer a:hover {
-    text-decoration: underline;
-}
-
-.auth-loading {
-    display: none;
-    text-align: center;
-    padding: 20px;
-}
-
-.loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--secondary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 10px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ============================
-   MODAL DE SIMULADOS
-   ============================ */
+/* Modal de Simulados */
 .modal-simulados {
     display: none;
     position: fixed;
@@ -1389,133 +1171,34 @@ footer {
 /* ============================
    RESPONSIVIDADE
    ============================ */
-@media (max-width: 992px) {
-    /* HEADER MOBILE */
-    .header-content {
-        padding: 0.5rem 0;
-        min-height: 50px;
-        flex-wrap: wrap;
-    }
-    
-    /* Logo à esquerda */
-    .logo {
-        order: 1;
-        flex: 1;
-    }
-    
-    /* Botões de autenticação */
+@media (max-width: 768px) {
+    /* Força os botões a aparecerem */
     .auth-buttons {
-        order: 2;
         display: flex !important;
-        margin-left: 0;
-        margin-right: 10px;
-        gap: 0.5rem;
+        gap: 0.3rem;
     }
     
     .auth-buttons .btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
     }
     
-    /* Menu hambúrguer */
-    .menu-toggle {
-        display: flex;
-        order: 3;
-    }
-    
-    /* Navegação mobile */
-    nav {
-        display: none !important;
-        order: 4;
-        width: 100%;
-        margin: 0;
-        max-height: none;
-    }
-    
-    nav.active {
-        display: flex !important;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--primary);
-        padding: 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 1000;
-        max-height: 70vh;
-    }
-    
-    nav.active .nav-scroll-container {
-        max-height: 60vh;
-        width: 100%;
-    }
-    
-    nav.active ul {
-        flex-direction: column;
-        width: 100%;
-        padding: 0;
-    }
-    
-    nav.active li {
-        width: 100%;
-    }
-    
-    nav.active a {
-        display: block;
-        padding: 1rem 1.5rem;
-        width: 100%;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        border-radius: 0;
-    }
-    
-    nav.active a::before {
-        display: none;
-    }
-    
-    nav.active a::after {
-        left: 0;
-        transform: none;
-        width: 0;
-        height: 100%;
-        border-radius: 0;
-    }
-    
-    nav.active a.active::after {
-        width: 4px;
-        background-color: var(--secondary);
-    }
-    
-    nav.active a:hover,
-    nav.active a.active {
-        background: rgba(255,255,255,0.1);
-        transform: translateX(5px);
-    }
-    
-    .scroll-indicator {
-        display: none;
-    }
-    
-    /* Hero mobile */
     .hero {
-        padding: 2rem 0;
+        padding: 1.5rem 0;
     }
     
     .hero h2 {
-        font-size: 1.6rem;
-        margin-bottom: 0.8rem;
+        font-size: 1.5rem;
     }
     
     .hero p {
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
     }
     
-    /* Forum mobile */
     .forum-container {
         grid-template-columns: 1fr;
     }
     
-    /* Modal mobile */
     .modal-container {
         max-width: 95%;
         max-height: 85vh;
@@ -1536,105 +1219,7 @@ footer {
     }
 }
 
-@media (max-width: 768px) {
-    /* Ajusta os botões de autenticação */
-    .auth-buttons {
-        gap: 0.3rem;
-    }
-    
-    .auth-buttons .btn {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.75rem;
-    }
-    
-    .hero {
-        padding: 1.5rem 0;
-    }
-    
-    .hero h2 {
-        font-size: 1.5rem;
-    }
-    
-    .hero p {
-        font-size: 0.9rem;
-    }
-    
-    .cards-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .materials-grid,
-    .certifications-grid,
-    .simulados-container {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    }
-    
-    .social-login {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo h1 {
-        font-size: 1.2rem;
-    }
-    
-    .logo-icon {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .logo-icon i {
-        font-size: 1.2rem;
-    }
-    
-    .auth-buttons .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.7rem;
-    }
-    
-    .modal-auth {
-        padding: 10px;
-    }
-    
-    .auth-container {
-        padding: 15px;
-    }
-    
-    .auth-tabs {
-        padding: 0;
-    }
-    
-    .auth-form {
-        padding: 0 0 15px;
-    }
-}
-
-/* ============================
-   DESKTOP (acima de 992px)
-   ============================ */
-@media (min-width: 993px) {
-    .menu-toggle {
-        display: none !important;
-    }
-    
-    nav {
-        display: flex !important;
-    }
-    
-    .auth-buttons {
-        gap: 0.8rem !important;
-    }
-    
-    .auth-buttons .btn {
-        padding: 0.5rem 1.2rem !important;
-        font-size: 0.9rem !important;
-    }
-}
-
-/* ============================
-   MENSAGENS
-   ============================ */
+/* Mensagens */
 .message {
     padding: 12px;
     border-radius: 6px;
@@ -1654,15 +1239,827 @@ footer {
     color: #2a7;
     border: 1px solid #cfc;
 }
-
 /* ============================
-   ANIMAÇÕES
+   GARANTE VISIBILIDADE DOS BOTÕES
    ============================ */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* IMPORTANTE: Força os botões a aparecerem sempre */
+#authButtons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
-.main-content.active {
-    animation: fadeIn 0.5s ease-out;
+/* ============================
+   AJUSTE APENAS PARA DESKTOP (> 992px)
+   ============================ */
+@media (min-width: 993px) {
+    .auth-buttons {
+        gap: 0.8rem !important; /* Espaçamento entre os botões apenas no desktop */
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.4rem 1rem !important;
+    }
+}
+
+/* ============================
+   CORREÇÃO DO MENU HAMBÚRGUER
+   ============================ */
+@media (max-width: 992px) {
+    /* Garante que o menu funcione corretamente */
+    nav.active {
+        display: block !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: var(--primary) !important;
+        z-index: 1000 !important;
+    }
+}
+
+/* ... (todo o conteúdo CSS existente) ... */
+
+/* ============================
+   COMPONENTES DE USUÁRIO
+   ============================ */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin-left: 10px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.user-info span {
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.user-info .btn-outline {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-info .btn-outline:hover {
+    background: white;
+    color: var(--primary);
+}
+
+/* ============================
+   MODAL DE UPLOAD
+   ============================ */
+.modal-upload {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 15px;
+}
+
+.modal-upload.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-upload .modal-container {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-upload .modal-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.modal-upload .modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-upload .modal-body {
+    padding: 25px;
+}
+
+.modal-upload .modal-footer {
+    padding: 15px 25px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Área de upload no modal */
+.modal-upload .upload-area {
+    background: #f8fafc;
+    border: 2px dashed rgba(149, 165, 166, 0.5);
+    border-radius: 10px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin: 20px 0;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.modal-upload .upload-area:hover {
+    border-color: var(--secondary);
+    background: #f0f7ff;
+    transform: translateY(-2px);
+}
+
+.modal-upload .upload-area i {
+    font-size: 3rem;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    transition: color 0.3s;
+}
+
+.modal-upload .upload-area:hover i {
+    color: var(--secondary);
+}
+
+.modal-upload .upload-area h4 {
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.modal-upload .upload-area p {
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+/* Formulários no modal de upload */
+.modal-upload .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-upload .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.modal-upload .form-group input[type="text"],
+.modal-upload .form-group textarea,
+.modal-upload .form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: white;
+}
+
+.modal-upload .form-group input[type="text"]:focus,
+.modal-upload .form-group textarea:focus,
+.modal-upload .form-group select:focus {
+    outline: none;
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.modal-upload .form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal-upload .form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%232c3e50' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+    padding-right: 40px;
+}
+
+/* Checkbox no modal */
+.modal-upload .form-group label[for="termosAceitos"] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: normal;
+    cursor: pointer;
+    color: #555;
+    margin-bottom: 0;
+}
+
+.modal-upload .form-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.modal-upload .form-group a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+.modal-upload .form-group a:hover {
+    text-decoration: underline;
+}
+
+/* Nome do arquivo selecionado */
+#fileName {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #f0f7ff;
+    border-radius: 6px;
+    border-left: 4px solid var(--secondary);
+    font-size: 0.9rem;
+    color: var(--dark);
+    word-break: break-all;
+}
+
+/* Botão de enviar com loading */
+.modal-upload .btn-success:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Animação de spinner */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ============================
+   RESPONSIVIDADE PARA MODAIS
+   ============================ */
+@media (max-width: 768px) {
+    .user-info {
+        padding: 5px 8px;
+        gap: 8px;
+    }
+    
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+    
+    .user-info span {
+        font-size: 0.8rem;
+        display: none; /* Esconde nome em mobile muito pequeno */
+    }
+    
+    .user-info .btn-outline {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+    }
+    
+    /* Modal de upload responsivo */
+    .modal-upload {
+        padding: 10px;
+    }
+    
+    .modal-upload .modal-container {
+        max-height: 95vh;
+    }
+    
+    .modal-upload .modal-body {
+        padding: 15px;
+    }
+    
+    .modal-upload .upload-area {
+        padding: 1.5rem 1rem;
+    }
+    
+    .modal-upload .upload-area i {
+        font-size: 2.5rem;
+    }
+    
+    .modal-upload .modal-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .modal-upload .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-info span {
+        display: none; /* Sempre esconde nome em telas muito pequenas */
+    }
+    
+    .modal-upload .upload-area {
+        padding: 1rem;
+    }
+    
+    .modal-upload .upload-area i {
+        font-size: 2rem;
+    }
+    
+    .modal-upload .upload-area h4 {
+        font-size: 1.1rem;
+    }
+}
+
+/* ============================
+   ANIMAÇÃO PARA DRAG & DROP
+   ============================ */
+.modal-upload .upload-area.drag-over {
+    border-color: var(--success);
+    background: rgba(39, 174, 96, 0.05);
+    transform: scale(1.02);
+}
+
+.modal-upload .upload-area.drag-over i {
+    color: var(--success);
+}
+
+/* ============================
+   AJUSTES PARA BOTÕES NO HEADER
+   ============================ */
+@media (min-width: 993px) {
+    .auth-buttons {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/* ============================
+   ESTADO DE CARREGAMENTO
+   ============================ */
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ============================
+   NOTIFICAÇÕES
+   ============================ */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 10000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-out;
+    max-width: 400px;
+}
+
+.notification.success {
+    background: linear-gradient(135deg, var(--success) 0%, #219653 100%);
+    border-left: 4px solid #1e8449;
+}
+
+.notification.error {
+    background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
+    border-left: 4px solid #a93226;
+}
+
+.notification.info {
+    background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
+    border-left: 4px solid #21618c;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+/* ============================
+   AJUSTES PARA OS BOTÕES NO MOBILE
+   ============================ */
+@media (max-width: 992px) {
+    .header-content {
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+    }
+    
+    /* Logo à esquerda */
+    .logo {
+        order: 1;
+        flex: 1;
+        min-width: 0; /* Permite que a logo encolha */
+    }
+    
+    /* Botões de autenticação - posiciona à direita */
+    .auth-buttons {
+        order: 2;
+        display: flex !important;
+        margin-left: 0 !important; /* Remove a margem automática */
+        gap: 0.5rem;
+        margin-right: 10px;
+    }
+    
+    /* Menu hambúrguer - à direita dos botões */
+    .menu-toggle {
+        order: 3;
+        margin-left: 0;
+    }
+    
+    /* Ajusta a logo para não quebrar */
+    .logo h1 {
+        font-size: 1.4rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Ajusta o tamanho dos botões */
+    .auth-buttons .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+}
+
+/* Para telas muito pequenas (menos de 480px) */
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .auth-buttons {
+        gap: 0.3rem;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
+/* ============================
+   BOTÃO ADMIN APENAS COM ÍCONE
+   ============================ */
+.admin-link-container {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+}
+
+.btn-admin-icon {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); /* AZUL */
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(52, 152, 219, 0.4); /* SOMBRA AZUL */
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-admin-icon:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #1f618d 100%); /* AZUL MAIS ESCURO */
+    transform: translateY(-2px) rotate(15deg);
+    box-shadow: 0 6px 15px rgba(52, 152, 219, 0.5); /* SOMBRA AZUL */
+    width: 38px;
+    height: 38px;
+}
+
+.btn-admin-icon:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.btn-admin-icon i {
+    font-size: 1.1rem;
+    transition: transform 0.3s;
+}
+
+.btn-admin-icon:hover i {
+    transform: rotate(180deg);
+}
+
+/* Tooltip no hover (para desktop) */
+.btn-admin-icon::after {
+    content: 'Painel Admin';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: rgba(44, 62, 80, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-admin-icon::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border: 5px solid transparent;
+    border-bottom-color: rgba(44, 62, 80, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.btn-admin-icon:hover::after,
+.btn-admin-icon:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(12px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .admin-link-container {
+        margin-left: 5px;
+    }
+    
+    .btn-admin-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .btn-admin-icon i {
+        font-size: 1rem;
+    }
+    
+    .btn-admin-icon:hover {
+        width: 34px;
+        height: 34px;
+    }
+    
+    /* Tooltip mais discreto no mobile */
+    .btn-admin-icon::after {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-link-container {
+        margin-left: 3px;
+    }
+    
+    .btn-admin-icon {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .btn-admin-icon i {
+        font-size: 0.9rem;
+    }
+    
+    .btn-admin-icon:hover {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Garantir que o botão admin fique alinhado com os outros botões */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Ajuste para quando o usuário não está logado */
+.auth-buttons:has(.admin-link-container) .btn-outline,
+.auth-buttons:has(.admin-link-container) .btn-primary {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+}
+
+@media (max-width: 768px) {
+    .auth-buttons:has(.admin-link-container) .btn-outline,
+    .auth-buttons:has(.admin-link-container) .btn-primary {
+        height: 32px;
+        padding: 0 10px;
+        font-size: 0.8rem;
+    }
+}
+/* Estilos para os cards de material na página inicial */
+.material-stats {
+    display: flex;
+    gap: 1rem;
+    margin: 0.8rem 0;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.material-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.material-icon {
+    background: var(--primary);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.material-card:hover .material-icon {
+    transform: scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .materials-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .stats-summary div {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+/* Modal de upload */
+.upload-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-modal.active {
+    display: flex;
+}
+
+.upload-modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Progresso de upload */
+.upload-progress {
+    margin: 1rem 0;
+}
+
+.progress-bar-container {
+    height: 10px;
+    background: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--success);
+    width: 0%;
+    transition: width 0.3s;
+}
+
+/* Lista de arquivos para upload */
+.upload-list {
+    margin-top: 1rem;
+}
+
+.upload-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.upload-item.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.upload-item.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Botão de upload melhorado */
+.upload-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-btn input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
 }
