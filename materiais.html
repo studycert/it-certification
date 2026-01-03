@@ -127,34 +127,125 @@
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         
-        /* ===== LAYOUT DE LISTA (ORIGINAL) ===== */
-        .materials-list-page { 
-            margin-bottom: 1.5rem; 
+        /* ===== LAYOUT EM GRADE (NOVO) ===== */
+        .materials-grid-page {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
         
-        .material-item-page { 
-            background: white; 
-            border-radius: 6px; 
-            overflow: hidden; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
-            transition: all 0.2s ease; 
-            border-left: 3px solid #3498db; /* AZUL ORIGINAL */
-            margin-bottom: 0.5rem;
-            padding: 0.8rem 1rem;
+        .material-card-page {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid #3498db;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .material-card-page:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
         }
         
-        .material-item-page:hover { 
-            transform: translateX(2px); 
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15); 
-        }
-        
-        .file-icon-item { 
-            font-size: 1.3rem; 
-            min-width: 35px;
+        .file-icon-card {
+            font-size: 1.5rem;
+            min-width: 40px;
             text-align: center;
+        }
+        
+        .card-title {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .card-title h3 {
+            color: #2c3e50;
+            margin: 0 0 0.2rem 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-type-badge {
+            display: inline-block;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #dee2e6;
+        }
+        
+        .card-body {
+            padding: 1rem;
+            flex-grow: 1;
+        }
+        
+        .file-description-card {
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-meta-card {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        .file-meta-card span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .file-meta-card i {
+            font-size: 0.7rem;
+        }
+        
+        .card-footer {
+            padding: 0.8rem 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        
+        .file-size-date {
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
         }
         
         /* ===== ÍCONES COLORIDOS PARA TODOS OS TIPOS ===== */
@@ -163,64 +254,35 @@
         .file-icon-ppt { color: #e67e22; }
         .file-icon-zip { color: #9b59b6; }
         .file-icon-video { color: #27ae60; }
-        .file-icon-other { color: #7f8c8d; }
+        .file-icon-txt { color: #7f8c8d; }
+        .file-icon-other { color: #95a5a6; }
         
-        .file-info-item { 
-            flex-grow: 1;
-            min-width: 0;
+        /* ===== CORREÇÃO DO BOTÃO EXCLUIR ===== */
+        .btn-outline {
+            color: #666 !important;
+            border: 1px solid #ddd !important;
+            background: white !important;
         }
         
-        .file-info-item h3 { 
-            color: #2c3e50; 
-            margin: 0 0 0.2rem 0; 
-            font-size: 0.95rem; 
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .btn-outline:hover {
+            background: #e74c3c !important;
+            border-color: #e74c3c !important;
+            color: white !important;
         }
         
-        .file-meta { 
-            display: flex;
-            gap: 0.8rem;
-            color: #666; 
-            font-size: 0.75rem; 
-            margin-bottom: 0.2rem;
-            flex-wrap: wrap;
+        .btn-outline i {
+            color: inherit;
         }
         
-        .file-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.2rem;
+        .btn-danger {
+            background: #e74c3c !important;
+            color: white !important;
+            border: 1px solid #e74c3c !important;
         }
         
-        .file-meta i {
-            font-size: 0.7rem;
-        }
-        
-        .file-description {
-            color: #666; 
-            font-size: 0.8rem; 
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 0.2rem;
-        }
-        
-        .file-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-shrink: 0;
-        }
-        
-        .file-actions .btn {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.75rem;
-            white-space: nowrap;
+        .btn-danger:hover {
+            background: #c0392b !important;
+            border-color: #c0392b !important;
         }
         
         /* ===== SEÇÃO DE UPLOAD ===== */
@@ -393,6 +455,7 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            grid-column: 1 / -1;
         }
         
         .no-materials-message i {
@@ -431,7 +494,7 @@
         .stats-grid {
             display: flex; 
             justify-content: space-around; 
-            flex-wrap: wrap; 
+flex-wrap: wrap; 
             gap: 0.5rem;
         }
         
@@ -451,23 +514,44 @@
             display: block;
         }
         
+        /* ===== TOGGLE ENTRE LISTA E GRADE ===== */
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .view-toggle-btn {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.3s;
+        }
+        
+        .view-toggle-btn:hover {
+            background: #f8f9fa;
+        }
+        
+        .view-toggle-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 768px) {
             .materials-page {
                 padding: 1rem;
             }
             
-            .material-item-page {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-                padding: 0.8rem;
-            }
-            
-            .file-actions {
-                align-self: flex-end;
-                width: 100%;
-                justify-content: flex-end;
+            .materials-grid-page {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
             
             .filters-container {
@@ -482,21 +566,30 @@
             .upload-area-page {
                 max-width: 100%;
             }
+            
+            .view-toggle {
+                justify-content: center;
+            }
         }
         
         @media (max-width: 480px) {
-            .file-actions {
+            .materials-grid-page {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-footer {
                 flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+            
+            .card-actions {
                 width: 100%;
             }
             
-            .file-actions .btn {
-                width: 100%;
+            .card-actions .btn {
+                flex-grow: 1;
                 justify-content: center;
-            }
-            
-            .material-item-page {
-                padding: 0.6rem;
             }
         }
     </style>
@@ -519,7 +612,7 @@
         </div>
     </header>
 
-    <!-- Barra de Autenticação - ESTILO DO MATERIAIS(4) -->
+    <!-- Barra de Autenticação -->
     <div class="auth-bar">
         <div class="container">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
@@ -561,6 +654,7 @@
                     <option value="pdf">PDF</option>
                     <option value="ppt">Apresentações</option>
                     <option value="doc">Documentos</option>
+                    <option value="txt">Texto</option>
                     <option value="video">Videoaulas</option>
                     <option value="zip">Arquivos ZIP</option>
                 </select>
@@ -582,8 +676,18 @@
             </div>
         </div>
 
-        <!-- Lista de Materiais (ORIGINAL EM LISTA) -->
-        <div class="materials-list-page" id="materialsContainer">
+        <!-- Toggle de Visualização -->
+        <div class="view-toggle" id="viewToggle">
+            <button class="view-toggle-btn active" onclick="changeView('grid')">
+                <i class="fas fa-th-large"></i> Grade
+            </button>
+            <button class="view-toggle-btn" onclick="changeView('list')">
+                <i class="fas fa-list"></i> Lista
+            </button>
+        </div>
+
+        <!-- Lista de Materiais (EM GRADE POR PADRÃO) -->
+        <div class="materials-grid-page" id="materialsContainer">
             <div class="loading-message">
                 <i class="fas fa-spinner fa-spin"></i> Carregando materiais...
             </div>
@@ -594,7 +698,7 @@
             <h3>Estatísticas</h3>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <span class="stat-value" id="totalMaterials" style="color: #3498db;">0</span> <!-- AZUL -->
+                    <span class="stat-value" id="totalMaterials" style="color: #3498db;">0</span>
                     <span class="stat-label">Materiais</span>
                 </div>
                 <div class="stat-item">
@@ -620,14 +724,14 @@
             <div class="upload-area-page" id="uploadAreaPage">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <h3>Arraste ou clique para selecionar</h3>
-                <p>Formatos suportados: PDF, PPT, DOC, ZIP, MP4</p>
+                <p>Formatos suportados: PDF, PPT, DOC, TXT, ZIP, MP4</p>
                 <p style="font-size: 0.75rem; color: #95a5a6;">
                     Tamanho máximo: 100MB
                 </p>
                 <button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()">
                     <i class="fas fa-upload"></i> Selecionar Arquivo
                 </button>
-                <input type="file" id="fileInputPage" accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.mp4" style="display: none;">
+                <input type="file" id="fileInputPage" accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.zip,.mp4" style="display: none;">
             </div>
 
             <div id="uploadProgressPage" style="display: none; margin-top: 0.8rem;">
@@ -742,7 +846,7 @@
                 title: 'ITIL 4 Foundation', 
                 level: 'Foundation', 
                 icon: 'fas fa-cube', 
-                color: '#3498db', // AZUL ORIGINAL
+                color: '#3498db',
                 description: 'Framework de gerenciamento de serviços de TI. Acesse guias, resumos e recursos para sua preparação.'
             },
             'azure': { 
@@ -788,6 +892,7 @@
         let currentFileType = 'pdf';
         let materialToDelete = null;
         let currentUser = null;
+        let currentView = 'grid'; // 'grid' ou 'list'
 
         // ===== INICIALIZAÇÃO =====
         document.addEventListener('DOMContentLoaded', async function() {
@@ -890,7 +995,7 @@
             }
         }
 
-        // ===== AUTENTICAÇÃO - SISTEMA DO MATERIAIS(4) =====
+        // ===== AUTENTICAÇÃO =====
         function updateAuthUI() {
             const authStatus = document.getElementById('authStatus');
             const authContainer = document.getElementById('authContainer');
@@ -920,7 +1025,6 @@
                 currentUser = null;
                 authStatus.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i> Não logado';
                 
-                // BOTÕES IGUAIS DO MATERIAIS(4).html
                 authContainer.innerHTML = `
                     <div style="display: flex; gap: 0.5rem;">
                         <a href="index.html#login" class="btn btn-outline btn-sm">
@@ -942,7 +1046,7 @@
             }
         }
 
-        // ===== FUNÇÕES PRINCIPAIS - MANTIDAS IGUAIS =====
+        // ===== FUNÇÕES PRINCIPAIS =====
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -1024,6 +1128,7 @@
                 'docx': 'doc',
                 'ppt': 'ppt',
                 'pptx': 'ppt',
+                'txt': 'txt',
                 'zip': 'zip',
                 'rar': 'zip',
                 '7z': 'zip',
@@ -1046,6 +1151,7 @@
                 'pdf': 'file-pdf',
                 'doc': 'file-word',
                 'ppt': 'file-powerpoint',
+                'txt': 'file-alt',
                 'zip': 'file-archive',
                 'video': 'file-video',
                 'other': 'file'
@@ -1246,7 +1352,7 @@
             }
         }
 
-        // ===== FUNÇÃO PARA MOSTRAR LISTA (ORIGINAL) =====
+        // ===== FUNÇÃO PARA MOSTRAR EM GRADE OU LISTA =====
         function updateMaterialsInterface(materials) {
             const container = document.getElementById('materialsContainer');
             const currentUserId = currentUser?.id;
@@ -1256,51 +1362,105 @@
                 return;
             }
             
-            container.innerHTML = materials.map(material => {
-                // Determinar classe do ícone baseada no tipo
-                const fileIconClass = `file-icon-${material.tipo}`;
-                const fileIconName = getFileIcon(material.tipo);
-                
-                // Verificar se o usuário atual é o dono do material
-                const isOwner = currentUserId && material.usuario_id === currentUserId;
-                
-                return `
-                    <div class="material-item-page" data-id="${material.id}">
-                        <div class="file-icon-item">
+            if (currentView === 'grid') {
+                container.innerHTML = materials.map(material => renderMaterialCard(material, currentUserId)).join('');
+            } else {
+                container.innerHTML = materials.map(material => renderMaterialListItem(material, currentUserId)).join('');
+            }
+        }
+
+        function renderMaterialCard(material, currentUserId) {
+            const fileIconClass = `file-icon-${material.tipo}`;
+            const fileIconName = getFileIcon(material.tipo);
+            const isOwner = currentUserId && material.usuario_id === currentUserId;
+            
+            return `
+                <div class="material-card-page" data-id="${material.id}">
+                    <div class="card-header">
+                        <div class="file-icon-card">
                             <i class="fas fa-${fileIconName} ${fileIconClass}"></i>
                         </div>
-                        
-                        <div class="file-info-item">
+                        <div class="card-title">
                             <h3 title="${material.titulo}">${material.titulo}</h3>
-                            <div class="file-meta">
-                                <span class="file-type">${material.tipo.toUpperCase()}</span>
-                                <span class="file-size">${formatFileSize(material.arquivo_tamanho_kb * 1024)}</span>
-                                <span class="file-date">
-                                    <i class="far fa-clock"></i> ${formatDate(material.data_upload)}
-                                </span>
-                                <span class="file-views">
-                                    <i class="far fa-eye"></i> ${material.visualizacoes || 0}
-                                </span>
-                                <span class="file-downloads">
-                                    <i class="fas fa-download"></i> ${material.downloads || 0}
-                                </span>
-                            </div>
-                            ${material.descricao ? `<div class="file-description" title="${material.descricao}">${material.descricao}</div>` : ''}
+                            <span class="file-type-badge">${material.tipo.toUpperCase()}</span>
                         </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        ${material.descricao ? `<div class="file-description-card" title="${material.descricao}">${material.descricao}</div>` : ''}
                         
-                        <div class="file-actions">
-                            <button class="btn btn-primary" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" title="Baixar arquivo">
-                                <i class="fas fa-download"></i> Baixar
+                        <div class="file-meta-card">
+                            <span class="file-views">
+                                <i class="far fa-eye"></i> ${material.visualizacoes || 0} visualizações
+                            </span>
+                            <span class="file-downloads">
+                                <i class="fas fa-download"></i> ${material.downloads || 0} downloads
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="file-size-date">
+                            ${formatFileSize(material.arquivo_tamanho_kb * 1024)} • ${formatDate(material.data_upload)}
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary btn-sm" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" title="Baixar arquivo">
+                                <i class="fas fa-download"></i>
                             </button>
                             ${isOwner ? `
-                                <button class="btn btn-outline" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
-                                    <i class="fas fa-trash"></i> Excluir
+                                <button class="btn btn-outline btn-sm" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             ` : ''}
                         </div>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `;
+        }
+
+        function renderMaterialListItem(material, currentUserId) {
+            const fileIconClass = `file-icon-${material.tipo}`;
+            const fileIconName = getFileIcon(material.tipo);
+            const isOwner = currentUserId && material.usuario_id === currentUserId;
+            
+            return `
+                <div class="material-item-page" data-id="${material.id}" style="display: flex; align-items: center; background: white; border-radius: 6px; padding: 0.8rem 1rem; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 3px solid #3498db;">
+                    <div class="file-icon-item" style="font-size: 1.3rem; min-width: 35px; text-align: center;">
+                        <i class="fas fa-${fileIconName} ${fileIconClass}"></i>
+                    </div>
+                    
+                    <div class="file-info-item" style="flex-grow: 1; min-width: 0;">
+                        <h3 style="color: #2c3e50; margin: 0 0 0.2rem 0; font-size: 0.95rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            ${material.titulo}
+                        </h3>
+                        <div class="file-meta" style="display: flex; gap: 0.8rem; color: #666; font-size: 0.75rem; margin-bottom: 0.2rem; flex-wrap: wrap;">
+                            <span class="file-type">${material.tipo.toUpperCase()}</span>
+                            <span class="file-size">${formatFileSize(material.arquivo_tamanho_kb * 1024)}</span>
+                            <span class="file-date">
+                                <i class="far fa-clock"></i> ${formatDate(material.data_upload)}
+                            </span>
+                            <span class="file-views">
+                                <i class="far fa-eye"></i> ${material.visualizacoes || 0}
+                            </span>
+                            <span class="file-downloads">
+                                <i class="fas fa-download"></i> ${material.downloads || 0}
+                            </span>
+                        </div>
+                        ${material.descricao ? `<div class="file-description" style="color: #666; font-size: 0.8rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; margin-top: 0.2rem;" title="${material.descricao}">${material.descricao}</div>` : ''}
+                    </div>
+                    
+                    <div class="file-actions" style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+                        <button class="btn btn-primary btn-sm" onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" title="Baixar arquivo">
+                            <i class="fas fa-download"></i> Baixar
+                        </button>
+                        ${isOwner ? `
+                            <button class="btn btn-outline btn-sm" onclick="showDeleteModal('${material.id}', '${material.titulo}')" title="Excluir material">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
         }
 
         // Função para mostrar modal de exclusão
@@ -1418,6 +1578,13 @@
             const container = document.getElementById('materialsContainer');
             const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
             
+            // Ajustar container para mensagem
+            if (currentView === 'grid') {
+                container.className = 'materials-grid-page';
+            } else {
+                container.className = '';
+            }
+            
             container.innerHTML = `
                 <div class="no-materials-message">
                     <i class="fas fa-folder-open"></i>
@@ -1508,6 +1675,27 @@
                 // Fallback: abrir em nova aba
                 window.open(fileUrl, '_blank');
             }
+        }
+
+        // ===== FUNÇÃO PARA ALTERAR VISUALIZAÇÃO =====
+        function changeView(view) {
+            currentView = view;
+            
+            // Atualizar botões ativos
+            document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (view === 'grid') {
+                document.querySelector('.view-toggle-btn:nth-child(1)').classList.add('active');
+                document.getElementById('materialsContainer').className = 'materials-grid-page';
+            } else {
+                document.querySelector('.view-toggle-btn:nth-child(2)').classList.add('active');
+                document.getElementById('materialsContainer').className = 'materials-list-page';
+            }
+            
+            // Recarregar materiais com a nova visualização
+            handleFilterChange();
         }
 
     </script>
