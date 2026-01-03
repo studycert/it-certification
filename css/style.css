@@ -1,4 +1,520 @@
 /* ============================
+   FORMULÁRIO DE CADASTRO NO MODAL
+   ============================ */
+
+/* Ajustes para o modal de autenticação com cadastro completo */
+.auth-container.cadastro-completo {
+    max-width: 700px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Passos do cadastro no modal */
+.cadastro-passos {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.cadastro-passos::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #eee;
+    z-index: 1;
+}
+
+.passo-indicador {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.passo-numero {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #eee;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+    border: 2px solid #eee;
+}
+
+.passo-indicador.ativo .passo-numero {
+    background: var(--secondary);
+    color: white;
+    border-color: var(--secondary);
+}
+
+.passo-indicador.completo .passo-numero {
+    background: var(--success);
+    color: white;
+    border-color: var(--success);
+}
+
+.passo-texto {
+    font-size: 0.8rem;
+    color: #666;
+    text-align: center;
+    max-width: 80px;
+}
+
+.passo-indicador.ativo .passo-texto {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Conteúdo do cadastro por passos */
+.cadastro-conteudo {
+    display: none;
+}
+
+.cadastro-conteudo.ativo {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Layout de duas colunas para alguns campos */
+.cadastro-colunas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .cadastro-colunas {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Grupo de formulário melhorado */
+.form-group-cadastro {
+    margin-bottom: 20px;
+}
+
+.form-group-cadastro label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.form-group-cadastro .label-required::after {
+    content: ' *';
+    color: var(--accent);
+}
+
+.form-group-cadastro input,
+.form-group-cadastro select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s;
+    background: white;
+}
+
+.form-group-cadastro input:focus,
+.form-group-cadastro select:focus {
+    outline: none;
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Campo de senha com botão de visualização */
+.campo-senha {
+    position: relative;
+}
+
+.btn-toggle-senha {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    padding: 5px;
+    font-size: 1rem;
+    transition: color 0.3s;
+    z-index: 2;
+}
+
+.btn-toggle-senha:hover {
+    color: var(--primary);
+}
+
+/* Força da senha */
+.forca-senha {
+    margin-top: 8px;
+}
+
+.texto-forca {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.barra-forca {
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.preencher-forca {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s, background-color 0.3s;
+    border-radius: 2px;
+}
+
+/* Validação de campos */
+.mensagem-validacao {
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.mensagem-validacao.valido {
+    color: var(--success);
+}
+
+.mensagem-validacao.invalido {
+    color: var(--accent);
+}
+
+/* Botões de login social */
+.login-social {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.login-social .divisor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.login-social .divisor::before,
+.login-social .divisor::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #eee;
+    margin: 0 15px;
+}
+
+.botoes-social {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .botoes-social {
+        flex-direction: column;
+    }
+}
+
+.btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    text-decoration: none;
+    flex: 1;
+    max-width: 200px;
+}
+
+.btn-social.google {
+    background: white;
+    color: #333;
+    border-color: #ddd;
+}
+
+.btn-social.microsoft {
+    background: #00a4ef;
+    color: white;
+}
+
+.btn-social:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-social.google:hover {
+    background: #f8f9fa;
+    border-color: #ccc;
+}
+
+.btn-social.microsoft:hover {
+    background: #0088cc;
+}
+
+/* Checkbox estilizado */
+.checkbox-cadastro {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.checkbox-cadastro input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.checkbox-cadastro label {
+    font-weight: normal;
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.checkbox-cadastro a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+.checkbox-cadastro a:hover {
+    text-decoration: underline;
+}
+
+/* Navegação entre passos */
+.navegacao-cadastro {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.btn-passo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    font-size: 0.95rem;
+}
+
+.btn-passo.anterior {
+    background: #f8f9fa;
+    color: var(--primary);
+    border-color: #ddd;
+}
+
+.btn-passo.proximo,
+.btn-passo.finalizar {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-passo.anterior:hover {
+    background: #e9ecef;
+    border-color: #ccc;
+}
+
+.btn-passo.proximo:hover,
+.btn-passo.finalizar:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-passo:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Progresso na parte inferior do modal */
+.progresso-cadastro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.barra-progresso {
+    width: 150px;
+    height: 6px;
+    background: #eee;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.preencher-progresso {
+    height: 100%;
+    background: var(--secondary);
+    border-radius: 3px;
+    width: 33.33%;
+    transition: width 0.3s ease;
+}
+
+/* Estilo para campo de múltipla seleção */
+select[multiple] {
+    height: 120px;
+    padding: 10px;
+}
+
+select[multiple] option {
+    padding: 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+select[multiple] option:hover {
+    background: var(--secondary);
+    color: white;
+}
+
+/* Dicas de validação */
+.dica-campo {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 5px;
+    display: block;
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.campo-invalido {
+    animation: shake 0.5s ease;
+    border-color: var(--accent) !important;
+}
+
+/* Modal de sucesso do cadastro */
+.modal-sucesso {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-sucesso.ativo {
+    display: flex;
+    opacity: 1;
+}
+
+.conteudo-sucesso {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.icone-sucesso {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--success) 0%, #219653 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 20px;
+}
+
+.conteudo-sucesso h3 {
+    color: var(--primary);
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.conteudo-sucesso p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+/* Ajustes para o modal de login existente */
+.auth-tab.cadastro-completo {
+    position: relative;
+}
+
+.auth-tab.cadastro-completo::after {
+    content: '✦';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.7rem;
+    color: var(--secondary);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+}
+/* ============================
    VARIÁVEIS E RESET
    ============================ */
 :root {
