@@ -41,21 +41,20 @@
         </div>
     </div>
 </header>
-    <!-- Modal de Login/Cadastro Melhorado -->
+    <!-- Modal de Login/Cadastro Compacto -->
 <div id="modalAuth" class="modal-auth">
-    <div class="auth-container">
-        <div class="auth-header">
+    <div class="auth-container compact">
+        <div class="auth-header compact">
             <button class="close-auth-modal" onclick="closeAuthModal()">
                 <i class="fas fa-times"></i>
             </button>
-            <div class="auth-logo">
+            <div class="auth-logo compact">
                 <i class="fas fa-graduation-cap"></i>
                 <h2>Study<span>Cert</span></h2>
             </div>
-            <p class="auth-subtitle">Sua jornada em certificações começa aqui</p>
         </div>
         
-        <div class="auth-tabs">
+        <div class="auth-tabs compact">
             <button class="auth-tab active" data-tab="login">
                 <i class="fas fa-sign-in-alt"></i> Entrar
             </button>
@@ -64,485 +63,325 @@
             </button>
         </div>
         
-        <!-- Login Form -->
-        <div id="loginForm" class="auth-form active">
-            <div id="loginMessage" class="message"></div>
-            
-            <div class="social-login">
-                <button class="social-btn google-btn">
-                    <i class="fab fa-google"></i> Continuar com Google
-                </button>
-                <button class="social-btn github-btn">
-                    <i class="fab fa-github"></i> Continuar com GitHub
-                </button>
+        <div class="auth-content-wrapper">
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <div id="loginMessage" class="message compact"></div>
+                
+                <form id="loginFormElement" onsubmit="event.preventDefault(); login();">
+                    <div class="form-group compact">
+                        <div class="input-with-icon compact">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="loginEmail" placeholder="E-mail" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group compact">
+                        <div class="input-with-icon compact">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="Senha" required>
+                            <button type="button" class="toggle-password compact" onclick="togglePassword('loginPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options compact">
+                        <label class="checkbox-container compact">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Lembrar-me
+                        </label>
+                        <a href="#" class="forgot-password" onclick="showForgotPassword()">Esqueceu a senha?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary auth-submit compact">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
+                    
+                    <div class="auth-switch compact">
+                        <p>Não tem conta? <a href="#" onclick="switchToRegister()">Cadastre-se</a></p>
+                    </div>
+                </form>
             </div>
             
-            <div class="divider">
-                <span>ou</span>
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form">
+                <div id="registerMessage" class="message compact"></div>
+                
+                <form id="registerFormElement" onsubmit="event.preventDefault(); register();">
+                    <div class="form-group compact">
+                        <div class="input-with-icon compact">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="registerName" placeholder="Nome completo" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group compact">
+                        <div class="input-with-icon compact">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="registerEmail" placeholder="E-mail" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group compact">
+                        <div class="input-with-icon compact">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerPassword" placeholder="Senha (mínimo 6 caracteres)" required minlength="6">
+                            <button type="button" class="toggle-password compact" onclick="togglePassword('registerPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group compact">
+                        <div class="input-with-icon compact">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="confirmPassword" placeholder="Confirmar senha" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options compact">
+                        <label class="checkbox-container compact">
+                            <input type="checkbox" id="acceptTerms" required>
+                            <span class="checkmark"></span>
+                            Concordo com os <a href="#" class="terms-link">Termos</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success auth-submit compact">
+                        <i class="fas fa-user-plus"></i> Criar Conta
+                    </button>
+                    
+                    <div class="auth-switch compact">
+                        <p>Já tem conta? <a href="#" onclick="switchToLogin()">Faça login</a></p>
+                    </div>
+                </form>
             </div>
             
-            <form id="loginFormElement" onsubmit="event.preventDefault(); login();">
-                <div class="form-group">
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="loginEmail" placeholder="E-mail" required>
+            <!-- Forgot Password Form -->
+            <div id="forgotPasswordForm" class="auth-form">
+                <div class="back-header">
+                    <button class="back-to-login compact" onclick="switchToLogin()">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <h3 class="compact">Recuperar Senha</h3>
+                </div>
+                
+                <form id="forgotPasswordFormElement" onsubmit="event.preventDefault(); sendResetPassword();">
+                    <div class="form-group compact">
+                        <div class="input-with-icon compact">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="resetEmail" placeholder="Digite seu e-mail" required>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="loginPassword" placeholder="Senha" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="form-options">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="rememberMe">
-                        <span class="checkmark"></span>
-                        Lembrar-me
-                    </label>
-                    <a href="#" class="forgot-password" onclick="forgotPassword()">Esqueceu a senha?</a>
-                </div>
-                
-                <button type="submit" class="btn btn-primary auth-submit">
-                    <i class="fas fa-sign-in-alt"></i> Entrar na Conta
-                </button>
-            </form>
-            
-            <div class="auth-switch">
-                <p>Não tem uma conta? <a href="#" onclick="switchToRegister()">Cadastre-se agora</a></p>
-            </div>
-        </div>
-        
-        <!-- Register Form -->
-        <div id="registerForm" class="auth-form">
-            <div id="registerMessage" class="message"></div>
-            
-            <div class="social-login">
-                <button class="social-btn google-btn">
-                    <i class="fab fa-google"></i> Continuar com Google
-                </button>
-                <button class="social-btn github-btn">
-                    <i class="fab fa-github"></i> Continuar com GitHub
-                </button>
-            </div>
-            
-            <div class="divider">
-                <span>ou</span>
-            </div>
-            
-            <form id="registerFormElement" onsubmit="event.preventDefault(); register();">
-                <div class="form-group">
-                    <div class="input-with-icon">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="registerName" placeholder="Nome completo" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="registerEmail" placeholder="E-mail" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="registerPassword" placeholder="Senha (mínimo 6 caracteres)" required minlength="6">
-                        <button type="button" class="toggle-password" onclick="togglePassword('registerPassword')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <div class="password-strength" id="passwordStrength">
-                        <div class="strength-bar"></div>
-                        <span class="strength-text">Força da senha</span>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="confirmPassword" placeholder="Confirmar senha" required>
-                    </div>
-                </div>
-                
-                <div class="form-options">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="acceptTerms" required>
-                        <span class="checkmark"></span>
-                        Concordo com os <a href="#" class="terms-link">Termos de Uso</a> e <a href="#" class="terms-link">Política de Privacidade</a>
-                    </label>
-                </div>
-                
-                <button type="submit" class="btn btn-success auth-submit">
-                    <i class="fas fa-user-plus"></i> Criar Conta Gratuita
-                </button>
-            </form>
-            
-            <div class="auth-switch">
-                <p>Já tem uma conta? <a href="#" onclick="switchToLogin()">Faça login</a></p>
-            </div>
-        </div>
-        
-        <!-- Forgot Password Form (hidden by default) -->
-        <div id="forgotPasswordForm" class="auth-form">
-            <div class="auth-header">
-                <button class="back-to-login" onclick="switchToLogin()">
-                    <i class="fas fa-arrow-left"></i> Voltar
-                </button>
-                <h3>Recuperar Senha</h3>
-                <p class="auth-subtitle">Digite seu e-mail para receber o link de recuperação</p>
-            </div>
-            
-            <form id="forgotPasswordFormElement" onsubmit="event.preventDefault(); sendResetPassword();">
-                <div class="form-group">
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="resetEmail" placeholder="Seu e-mail cadastrado" required>
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary auth-submit">
-                    <i class="fas fa-paper-plane"></i> Enviar Link de Recuperação
-                </button>
-            </form>
-            
-            <div class="recovery-info">
-                <i class="fas fa-info-circle"></i>
-                <p>Enviaremos um link para redefinir sua senha. Verifique sua caixa de entrada e spam.</p>
+                    
+                    <button type="submit" class="btn btn-primary auth-submit compact">
+                        <i class="fas fa-paper-plane"></i> Enviar Link
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-/* Estilos para o modal de autenticação melhorado */
+/* Modal Compacto */
 .modal-auth {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+    padding: 20px;
 }
 
-.modal-auth.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.auth-container {
+.auth-container.compact {
+    width: 100%;
+    max-width: 420px;
+    max-height: 85vh;
     background: white;
-    width: 90%;
-    max-width: 450px;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
     overflow: hidden;
-    animation: modalSlideIn 0.4s ease;
-    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
 }
 
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.auth-header {
+.auth-header.compact {
+    padding: 1.2rem 1.5rem;
     background: linear-gradient(135deg, #3498db, #2c3e50);
-    color: white;
-    padding: 2rem;
-    text-align: center;
     position: relative;
+    min-height: 70px;
 }
 
 .close-auth-modal {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(255, 255, 255, 0.2);
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.15);
     border: none;
-    color: white;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.close-auth-modal:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: rotate(90deg);
-}
-
-.back-to-login {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
+    justify-content: center;
+    font-size: 0.9rem;
 }
 
-.back-to-login:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateX(-5px);
-}
-
-.auth-logo {
+.auth-logo.compact {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 0.8rem;
 }
 
-.auth-logo i {
-    font-size: 2.5rem;
+.auth-logo.compact i {
+    font-size: 1.8rem;
+    color: white;
 }
 
-.auth-logo h2 {
-    font-size: 2rem;
+.auth-logo.compact h2 {
     margin: 0;
+    font-size: 1.5rem;
+    color: white;
 }
 
-.auth-logo span {
-    color: #3498db;
+.auth-logo.compact span {
+    color: #ffd700;
 }
 
-.auth-subtitle {
-    margin: 0;
-    opacity: 0.9;
-    font-size: 0.95rem;
-}
-
-.auth-tabs {
+.auth-tabs.compact {
     display: flex;
-    background: #f8f9fa;
-    padding: 0.5rem;
+    background: #f5f7fa;
+    border-bottom: 1px solid #e1e5eb;
+    padding: 0;
 }
 
 .auth-tab {
     flex: 1;
-    padding: 1rem;
+    padding: 0.9rem;
     border: none;
-    background: none;
+    background: transparent;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 10px;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
 }
 
 .auth-tab.active {
-    background: white;
     color: #3498db;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+    background: white;
+    border-bottom: 3px solid #3498db;
+    font-weight: 600;
+}
+
+.auth-content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(85vh - 140px);
+    padding: 0 1.5rem;
 }
 
 .auth-form {
-    padding: 2rem;
     display: none;
+    padding: 1.5rem 0;
 }
 
 .auth-form.active {
     display: block;
-    animation: fadeIn 0.4s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.form-group.compact {
+    margin-bottom: 1rem;
 }
 
-.social-login {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.social-btn {
-    padding: 0.8rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    background: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.social-btn.google-btn:hover {
-    background: #f8f9fa;
-    border-color: #db4437;
-    color: #db4437;
-}
-
-.social-btn.github-btn:hover {
-    background: #f8f9fa;
-    border-color: #333;
-    color: #333;
-}
-
-.divider {
-    text-align: center;
-    margin: 1.5rem 0;
+.input-with-icon.compact {
     position: relative;
 }
 
-.divider::before {
-    content: '';
+.input-with-icon.compact i {
     position: absolute;
+    left: 12px;
     top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: #e0e0e0;
-}
-
-.divider span {
-    background: white;
-    padding: 0 1rem;
-    color: #666;
+    transform: translateY(-50%);
+    color: #94a3b8;
     font-size: 0.9rem;
 }
 
-.input-with-icon {
-    position: relative;
-}
-
-.input-with-icon i {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-}
-
-.input-with-icon input {
+.input-with-icon.compact input {
     width: 100%;
-    padding: 1rem 1rem 1rem 3rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    padding: 0.8rem 2.5rem 0.8rem 2.5rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background: #f8fafc;
 }
 
-.input-with-icon input:focus {
+.input-with-icon.compact input:focus {
     outline: none;
     border-color: #3498db;
+    background: white;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
-.toggle-password {
+.toggle-password.compact {
     position: absolute;
-    right: 1rem;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #666;
+    color: #94a3b8;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 4px;
+    font-size: 0.9rem;
 }
 
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.password-strength {
-    margin-top: 0.5rem;
-}
-
-.strength-bar {
-    height: 4px;
-    background: #e0e0e0;
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 0.25rem;
-}
-
-.strength-bar::after {
-    content: '';
-    display: block;
-    height: 100%;
-    width: 0%;
-    background: #e74c3c;
-    transition: width 0.3s ease;
-}
-
-.strength-text {
-    font-size: 0.8rem;
-    color: #666;
-}
-
-.form-options {
+.form-options.compact {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin: 1rem 0 1.5rem;
+    font-size: 0.85rem;
 }
 
-.checkbox-container {
+.checkbox-container.compact {
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 0.9rem;
-    color: #666;
+    color: #475569;
 }
 
-.checkbox-container input {
+.checkbox-container.compact input {
     display: none;
 }
 
 .checkmark {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #ddd;
-    border-radius: 4px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #cbd5e1;
+    border-radius: 3px;
     margin-right: 0.5rem;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
-.checkbox-container input:checked + .checkmark {
+.checkbox-container.compact input:checked + .checkmark {
     background: #3498db;
     border-color: #3498db;
 }
@@ -554,116 +393,164 @@
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     opacity: 0;
-    transition: opacity 0.3s ease;
 }
 
-.checkbox-container input:checked + .checkmark::after {
+.checkbox-container.compact input:checked + .checkmark::after {
     opacity: 1;
 }
 
 .forgot-password {
     color: #3498db;
     text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.3s ease;
+    font-size: 0.85rem;
 }
 
 .forgot-password:hover {
-    color: #2980b9;
     text-decoration: underline;
 }
 
 .terms-link {
     color: #3498db;
-    text-decoration: none;
+    font-size: 0.85rem;
 }
 
-.terms-link:hover {
-    text-decoration: underline;
-}
-
-.auth-submit {
+.auth-submit.compact {
     width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin: 1.5rem 0;
 }
 
-.auth-submit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.auth-switch {
+.auth-switch.compact {
     text-align: center;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e0e0e0;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+    color: #64748b;
 }
 
-.auth-switch a {
+.auth-switch.compact a {
     color: #3498db;
-    font-weight: 600;
+    font-weight: 500;
     text-decoration: none;
 }
 
-.auth-switch a:hover {
+.auth-switch.compact a:hover {
     text-decoration: underline;
 }
 
-.recovery-info {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 10px;
-    margin-top: 1.5rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
+/* Forgot Password */
+.back-header {
+    margin-bottom: 1.5rem;
 }
 
-.recovery-info i {
+.back-to-login.compact {
+    background: none;
+    border: none;
     color: #3498db;
-    margin-top: 0.2rem;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
 }
 
-.recovery-info p {
+.back-header h3.compact {
     margin: 0;
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 1.2rem;
+    color: #1e293b;
+}
+
+/* Message */
+.message.compact {
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    display: none;
+}
+
+.message.success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    display: block;
+}
+
+.message.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    display: block;
+}
+
+/* Scrollbar personalizada */
+.auth-content-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.auth-content-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.auth-content-wrapper::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.auth-content-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
 }
 
 /* Responsividade */
 @media (max-width: 480px) {
-    .auth-container {
-        width: 95%;
-        margin: 1rem;
+    .modal-auth {
+        padding: 10px;
     }
     
-    .auth-header {
-        padding: 1.5rem;
+    .auth-container.compact {
+        max-height: 90vh;
+        max-width: 95%;
+    }
+    
+    .auth-content-wrapper {
+        max-height: calc(90vh - 130px);
+        padding: 0 1rem;
+    }
+    
+    .auth-header.compact {
+        padding: 1rem;
     }
     
     .auth-form {
-        padding: 1.5rem;
+        padding: 1rem 0;
+    }
+}
+
+@media (max-height: 600px) {
+    .auth-container.compact {
+        max-height: 95vh;
     }
     
-    .form-options {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+    .auth-content-wrapper {
+        max-height: calc(95vh - 130px);
     }
 }
 </style>
 
 <script>
-// Funções JavaScript adicionais
+// Funções JavaScript
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     const button = input.nextElementSibling;
@@ -681,67 +568,173 @@ function togglePassword(inputId) {
 }
 
 function switchToRegister() {
-    document.getElementById('loginForm').classList.remove('active');
+    document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+    document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+    
     document.getElementById('registerForm').classList.add('active');
-    document.querySelector('.auth-tab[data-tab="login"]').classList.remove('active');
     document.querySelector('.auth-tab[data-tab="register"]').classList.add('active');
+    
+    // Scroll para o topo do formulário
+    document.querySelector('.auth-content-wrapper').scrollTop = 0;
 }
 
 function switchToLogin() {
-    document.getElementById('registerForm').classList.remove('active');
+    document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+    document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+    
     document.getElementById('loginForm').classList.add('active');
-    document.getElementById('forgotPasswordForm').classList.remove('active');
-    document.querySelector('.auth-tab[data-tab="register"]').classList.remove('active');
     document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+    
+    // Scroll para o topo do formulário
+    document.querySelector('.auth-content-wrapper').scrollTop = 0;
 }
 
 function showForgotPassword() {
-    document.getElementById('loginForm').classList.remove('active');
+    document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
     document.getElementById('forgotPasswordForm').classList.add('active');
+    
+    // Scroll para o topo do formulário
+    document.querySelector('.auth-content-wrapper').scrollTop = 0;
 }
 
-// Validação de força da senha em tempo real
-document.getElementById('registerPassword')?.addEventListener('input', function(e) {
-    const password = e.target.value;
-    const strengthBar = document.querySelector('.strength-bar');
-    const strengthText = document.querySelector('.strength-text');
+// Abrir modal de autenticação
+function openAuthModal(tab = 'login') {
+    const modal = document.getElementById('modalAuth');
+    modal.classList.add('active');
     
-    let strength = 0;
-    let color = '#e74c3c';
-    let text = 'Fraca';
-    
-    if (password.length >= 6) strength += 1;
-    if (password.length >= 8) strength += 1;
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/[0-9]/.test(password)) strength += 1;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-    
-    if (strength <= 1) {
-        color = '#e74c3c';
-        text = 'Fraca';
-    } else if (strength <= 3) {
-        color = '#f39c12';
-        text = 'Média';
+    if (tab === 'register') {
+        switchToRegister();
     } else {
-        color = '#27ae60';
-        text = 'Forte';
+        switchToLogin();
     }
     
-    strengthBar.style.setProperty('--strength-color', color);
-    strengthBar.querySelector('::after').style.width = (strength * 20) + '%';
-    strengthText.textContent = text;
-    strengthText.style.color = color;
-});
-
-// Adicionar CSS para a barra de força
-const style = document.createElement('style');
-style.textContent = `
-.strength-bar::after {
-    width: var(--strength-width, 0%);
-    background: var(--strength-color, #e74c3c) !important;
+    // Fechar menu mobile se aberto
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle?.classList.contains('active')) {
+        menuToggle.click();
+    }
 }
-`;
-document.head.appendChild(style);
+
+// Fechar modal de autenticação
+function closeAuthModal() {
+    document.getElementById('modalAuth').classList.remove('active');
+}
+
+// Login function
+async function login() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const message = document.getElementById('loginMessage');
+    
+    if (!email || !password) {
+        showMessage(message, 'Por favor, preencha todos os campos', 'error');
+        return;
+    }
+    
+    try {
+        // Aqui você implementaria a lógica de login com Supabase
+        showMessage(message, 'Entrando...', 'success');
+        
+        // Simulação de login (substitua pela chamada real ao Supabase)
+        setTimeout(() => {
+            showMessage(message, 'Login realizado com sucesso!', 'success');
+            setTimeout(() => {
+                closeAuthModal();
+                updateAuthUI(); // Atualizar interface após login
+            }, 1000);
+        }, 1000);
+        
+    } catch (error) {
+        showMessage(message, 'Erro ao fazer login. Verifique suas credenciais.', 'error');
+    }
+}
+
+// Register function
+async function register() {
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const message = document.getElementById('registerMessage');
+    
+    if (!name || !email || !password || !confirmPassword) {
+        showMessage(message, 'Por favor, preencha todos os campos', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showMessage(message, 'A senha deve ter no mínimo 6 caracteres', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showMessage(message, 'As senhas não coincidem', 'error');
+        return;
+    }
+    
+    try {
+        // Aqui você implementaria a lógica de registro com Supabase
+        showMessage(message, 'Criando conta...', 'success');
+        
+        // Simulação de registro (substitua pela chamada real ao Supabase)
+        setTimeout(() => {
+            showMessage(message, 'Conta criada com sucesso!', 'success');
+            setTimeout(() => {
+                switchToLogin();
+                document.getElementById('registerForm').reset();
+            }, 1000);
+        }, 1000);
+        
+    } catch (error) {
+        showMessage(message, 'Erro ao criar conta. Tente novamente.', 'error');
+    }
+}
+
+// Função auxiliar para mostrar mensagens
+function showMessage(element, text, type) {
+    element.textContent = text;
+    element.className = `message compact ${type}`;
+    element.style.display = 'block';
+    
+    if (type === 'success') {
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 3000);
+    }
+}
+
+// Adicionar eventos aos botões de autenticação
+document.addEventListener('DOMContentLoaded', function() {
+    // Botões de tab
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const target = this.getAttribute('data-tab');
+            
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (target === 'login') {
+                switchToLogin();
+            } else if (target === 'register') {
+                switchToRegister();
+            }
+        });
+    });
+    
+    // Fechar modal ao clicar fora
+    document.getElementById('modalAuth').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAuthModal();
+        }
+    });
+    
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAuthModal();
+        }
+    });
+});
 </script>
 
     <!-- Hero Section -->
