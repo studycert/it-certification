@@ -1,298 +1,162 @@
 /**
- * Cadastro.js - Funcionalidades do formulário de cadastro completo
+ * Cadastro Simplificado - Funcionalidades básicas
  */
 
 // Estado do cadastro
 let cadastroState = {
-    passoAtual: 1,
-    totalPassos: 3,
     dados: {}
 };
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    // Apenas se estiver no modal de cadastro
     if (document.getElementById('registerForm')) {
         inicializarMascaras();
         inicializarValidacoes();
-        atualizarIndicadoresPasso();
-        atualizarBarraProgresso();
     }
 });
 
-// Máscaras para CPF e telefone
+// Máscaras para telefone
 function inicializarMascaras() {
-    // Máscara para CPF
-    const cpfInput = document.getElementById('registerCpf');
-    if (cpfInput) {
-        cpfInput.addEventListener('input', function(e) {
+    const telefoneInput = document.getElementById('telefone');
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
             let valor = e.target.value.replace(/\D/g, '');
+            
             if (valor.length > 11) valor = valor.substring(0, 11);
             
-            if (valor.length <= 11) {
-                valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
-                valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
-                valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            if (valor.length <= 10) {
+                valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+                valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+            } else {
+                valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+                valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
             }
             
             e.target.value = valor;
         });
     }
-    
-    // Máscara para telefones
-    const phoneInputs = ['registerPhone', 'registerWhatsApp'];
-    phoneInputs.forEach(id => {
-        const input = document.getElementById(id);
-        if (input) {
-            input.addEventListener('input', function(e) {
-                let valor = e.target.value.replace(/\D/g, '');
-                
-                if (valor.length > 11) valor = valor.substring(0, 11);
-                
-                if (valor.length <= 10) {
-                    valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
-                    valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
-                } else {
-                    valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
-                    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
-                }
-                
-                e.target.value = valor;
-            });
-        }
-    });
 }
 
-// Validações em tempo real
+// Validações básicas
 function inicializarValidacoes() {
     // Validação de nome
-    const nomeInput = document.getElementById('registerName');
+    const nomeInput = document.getElementById('nome');
     if (nomeInput) {
-        nomeInput.addEventListener('blur', validarNome);
+        nomeInput.addEventListener('blur', function() {
+            validarCampoObrigatorio('nome', 'Digite seu nome');
+        });
+    }
+    
+    // Validação de sobrenome
+    const sobrenomeInput = document.getElementById('sobrenome');
+    if (sobrenomeInput) {
+        sobrenomeInput.addEventListener('blur', function() {
+            validarCampoObrigatorio('sobrenome', 'Digite seu sobrenome');
+        });
     }
     
     // Validação de email
-    const emailInput = document.getElementById('registerEmail');
+    const emailInput = document.getElementById('email');
     if (emailInput) {
-        emailInput.addEventListener('blur', validarEmailCadastro);
+        emailInput.addEventListener('blur', validarEmail);
     }
     
     // Validação de senha
-    const senhaInput = document.getElementById('registerPassword');
+    const senhaInput = document.getElementById('senha');
     if (senhaInput) {
-        senhaInput.addEventListener('input', validarForcaSenha);
-        senhaInput.addEventListener('blur', validarSenhaCadastro);
+        senhaInput.addEventListener('input', function() {
+            validarForcaSenha();
+            validarSenha();
+        });
     }
     
     // Validação de confirmação de senha
-    const confirmSenhaInput = document.getElementById('registerConfirmPassword');
-    if (confirmSenhaInput) {
-        confirmSenhaInput.addEventListener('blur', validarConfirmacaoSenha);
-    }
-    
-    // Validação de CPF
-    const cpfInput = document.getElementById('registerCpf');
-    if (cpfInput) {
-        cpfInput.addEventListener('blur', validarCPF);
+    const confirmarSenhaInput = document.getElementById('confirmarSenha');
+    if (confirmarSenhaInput) {
+        confirmarSenhaInput.addEventListener('blur', validarConfirmacaoSenha);
     }
     
     // Validação de telefone
-    const phoneInput = document.getElementById('registerPhone');
-    if (phoneInput) {
-        phoneInput.addEventListener('blur', validarTelefone);
-    }
-    
-    // Validação de data de nascimento
-    const birthInput = document.getElementById('registerBirth');
-    if (birthInput) {
-        birthInput.addEventListener('blur', validarDataNascimento);
+    const telefoneInput = document.getElementById('telefone');
+    if (telefoneInput) {
+        telefoneInput.addEventListener('blur', validarTelefone);
     }
 }
 
 // Funções de validação
-function validarNome() {
-    const input = document.getElementById('registerName');
-    const mensagem = document.getElementById('validName');
+function validarCampoObrigatorio(campoId, mensagemErro) {
+    const input = document.getElementById(campoId);
+    const mensagem = document.getElementById('valid' + campoId.charAt(0).toUpperCase() + campoId.slice(1));
     const valor = input.value.trim();
     
     if (!valor) {
-        mostrarValidacao(mensagem, 'Por favor, insira seu nome completo.', false);
-        input.classList.add('campo-invalido');
+        mostrarValidacao(mensagem, mensagemErro, false);
+        input.classList.add('invalido');
+        input.classList.remove('valido');
         return false;
     }
     
-    if (valor.split(' ').length < 2) {
-        mostrarValidacao(mensagem, 'Digite nome e sobrenome.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    mostrarValidacao(mensagem, 'Nome válido!', true);
-    input.classList.remove('campo-invalido');
+    mostrarValidacao(mensagem, '✓ Válido', true);
+    input.classList.remove('invalido');
+    input.classList.add('valido');
     return true;
 }
 
-function validarEmailCadastro() {
-    const input = document.getElementById('registerEmail');
+function validarEmail() {
+    const input = document.getElementById('email');
     const mensagem = document.getElementById('validEmail');
     const valor = input.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if (!valor) {
-        mostrarValidacao(mensagem, 'Por favor, insira seu e-mail.', false);
-        input.classList.add('campo-invalido');
+        mostrarValidacao(mensagem, 'Digite seu e-mail', false);
+        input.classList.add('invalido');
+        input.classList.remove('valido');
         return false;
     }
     
     if (!emailRegex.test(valor)) {
-        mostrarValidacao(mensagem, 'Por favor, insira um e-mail válido.', false);
-        input.classList.add('campo-invalido');
+        mostrarValidacao(mensagem, 'E-mail inválido', false);
+        input.classList.add('invalido');
+        input.classList.remove('valido');
         return false;
     }
     
-    mostrarValidacao(mensagem, 'E-mail válido!', true);
-    input.classList.remove('campo-invalido');
+    mostrarValidacao(mensagem, '✓ E-mail válido', true);
+    input.classList.remove('invalido');
+    input.classList.add('valido');
     return true;
 }
 
-function validarSenhaCadastro() {
-    const input = document.getElementById('registerPassword');
-    const mensagem = document.getElementById('validPassword');
+function validarSenha() {
+    const input = document.getElementById('senha');
+    const mensagem = document.getElementById('validSenha');
     const valor = input.value;
     
     if (!valor) {
-        mostrarValidacao(mensagem, 'Por favor, insira uma senha.', false);
-        input.classList.add('campo-invalido');
+        mostrarValidacao(mensagem, 'Crie uma senha', false);
+        input.classList.add('invalido');
+        input.classList.remove('valido');
         return false;
     }
     
-    if (valor.length < 8) {
-        mostrarValidacao(mensagem, 'A senha deve ter pelo menos 8 caracteres.', false);
-        input.classList.add('campo-invalido');
+    if (valor.length < 6) {
+        mostrarValidacao(mensagem, 'Mínimo 6 caracteres', false);
+        input.classList.add('invalido');
+        input.classList.remove('valido');
         return false;
     }
     
-    const hasUpperCase = /[A-Z]/.test(valor);
-    const hasLowerCase = /[a-z]/.test(valor);
-    const hasNumbers = /\d/.test(valor);
-    const hasSpecial = /[^A-Za-z0-9]/.test(valor);
-    
-    if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecial) {
-        mostrarValidacao(mensagem, 'Use maiúsculas, minúsculas, números e símbolos.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    mostrarValidacao(mensagem, 'Senha forte!', true);
-    input.classList.remove('campo-invalido');
-    return true;
-}
-
-function validarConfirmacaoSenha() {
-    const senha = document.getElementById('registerPassword').value;
-    const input = document.getElementById('registerConfirmPassword');
-    const mensagem = document.getElementById('validConfirmPassword');
-    const valor = input.value;
-    
-    if (!valor) {
-        mostrarValidacao(mensagem, 'Por favor, confirme sua senha.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    if (senha !== valor) {
-        mostrarValidacao(mensagem, 'As senhas não coincidem.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    mostrarValidacao(mensagem, 'Senhas coincidem!', true);
-    input.classList.remove('campo-invalido');
-    return true;
-}
-
-function validarCPF() {
-    const input = document.getElementById('registerCpf');
-    const mensagem = document.getElementById('validCpf');
-    const valor = input.value.replace(/\D/g, '');
-    
-    // CPF não é obrigatório, apenas valida se preenchido
-    if (!valor) {
-        mensagem.innerHTML = '';
-        input.classList.remove('campo-invalido');
-        return true;
-    }
-    
-    if (valor.length !== 11) {
-        mostrarValidacao(mensagem, 'CPF deve ter 11 dígitos.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    // Validação simples de CPF
-    mostrarValidacao(mensagem, 'CPF válido!', true);
-    input.classList.remove('campo-invalido');
-    return true;
-}
-
-function validarTelefone() {
-    const input = document.getElementById('registerPhone');
-    const mensagem = document.getElementById('validPhone');
-    const valor = input.value.replace(/\D/g, '');
-    
-    if (!valor) {
-        mostrarValidacao(mensagem, 'Por favor, insira um telefone.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    if (valor.length < 10 || valor.length > 11) {
-        mostrarValidacao(mensagem, 'Telefone inválido.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    mostrarValidacao(mensagem, 'Telefone válido!', true);
-    input.classList.remove('campo-invalido');
-    return true;
-}
-
-function validarDataNascimento() {
-    const input = document.getElementById('registerBirth');
-    const mensagem = document.getElementById('validBirth');
-    const valor = input.value;
-    
-    if (!valor) {
-        mostrarValidacao(mensagem, 'Por favor, insira sua data de nascimento.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    const dataNascimento = new Date(valor);
-    const hoje = new Date();
-    const idade = hoje.getFullYear() - dataNascimento.getFullYear();
-    
-    if (idade < 16) {
-        mostrarValidacao(mensagem, 'Você deve ter pelo menos 16 anos.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    if (idade > 120) {
-        mostrarValidacao(mensagem, 'Data de nascimento inválida.', false);
-        input.classList.add('campo-invalido');
-        return false;
-    }
-    
-    mostrarValidacao(mensagem, 'Data válida!', true);
-    input.classList.remove('campo-invalido');
+    mostrarValidacao(mensagem, '✓ Senha válida', true);
+    input.classList.remove('invalido');
+    input.classList.add('valido');
     return true;
 }
 
 function validarForcaSenha() {
-    const input = document.getElementById('registerPassword');
-    const texto = document.getElementById('passwordStrengthText');
-    const barra = document.getElementById('passwordStrengthBar');
+    const input = document.getElementById('senha');
+    const texto = document.getElementById('forcaTexto');
+    const barra = document.getElementById('forcaBarra');
     const valor = input.value;
     
     if (!valor) {
@@ -305,35 +169,33 @@ function validarForcaSenha() {
     let score = 0;
     
     // Comprimento
+    if (valor.length >= 6) score++;
     if (valor.length >= 8) score++;
-    if (valor.length >= 12) score++;
     
     // Diversidade
     if (/[a-z]/.test(valor)) score++;
     if (/[A-Z]/.test(valor)) score++;
     if (/[0-9]/.test(valor)) score++;
-    if (/[^A-Za-z0-9]/.test(valor)) score++;
     
     switch (score) {
         case 0:
         case 1:
-        case 2:
             texto.textContent = 'Fraca';
             barra.style.width = '25%';
             barra.style.backgroundColor = '#e74c3c';
             break;
+        case 2:
         case 3:
-        case 4:
             texto.textContent = 'Média';
             barra.style.width = '50%';
             barra.style.backgroundColor = '#f39c12';
             break;
-        case 5:
+        case 4:
             texto.textContent = 'Forte';
             barra.style.width = '75%';
             barra.style.backgroundColor = '#27ae60';
             break;
-        case 6:
+        case 5:
             texto.textContent = 'Muito Forte';
             barra.style.width = '100%';
             barra.style.backgroundColor = '#2ecc71';
@@ -341,141 +203,67 @@ function validarForcaSenha() {
     }
 }
 
-function mostrarValidacao(elemento, mensagem, valido) {
-    if (!elemento) return;
+function validarConfirmacaoSenha() {
+    const senha = document.getElementById('senha').value;
+    const input = document.getElementById('confirmarSenha');
+    const mensagem = document.getElementById('validConfirmarSenha');
+    const valor = input.value;
     
-    const icon = valido ? '✓' : '✗';
-    const classe = valido ? 'valido' : 'invalido';
-    
-    elemento.innerHTML = `<span>${icon} ${mensagem}</span>`;
-    elemento.className = `mensagem-validacao ${classe}`;
-}
-
-// Navegação entre passos
-function avancarCadastro() {
-    if (!validarPassoAtual()) return;
-    
-    if (cadastroState.passoAtual < cadastroState.totalPassos) {
-        salvarDadosPassoAtual();
-        cadastroState.passoAtual++;
-        mostrarPassoCadastro(cadastroState.passoAtual);
-        atualizarIndicadoresPasso();
-        atualizarBarraProgresso();
-    }
-}
-
-function voltarCadastro() {
-    if (cadastroState.passoAtual > 1) {
-        cadastroState.passoAtual--;
-        mostrarPassoCadastro(cadastroState.passoAtual);
-        atualizarIndicadoresPasso();
-        atualizarBarraProgresso();
-    }
-}
-
-function validarPassoAtual() {
-    switch (cadastroState.passoAtual) {
-        case 1:
-            return validarPasso1();
-        case 2:
-            return validarPasso2();
-        case 3:
-            return validarPasso3();
-        default:
-            return false;
-    }
-}
-
-function validarPasso1() {
-    return validarNome() && validarEmailCadastro() && validarTelefone() && validarDataNascimento();
-}
-
-function validarPasso2() {
-    return validarSenhaCadastro() && validarConfirmacaoSenha();
-}
-
-function validarPasso3() {
-    const termosCheckbox = document.getElementById('registerTerms');
-    if (!termosCheckbox.checked) {
-        mostrarNotificacao('Você deve aceitar os Termos de Uso e Política de Privacidade.', 'error');
+    if (!valor) {
+        mostrarValidacao(mensagem, 'Confirme sua senha', false);
+        input.classList.add('invalido');
+        input.classList.remove('valido');
         return false;
     }
+    
+    if (senha !== valor) {
+        mostrarValidacao(mensagem, 'Senhas não coincidem', false);
+        input.classList.add('invalido');
+        input.classList.remove('valido');
+        return false;
+    }
+    
+    mostrarValidacao(mensagem, '✓ Senhas iguais', true);
+    input.classList.remove('invalido');
+    input.classList.add('valido');
     return true;
 }
 
-function mostrarPassoCadastro(numeroPasso) {
-    // Oculta todos os passos
-    document.querySelectorAll('.cadastro-conteudo').forEach(conteudo => {
-        conteudo.classList.remove('ativo');
-    });
+function validarTelefone() {
+    const input = document.getElementById('telefone');
+    const mensagem = document.getElementById('validTelefone');
+    const valor = input.value.replace(/\D/g, '');
     
-    // Mostra o passo atual
-    const passo = document.getElementById(`cadastroPasso${numeroPasso}`);
-    if (passo) {
-        passo.classList.add('ativo');
-    }
-}
-
-function atualizarIndicadoresPasso() {
-    const indicadores = document.querySelectorAll('.passo-indicador');
-    
-    indicadores.forEach((indicador, index) => {
-        const passo = index + 1;
-        
-        indicador.classList.remove('ativo', 'completo');
-        
-        if (passo < cadastroState.passoAtual) {
-            indicador.classList.add('completo');
-        } else if (passo === cadastroState.passoAtual) {
-            indicador.classList.add('ativo');
-        }
-    });
-}
-
-function atualizarBarraProgresso() {
-    const texto = document.getElementById('progressText');
-    const barra = document.getElementById('progressBar');
-    
-    if (texto) {
-        texto.textContent = `Passo ${cadastroState.passoAtual} de ${cadastroState.totalPassos}`;
+    // Telefone é opcional
+    if (!valor) {
+        mensagem.innerHTML = '';
+        input.classList.remove('invalido', 'valido');
+        return true;
     }
     
-    if (barra) {
-        const porcentagem = (cadastroState.passoAtual / cadastroState.totalPassos) * 100;
-        barra.style.width = `${porcentagem}%`;
+    if (valor.length < 10 || valor.length > 11) {
+        mostrarValidacao(mensagem, 'Telefone inválido', false);
+        input.classList.add('invalido');
+        input.classList.remove('valido');
+        return false;
     }
+    
+    mostrarValidacao(mensagem, '✓ Telefone válido', true);
+    input.classList.remove('invalido');
+    input.classList.add('valido');
+    return true;
 }
 
-function salvarDadosPassoAtual() {
-    const passo = cadastroState.passoAtual;
-    const conteudo = document.getElementById(`cadastroPasso${passo}`);
+function mostrarValidacao(elemento, mensagem, valido) {
+    if (!elemento) return;
     
-    if (!conteudo) return;
-    
-    const dados = {};
-    const inputs = conteudo.querySelectorAll('input, select, textarea');
-    
-    inputs.forEach(input => {
-        if (input.type === 'checkbox') {
-            dados[input.id] = input.checked;
-        } else if (input.type === 'radio') {
-            if (input.checked) {
-                dados[input.name] = input.value;
-            }
-        } else if (input.type === 'select-multiple') {
-            // Para selects múltiplos
-            dados[input.id] = Array.from(input.selectedOptions).map(option => option.value);
-        } else {
-            dados[input.id] = input.value;
-        }
-    });
-    
-    cadastroState.dados[`passo${passo}`] = dados;
-    console.log('Dados salvos do passo', passo, ':', dados);
+    const classe = valido ? 'valida' : 'invalida';
+    elemento.innerHTML = `<span>${mensagem}</span>`;
+    elemento.className = `msg-validacao ${classe}`;
 }
 
-// Toggle de visibilidade da senha
-function togglePassword(inputId) {
+// Mostrar/ocultar senha
+function mostrarSenha(inputId) {
     const input = document.getElementById(inputId);
     const button = input.nextElementSibling;
     const icon = button.querySelector('i');
@@ -492,65 +280,92 @@ function togglePassword(inputId) {
 }
 
 // Login com redes sociais
-function loginWithGoogle() {
-    mostrarNotificacao('Redirecionando para login com Google...', 'info');
-    // Aqui você integraria com a API do Google OAuth
-    // Por enquanto, simulamos um delay
-    setTimeout(() => {
-        mostrarNotificacao('Login com Google será implementado em breve!', 'info');
-    }, 1000);
+function loginComGoogle() {
+    // Simulação - implemente com sua API
+    mostrarMensagem('Login com Google será implementado em breve!', 'info');
 }
 
-function loginWithMicrosoft() {
-    mostrarNotificacao('Redirecionando para login com Microsoft...', 'info');
-    // Aqui você integraria com a API da Microsoft
-    // Por enquanto, simulamos um delay
-    setTimeout(() => {
-        mostrarNotificacao('Login com Microsoft será implementado em breve!', 'info');
-    }, 1000);
+function loginComMicrosoft() {
+    // Simulação - implemente com sua API
+    mostrarMensagem('Login com Microsoft será implementado em breve!', 'info');
 }
 
-// Finalizar cadastro
-function finalizarCadastro() {
-    if (!validarPassoAtual()) return;
+// Cadastro de usuário
+function cadastrarUsuario() {
+    // Validar campos obrigatórios
+    const camposObrigatorios = ['nome', 'sobrenome', 'email', 'senha', 'confirmarSenha'];
+    let valido = true;
     
-    salvarDadosPassoAtual();
+    camposObrigatorios.forEach(campo => {
+        if (!validarCampoObrigatorio(campo, 'Campo obrigatório')) {
+            valido = false;
+        }
+    });
     
-    // Simulação de envio
-    const botaoFinalizar = document.querySelector('.btn-passo.finalizar');
-    const textoOriginal = botaoFinalizar.innerHTML;
+    if (!validarEmail()) valido = false;
+    if (!validarSenha()) valido = false;
+    if (!validarConfirmacaoSenha()) valido = false;
     
-    botaoFinalizar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
-    botaoFinalizar.disabled = true;
-    
-    // Simulação de requisição ao backend
-    setTimeout(() => {
-        // Aqui você enviaria os dados para seu backend
-        console.log('Dados completos do cadastro:', cadastroState.dados);
-        
-        // Simulação de sucesso
-        mostrarModalSucesso();
-        
-        botaoFinalizar.innerHTML = textoOriginal;
-        botaoFinalizar.disabled = false;
-    }, 2000);
-}
-
-// Modal de sucesso
-function mostrarModalSucesso() {
-    const modal = document.getElementById('modalSucesso');
-    if (modal) {
-        modal.classList.add('ativo');
-    }
-}
-
-function fecharModalSucesso() {
-    const modal = document.getElementById('modalSucesso');
-    if (modal) {
-        modal.classList.remove('ativo');
+    // Verificar termos
+    const termos = document.getElementById('termos');
+    if (!termos.checked) {
+        mostrarMensagem('Você precisa aceitar os Termos de Uso para continuar.', 'error');
+        valido = false;
     }
     
-    // Volta para o login
+    if (!valido) {
+        mostrarMensagem('Por favor, corrija os campos destacados em vermelho.', 'error');
+        return;
+    }
+    
+    // Coletar dados
+    const dados = {
+        nome: document.getElementById('nome').value.trim(),
+        sobrenome: document.getElementById('sobrenome').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        senha: document.getElementById('senha').value,
+        dataNascimento: document.getElementById('dataNascimento').value,
+        telefone: document.getElementById('telefone').value.replace(/\D/g, ''),
+        termos: true
+    };
+    
+    // Simular envio
+    const botao = document.querySelector('.btn-cadastrar');
+    const textoOriginal = botao.innerHTML;
+    
+    botao.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando conta...';
+    botao.disabled = true;
+    
+    // Simulação de requisição
+    setTimeout(() => {
+        console.log('Dados do cadastro:', dados);
+        
+        // Sucesso
+        mostrarMensagem('Conta criada com sucesso! Redirecionando...', 'success');
+        
+        // Em produção, você faria:
+        // 1. Enviar dados para o backend
+        // 2. Redirecionar ou fazer login automático
+        
+        // Por enquanto, apenas mostra mensagem e volta para login
+        setTimeout(() => {
+            mostrarLogin();
+            botao.innerHTML = textoOriginal;
+            botao.disabled = false;
+            
+            // Limpar formulário
+            document.getElementById('registerForm').reset();
+            document.querySelectorAll('.msg-validacao').forEach(el => el.innerHTML = '');
+            document.querySelectorAll('input').forEach(el => {
+                el.classList.remove('valido', 'invalido');
+            });
+        }, 2000);
+        
+    }, 1500);
+}
+
+// Mostrar formulário de login
+function mostrarLogin() {
     const tabs = document.querySelectorAll('.auth-tab');
     tabs.forEach(tab => {
         tab.classList.remove('active');
@@ -566,36 +381,27 @@ function fecharModalSucesso() {
             form.classList.add('active');
         }
     });
-    
-    // Reseta o cadastro
-    cadastroState = {
-        passoAtual: 1,
-        totalPassos: 3,
-        dados: {}
-    };
-    
-    // Reseta os campos do formulário
-    document.getElementById('registerForm').reset();
-    mostrarPassoCadastro(1);
-    atualizarIndicadoresPasso();
-    atualizarBarraProgresso();
 }
 
-// Função auxiliar para notificações
-function mostrarNotificacao(mensagem, tipo = 'info') {
-    // Você pode implementar seu sistema de notificações aqui
-    alert(mensagem);
+// Mostrar mensagens
+function mostrarMensagem(texto, tipo) {
+    // Você pode implementar seu sistema de notificações
+    // Por enquanto, uso alert simples
+    if (tipo === 'error') {
+        alert('❌ ' + texto);
+    } else if (tipo === 'success') {
+        alert('✅ ' + texto);
+    } else {
+        alert('ℹ️ ' + texto);
+    }
 }
 
-// Exportar funções para uso global
-window.togglePassword = togglePassword;
-window.avancarCadastro = avancarCadastro;
-window.voltarCadastro = voltarCadastro;
-window.loginWithGoogle = loginWithGoogle;
-window.loginWithMicrosoft = loginWithMicrosoft;
-window.finalizarCadastro = finalizarCadastro;
-window.fecharModalSucesso = fecharModalSucesso;
-
+// Adicionar ao objeto global window
+window.mostrarSenha = mostrarSenha;
+window.loginComGoogle = loginComGoogle;
+window.loginComMicrosoft = loginComMicrosoft;
+window.cadastrarUsuario = cadastrarUsuario;
+window.mostrarLogin = mostrarLogin;
 // js/auth.js - Sistema de autenticação global CORRIGIDO
 class AuthManager {
     constructor() {
