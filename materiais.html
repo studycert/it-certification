@@ -145,6 +145,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            position: relative;
         }
         
         .material-card-page:hover {
@@ -174,11 +175,14 @@
         .card-title h3 {
             color: #2c3e50;
             margin: 0 0 0.2rem 0;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
-            white-space: nowrap;
+            line-height: 1.3;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
         
         .file-type-badge {
@@ -191,6 +195,7 @@
             background: #f8f9fa;
             color: #666;
             border: 1px solid #dee2e6;
+            margin-top: 0.3rem;
         }
         
         .card-body {
@@ -494,7 +499,7 @@
         .stats-grid {
             display: flex; 
             justify-content: space-around; 
-flex-wrap: wrap; 
+            flex-wrap: wrap; 
             gap: 0.5rem;
         }
         
@@ -544,6 +549,151 @@ flex-wrap: wrap;
             border-color: #3498db;
         }
         
+        /* ===== CATEGORIAS POR TIPO ===== */
+        .categories-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .categories-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+        
+        .category-card {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #eee;
+            position: relative;
+        }
+        
+        .category-card:hover {
+            background: #e8f4fc;
+            border-color: #3498db;
+            transform: translateY(-2px);
+        }
+        
+        .category-card.active {
+            background: #3498db;
+            border-color: #3498db;
+        }
+        
+        .category-card.active .category-title,
+        .category-card.active .category-count {
+            color: white;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-icon {
+            font-size: 1.2rem;
+        }
+        
+        .category-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+        
+        .category-count {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .category-files {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #eee;
+            font-size: 0.8rem;
+        }
+        
+        .file-item {
+            padding: 0.2rem 0;
+            color: #555;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Dropdown de Arquivos */
+        .files-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 0.8rem;
+            z-index: 100;
+            display: none;
+            margin-top: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .category-card:hover .files-dropdown {
+            display: block;
+        }
+        
+        .files-dropdown h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.3rem;
+        }
+        
+        .dropdown-file-item {
+            padding: 0.4rem;
+            border-radius: 4px;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-file-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .dropdown-file-icon {
+            font-size: 0.9rem;
+            min-width: 20px;
+        }
+        
+        .dropdown-file-name {
+            flex-grow: 1;
+            font-size: 0.85rem;
+            color: #555;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 768px) {
             .materials-page {
@@ -570,6 +720,10 @@ flex-wrap: wrap;
             .view-toggle {
                 justify-content: center;
             }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
         }
         
         @media (max-width: 480px) {
@@ -590,6 +744,10 @@ flex-wrap: wrap;
             .card-actions .btn {
                 flex-grow: 1;
                 justify-content: center;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -645,6 +803,14 @@ flex-wrap: wrap;
             <p id="certDescription">Acesse guias, resumos, apresentações e outros recursos para sua preparação.</p>
         </section>
 
+        <!-- Categorias por Tipo -->
+        <section class="categories-section" id="categoriesSection" style="display: none;">
+            <h3><i class="fas fa-filter"></i> Materiais por Tipo</h3>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categorias serão preenchidas dinamicamente -->
+            </div>
+        </section>
+
         <!-- Filtros -->
         <div class="filters-container">
             <div class="filter-group">
@@ -684,9 +850,12 @@ flex-wrap: wrap;
             <button class="view-toggle-btn" onclick="changeView('list')">
                 <i class="fas fa-list"></i> Lista
             </button>
+            <button class="view-toggle-btn" onclick="changeView('categories')">
+                <i class="fas fa-filter"></i> Categorias
+            </button>
         </div>
 
-        <!-- Lista de Materiais (EM GRADE POR PADRÃO) -->
+        <!-- Lista de Materiais -->
         <div class="materials-grid-page" id="materialsContainer">
             <div class="loading-message">
                 <i class="fas fa-spinner fa-spin"></i> Carregando materiais...
@@ -892,7 +1061,8 @@ flex-wrap: wrap;
         let currentFileType = 'pdf';
         let materialToDelete = null;
         let currentUser = null;
-        let currentView = 'grid'; // 'grid' ou 'list'
+        let currentView = 'grid'; // 'grid', 'list' ou 'categories'
+        let allMaterials = [];
 
         // ===== INICIALIZAÇÃO =====
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1160,6 +1330,20 @@ flex-wrap: wrap;
             return iconMap[fileType] || 'file';
         }
 
+        function getCategoryIcon(fileType) {
+            const iconMap = {
+                'pdf': 'file-pdf',
+                'doc': 'file-word',
+                'ppt': 'presentation',
+                'txt': 'file-alt',
+                'zip': 'file-archive',
+                'video': 'video',
+                'other': 'file'
+            };
+            
+            return iconMap[fileType] || 'file';
+        }
+
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -1342,9 +1526,12 @@ flex-wrap: wrap;
                     return;
                 }
                 
-                console.log(`✅ ${data?.length || 0} materiais carregados`);
-                updateMaterialsInterface(data || []);
-                updateStats(data || []);
+                allMaterials = data || [];
+                console.log(`✅ ${allMaterials.length} materiais carregados`);
+                
+                // Atualizar interface baseado na visualização atual
+                updateInterfaceByView(allMaterials);
+                updateStats(allMaterials);
                 
             } catch (error) {
                 console.error('❌ Erro:', error);
@@ -1352,8 +1539,25 @@ flex-wrap: wrap;
             }
         }
 
-        // ===== FUNÇÃO PARA MOSTRAR EM GRADE OU LISTA =====
-        function updateMaterialsInterface(materials) {
+        // ===== FUNÇÃO PARA ATUALIZAR INTERFACE BASEADO NA VISUALIZAÇÃO =====
+        function updateInterfaceByView(materials) {
+            const container = document.getElementById('materialsContainer');
+            const categoriesSection = document.getElementById('categoriesSection');
+            
+            // Esconder tudo primeiro
+            container.style.display = 'none';
+            categoriesSection.style.display = 'none';
+            
+            if (currentView === 'categories') {
+                showCategoriesView(materials);
+                categoriesSection.style.display = 'block';
+            } else {
+                showGridOrListView(materials);
+                container.style.display = 'grid';
+            }
+        }
+
+        function showGridOrListView(materials) {
             const container = document.getElementById('materialsContainer');
             const currentUserId = currentUser?.id;
             
@@ -1367,6 +1571,104 @@ flex-wrap: wrap;
             } else {
                 container.innerHTML = materials.map(material => renderMaterialListItem(material, currentUserId)).join('');
             }
+        }
+
+        function showCategoriesView(materials) {
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            
+            if (!materials || materials.length === 0) {
+                categoriesGrid.innerHTML = `
+                    <div class="no-materials-message" style="grid-column: 1/-1; margin: 0;">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>Nenhum material encontrado</h3>
+                        <p>Seja o primeiro a compartilhar um material!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Agrupar materiais por tipo
+            const materialsByType = {};
+            materials.forEach(material => {
+                if (!materialsByType[material.tipo]) {
+                    materialsByType[material.tipo] = [];
+                }
+                materialsByType[material.tipo].push(material);
+            });
+            
+            // Ordenar tipos por quantidade (maior para menor)
+            const sortedTypes = Object.keys(materialsByType).sort((a, b) => {
+                return materialsByType[b].length - materialsByType[a].length;
+            });
+            
+            // Renderizar categorias
+            categoriesGrid.innerHTML = sortedTypes.map(type => {
+                const typeMaterials = materialsByType[type];
+                const typeIcon = getCategoryIcon(type);
+                const typeColor = getTypeColor(type);
+                
+                // Pegar apenas os primeiros 3 materiais para mostrar no dropdown
+                const firstThree = typeMaterials.slice(0, 3);
+                
+                return `
+                    <div class="category-card" data-type="${type}">
+                        <div class="category-header">
+                            <div class="category-icon" style="color: ${typeColor};">
+                                <i class="fas fa-${typeIcon}"></i>
+                            </div>
+                            <div>
+                                <div class="category-title">${type.toUpperCase()}</div>
+                                <div class="category-count">${typeMaterials.length} materiais</div>
+                            </div>
+                        </div>
+                        
+                        <div class="category-files">
+                            <div class="file-item">${firstThree[0]?.titulo || 'Nenhum material'}</div>
+                            ${firstThree[1] ? `<div class="file-item">${firstThree[1].titulo}</div>` : ''}
+                            ${firstThree[2] ? `<div class="file-item">${firstThree[2].titulo}</div>` : ''}
+                            ${typeMaterials.length > 3 ? `<div class="file-item" style="color: #3498db; font-weight: 600;">+${typeMaterials.length - 3} mais...</div>` : ''}
+                        </div>
+                        
+                        <div class="files-dropdown">
+                            <h4>${type.toUpperCase()} (${typeMaterials.length})</h4>
+                            ${typeMaterials.map(material => `
+                                <div class="dropdown-file-item" onclick="location.href='${material.arquivo_url}'" style="cursor: pointer;">
+                                    <div class="dropdown-file-icon" style="color: ${typeColor};">
+                                        <i class="fas fa-${getFileIcon(type)}"></i>
+                                    </div>
+                                    <div class="dropdown-file-name">${material.titulo}</div>
+                                    <small style="color: #999; font-size: 0.75rem;">${formatFileSize(material.arquivo_tamanho_kb * 1024)}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Adicionar evento de clique nas categorias
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.files-dropdown')) {
+                        const type = this.getAttribute('data-type');
+                        document.getElementById('filterType').value = type;
+                        changeView('grid');
+                        handleFilterChange();
+                    }
+                });
+            });
+        }
+
+        function getTypeColor(type) {
+            const colors = {
+                'pdf': '#e74c3c',
+                'doc': '#3498db',
+                'ppt': '#e67e22',
+                'txt': '#7f8c8d',
+                'zip': '#9b59b6',
+                'video': '#27ae60',
+                'other': '#95a5a6'
+            };
+            return colors[type] || '#95a5a6';
         }
 
         function renderMaterialCard(material, currentUserId) {
@@ -1688,14 +1990,14 @@ flex-wrap: wrap;
             
             if (view === 'grid') {
                 document.querySelector('.view-toggle-btn:nth-child(1)').classList.add('active');
-                document.getElementById('materialsContainer').className = 'materials-grid-page';
-            } else {
+            } else if (view === 'list') {
                 document.querySelector('.view-toggle-btn:nth-child(2)').classList.add('active');
-                document.getElementById('materialsContainer').className = 'materials-list-page';
+            } else if (view === 'categories') {
+                document.querySelector('.view-toggle-btn:nth-child(3)').classList.add('active');
             }
             
-            // Recarregar materiais com a nova visualização
-            handleFilterChange();
+            // Atualizar interface
+            updateInterfaceByView(allMaterials);
         }
 
     </script>
