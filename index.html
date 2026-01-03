@@ -41,22 +41,19 @@
         </div>
     </div>
 </header>
-        <!-- Modal de Login/Cadastro -->
+    <!-- Modal de Login/Cadastro -->
     <div id="modalAuth" class="modal-auth">
-        <div class="auth-container" id="authContainer">
+        <div class="auth-container">
             <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
             <div class="auth-header">
                 <h2>Study<span style="color: #3498db;">Cert</span></h2>
-                <p>Sua jornada de certificação começa aqui</p>
+                <p>Sua jornada começa aqui</p>
             </div>
-            
-            <!-- Abas de navegação -->
             <div class="auth-tabs">
                 <div class="auth-tab active" data-tab="login">Entrar</div>
-                <div class="auth-tab cadastro-completo" data-tab="register">Cadastro Completo</div>
+                <div class="auth-tab" data-tab="register">Cadastrar</div>
             </div>
             
-            <!-- Formulário de Login (mantido) -->
             <div id="loginForm" class="auth-form active">
                 <div id="loginMessage" class="message"></div>
                 <div class="form-group">
@@ -65,272 +62,30 @@
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">Senha</label>
-                    <div class="campo-senha">
-                        <input type="password" id="loginPassword" placeholder="Sua senha">
-                        <button type="button" class="btn-toggle-senha" onclick="togglePassword('loginPassword')">
-                            <i class="far fa-eye"></i>
-                        </button>
-                    </div>
+                    <input type="password" id="loginPassword" placeholder="Sua senha">
                 </div>
-                <button class="btn btn-primary" onclick="login()" style="width: 100%; margin-top: 10px;">Entrar</button>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
                 <div class="auth-footer">
                     <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
                 </div>
             </div>
             
-            <!-- Formulário de Cadastro Completo -->
             <div id="registerForm" class="auth-form">
                 <div id="registerMessage" class="message"></div>
-                
-                <!-- Indicadores de passos -->
-                <div class="cadastro-passos">
-                    <div class="passo-indicador ativo" data-passo="1">
-                        <div class="passo-numero">1</div>
-                        <div class="passo-texto">Dados Pessoais</div>
-                    </div>
-                    <div class="passo-indicador" data-passo="2">
-                        <div class="passo-numero">2</div>
-                        <div class="passo-texto">Segurança</div>
-                    </div>
-                    <div class="passo-indicador" data-passo="3">
-                        <div class="passo-numero">3</div>
-                        <div class="passo-texto">Preferências</div>
-                    </div>
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo">
                 </div>
-                
-                <!-- Conteúdo dos passos -->
-                
-                <!-- PASSO 1: Dados Pessoais -->
-                <div id="cadastroPasso1" class="cadastro-conteudo ativo">
-                    <div class="cadastro-colunas">
-                        <div class="form-group-cadastro">
-                            <label for="registerName" class="label-required">Nome Completo</label>
-                            <input type="text" id="registerName" placeholder="Digite seu nome completo">
-                            <div class="mensagem-validacao" id="validName"></div>
-                        </div>
-                        
-                        <div class="form-group-cadastro">
-                            <label for="registerCpf">CPF</label>
-                            <input type="text" id="registerCpf" placeholder="000.000.000-00">
-                            <div class="mensagem-validacao" id="validCpf"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="cadastro-colunas">
-                        <div class="form-group-cadastro">
-                            <label for="registerBirth" class="label-required">Data de Nascimento</label>
-                            <input type="date" id="registerBirth">
-                            <div class="mensagem-validacao" id="validBirth"></div>
-                        </div>
-                        
-                        <div class="form-group-cadastro">
-                            <label for="registerGender">Gênero</label>
-                            <select id="registerGender">
-                                <option value="">Selecione...</option>
-                                <option value="male">Masculino</option>
-                                <option value="female">Feminino</option>
-                                <option value="other">Outro</option>
-                                <option value="prefer-not">Prefiro não informar</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group-cadastro">
-                        <label for="registerEmail" class="label-required">E-mail</label>
-                        <input type="email" id="registerEmail" placeholder="seu@email.com">
-                        <div class="mensagem-validacao" id="validEmail"></div>
-                    </div>
-                    
-                    <div class="cadastro-colunas">
-                        <div class="form-group-cadastro">
-                            <label for="registerPhone" class="label-required">Telefone</label>
-                            <input type="tel" id="registerPhone" placeholder="(11) 99999-9999">
-                            <div class="mensagem-validacao" id="validPhone"></div>
-                        </div>
-                        
-                        <div class="form-group-cadastro">
-                            <label for="registerWhatsApp">WhatsApp</label>
-                            <input type="tel" id="registerWhatsApp" placeholder="(11) 99999-9999">
-                            <div class="mensagem-validacao" id="validWhatsApp"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Login Social -->
-                    <div class="login-social">
-                        <div class="divisor">Ou cadastre-se com</div>
-                        <div class="botoes-social">
-                            <button type="button" class="btn-social google" onclick="loginWithGoogle()">
-                                <i class="fab fa-google"></i>
-                                <span>Google</span>
-                            </button>
-                            <button type="button" class="btn-social microsoft" onclick="loginWithMicrosoft()">
-                                <i class="fab fa-microsoft"></i>
-                                <span>Microsoft</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="navegacao-cadastro">
-                        <button type="button" class="btn-passo anterior" disabled>
-                            <i class="fas fa-arrow-left"></i> Anterior
-                        </button>
-                        <button type="button" class="btn-passo proximo" onclick="avancarCadastro()">
-                            Próximo <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com">
                 </div>
-                
-                <!-- PASSO 2: Segurança -->
-                <div id="cadastroPasso2" class="cadastro-conteudo">
-                    <div class="form-group-cadastro">
-                        <label for="registerPassword" class="label-required">Senha</label>
-                        <div class="campo-senha">
-                            <input type="password" id="registerPassword" placeholder="Digite uma senha forte">
-                            <button type="button" class="btn-toggle-senha" onclick="togglePassword('registerPassword')">
-                                <i class="far fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="forca-senha">
-                            <div class="texto-forca">Força da senha: <span id="passwordStrengthText">Fraca</span></div>
-                            <div class="barra-forca">
-                                <div id="passwordStrengthBar" class="preencher-forca" style="width: 25%; background-color: #e74c3c;"></div>
-                            </div>
-                        </div>
-                        <div class="mensagem-validacao" id="validPassword"></div>
-                        <span class="dica-campo">Use pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos</span>
-                    </div>
-                    
-                    <div class="form-group-cadastro">
-                        <label for="registerConfirmPassword" class="label-required">Confirmar Senha</label>
-                        <div class="campo-senha">
-                            <input type="password" id="registerConfirmPassword" placeholder="Digite a senha novamente">
-                            <button type="button" class="btn-toggle-senha" onclick="togglePassword('registerConfirmPassword')">
-                                <i class="far fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="mensagem-validacao" id="validConfirmPassword"></div>
-                    </div>
-                    
-                    <div class="form-group-cadastro">
-                        <label for="registerSecurityQuestion" class="label-required">Pergunta de Segurança</label>
-                        <select id="registerSecurityQuestion">
-                            <option value="">Selecione uma pergunta...</option>
-                            <option value="pet">Qual é o nome do seu primeiro animal de estimação?</option>
-                            <option value="city">Em que cidade você nasceu?</option>
-                            <option value="mother">Qual é o nome de solteira da sua mãe?</option>
-                            <option value="school">Qual foi o nome da sua primeira escola?</option>
-                            <option value="friend">Qual é o nome do seu melhor amigo de infância?</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group-cadastro">
-                        <label for="registerSecurityAnswer" class="label-required">Resposta</label>
-                        <input type="text" id="registerSecurityAnswer" placeholder="Digite a resposta para a pergunta acima">
-                        <div class="mensagem-validacao" id="validSecurityAnswer"></div>
-                    </div>
-                    
-                    <div class="navegacao-cadastro">
-                        <button type="button" class="btn-passo anterior" onclick="voltarCadastro()">
-                            <i class="fas fa-arrow-left"></i> Anterior
-                        </button>
-                        <button type="button" class="btn-passo proximo" onclick="avancarCadastro()">
-                            Próximo <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
                 </div>
-                
-                <!-- PASSO 3: Preferências -->
-                <div id="cadastroPasso3" class="cadastro-conteudo">
-                    <div class="form-group-cadastro">
-                        <label for="registerInterest" class="label-required">Área de Interesse Principal</label>
-                        <select id="registerInterest">
-                            <option value="">Selecione sua área de interesse...</option>
-                            <option value="cloud">Cloud Computing</option>
-                            <option value="security">Segurança da Informação</option>
-                            <option value="networks">Redes e Infraestrutura</option>
-                            <option value="devops">DevOps e Automação</option>
-                            <option value="data">Ciência de Dados</option>
-                            <option value="governance">Governança de TI</option>
-                            <option value="development">Desenvolvimento</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group-cadastro">
-                        <label for="registerCertifications">Certificações de Interesse</label>
-                        <select id="registerCertifications" multiple>
-                            <option value="azure">Microsoft Azure</option>
-                            <option value="aws">Amazon AWS</option>
-                            <option value="lpic">LPIC-1/LPIC-2</option>
-                            <option value="itil">ITIL 4</option>
-                            <option value="securityplus">Security+</option>
-                            <option value="ccna">CCNA</option>
-                            <option value="pmp">PMP</option>
-                            <option value="scrum">Scrum Master</option>
-                        </select>
-                        <span class="dica-campo">Pressione Ctrl (Cmd no Mac) para selecionar múltiplas opções</span>
-                    </div>
-                    
-                    <div class="form-group-cadastro">
-                        <label for="registerExperience" class="label-required">Nível de Experiência</label>
-                        <select id="registerExperience">
-                            <option value="">Selecione seu nível...</option>
-                            <option value="beginner">Iniciante (0-2 anos)</option>
-                            <option value="junior">Júnior (2-4 anos)</option>
-                            <option value="mid">Pleno (4-6 anos)</option>
-                            <option value="senior">Sênior (6+ anos)</option>
-                            <option value="expert">Especialista</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group-cadastro">
-                        <label for="registerGoal">Seu Objetivo</label>
-                        <textarea id="registerGoal" placeholder="Descreva brevemente seus objetivos com a plataforma StudyCert..." rows="3"></textarea>
-                    </div>
-                    
-                    <div class="checkbox-cadastro">
-                        <input type="checkbox" id="registerNewsletter" checked>
-                        <label for="registerNewsletter">
-                            Desejo receber e-mails com novidades, dicas de estudo e atualizações da plataforma.
-                        </label>
-                    </div>
-                    
-                    <div class="checkbox-cadastro">
-                        <input type="checkbox" id="registerTerms" required>
-                        <label for="registerTerms" class="label-required">
-                            Li e concordo com os <a href="#" target="_blank">Termos de Uso</a> e <a href="#" target="_blank">Política de Privacidade</a>.
-                        </label>
-                    </div>
-                    
-                    <div class="navegacao-cadastro">
-                        <button type="button" class="btn-passo anterior" onclick="voltarCadastro()">
-                            <i class="fas fa-arrow-left"></i> Anterior
-                        </button>
-                        <button type="button" class="btn-passo finalizar" onclick="finalizarCadastro()">
-                            <i class="fas fa-check"></i> Finalizar Cadastro
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Progresso -->
-                <div class="progresso-cadastro">
-                    <div class="texto-progresso" id="progressText">Passo 1 de 3</div>
-                    <div class="barra-progresso">
-                        <div id="progressBar" class="preencher-progresso" style="width: 33.33%;"></div>
-                    </div>
-                </div>
+                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
             </div>
-        </div>
-    </div>
-    
-    <!-- Modal de Sucesso no Cadastro -->
-    <div id="modalSucesso" class="modal-sucesso">
-        <div class="conteudo-sucesso">
-            <div class="icone-sucesso">
-                <i class="fas fa-check"></i>
-            </div>
-            <h3>Cadastro Concluído!</h3>
-            <p>Parabéns! Sua conta foi criada com sucesso. Verifique seu e-mail para ativar sua conta e começar a usar todos os recursos do StudyCert.</p>
-            <button class="btn btn-primary" onclick="fecharModalSucesso()" style="width: 100%;">Continuar para o Login</button>
         </div>
     </div>
 
