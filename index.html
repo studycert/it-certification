@@ -10,43 +10,352 @@
     <script src="js/config.js"></script>
     <script src="js/app.js" defer></script>
     <script src="js/auth.js" defer></script>
+    <style>
+        /* Estilos para o modal de autenticação aprimorado */
+        .auth-container {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .auth-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            transform: rotate(30deg);
+        }
+        
+        .auth-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .auth-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .auth-tab:hover {
+            background: #e9ecef;
+        }
+        
+        .auth-tab.active {
+            color: #3498db;
+            background: white;
+        }
+        
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #3498db;
+        }
+        
+        .auth-form {
+            padding: 2rem;
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .password-input-wrapper {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .toggle-password:hover {
+            color: #3498db;
+        }
+        
+        .password-requirements {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+            padding-left: 0.5rem;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .requirement.valid {
+            color: #27ae60;
+        }
+        
+        .requirement.valid i {
+            color: #27ae60;
+        }
+        
+        .social-login {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .social-login p {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .social-buttons {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+        
+        .btn-social {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            background: white;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .btn-social:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-social.google {
+            color: #DB4437;
+            border-color: #DB4437;
+        }
+        
+        .btn-social.google:hover {
+            background: #DB4437;
+            color: white;
+        }
+        
+        .btn-social.microsoft {
+            color: #00A4EF;
+            border-color: #00A4EF;
+        }
+        
+        .btn-social.microsoft:hover {
+            background: #00A4EF;
+            color: white;
+        }
+        
+        .btn-social i {
+            font-size: 1.1rem;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .auth-footer a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .close-auth-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: background 0.3s;
+            z-index: 2;
+        }
+        
+        .close-auth-modal:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .message {
+            padding: 0.8rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .auth-container {
+                margin: 1rem;
+                max-width: 100%;
+            }
+            
+            .auth-header {
+                padding: 1.5rem;
+            }
+            
+            .auth-form {
+                padding: 1.5rem;
+            }
+            
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
-<header>
-    <div class="container">
-        <div class="header-content">
-            <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <h1>Study<span>Cert</span></h1>
-            </div>
-            
-            <!-- Botão hambúrguer NO FINAL -->
-            <button class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            
-            <nav id="mainNav">
-                <ul>
-                    <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
-                    <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
-                    <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
-                    <li><a href="#" class="nav-link" data-target="materiais">Material de Estudo</a></li>
-                    <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons" id="authButtons">
-                <!-- Será preenchido dinamicamente via JavaScript -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Study<span>Cert</span></h1>
+                </div>
+                
+                <!-- Botão hambúrguer NO FINAL -->
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <nav id="mainNav">
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
+                        <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
+                        <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
+                        <li><a href="#" class="nav-link" data-target="materiais">Material de Estudo</a></li>
+                        <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons" id="authButtons">
+                    <!-- Será preenchido dinamicamente via JavaScript -->
+                </div>
             </div>
         </div>
-    </div>
-</header>
+    </header>
+
     <!-- Modal de Login/Cadastro -->
     <div id="modalAuth" class="modal-auth">
         <div class="auth-container">
             <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
             <div class="auth-header">
-                <h2>Study<span style="color: #3498db;">Cert</span></h2>
+                <h2>Study<span style="color: #fff;">Cert</span></h2>
                 <p>Sua jornada começa aqui</p>
             </div>
             <div class="auth-tabs">
@@ -62,9 +371,27 @@
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">Senha</label>
-                    <input type="password" id="loginPassword" placeholder="Sua senha">
+                    <div class="password-input-wrapper">
+                        <input type="password" id="loginPassword" placeholder="Sua senha">
+                        <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
-                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%; margin-top: 0.5rem;">Entrar</button>
+                
+                <div class="social-login">
+                    <p>Ou entre com</p>
+                    <div class="social-buttons">
+                        <button class="btn-social google" onclick="loginWithGoogle()">
+                            <i class="fab fa-google"></i> Google
+                        </button>
+                        <button class="btn-social microsoft" onclick="loginWithMicrosoft()">
+                            <i class="fab fa-microsoft"></i> Microsoft
+                        </button>
+                    </div>
+                </div>
+                
                 <div class="auth-footer">
                     <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
                 </div>
@@ -82,9 +409,55 @@
                 </div>
                 <div class="form-group">
                     <label for="registerPassword">Senha</label>
-                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
+                    <div class="password-input-wrapper">
+                        <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" oninput="validatePassword()">
+                        <button type="button" class="toggle-password" onclick="togglePassword('registerPassword')">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-requirements" id="passwordRequirements">
+                        <div class="requirement" id="reqLength">
+                            <i class="fas fa-circle" style="font-size: 0.5rem; color: #ddd;"></i>
+                            <span>Mínimo 6 caracteres</span>
+                        </div>
+                        <div class="requirement" id="reqUppercase">
+                            <i class="fas fa-circle" style="font-size: 0.5rem; color: #ddd;"></i>
+                            <span>Pelo menos 1 letra maiúscula</span>
+                        </div>
+                        <div class="requirement" id="reqNumber">
+                            <i class="fas fa-circle" style="font-size: 0.5rem; color: #ddd;"></i>
+                            <span>Pelo menos 1 número</span>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirmar Senha</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="registerConfirmPassword" placeholder="Digite a senha novamente" oninput="validateConfirmPassword()">
+                        <button type="button" class="toggle-password" onclick="togglePassword('registerConfirmPassword')">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-requirements">
+                        <div class="requirement" id="reqMatch">
+                            <i class="fas fa-circle" style="font-size: 0.5rem; color: #ddd;"></i>
+                            <span>As senhas devem coincidir</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="register()" style="width: 100%; margin-top: 0.5rem;">Criar Conta</button>
+                
+                <div class="social-login">
+                    <p>Ou cadastre-se com</p>
+                    <div class="social-buttons">
+                        <button class="btn-social google" onclick="signUpWithGoogle()">
+                            <i class="fab fa-google"></i> Google
+                        </button>
+                        <button class="btn-social microsoft" onclick="signUpWithMicrosoft()">
+                            <i class="fab fa-microsoft"></i> Microsoft
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -916,9 +1289,117 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </footer>
-    <!-- No header do index.html, dentro do .auth-buttons, adicione: -->
-<div class="auth-buttons" id="authButtons">
-    <!-- Conteúdo existente... -->
-</div>
+
+    <script>
+        // Funções para o modal de autenticação aprimorado
+        
+        function togglePassword(passwordId) {
+            const passwordInput = document.getElementById(passwordId);
+            const toggleButton = passwordInput.nextElementSibling;
+            const icon = toggleButton.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
+        function validatePassword() {
+            const password = document.getElementById('registerPassword').value;
+            const requirements = {
+                length: password.length >= 6,
+                uppercase: /[A-Z]/.test(password),
+                number: /[0-9]/.test(password)
+            };
+            
+            // Atualizar indicadores visuais
+            document.getElementById('reqLength').classList.toggle('valid', requirements.length);
+            document.getElementById('reqUppercase').classList.toggle('valid', requirements.uppercase);
+            document.getElementById('reqNumber').classList.toggle('valid', requirements.number);
+            
+            // Atualizar ícones
+            const reqLengthIcon = document.querySelector('#reqLength i');
+            const reqUppercaseIcon = document.querySelector('#reqUppercase i');
+            const reqNumberIcon = document.querySelector('#reqNumber i');
+            
+            reqLengthIcon.className = requirements.length ? 'fas fa-check' : 'fas fa-circle';
+            reqLengthIcon.style.fontSize = requirements.length ? '0.8rem' : '0.5rem';
+            reqLengthIcon.style.color = requirements.length ? '#27ae60' : '#ddd';
+            
+            reqUppercaseIcon.className = requirements.uppercase ? 'fas fa-check' : 'fas fa-circle';
+            reqUppercaseIcon.style.fontSize = requirements.uppercase ? '0.8rem' : '0.5rem';
+            reqUppercaseIcon.style.color = requirements.uppercase ? '#27ae60' : '#ddd';
+            
+            reqNumberIcon.className = requirements.number ? 'fas fa-check' : 'fas fa-circle';
+            reqNumberIcon.style.fontSize = requirements.number ? '0.8rem' : '0.5rem';
+            reqNumberIcon.style.color = requirements.number ? '#27ae60' : '#ddd';
+            
+            return Object.values(requirements).every(req => req);
+        }
+        
+        function validateConfirmPassword() {
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const passwordsMatch = password === confirmPassword && password !== '';
+            
+            // Atualizar indicador visual
+            document.getElementById('reqMatch').classList.toggle('valid', passwordsMatch);
+            
+            // Atualizar ícone
+            const reqMatchIcon = document.querySelector('#reqMatch i');
+            reqMatchIcon.className = passwordsMatch ? 'fas fa-check' : 'fas fa-circle';
+            reqMatchIcon.style.fontSize = passwordsMatch ? '0.8rem' : '0.5rem';
+            reqMatchIcon.style.color = passwordsMatch ? '#27ae60' : '#ddd';
+            
+            return passwordsMatch;
+        }
+        
+        function loginWithGoogle() {
+            showMessage('loginMessage', 'Login com Google em desenvolvimento...', 'info');
+        }
+        
+        function loginWithMicrosoft() {
+            showMessage('loginMessage', 'Login com Microsoft em desenvolvimento...', 'info');
+        }
+        
+        function signUpWithGoogle() {
+            showMessage('registerMessage', 'Cadastro com Google em desenvolvimento...', 'info');
+        }
+        
+        function signUpWithMicrosoft() {
+            showMessage('registerMessage', 'Cadastro com Microsoft em desenvolvimento...', 'info');
+        }
+        
+        function showMessage(elementId, message, type = 'error') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+            
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Funções de tabs
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                // Atualizar tabs ativas
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Mostrar formulário correto
+                document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+                document.getElementById(tabName + 'Form').classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>
