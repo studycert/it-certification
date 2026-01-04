@@ -102,8 +102,8 @@ function setupEventListeners() {
         fileInput.addEventListener('change', handleFileSelect);
     }
     
-    // Drag and drop
-    const uploadArea = document.querySelector('.upload-area');
+    // Drag and drop na área compacta
+    const uploadArea = document.querySelector('.upload-area-compact');
     if (uploadArea) {
         uploadArea.addEventListener('dragover', handleDragOver);
         uploadArea.addEventListener('dragleave', handleDragLeave);
@@ -122,7 +122,7 @@ function setupEventListeners() {
 function handleDragOver(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area');
+    const uploadArea = document.querySelector('.upload-area-compact');
     if (uploadArea) {
         uploadArea.style.background = '#e8f4fc';
         uploadArea.style.borderColor = '#2980b9';
@@ -132,20 +132,20 @@ function handleDragOver(e) {
 function handleDragLeave(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area');
+    const uploadArea = document.querySelector('.upload-area-compact');
     if (uploadArea) {
-        uploadArea.style.background = '';
-        uploadArea.style.borderColor = '';
+        uploadArea.style.background = '#f8fafc';
+        uploadArea.style.borderColor = '#ddd';
     }
 }
 
 function handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area');
+    const uploadArea = document.querySelector('.upload-area-compact');
     if (uploadArea) {
-        uploadArea.style.background = '';
-        uploadArea.style.borderColor = '';
+        uploadArea.style.background = '#f8fafc';
+        uploadArea.style.borderColor = '#ddd';
     }
     
     const files = e.dataTransfer.files;
