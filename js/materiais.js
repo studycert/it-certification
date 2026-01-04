@@ -294,12 +294,30 @@ function loadCertification(certId) {
     // Atualizar elementos da página
     document.getElementById('currentCertification').textContent = cert.title;
     document.getElementById('certIcon').innerHTML = `<i class="${cert.icon}"></i>`;
-    document.getElementById('certIcon').style.color = cert.color;
     document.getElementById('certTitle').textContent = cert.title;
     document.getElementById('certLevel').textContent = `Nível: ${cert.level}`;
     document.getElementById('certDescription').textContent = cert.description;
+    
+    // Aplicar gradiente baseado na cor da certificação
+    const gradientStart = cert.color;
+    const gradientEnd = darkenColor(cert.color, 30);
     document.getElementById('certificationHero').style.background = 
-        `linear-gradient(135deg, ${cert.color} 0%, ${darkenColor(cert.color, 20)} 100%)`;
+        `linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%)`;
+    
+    // Forçar ícone branco
+    const certIcon = document.querySelector('#certIcon i');
+    if (certIcon) {
+        certIcon.style.color = 'white !important';
+        certIcon.style.textShadow = '0 2px 5px rgba(0, 0, 0, 0.4) !important';
+    }
+    
+    // Ajuste especial para AWS
+    if (certId === 'aws') {
+        const awsIcon = document.querySelector('#certIcon .fa-aws');
+        if (awsIcon) {
+            awsIcon.style.filter = 'brightness(1.3)';
+        }
+    }
     
     // Atualizar título da página
     document.title = `StudyCert - ${cert.title}`;
@@ -307,18 +325,32 @@ function loadCertification(certId) {
 
 // Escurecer cor para gradiente
 function darkenColor(color, percent) {
-    let num = parseInt(color.replace("#", ""), 16);
-    let amt = Math.round(2.55 * percent);
-    let R = (num >> 16) - amt;
-    let G = (num >> 8 & 0x00FF) - amt;
-    let B = (num & 0x0000FF) - amt;
-    
-    return "#" + (
-        0x1000000 +
-        (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
-        (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
-        (B < 255 ? (B < 1 ? 0 : B) : 255)
-    ).toString(16).slice(1);
+    // Se a cor já for uma cor hexadecimal
+    if (color.startsWith('#')) {
+        let num = parseInt(color.replace("#", ""), 16);
+        let amt = Math.round(2.55 * percent);
+        let R = (num >> 16) - amt;
+        let G = (num >> 8 & 0x00FF) - amt;
+        let B = (num & 0x0000FF) - amt;
+        
+        return "#" + (
+            0x1000000 +
+            (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+            (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+            (B < 255 ? (B < 1 ? 0 : B) : 255)
+        ).toString(16).slice(1);
+    }
+    // Se for uma cor RGB
+    else if (color.startsWith('rgb')) {
+        const values = color.match(/\d+/g);
+        if (values) {
+            let R = Math.max(0, parseInt(values[0]) - percent * 2.55);
+            let G = Math.max(0, parseInt(values[1]) - percent * 2.55);
+            let B = Math.max(0, parseInt(values[2]) - percent * 2.55);
+            return `rgb(${R}, ${G}, ${B})`;
+        }
+    }
+    return color; // Retorna a cor original se não conseguir converter
 }
 
 // Verificar autenticação antes de upload
@@ -743,10 +775,19 @@ function renderMaterialListItem(material, currentUserId) {
     const fileIconClass = `icon-${material.tipo}`;
     const fileIconName = getFileIcon(material.tipo);
     const isOwner = currentUserId && material.usuario_id === currentUserId;
-    const certInfo = certifications[material.certificacao] || certifications['itil4'];
     
     // Formatar data
     const uploadDate = formatDate(material.data_upload);
+    
+    // Botão de exclusão com estilos específicos
+    const deleteButton = isOwner ? `
+        <button class="btn btn-outline" 
+                onclick="showDeleteModal('${material.id}', '${material.titulo}')" 
+                title="Excluir material"
+                style="background: rgba(231, 76, 60, 0.15); border-color: #e74c3c; color: #e74c3c;">
+            <i class="fas fa-trash" style="color: #e74c3c;"></i>
+        </button>
+    ` : '';
     
     return `
         <div class="material-item-improved" data-id="${material.id}">
@@ -792,13 +833,7 @@ function renderMaterialListItem(material, currentUserId) {
                         title="Baixar arquivo">
                     <i class="fas fa-download"></i> Baixar
                 </button>
-                ${isOwner ? `
-                    <button class="btn btn-outline" 
-                            onclick="showDeleteModal('${material.id}', '${material.titulo}')" 
-                            title="Excluir material">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                ` : ''}
+                ${deleteButton}
             </div>
         </div>
     `;
