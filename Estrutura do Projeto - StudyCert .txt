@@ -1,0 +1,466 @@
+📚 StudyCert - Plataforma de Certificação em TI
+🌐 SITE OFICIAL
+
+    URL: https://studycert.github.io/it-certification/
+
+    GitHub: https://github.com/StudyCert/it-certification
+
+    Backup: https://github.com/studycert/it-certification-bkp
+
+📁 ESTRUTURA DO PROJETO
+
+it-certification/
+├── 📄 index.html              # Página principal (Home)
+├── 📄 materiais.html          # Página de materiais de estudo
+├── 📄 admin.html              # Painel administrativo
+├── 📄 README.md               # Documentação do projeto
+│
+├── 📂 css/                    # Folhas de estilo
+│   ├── style.css             # Estilos gerais
+│   ├── materiais.css         # Estilos específicos para materiais
+│   └── admin.css             # Estilos do painel administrativo
+│
+├── 📂 js/                     # Scripts JavaScript
+│   ├── app.js                # Lógica principal da aplicação
+│   ├── auth.js               # Sistema de autenticação
+│   ├── config.js             # Configurações e constantes
+│   ├── materiais.js          # Funcionalidades da página de materiais
+│   └── admin.js              # Funcionalidades do painel admin
+│
+├── 📂 simulados/              # Simulados em HTML
+│   ├── simulado-itil4-01.html
+│   ├── simulado-itil4-02.html
+│   ├── simulado-itil4-03.html
+│   ├── simulado-itil4-04.html
+│   ├── simulado-itil4-05.html
+│   ├── simulado-itil4-06.html
+│   ├── simulado-itil4-07.html
+│   ├── simulado-itil4-08.html
+│   ├── simulado-itil4-09.html
+│   ├── simulado-itil4-10.html
+│   ├── simulado-itil4-11.html
+│   ├── simulado-itil4-12.html
+│   └── simulado-itil4-13.html
+│
+└── 📂 images/                 # Imagens e assets (se houver)
+
+🚀 FUNCIONALIDADES PRINCIPAIS
+1. PÁGINA PRINCIPAL (index.html)
+
+    SEÇÕES:
+
+        🏠 Home - Visão geral da plataforma
+
+        📜 Certificações - Lista completa de certificações
+
+        💬 Fórum - Discussões e comunidade
+
+        📚 Material de Estudo - Recursos por certificação
+
+        📝 Simulados - Testes práticos
+
+    RECURSOS:
+
+        Sistema de autenticação (Login/Cadastro)
+
+        Navegação por tabs/sections
+
+        Layout responsivo
+
+        Progresso do usuário
+
+        Cards interativos
+
+2. PÁGINA DE MATERIAIS (materiais.html)
+
+    CERTIFICAÇÕES SUPORTADAS:
+
+        ITIL 4 Foundation
+
+        Microsoft Azure
+
+        Amazon AWS
+
+        LPIC-1 e LPIC-2
+
+        Security+
+
+        CCNA
+
+    FUNCIONALIDADES:
+
+        Upload de materiais (PDF, DOC, PPT, TXT, ZIP, MP4)
+
+        Filtros por tipo (todos, PDF, documentos, apresentações, etc.)
+
+        Ordenação (data, visualizações, nome)
+
+        Busca em tempo real
+
+        Estatísticas de visualizações/downloads
+
+        Sistema de exclusão para proprietários
+
+        Barra de progresso para uploads
+
+        Modal de confirmação de exclusão
+
+3. PAINEL ADMINISTRATIVO (admin.html)
+
+    GERENCIAMENTO:
+
+        Usuários (visualizar, editar, excluir)
+
+        Materiais (aprovar, remover)
+
+        Simulados (gerenciar)
+
+        Configurações do sistema
+
+    ESTATÍSTICAS:
+
+        Usuários ativos
+
+        Materiais cadastrados
+
+        Simulados realizados
+
+        Relatórios de uso
+
+4. SISTEMA DE SIMULADOS
+
+    13 SIMULADOS ITIL 4 FOUNDATION:
+        
+    OUTROS SIMULADOS:
+
+        LPIC-1 (60 questões, 90 minutos)
+
+        Security+ (45 questões, 90 minutos)
+
+        AWS Cloud Practitioner (50 questões, 90 minutos)
+
+        Azure Fundamentals (40 questões, 60 minutos)
+
+        CCNA (55 questões, 90 minutos)
+
+        Data Fundamentals (35 questões, 45 minutos)
+
+        LPIC-2 (70 questões, 120 minutos)
+
+        AWS Solutions Architect (65 questões, 130 minutos)
+
+    RECURSOS DOS SIMULADOS:
+
+        Upload de novos simulados HTML
+
+        Modal de lista de simulados
+
+        Botão "Adicionar Simulado"
+
+        Sistema de progresso
+
+🔧 TECNOLOGIAS UTILIZADAS
+TECNOLOGIA	FINALIDADE
+HTML5	Estrutura semântica das páginas
+CSS3	Estilização e layout responsivo
+JavaScript (ES6+)	Interatividade e lógica da aplicação
+Font Awesome 6.4.0	Ícones e elementos visuais
+Supabase	Backend, autenticação e banco de dados
+GitHub Pages	Hospedagem estática gratuita
+Git	Controle de versão
+🗄️ BACKEND (SUPABASE)
+CONFIGURAÇÃO:
+
+    URL: https://uhbwudgdeyvbkqoflaqw.supabase.co
+
+    Chave pública: sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4
+
+FUNCIONALIDADES:
+
+    Autenticação de usuários (login/cadastro)
+
+    Armazenamento de arquivos (bucket: materiais)
+
+    Banco de dados PostgreSQL
+
+    API RESTful para operações CRUD
+
+    Storage para upload de arquivos
+
+TABELAS PRINCIPAIS:
+
+    materiais - Arquivos compartilhados
+
+    usuarios - Dados dos usuários
+
+    simulados - Informações de simulados
+
+    forum_posts - Posts do fórum
+
+📊 ESTATÍSTICAS DO REPOSITÓRIO
+
+    Commits: 1606 objetos
+
+    Tamanho: ~1.18 MB
+
+    Branches: main (principal)
+
+    Última atualização: Contínua
+
+    Arquivos: 1606 arquivos no total
+
+🔐 SISTEMA DE AUTENTICAÇÃO
+RECURSOS DE SEGURANÇA:
+
+    Login com email e senha
+
+    Validação de sessão
+
+    Proteção de rotas específicas
+
+    Logout automático
+
+    Armazenamento seguro de tokens
+
+CONTROLE DE PERMISSÕES:
+
+    Usuários não logados:
+
+        Visualizar materiais
+
+        Acessar simulados
+
+        Ver fórum (somente leitura)
+
+    Usuários logados:
+
+        Upload de materiais (até 100MB)
+
+        Exclusão de próprios materiais
+
+        Participar do fórum
+
+        Salvar progresso
+
+    Administradores:
+
+        Gerenciar todos os materiais
+
+        Moderar fórum
+
+        Acessar painel admin
+
+        Ver estatísticas completas
+
+📱 RESPONSIVIDADE
+BREAKPOINTS:
+
+    Desktop: ≥ 992px (layout completo)
+
+    Tablet: 768px - 991px (layout adaptado)
+
+    Mobile: ≤ 480px (menu hambúrguer)
+
+RECURSOS RESPONSIVOS:
+
+    Menu hambúrguer para mobile
+
+    Grids que se adaptam
+
+    Textos redimensionáveis
+
+    Imagens responsivas
+
+    Touch-friendly buttons
+    
+📈 RECURSOS FUTUROS PLANEJADOS
+EM DESENVOLVIMENTO:
+
+    Sistema de comentários nos materiais
+
+    Avaliação por estrelas (1-5)
+
+    Favoritos/lista de estudos pessoal
+
+    Progresso por certificação
+
+    Certificados de conclusão PDF
+
+PLANEJADOS:
+
+    Notificações por email
+
+    Chat em tempo real no fórum
+
+    Integração com calendário (agenda de estudos)
+
+    Modo escuro/claro
+
+    Exportação de relatórios
+
+    API pública para desenvolvedores
+
+MELHORIAS TÉCNICAS:
+
+    Cache otimizado para arquivos estáticos
+
+    PWA (Progressive Web App)
+
+    Testes automatizados
+
+    Dockerização
+
+    CDN para assets
+
+👥 CONTRIBUIÇÃO
+PADRÕES DE COMMIT:
+feat:     Nova funcionalidade
+fix:      Correção de bug
+docs:     Documentação
+style:    Formatação/código sem mudança lógica
+refactor: Refatoração de código
+test:     Adição de testes
+chore:    Atualização de dependências/build
+
+📄 ESTRUTURA DE ARQUIVOS DETALHADA
+CSS (css/)
+
+    style.css - Estilos globais, variáveis CSS, reset, componentes reutilizáveis
+
+    materiais.css - Página de materiais, modais, cards, responsividade
+
+    admin.css - Painel admin, tabelas, formulários, dashboards
+
+JS (js/)
+
+    app.js - Navegação, modais, inicialização, lógica principal
+
+    auth.js - Login, registro, logout, gerenciamento de sessão
+
+    config.js - Constantes, URLs, chaves de API
+
+    materiais.js - Upload, filtros, busca, exclusão de materiais
+
+    admin.js - CRUD admin, estatísticas, relatórios
+
+SIMULADOS (simulados/)
+
+    Formato: HTML independente com CSS/JS embutido
+
+    Estrutura: Questões múltipla escolha com feedback
+
+    Progresso: Salvo localmente no navegador
+
+    Resultados: Pontuação e revisão de erros
+
+🎨 DESIGN SYSTEM
+CORES PRINCIPAIS:
+
+    Primária: #3498db (Azul)
+
+    Secundária: #2ecc71 (Verde)
+
+    Destaque: #e74c3c (Vermelho)
+
+    Fundo: #f5f7fa (Cinza claro)
+
+    Texto: #333333 (Preto suave)
+
+TIPOGRAFIA:
+
+    Fonte principal: Sistema (sans-serif fallback)
+
+    Tamanhos: 16px base, escalável
+
+    Hierarquia: h1: 2.5rem, h2: 2rem, h3: 1.5rem
+
+COMPONENTES:
+
+    Cards: Bordas arredondadas, sombras sutis
+
+    Botões: Gradientes, hover effects, estados ativos
+
+    Modais: Overlay escuro, animações de entrada/saída
+
+    Forms: Validação visual, feedback imediato
+
+🔧 CONFIGURAÇÃO DO AMBIENTE
+VARIÁVEIS DE AMBIENTE (config.js):
+const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+
+DEPENDÊNCIAS:
+
+    CDN Font Awesome: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css
+
+    CDN Supabase: https://unpkg.com/@supabase/supabase-js@2
+
+🐛 SOLUÇÃO DE PROBLEMAS COMUNS
+PROBLEMA: Upload não funciona
+
+    Solução: Verificar conexão com Supabase, tamanho do arquivo (<100MB), permissões
+
+PROBLEMA: Login não persiste
+
+    Solução: Limpar cookies, verificar token de autenticação
+
+PROBLEMA: Site não carrega no GitHub Pages
+
+    Solução: Verificar configuração do branch, caminhos relativos
+
+PROBLEMA: Responsividade quebrada
+
+    Solução: Verificar viewport meta tag, media queries
+
+📞 SUPORTE
+CANAIS DE CONTATO:
+
+    Email: contato@studycert.com.br
+
+    GitHub Issues: https://github.com/StudyCert/it-certification/issues
+
+    Fórum: Seção de dúvidas na própria plataforma
+
+LOCALIZAÇÃO:
+
+    Cidade: Brasília, DF
+
+    País: Brasil
+
+    Fuso horário: GMT-3
+
+📜 LICENÇA E DIREITOS
+
+    © 2025 StudyCert. Todos os direitos reservados.
+
+    Propósito educacional: Uso livre para estudo e aprendizado
+
+    Restrições: Não pode ser usado para fins comerciais sem autorização
+
+    Atribuição: Recomendada mas não obrigatória
+
+🌟 RECONHECIMENTOS
+
+    Comunidade de TI brasileira
+
+    Contribuidores open source
+
+    Usuários que compartilham materiais
+
+    Mantenedores do Supabase
+
+🔗 LINKS IMPORTANTES
+
+    Site oficial: https://studycert.github.io/it-certification/
+
+    Repositório original: https://github.com/StudyCert/it-certification
+
+    Backup pessoal: https://github.com/studycert/it-certification-bkp
+
+    Instagram: https://www.instagram.com/study.cert
+
+    Documentação Supabase: https://supabase.io/docs
+
+✨ "Compartilhar conhecimento é multiplicar oportunidades"
+StudyCert - Feito pela comunidade para a comunidade de TI
