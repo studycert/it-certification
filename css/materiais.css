@@ -17,24 +17,50 @@
     margin-bottom: 2rem;
     border-radius: 0 0 12px 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.certification-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2); /* Overlay escuro para melhor contraste */
+    z-index: 1;
 }
 
 .certification-hero-content {
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
 }
 
 .certification-icon-large {
     font-size: 3.5rem;
-    color: var(--secondary);
+    color: white !important; /* Ícone sempre branco no banner */
     margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.15); /* Fundo semi-transparente */
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .certification-hero h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
     font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .certification-level-badge {
@@ -46,6 +72,34 @@
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Correção específica para ícones */
+.certification-icon-large .fa-aws {
+    color: white !important;
+    filter: brightness(1.2); /* Aumentar brilho do AWS */
+}
+
+.certification-icon-large .fa-microsoft {
+    color: white !important;
+}
+
+.certification-icon-large .fa-cube {
+    color: white !important;
+}
+
+.certification-icon-large .fa-server {
+    color: white !important;
+}
+
+.certification-icon-large .fa-shield-alt {
+    color: white !important;
+}
+
+.certification-icon-large .fa-network-wired {
+    color: white !important;
 }
 
 /* Breadcrumb */
@@ -230,6 +284,8 @@
     justify-content: center;
     border-radius: 10px;
     color: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    border: 2px solid white;
 }
 
 .material-content {
@@ -284,6 +340,32 @@
     display: flex;
     gap: 0.8rem;
     flex-shrink: 0;
+}
+
+/* Botão de exclusão visível sempre */
+.material-actions .btn.btn-outline {
+    background: rgba(231, 76, 60, 0.15) !important; /* Vermelho claro de fundo */
+    border: 2px solid #e74c3c !important; /* Borda vermelha */
+    color: #e74c3c !important; /* Texto/ícone vermelho */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    min-width: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem !important;
+}
+
+.material-actions .btn.btn-outline:hover {
+    background: #e74c3c !important; /* Vermelho sólido no hover */
+    color: white !important; /* Ícone branco no hover */
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3) !important;
+}
+
+.material-actions .btn.btn-outline i {
+    color: inherit !important; /* Herda a cor do botão */
+    transition: color 0.3s !important;
 }
 
 /* Upload section */
@@ -519,6 +601,12 @@
     .material-actions {
         justify-content: flex-start;
     }
+    
+    .certification-icon-large {
+        width: 80px;
+        height: 80px;
+        font-size: 2.8rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -527,7 +615,9 @@
     }
     
     .certification-icon-large {
-        font-size: 3rem;
+        font-size: 2.5rem;
+        width: 70px;
+        height: 70px;
     }
     
     .filters-grid {
@@ -542,6 +632,12 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.8rem;
+    }
+    
+    .material-actions .btn.btn-outline {
+        min-width: 36px;
+        min-height: 36px;
+        padding: 0.4rem !important;
     }
 }
 
@@ -567,5 +663,11 @@
     
     .upload-section-card {
         padding: 1.5rem 1rem;
+    }
+    
+    .certification-icon-large {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
     }
 }
