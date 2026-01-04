@@ -67,6 +67,9 @@ let currentUser = null;
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 Inicializando página de materiais...');
     
+    // Inicializar elementos com estado padrão
+    initializeDefaultState();
+    
     // Configurar eventos
     setupEventListeners();
     
@@ -81,15 +84,26 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Carregar informações da certificação
         loadCertification(currentCertId);
         
-        // Atualizar interface de autenticação
+        // Atualizar interface de autenticação (sem mensagem inicial)
         updateAuthUI();
+        
+        // Mostrar barra de autenticação
+        document.getElementById('authBar').style.display = 'block';
         
         // Carregar materiais
         await loadMaterialsFromSupabase(currentCertId);
         
         console.log('✅ Página de materiais inicializada com sucesso');
-    }, 1000);
+    }, 300);
 });
+
+// Inicializar estado padrão dos elementos
+function initializeDefaultState() {
+    // Remover mensagens de carregamento iniciais
+    document.getElementById('currentCertification').textContent = 'Certificação';
+    document.getElementById('certTitle').textContent = 'Certificação';
+    document.getElementById('certLevel').textContent = 'Nível: Carregando...';
+}
 
 // ============================================
 // CONFIGURAÇÃO DE EVENTOS
@@ -103,7 +117,7 @@ function setupEventListeners() {
     }
     
     // Drag and drop
-    const uploadArea = document.querySelector('.upload-area');
+    const uploadArea = document.querySelector('.upload-area-compact');
     if (uploadArea) {
         uploadArea.addEventListener('dragover', handleDragOver);
         uploadArea.addEventListener('dragleave', handleDragLeave);
@@ -122,30 +136,33 @@ function setupEventListeners() {
 function handleDragOver(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area');
+    const uploadArea = document.querySelector('.upload-area-compact');
     if (uploadArea) {
         uploadArea.style.background = '#e8f4fc';
         uploadArea.style.borderColor = '#2980b9';
+        uploadArea.style.transform = 'translateY(-3px)';
     }
 }
 
 function handleDragLeave(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area');
+    const uploadArea = document.querySelector('.upload-area-compact');
     if (uploadArea) {
-        uploadArea.style.background = '';
-        uploadArea.style.borderColor = '';
+        uploadArea.style.background = '#f8fafc';
+        uploadArea.style.borderColor = '#ddd';
+        uploadArea.style.transform = 'translateY(0)';
     }
 }
 
 function handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area');
+    const uploadArea = document.querySelector('.upload-area-compact');
     if (uploadArea) {
-        uploadArea.style.background = '';
-        uploadArea.style.borderColor = '';
+        uploadArea.style.background = '#f8fafc';
+        uploadArea.style.borderColor = '#ddd';
+        uploadArea.style.transform = 'translateY(0)';
     }
     
     const files = e.dataTransfer.files;
@@ -188,18 +205,6 @@ async function initSupabase() {
             console.log('✅ Criado novo cliente Supabase');
         }
         
-        // Testar conexão
-        const { data, error } = await supabaseClient
-            .from('materiais')
-            .select('count')
-            .limit(1);
-        
-        if (error) {
-            console.warn('⚠️ Teste de conexão falhou:', error.message);
-        } else {
-            console.log('✅ Conexão com Supabase OK');
-        }
-        
     } catch (error) {
         console.error('❌ Erro ao inicializar Supabase:', error);
     }
@@ -214,7 +219,7 @@ function updateAuthUI() {
     const authContainer = document.getElementById('authContainer');
     
     if (!window.authManager) {
-        authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Sistema de autenticação não carregado';
+        authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Autenticação';
         return;
     }
     
@@ -225,16 +230,12 @@ function updateAuthUI() {
                         'Usuário';
         
         authStatus.innerHTML = `
-            <i class="fas fa-check-circle" style="color: #27ae60; margin-right: 0.5rem;"></i>
-            Logado como: <strong>${userName}</strong>
+            <i class="fas fa-user-circle" style="color: #27ae60; margin-right: 0.5rem;"></i>
+            <span>${userName}</span>
         `;
         
         authContainer.innerHTML = `
-            <div class="auth-user-info">
-                <div class="auth-user-avatar">
-                    ${userName.substring(0, 2).toUpperCase()}
-                </div>
-                <span class="auth-user-name">${userName}</span>
+            <div class="auth-user-info-compact">
                 <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </button>
@@ -243,17 +244,14 @@ function updateAuthUI() {
     } else {
         currentUser = null;
         authStatus.innerHTML = `
-            <i class="fas fa-exclamation-circle" style="color: #e74c3c; margin-right: 0.5rem;"></i>
-            Não logado
+            <i class="fas fa-user" style="color: #95a5a6; margin-right: 0.5rem;"></i>
+            <span>Visitante</span>
         `;
         
         authContainer.innerHTML = `
-            <div style="display: flex; gap: 0.8rem;">
+            <div style="display: flex; gap: 0.5rem;">
                 <a href="index.html#login" class="btn btn-outline btn-sm">
                     <i class="fas fa-sign-in-alt"></i> Entrar
-                </a>
-                <a href="index.html#register" class="btn btn-primary btn-sm">
-                    <i class="fas fa-user-plus"></i> Cadastrar
                 </a>
             </div>
         `;
@@ -298,11 +296,18 @@ function loadCertification(certId) {
     document.getElementById('certTitle').textContent = cert.title;
     document.getElementById('certLevel').textContent = `Nível: ${cert.level}`;
     document.getElementById('certDescription').textContent = cert.description;
-    document.getElementById('certificationHero').style.background = 
-        `linear-gradient(135deg, ${cert.color} 0%, ${darkenColor(cert.color, 20)} 100%)`;
+    
+    // Aplicar gradiente no hero
+    const hero = document.getElementById('certificationHero');
+    hero.style.background = `linear-gradient(135deg, ${cert.color} 0%, ${darkenColor(cert.color, 20)} 100%)`;
     
     // Atualizar título da página
     document.title = `StudyCert - ${cert.title}`;
+    
+    // Suavizar transição
+    setTimeout(() => {
+        hero.style.transition = 'background 0.5s ease';
+    }, 100);
 }
 
 // Escurecer cor para gradiente
@@ -324,8 +329,10 @@ function darkenColor(color, percent) {
 // Verificar autenticação antes de upload
 function checkAuthAndUpload() {
     if (!window.authManager || !window.authManager.isAuthenticated()) {
-        alert('Faça login para compartilhar materiais. Você será redirecionado para a página de login.');
-        window.location.href = 'index.html#login';
+        showNotification('Faça login para compartilhar materiais.', 'warning');
+        setTimeout(() => {
+            window.location.href = 'index.html#login';
+        }, 1500);
         return;
     }
     
@@ -381,8 +388,7 @@ function showUploadForm(file) {
             <div>
                 <div style="font-weight: bold; margin-bottom: 0.3rem;">${file.name}</div>
                 <div style="font-size: 0.9rem; color: #666;">
-                    ${formatFileSize(file.size)} • ${currentFileType.toUpperCase()} • 
-                    ${file.type || 'Tipo desconhecido'}
+                    ${formatFileSize(file.size)} • ${currentFileType.toUpperCase()}
                 </div>
             </div>
         </div>
@@ -634,20 +640,40 @@ function updateProgressBar(percent, type = 'page') {
 function showNotification(message, type = 'info') {
     // Criar elemento de notificação
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
+    notification.className = `notification notification-${type}`;
     notification.innerHTML = `
         <i class="fas fa-${type === 'success' ? 'check-circle' : 
                           type === 'error' ? 'exclamation-circle' : 
+                          type === 'warning' ? 'exclamation-triangle' : 
                           'info-circle'}"></i>
-        ${message}
+        <span>${message}</span>
     `;
     
     // Adicionar ao corpo
     document.body.appendChild(notification);
     
+    // Estilos dinâmicos
+    Object.assign(notification.style, {
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        padding: '12px 20px',
+        borderRadius: '6px',
+        background: type === 'success' ? '#27ae60' : 
+                   type === 'error' ? '#e74c3c' : 
+                   type === 'warning' ? '#f39c12' : '#3498db',
+        color: 'white',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        zIndex: '9999',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        animation: 'slideInRight 0.3s ease-out'
+    });
+    
     // Remover após 3 segundos
     setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-out';
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
@@ -707,7 +733,7 @@ async function loadMaterialsFromSupabase(certId, filterType = 'all', sortBy = 'd
         
         if (error) {
             console.error('❌ Erro ao carregar materiais:', error);
-            showNoMaterials('Erro ao carregar materiais do banco de dados.');
+            showNoMaterials('Erro ao carregar materiais.');
             return;
         }
         
@@ -724,12 +750,16 @@ async function loadMaterialsFromSupabase(certId, filterType = 'all', sortBy = 'd
 // Atualizar interface com lista de materiais
 function updateMaterialsInterface(materials) {
     const container = document.getElementById('materialsContainer');
+    const countElement = document.getElementById('materialsCount');
     const currentUserId = currentUser?.id;
     
     if (!materials || materials.length === 0) {
+        countElement.textContent = '0 materiais';
         showNoMaterials('Nenhum material encontrado para esta certificação.');
         return;
     }
+    
+    countElement.textContent = `${materials.length} material${materials.length !== 1 ? 's' : ''}`;
     
     const materialsHTML = materials.map(material => 
         renderMaterialListItem(material, currentUserId)
@@ -738,62 +768,65 @@ function updateMaterialsInterface(materials) {
     container.innerHTML = materialsHTML;
 }
 
-// Renderizar item da lista de materiais
+// Renderizar item da lista de materiais (COMPACTO)
 function renderMaterialListItem(material, currentUserId) {
     const fileIconClass = `icon-${material.tipo}`;
     const fileIconName = getFileIcon(material.tipo);
     const isOwner = currentUserId && material.usuario_id === currentUserId;
-    const certInfo = certifications[material.certificacao] || certifications['itil4'];
     
-    // Formatar data
-    const uploadDate = formatDate(material.data_upload);
+    // Formatar data de forma compacta
+    const uploadDate = formatDateCompact(material.data_upload);
     
     return `
-        <div class="material-item-improved" data-id="${material.id}">
-            <div class="material-icon-large ${fileIconClass}">
+        <div class="material-item-compact" data-id="${material.id}">
+            <div class="material-icon-compact ${fileIconClass}">
                 <i class="fas fa-${fileIconName}"></i>
             </div>
             
-            <div class="material-content">
-                <a href="${material.arquivo_url}" target="_blank" class="material-title" 
-                   onclick="recordView('${material.id}')" title="${material.titulo}">
-                    ${material.titulo}
-                </a>
-                
-                <div class="material-meta">
-                    <span class="material-meta-item" title="Tipo de arquivo">
-                        <i class="fas fa-file"></i> ${material.tipo.toUpperCase()}
-                    </span>
-                    <span class="material-meta-item" title="Tamanho">
-                        <i class="fas fa-weight"></i> ${formatFileSize((material.arquivo_tamanho_kb || 0) * 1024)}
-                    </span>
-                    <span class="material-meta-item" title="Data de upload">
-                        <i class="far fa-calendar"></i> ${uploadDate}
-                    </span>
-                    <span class="material-meta-item" title="Visualizações">
-                        <i class="far fa-eye"></i> ${material.visualizacoes || 0}
-                    </span>
-                    <span class="material-meta-item" title="Downloads">
-                        <i class="fas fa-download"></i> ${material.downloads || 0}
-                    </span>
+            <div class="material-content-compact">
+                <div class="material-header-compact">
+                    <a href="${material.arquivo_url}" target="_blank" class="material-title-compact" 
+                       onclick="recordView('${material.id}')" title="${material.titulo}">
+                        ${material.titulo}
+                    </a>
+                    <div class="material-meta-compact">
+                        <span title="Tipo de arquivo">
+                            <i class="fas fa-file"></i> ${material.tipo.toUpperCase()}
+                        </span>
+                        <span title="Tamanho">
+                            • ${formatFileSizeCompact((material.arquivo_tamanho_kb || 0) * 1024)}
+                        </span>
+                        <span title="Data de upload">
+                            • ${uploadDate}
+                        </span>
+                    </div>
                 </div>
                 
                 ${material.descricao ? 
-                    `<div class="material-description" title="${material.descricao}">
+                    `<div class="material-description-compact" title="${material.descricao}">
                         ${material.descricao}
                     </div>` 
                     : ''
                 }
+                
+                <div class="material-stats-compact">
+                    <span title="Visualizações">
+                        <i class="far fa-eye"></i> ${material.visualizacoes || 0}
+                    </span>
+                    <span title="Downloads">
+                        <i class="fas fa-download"></i> ${material.downloads || 0}
+                    </span>
+                </div>
             </div>
             
-            <div class="material-actions">
-                <button class="btn btn-primary" 
+            <div class="material-actions-compact">
+                <button class="btn btn-primary btn-sm" 
                         onclick="downloadMaterial('${material.id}', '${material.arquivo_url}', '${material.titulo}')" 
                         title="Baixar arquivo">
-                    <i class="fas fa-download"></i> Baixar
+                    <i class="fas fa-download"></i>
                 </button>
                 ${isOwner ? `
-                    <button class="btn btn-outline" 
+                    <button class="btn btn-outline btn-sm" 
                             onclick="showDeleteModal('${material.id}', '${material.titulo}')" 
                             title="Excluir material">
                         <i class="fas fa-trash"></i>
@@ -804,8 +837,8 @@ function renderMaterialListItem(material, currentUserId) {
     `;
 }
 
-// Formatar data
-function formatDate(dateString) {
+// Formatar data de forma compacta
+function formatDateCompact(dateString) {
     try {
         const date = new Date(dateString);
         const now = new Date();
@@ -817,21 +850,31 @@ function formatDate(dateString) {
             if (diffHours < 1) {
                 const diffMinutes = Math.floor(diffMs / (1000 * 60));
                 if (diffMinutes < 1) {
-                    return 'Agora mesmo';
+                    return 'Agora';
                 }
-                return `${diffMinutes} min atrás`;
+                return `${diffMinutes} min`;
             }
-            return `Hoje às ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+            return `${diffHours}h`;
         } else if (diffDays === 1) {
             return 'Ontem';
         } else if (diffDays < 7) {
-            return `${diffDays} dias atrás`;
+            return `${diffDays}d`;
         } else {
-            return date.toLocaleDateString('pt-BR');
+            return date.getDate().toString().padStart(2, '0') + '/' + 
+                   (date.getMonth() + 1).toString().padStart(2, '0');
         }
     } catch (e) {
-        return 'Data desconhecida';
+        return '--/--';
     }
+}
+
+// Formatar tamanho de arquivo de forma compacta
+function formatFileSizeCompact(bytes) {
+    if (bytes === 0) return '0B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(0)) + sizes[i];
 }
 
 // Mostrar mensagem quando não há materiais
@@ -840,18 +883,20 @@ function showNoMaterials(message) {
     const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
     
     container.innerHTML = `
-        <div class="no-materials-message">
+        <div class="no-materials-message-compact">
             <i class="fas fa-folder-open"></i>
-            <h3>${message}</h3>
-            <p>Seja o primeiro a compartilhar um material para esta certificação!</p>
-            ${isAuthenticated ? 
-                `<button class="btn btn-primary" onclick="checkAuthAndUpload()" style="margin-top: 1rem;">
-                    <i class="fas fa-plus"></i> Compartilhar Material
-                </button>` : 
-                `<a href="index.html#login" class="btn btn-primary" style="margin-top: 1rem;">
-                    <i class="fas fa-sign-in-alt"></i> Faça login para compartilhar
-                </a>`
-            }
+            <div>
+                <h4>${message}</h4>
+                <p>Seja o primeiro a compartilhar um material!</p>
+                ${isAuthenticated ? 
+                    `<button class="btn btn-primary btn-sm" onclick="checkAuthAndUpload()">
+                        <i class="fas fa-plus"></i> Compartilhar Material
+                    </button>` : 
+                    `<a href="index.html#login" class="btn btn-primary btn-sm">
+                        <i class="fas fa-sign-in-alt"></i> Faça login
+                    </a>`
+                }
+            </div>
         </div>
     `;
 }
@@ -865,8 +910,8 @@ function updateStats(materials) {
     
     document.getElementById('totalMaterials').textContent = totalMaterials;
     document.getElementById('totalSize').textContent = totalSize.toFixed(1) + ' MB';
-    document.getElementById('totalViews').textContent = totalViews.toLocaleString();
-    document.getElementById('totalDownloads').textContent = totalDownloads.toLocaleString();
+    document.getElementById('totalViews').textContent = totalViews;
+    document.getElementById('totalDownloads').textContent = totalDownloads;
 }
 
 // Manipular mudanças nos filtros
