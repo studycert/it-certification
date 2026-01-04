@@ -188,7 +188,7 @@
                 </div>
             </div>
 
-            <!-- Seção de Upload -->
+            <!-- Seção de Upload COMPACTA -->
             <section class="upload-section-card" id="uploadSection">
                 <div class="upload-icon-large">
                     <i class="fas fa-cloud-upload-alt"></i>
@@ -196,30 +196,29 @@
                 <h2>Compartilhe Seus Materiais</h2>
                 <p>
                     Ajude outros estudantes compartilhando seus resumos, guias e materiais de estudo.
-                    A comunidade agradece!
                 </p>
                 
-                <div class="upload-area" onclick="checkAuthAndUpload()" 
-                     style="max-width: 400px; margin: 0 auto; cursor: pointer;">
-                    <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem;"></i>
-                    <h4>Arraste ou clique para selecionar</h4>
-                    <p>Formatos suportados: PDF, PPT, DOC, TXT, ZIP, MP4</p>
-                    <p style="font-size: 0.85rem; color: #95a5a6;">
-                        <i class="fas fa-info-circle"></i> Tamanho máximo: 100MB
-                    </p>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">
+                <!-- Área de upload compacta -->
+                <div class="upload-area-compact" onclick="checkAuthAndUpload()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h4>Clique ou arraste arquivos</h4>
+                    <p>PDF, PPT, DOC, TXT, ZIP, MP4</p>
+                    <button class="btn btn-primary btn-sm">
                         <i class="fas fa-upload"></i> Selecionar Arquivo
                     </button>
+                    <div class="file-info">
+                        <i class="fas fa-info-circle"></i> Tamanho máximo: 100MB
+                    </div>
                     <input type="file" id="fileInputPage" 
                            accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.zip,.mp4,.rar,.7z" 
                            style="display: none;">
                 </div>
                 
-                <div id="uploadProgressPage" class="upload-progress" style="display: none;">
-                    <div class="progress-container">
-                        <div id="progressBar" class="progress-bar"></div>
+                <div id="uploadProgressPage" class="upload-progress-compact" style="display: none;">
+                    <div class="progress-container-compact">
+                        <div id="progressBar" class="progress-bar-compact"></div>
                     </div>
-                    <div class="progress-info">
+                    <div class="progress-info-compact">
                         <span>Enviando arquivo...</span>
                         <span id="progressPercent">0%</span>
                     </div>
@@ -259,11 +258,11 @@
                 <i class="fas fa-upload"></i> Compartilhar Material
             </h3>
             
-            <div id="uploadProgressContainer" class="upload-progress" style="display: none;">
-                <div class="progress-container">
-                    <div id="modalProgressBar" class="progress-bar"></div>
+            <div id="uploadProgressContainer" class="upload-progress-compact" style="display: none; margin-bottom: 1rem;">
+                <div class="progress-container-compact">
+                    <div id="modalProgressBar" class="progress-bar-compact"></div>
                 </div>
-                <div class="progress-info">
+                <div class="progress-info-compact">
                     <span>Enviando arquivo...</span>
                     <span id="modalProgressPercent">0%</span>
                 </div>
