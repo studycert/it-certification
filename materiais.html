@@ -41,24 +41,22 @@
             color: white !important;
         }
         
-        /* Ajustes extras para área de upload super compacta */
-        .upload-area-super-compact {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+        /* Upload super compacto inline */
+        #uploadSection .upload-area-compact {
+            max-width: 150px !important;
+            padding: 0.6rem !important;
         }
         
-        /* Estilo para o modal de upload mais compacto */
-        .modal-content {
-            max-width: 350px !important;
-            padding: 1.2rem !important;
+        #uploadSection .upload-area-compact i {
+            font-size: 1.2rem !important;
         }
         
-        .modal-content h3 {
-            font-size: 1.1rem !important;
-            margin-bottom: 1rem !important;
+        #uploadSection .upload-area-compact h4 {
+            font-size: 0.75rem !important;
+        }
+        
+        #uploadSection .upload-area-compact p {
+            font-size: 0.65rem !important;
         }
     </style>
 </head>
@@ -72,8 +70,8 @@
                     <h1>Study<span>Cert</span></h1>
                 </div>
                 <div>
-                    <a href="index.html" class="btn btn-primary btn-sm">
-                        <i class="fas fa-arrow-left"></i> Voltar
+                    <a href="index.html" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Voltar para Home
                     </a>
                 </div>
             </div>
@@ -208,26 +206,26 @@
                 </div>
             </div>
 
-            <!-- Seção de Upload SUPER COMPACTA -->
+            <!-- Seção de Upload SUPER COMPACTA (150px) -->
             <section class="upload-section-card" id="uploadSection">
                 <div class="upload-icon-large">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
                 <h2>Compartilhe Materiais</h2>
                 <p>
-                    Ajude outros estudantes compartilhando seus resumos.
+                    Ajude outros estudantes.
                 </p>
                 
-                <!-- Área de upload SUPER compacta -->
-                <div class="upload-area-super-compact" onclick="checkAuthAndUpload()">
+                <!-- Área de upload SUPER COMPACTA -->
+                <div class="upload-area-compact" onclick="checkAuthAndUpload()">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <h4>Enviar Arquivo</h4>
-                    <p>PDF, PPT, DOC, ZIP</p>
+                    <h4>Upload de Arquivos</h4>
+                    <p>PDF, DOC, PPT, ZIP</p>
                     <button class="btn btn-primary btn-sm">
                         <i class="fas fa-upload"></i> Selecionar
                     </button>
                     <div class="file-info">
-                        <i class="fas fa-info-circle"></i> Max: 100MB
+                        <i class="fas fa-info-circle"></i> Até 100MB
                     </div>
                     <input type="file" id="fileInputPage" 
                            accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.zip,.mp4,.rar,.7z" 
@@ -270,11 +268,11 @@
         </div>
     </footer>
 
-    <!-- Modal de Upload Compacto -->
+    <!-- Modal de Upload -->
     <div id="uploadModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeUploadModal()">&times;</button>
-            <h3 style="color: var(--primary); margin-bottom: 1rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1.5rem;">
                 <i class="fas fa-upload"></i> Compartilhar Material
             </h3>
             
@@ -283,37 +281,37 @@
                     <div id="modalProgressBar" class="progress-bar-compact"></div>
                 </div>
                 <div class="progress-info-compact">
-                    <span>Enviando...</span>
+                    <span>Enviando arquivo...</span>
                     <span id="modalProgressPercent">0%</span>
                 </div>
             </div>
             
             <div id="uploadFormContainer">
-                <div id="selectedFileInfo" style="margin-bottom: 1rem; padding: 0.8rem; background: #f8f9fa; border-radius: 8px; font-size: 0.9rem;">
+                <div id="selectedFileInfo" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
                     <!-- Informações do arquivo serão preenchidas aqui -->
                 </div>
                 
-                <div style="margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.3rem; font-weight: 600; color: var(--dark); font-size: 0.9rem;">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
                         <i class="fas fa-heading"></i> Título *
                     </label>
                     <input type="text" id="materialTitle" class="filter-input" 
-                           placeholder="Ex: Guia ITIL 4" required style="padding: 0.6rem; font-size: 0.9rem;">
+                           placeholder="Ex: Guia Completo ITIL 4" required>
                 </div>
                 
-                <div style="margin-bottom: 1.2rem;">
-                    <label style="display: block; margin-bottom: 0.3rem; font-weight: 600; color: var(--dark); font-size: 0.9rem;">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
                         <i class="fas fa-align-left"></i> Descrição
                     </label>
-                    <textarea id="materialDescription" class="filter-input" rows="2" 
-                              placeholder="Descreva o material..." style="padding: 0.6rem; font-size: 0.9rem;"></textarea>
+                    <textarea id="materialDescription" class="filter-input" rows="3" 
+                              placeholder="Descreva o material..."></textarea>
                 </div>
                 
-                <div style="display: flex; gap: 0.6rem; justify-content: flex-end;">
-                    <button onclick="closeUploadModal()" class="btn btn-outline btn-sm">
+                <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                    <button onclick="closeUploadModal()" class="btn btn-outline">
                         <i class="fas fa-times"></i> Cancelar
                     </button>
-                    <button onclick="processUpload()" class="btn btn-primary btn-sm">
+                    <button onclick="processUpload()" class="btn btn-primary">
                         <i class="fas fa-paper-plane"></i> Enviar
                     </button>
                 </div>
@@ -321,27 +319,27 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão Compacto -->
+    <!-- Modal de Confirmação de Exclusão -->
     <div id="deleteConfirmModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeDeleteModal()">&times;</button>
-            <h3 style="margin-bottom: 1rem; color: var(--primary); font-size: 1.1rem;">
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary);">
                 <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Confirmar Exclusão
             </h3>
             
-            <div id="deleteMaterialInfo" style="margin-bottom: 1rem;">
-                <p style="font-size: 0.9rem;">Tem certeza que deseja excluir este material?</p>
-                <p id="deleteMaterialName" style="font-weight: bold; color: #e74c3c; margin: 0.8rem 0; padding: 0.6rem; background: #fdf2f2; border-radius: 6px; font-size: 0.9rem;"></p>
-                <p style="color: #666; font-size: 0.8rem;">
+            <div id="deleteMaterialInfo" style="margin-bottom: 1.5rem;">
+                <p>Tem certeza que deseja excluir este material?</p>
+                <p id="deleteMaterialName" style="font-weight: bold; color: #e74c3c; margin: 1rem 0; padding: 0.8rem; background: #fdf2f2; border-radius: 6px;"></p>
+                <p style="color: #666; font-size: 0.9rem;">
                     <i class="fas fa-info-circle"></i> Esta ação não pode ser desfeita.
                 </p>
             </div>
             
-            <div style="display: flex; gap: 0.6rem; justify-content: flex-end;">
-                <button onclick="closeDeleteModal()" class="btn btn-outline btn-sm">
+            <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                <button onclick="closeDeleteModal()" class="btn btn-outline">
                     <i class="fas fa-times"></i> Cancelar
                 </button>
-                <button onclick="confirmDeleteMaterial()" class="btn btn-danger btn-sm">
+                <button onclick="confirmDeleteMaterial()" class="btn btn-danger">
                     <i class="fas fa-trash"></i> Excluir
                 </button>
             </div>
