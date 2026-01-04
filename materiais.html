@@ -10,12 +10,7 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
     <style>
-        /* Estilo inicial para prevenir flash de cor */
-        .certification-hero {
-            background: linear-gradient(135deg, #3498db 0%, #1a5276 100%) !important;
-            transition: background 0.5s ease !important;
-        }
-        
+        /* Melhorias específicas para a página */
         .certification-icon-large i {
             color: white !important;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4) !important;
@@ -27,81 +22,72 @@
         }
         
         /* Botão excluir sempre visível */
-        .btn.btn-outline[onclick*="showDeleteModal"] {
-            background: rgba(231, 76, 60, 0.2) !important;
+        .material-actions .btn.btn-outline[onclick*="showDeleteModal"] {
+            background: rgba(231, 76, 60, 0.15) !important;
             border: 2px solid #e74c3c !important;
             color: #e74c3c !important;
+            transition: all 0.3s;
         }
         
-        .btn.btn-outline[onclick*="showDeleteModal"] i {
-            color: #e74c3c !important;
-        }
-        
-        .btn.btn-outline[onclick*="showDeleteModal"]:hover {
+        .material-actions .btn.btn-outline[onclick*="showDeleteModal"]:hover {
             background: #e74c3c !important;
             color: white !important;
         }
         
-        .btn.btn-outline[onclick*="showDeleteModal"]:hover i {
-            color: white !important;
+        /* Loading inicial mais discreto */
+        #certificationHero .loading-placeholder {
+            opacity: 0.7;
+            animation: pulse 1.5s infinite;
         }
         
-        /* Upload super compacto inline */
-        #uploadSection .upload-area-compact {
-            max-width: 150px !important;
-            padding: 0.6rem !important;
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 0.4; }
+            100% { opacity: 0.7; }
         }
         
-        #uploadSection .upload-area-compact i {
-            font-size: 1.2rem !important;
+        /* Área de upload compacta */
+        .upload-section-card {
+            margin-top: 1.5rem;
+            padding: 1rem;
         }
         
-        #uploadSection .upload-area-compact h4 {
-            font-size: 0.75rem !important;
-        }
-        
-        #uploadSection .upload-area-compact p {
-            font-size: 0.65rem !important;
-        }
-        
-        /* Notificações */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
+        .upload-area {
+            max-width: 280px !important;
+            margin: 0 auto;
+            cursor: pointer;
+            padding: 1rem;
+            border: 2px dashed #ddd;
             border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            z-index: 10000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            animation: slideIn 0.3s ease-out;
-            max-width: 350px;
+            background: #f8fafc;
+            transition: all 0.3s;
+            text-align: center;
         }
         
-        .notification.success {
-            background: linear-gradient(135deg, #27ae60, #219653);
-            border-left: 4px solid #1e874b;
+        .upload-area:hover {
+            border-color: var(--secondary);
+            background: #f0f7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
         }
         
-        .notification.error {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            border-left: 4px solid #a93226;
+        .upload-area i {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            display: block;
         }
         
-        .notification.info {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            border-left: 4px solid #1f618d;
+        .upload-area h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            color: var(--primary);
         }
         
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
+        .upload-area p {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
@@ -123,12 +109,12 @@
         </div>
     </header>
 
-    <!-- Barra de Autenticação -->
-    <div class="auth-bar-improved">
+    <!-- Barra de Autenticação - Inicialmente oculta -->
+    <div class="auth-bar-improved" style="display: none;" id="authBar">
         <div class="container">
             <div class="auth-container-improved">
                 <div id="authStatus">
-                    <i class="fas fa-spinner fa-spin"></i> Verificando autenticação...
+                    <i class="fas fa-user-circle"></i> Verificando...
                 </div>
                 <div id="authContainer"></div>
             </div>
@@ -140,7 +126,7 @@
         <div class="container">
             <a href="index.html"><i class="fas fa-home"></i> Home</a> > 
             <a href="index.html#materiais">Material de Estudo</a> > 
-            <span id="currentCertification">Carregando...</span>
+            <span id="currentCertification">Carregando certificação...</span>
         </div>
     </section>
 
@@ -153,125 +139,125 @@
                     <div class="certification-icon-large" id="certIcon">
                         <i class="fas fa-cube"></i>
                     </div>
-                    <h1 id="certTitle">Carregando Certificação...</h1>
+                    <h1 id="certTitle">Certificação</h1>
                     <div class="certification-level-badge" id="certLevel">Nível: Foundation</div>
                     <p id="certDescription" style="max-width: 600px; margin: 0 auto; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                        Acesse guias, resumos, apresentações e outros recursos para sua preparação.
+                        Recursos de estudo para sua preparação
                     </p>
                 </div>
             </section>
 
-            <!-- Filtros -->
-            <div class="filters-card">
-                <div class="filters-header">
-                    <h3><i class="fas fa-filter"></i> Filtrar Materiais</h3>
-                </div>
-                <div class="filters-grid">
-                    <div class="filter-group">
-                        <label for="filterType"><i class="fas fa-file"></i> Tipo de Material</label>
-                        <select id="filterType" class="filter-select">
-                            <option value="all">Todos os Tipos</option>
-                            <option value="pdf">PDF</option>
-                            <option value="doc">Documentos</option>
-                            <option value="ppt">Apresentações</option>
-                            <option value="txt">Texto</option>
-                            <option value="video">Videoaulas</option>
-                            <option value="zip">Arquivos ZIP</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="filterSort"><i class="fas fa-sort"></i> Ordenar por</label>
-                        <select id="filterSort" class="filter-select">
-                            <option value="date_desc">Mais Recentes</option>
-                            <option value="date_asc">Mais Antigos</option>
-                            <option value="views_desc">Mais Visualizados</option>
-                            <option value="name_asc">Nome (A-Z)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="searchMaterial"><i class="fas fa-search"></i> Buscar Material</label>
-                        <input type="text" id="searchMaterial" class="filter-input" 
-                               placeholder="Digite palavras-chave...">
+            <!-- Filtros e Estatísticas em linha -->
+            <div class="filters-stats-row">
+                <!-- Filtros -->
+                <div class="filters-card-compact">
+                    <h4><i class="fas fa-filter"></i> Filtros</h4>
+                    <div class="filters-grid-compact">
+                        <div class="filter-group">
+                            <select id="filterType" class="filter-select">
+                                <option value="all">Todos os Tipos</option>
+                                <option value="pdf">PDF</option>
+                                <option value="doc">Documentos</option>
+                                <option value="ppt">Apresentações</option>
+                                <option value="txt">Texto</option>
+                                <option value="video">Videoaulas</option>
+                                <option value="zip">Arquivos ZIP</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <select id="filterSort" class="filter-select">
+                                <option value="date_desc">Mais Recentes</option>
+                                <option value="date_asc">Mais Antigos</option>
+                                <option value="views_desc">Mais Visualizados</option>
+                                <option value="name_asc">Nome (A-Z)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <input type="text" id="searchMaterial" class="filter-input" 
+                                   placeholder="Buscar material...">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Estatísticas -->
-            <div class="stats-card">
-                <h3 style="margin-bottom: 1.5rem; color: var(--primary);">
-                    <i class="fas fa-chart-bar"></i> Estatísticas
-                </h3>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-file-alt"></i>
+                <!-- Estatísticas -->
+                <div class="stats-card-compact">
+                    <div class="stats-grid-compact">
+                        <div class="stat-item-compact">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div>
+                                <span class="stat-value" id="totalMaterials">0</span>
+                                <span class="stat-label">Materiais</span>
+                            </div>
                         </div>
-                        <span class="stat-value" id="totalMaterials" style="color: #3498db;">0</span>
-                        <span class="stat-label">Materiais Disponíveis</span>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-database"></i>
+                        
+                        <div class="stat-item-compact">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div>
+                                <span class="stat-value" id="totalSize">0 MB</span>
+                                <span class="stat-label">Tamanho</span>
+                            </div>
                         </div>
-                        <span class="stat-value" id="totalSize" style="color: #27ae60;">0 MB</span>
-                        <span class="stat-label">Tamanho Total</span>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-eye"></i>
+                        
+                        <div class="stat-item-compact">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div>
+                                <span class="stat-value" id="totalViews">0</span>
+                                <span class="stat-label">Visualizações</span>
+                            </div>
                         </div>
-                        <span class="stat-value" id="totalViews" style="color: #e74c3c;">0</span>
-                        <span class="stat-label">Visualizações</span>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-download"></i>
+                        
+                        <div class="stat-item-compact">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div>
+                                <span class="stat-value" id="totalDownloads">0</span>
+                                <span class="stat-label">Downloads</span>
+                            </div>
                         </div>
-                        <span class="stat-value" id="totalDownloads" style="color: #9b59b6;">0</span>
-                        <span class="stat-label">Downloads</span>
                     </div>
                 </div>
             </div>
 
             <!-- Lista de Materiais -->
-            <div class="materials-list-card">
-                <div class="materials-list-header">
+            <div class="materials-list-card-compact">
+                <div class="materials-list-header-compact">
                     <h3><i class="fas fa-list"></i> Materiais Disponíveis</h3>
+                    <span class="materials-count" id="materialsCount">0 materiais</span>
                 </div>
                 <div id="materialsContainer">
-                    <div class="loading-message">
+                    <div class="loading-message-compact">
                         <i class="fas fa-spinner fa-spin"></i>
                         <p>Carregando materiais...</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Seção de Upload SUPER COMPACTA (150px) -->
-            <section class="upload-section-card" id="uploadSection">
-                <div class="upload-icon-large">
-                    <i class="fas fa-cloud-upload-alt"></i>
+            <!-- Seção de Upload Compacta -->
+            <section class="upload-section-card-compact" id="uploadSection">
+                <div class="upload-header-compact">
+                    <div class="upload-icon-small">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div>
+                        <h3>Compartilhe Seus Materiais</h3>
+                        <p class="upload-subtitle">Ajude outros estudantes compartilhando seus recursos de estudo</p>
+                    </div>
                 </div>
-                <h2>Compartilhe Materiais</h2>
-                <p>
-                    Ajude outros estudantes.
-                </p>
                 
-                <!-- Área de upload SUPER COMPACTA -->
                 <div class="upload-area-compact" onclick="checkAuthAndUpload()">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <h4>Upload de Arquivos</h4>
-                    <p>PDF, DOC, PPT, ZIP</p>
-                    <button class="btn btn-primary btn-sm">
-                        <i class="fas fa-upload"></i> Selecionar
-                    </button>
-                    <div class="file-info">
-                        <i class="fas fa-info-circle"></i> Até 100MB
-                    </div>
+                    <h4>Clique ou arraste arquivos</h4>
+                    <p>PDF, PPT, DOC, TXT, ZIP, MP4</p>
+                    <span class="file-info">Máx. 100MB</span>
                     <input type="file" id="fileInputPage" 
                            accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.zip,.mp4,.rar,.7z" 
                            style="display: none;">
@@ -321,11 +307,11 @@
                 <i class="fas fa-upload"></i> Compartilhar Material
             </h3>
             
-            <div id="uploadProgressContainer" class="upload-progress-compact" style="display: none; margin-bottom: 1rem;">
-                <div class="progress-container-compact">
-                    <div id="modalProgressBar" class="progress-bar-compact"></div>
+            <div id="uploadProgressContainer" class="upload-progress" style="display: none;">
+                <div class="progress-container">
+                    <div id="modalProgressBar" class="progress-bar"></div>
                 </div>
-                <div class="progress-info-compact">
+                <div class="progress-info">
                     <span>Enviando arquivo...</span>
                     <span id="modalProgressPercent">0%</span>
                 </div>
@@ -341,7 +327,7 @@
                         <i class="fas fa-heading"></i> Título *
                     </label>
                     <input type="text" id="materialTitle" class="filter-input" 
-                           placeholder="Ex: Guia Completo ITIL 4" required>
+                           placeholder="Ex: Guia Completo ITIL 4 Foundation" required>
                 </div>
                 
                 <div style="margin-bottom: 1.5rem;">
@@ -349,7 +335,7 @@
                         <i class="fas fa-align-left"></i> Descrição
                     </label>
                     <textarea id="materialDescription" class="filter-input" rows="3" 
-                              placeholder="Descreva o material..."></textarea>
+                              placeholder="Descreva brevemente o conteúdo deste material..."></textarea>
                 </div>
                 
                 <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
@@ -357,7 +343,7 @@
                         <i class="fas fa-times"></i> Cancelar
                     </button>
                     <button onclick="processUpload()" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> Enviar
+                        <i class="fas fa-paper-plane"></i> Enviar Material
                     </button>
                 </div>
             </div>
@@ -385,7 +371,7 @@
                     <i class="fas fa-times"></i> Cancelar
                 </button>
                 <button onclick="confirmDeleteMaterial()" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Excluir
+                    <i class="fas fa-trash"></i> Excluir Permanentemente
                 </button>
             </div>
         </div>
