@@ -369,13 +369,13 @@
 }
 
 /* ============================
-   SEÇÃO DE UPLOAD COMPACTA
+   SEÇÃO DE UPLOAD SUPER COMPACTA
    ============================ */
 
 .upload-section-card {
     background: white;
     border-radius: 10px;
-    padding: 1.5rem;
+    padding: 1.2rem;
     margin-top: 2rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     text-align: center;
@@ -389,87 +389,87 @@
 }
 
 .upload-icon-large {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: var(--secondary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 .upload-section-card h2 {
     color: var(--primary);
     margin-bottom: 0.5rem;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
 }
 
 .upload-section-card p {
     color: var(--gray);
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
-/* Área de upload compacta */
-.upload-area-compact {
-    max-width: 300px;
+/* Área de upload SUPER compacta */
+.upload-area-super-compact {
+    max-width: 150px;
     margin: 0 auto;
     cursor: pointer;
-    padding: 1rem;
+    padding: 0.8rem;
     border: 2px dashed #ddd;
     border-radius: 8px;
     background: #f8fafc;
     transition: all 0.3s;
 }
 
-.upload-area-compact:hover {
+.upload-area-super-compact:hover {
     border-color: var(--secondary);
     background: #f0f7ff;
     transform: translateY(-2px);
 }
 
-.upload-area-compact i {
-    font-size: 1.8rem;
+.upload-area-super-compact i {
+    font-size: 1.5rem;
     color: var(--secondary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     display: block;
 }
 
-.upload-area-compact h4 {
-    font-size: 0.95rem;
-    margin-bottom: 0.3rem;
+.upload-area-super-compact h4 {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
     color: var(--primary);
 }
 
-.upload-area-compact p {
-    font-size: 0.8rem;
+.upload-area-super-compact p {
+    font-size: 0.7rem;
     color: var(--gray);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
-.upload-area-compact .btn {
-    margin-top: 0.5rem;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-}
-
-.upload-area-compact .file-info {
-    font-size: 0.75rem;
-    color: #95a5a6;
+.upload-area-super-compact .btn {
     margin-top: 0.3rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.upload-area-super-compact .file-info {
+    font-size: 0.65rem;
+    color: #95a5a6;
+    margin-top: 0.2rem;
 }
 
 /* Progress bar compacta */
 .upload-progress-compact {
-    margin: 1rem auto 0 auto;
-    max-width: 300px;
+    margin: 0.8rem auto 0 auto;
+    max-width: 150px;
 }
 
 .progress-container-compact {
-    height: 6px;
+    height: 4px;
     background: #eee;
-    border-radius: 3px;
+    border-radius: 2px;
     overflow: hidden;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
 }
 
 .progress-bar-compact {
@@ -477,13 +477,13 @@
     background: var(--secondary);
     width: 0%;
     transition: width 0.3s ease;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 .progress-info-compact {
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: var(--gray);
 }
 
@@ -545,10 +545,10 @@
 
 .modal-content {
     background: white;
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 12px;
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
     position: relative;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
@@ -567,15 +567,15 @@
 
 .close-modal {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.8rem;
+    right: 0.8rem;
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
     color: var(--gray);
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -660,6 +660,11 @@
         height: 80px;
         font-size: 2.8rem;
     }
+    
+    .upload-area-super-compact {
+        max-width: 130px;
+        padding: 0.6rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -693,17 +698,21 @@
         padding: 0.4rem !important;
     }
     
-    .upload-area-compact {
-        max-width: 100%;
-        padding: 0.8rem;
+    .upload-area-super-compact {
+        max-width: 120px;
+        padding: 0.5rem;
     }
     
     .upload-section-card {
-        padding: 1.2rem;
+        padding: 1rem;
     }
     
     .upload-icon-large {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+    
+    .upload-section-card h2 {
+        font-size: 1.1rem;
     }
 }
 
@@ -728,7 +737,7 @@
     }
     
     .upload-section-card {
-        padding: 1rem;
+        padding: 0.8rem;
     }
     
     .certification-icon-large {
@@ -737,19 +746,25 @@
         font-size: 2rem;
     }
     
-    .upload-area-compact {
-        padding: 0.6rem;
+    .upload-area-super-compact {
+        max-width: 100px;
+        padding: 0.4rem;
     }
     
-    .upload-area-compact i {
-        font-size: 1.5rem;
+    .upload-area-super-compact i {
+        font-size: 1.2rem;
     }
     
-    .upload-area-compact h4 {
-        font-size: 0.9rem;
+    .upload-area-super-compact h4 {
+        font-size: 0.7rem;
     }
     
-    .upload-area-compact p {
-        font-size: 0.75rem;
+    .upload-area-super-compact p {
+        font-size: 0.6rem;
+    }
+    
+    .upload-area-super-compact .btn {
+        padding: 0.15rem 0.4rem;
+        font-size: 0.7rem;
     }
 }
