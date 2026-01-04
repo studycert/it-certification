@@ -102,8 +102,8 @@ function setupEventListeners() {
         fileInput.addEventListener('change', handleFileSelect);
     }
     
-    // Drag and drop na área compacta
-    const uploadArea = document.querySelector('.upload-area-compact');
+    // Drag and drop na área super compacta
+    const uploadArea = document.querySelector('.upload-area-super-compact');
     if (uploadArea) {
         uploadArea.addEventListener('dragover', handleDragOver);
         uploadArea.addEventListener('dragleave', handleDragLeave);
@@ -122,7 +122,7 @@ function setupEventListeners() {
 function handleDragOver(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area-compact');
+    const uploadArea = document.querySelector('.upload-area-super-compact');
     if (uploadArea) {
         uploadArea.style.background = '#e8f4fc';
         uploadArea.style.borderColor = '#2980b9';
@@ -132,7 +132,7 @@ function handleDragOver(e) {
 function handleDragLeave(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area-compact');
+    const uploadArea = document.querySelector('.upload-area-super-compact');
     if (uploadArea) {
         uploadArea.style.background = '#f8fafc';
         uploadArea.style.borderColor = '#ddd';
@@ -142,7 +142,7 @@ function handleDragLeave(e) {
 function handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
-    const uploadArea = document.querySelector('.upload-area-compact');
+    const uploadArea = document.querySelector('.upload-area-super-compact');
     if (uploadArea) {
         uploadArea.style.background = '#f8fafc';
         uploadArea.style.borderColor = '#ddd';
@@ -406,15 +406,14 @@ function showUploadForm(file) {
     const fileIconName = getFileIcon(currentFileType);
     
     document.getElementById('selectedFileInfo').innerHTML = `
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <div class="material-icon-large ${fileIconClass}" style="width: 60px; height: 60px;">
+        <div style="display: flex; align-items: center; gap: 0.8rem;">
+            <div class="material-icon-large ${fileIconClass}" style="width: 50px; height: 50px; font-size: 1.5rem;">
                 <i class="fas fa-${fileIconName}"></i>
             </div>
             <div>
-                <div style="font-weight: bold; margin-bottom: 0.3rem;">${file.name}</div>
-                <div style="font-size: 0.9rem; color: #666;">
-                    ${formatFileSize(file.size)} • ${currentFileType.toUpperCase()} • 
-                    ${file.type || 'Tipo desconhecido'}
+                <div style="font-weight: bold; margin-bottom: 0.2rem; font-size: 0.9rem;">${file.name}</div>
+                <div style="font-size: 0.8rem; color: #666;">
+                    ${formatFileSize(file.size)} • ${currentFileType.toUpperCase()}
                 </div>
             </div>
         </div>
@@ -933,147 +932,4 @@ async function downloadMaterial(materialId, fileUrl, fileName) {
         // Registrar download
         if (supabaseClient) {
             await supabaseClient
-                .from('materiais')
-                .update({ downloads: supabaseClient.raw('downloads + 1') })
-                .eq('id', materialId);
-        }
-        
-        // Criar link de download
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = fileName;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        console.log('✅ Download iniciado:', fileName);
-        showNotification('Download iniciado!', 'success');
-        
-        // Atualizar contador localmente
-        setTimeout(() => {
-            loadMaterialsFromSupabase(currentCertId);
-        }, 1000);
-        
-    } catch (error) {
-        console.error('❌ Erro ao baixar:', error);
-        // Fallback: abrir em nova aba
-        window.open(fileUrl, '_blank');
-        showNotification('Abrindo arquivo em nova guia...', 'info');
-    }
-}
-
-// ============================================
-// FUNÇÕES DE EXCLUSÃO
-// ============================================
-
-// Mostrar modal de exclusão
-function showDeleteModal(materialId, materialTitle) {
-    materialToDelete = {
-        id: materialId,
-        title: materialTitle
-    };
-    
-    document.getElementById('deleteMaterialName').textContent = materialTitle;
-    document.getElementById('deleteConfirmModal').style.display = 'flex';
-}
-
-// Fechar modal de exclusão
-function closeDeleteModal() {
-    materialToDelete = null;
-    document.getElementById('deleteConfirmModal').style.display = 'none';
-}
-
-// Confirmar exclusão do material
-async function confirmDeleteMaterial() {
-    if (!materialToDelete) {
-        showNotification('Erro: Nenhum material selecionado para exclusão.', 'error');
-        closeDeleteModal();
-        return;
-    }
-    
-    if (!window.authManager || !window.authManager.isAuthenticated()) {
-        showNotification('Sessão expirada. Faça login novamente.', 'error');
-        closeDeleteModal();
-        window.location.href = 'index.html#login';
-        return;
-    }
-    
-    const currentUser = window.authManager.getUser();
-    if (!currentUser || !currentUser.id) {
-        showNotification('Erro: usuário não identificado.', 'error');
-        closeDeleteModal();
-        return;
-    }
-    
-    try {
-        console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
-        
-        // 1. Primeiro buscar o material para obter informações
-        const { data: material, error: fetchError } = await supabaseClient
-            .from('materiais')
-            .select('*')
-            .eq('id', materialToDelete.id)
-            .single();
-        
-        if (fetchError) {
-            console.error('❌ Erro ao buscar material:', fetchError);
-            throw new Error('Material não encontrado.');
-        }
-        
-        // 2. Verificar se o usuário é o dono
-        if (material.usuario_id !== currentUser.id) {
-            showNotification('Você só pode excluir seus próprios materiais.', 'error');
-            closeDeleteModal();
-            return;
-        }
-        
-        // 3. Extrair caminho do arquivo da URL para excluir do Storage
-        const fileUrl = material.arquivo_url;
-        console.log('🔗 URL do arquivo:', fileUrl);
-        
-        // Extrair o caminho do arquivo do bucket
-        const urlParts = fileUrl.split('/materiais/');
-        if (urlParts.length > 1) {
-            const filePath = urlParts[1];
-            console.log('📁 Caminho do arquivo no storage:', filePath);
-            
-            // Excluir do Storage
-            const { error: storageError } = await supabaseClient.storage
-                .from('materiais')
-                .remove([filePath]);
-            
-            if (storageError) {
-                console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
-                // Continuar mesmo se falhar no storage
-            } else {
-                console.log('✅ Arquivo excluído do storage');
-            }
-        }
-        
-        // 4. Excluir do banco de dados
-        const { error: deleteError } = await supabaseClient
-            .from('materiais')
-            .delete()
-            .eq('id', materialToDelete.id);
-        
-        if (deleteError) {
-            console.error('❌ Erro ao excluir do banco:', deleteError);
-            throw new Error(`Erro ao excluir material: ${deleteError.message}`);
-        }
-        
-        console.log('✅ Material excluído com sucesso');
-        
-        // Fechar modal e mostrar mensagem
-        closeDeleteModal();
-        showNotification('✅ Material excluído com sucesso!', 'success');
-        
-        // Recarregar a lista de materiais
-        loadMaterialsFromSupabase(currentCertId);
-        
-    } catch (error) {
-        console.error('❌ Erro na exclusão:', error);
-        showNotification(`❌ Erro: ${error.message}`, 'error');
-        closeDeleteModal();
-    }
-}
+                .from('
