@@ -11,7 +11,7 @@
 
 /* Hero da certificação */
 .certification-hero {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+    background: linear-gradient(135deg, #3498db 0%, #1a5276 100%);
     color: white;
     padding: 2.5rem 0;
     margin-bottom: 2rem;
@@ -19,6 +19,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
+    transition: background 0.5s ease !important;
 }
 
 .certification-hero::before {
