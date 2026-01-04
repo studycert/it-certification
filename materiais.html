@@ -10,7 +10,12 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
     <style>
-        /* Correções de emergência para garantir visibilidade */
+        /* Estilo inicial para prevenir flash de cor */
+        .certification-hero {
+            background: linear-gradient(135deg, #3498db 0%, #1a5276 100%) !important;
+            transition: background 0.5s ease !important;
+        }
+        
         .certification-icon-large i {
             color: white !important;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4) !important;
@@ -57,6 +62,46 @@
         
         #uploadSection .upload-area-compact p {
             font-size: 0.65rem !important;
+        }
+        
+        /* Notificações */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease-out;
+            max-width: 350px;
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #27ae60, #219653);
+            border-left: 4px solid #1e874b;
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-left: 4px solid #a93226;
+        }
+        
+        .notification.info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-left: 4px solid #1f618d;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
         }
     </style>
 </head>
