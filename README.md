@@ -1,4 +1,12 @@
 # IT Certification Study Platform
+📚 StudyCert - Plataforma de Certificação em TI
+🌐 SITE OFICIAL
+
+    URL: https://studycert.github.io/it-certification/
+
+    GitHub: https://github.com/StudyCert/it-certification
+
+    Backup: https://github.com/studycert/it-certification-bkp
 
 📁 Estrutura do Projeto
 
