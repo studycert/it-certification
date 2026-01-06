@@ -1379,3 +1379,122 @@ document.addEventListener('DOMContentLoaded', () => {
     window.studyCertApp = studyCertApp;
     console.log('✅ StudyCertApp inicializado como studyCertApp');
 });
+// ==================== FUNÇÕES GLOBAIS SEGURAS ====================
+// Funções wrapper seguras que verificam se o app está carregado
+window.openLogin = function(e) {
+    if (e) e.preventDefault();
+    console.log('openLogin chamado');
+    
+    // Verificar se o app já foi inicializado
+    if (window.studyCertApp) {
+        console.log('App encontrado, abrindo login...');
+        window.studyCertApp.openLogin(e);
+    } else {
+        console.warn('App não inicializado, tentando inicializar...');
+        // Forçar inicialização ou mostrar modal diretamente
+        const modalAuth = document.getElementById('modalAuth');
+        if (modalAuth) {
+            modalAuth.classList.add('active');
+            // Mostrar tab de login
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+            document.getElementById('loginForm').classList.add('active');
+        }
+    }
+};
+
+window.openRegister = function(e) {
+    if (e) e.preventDefault();
+    console.log('openRegister chamado');
+    
+    if (window.studyCertApp) {
+        console.log('App encontrado, abrindo registro...');
+        window.studyCertApp.openRegister(e);
+    } else {
+        console.warn('App não inicializado, tentando abrir modal...');
+        const modalAuth = document.getElementById('modalAuth');
+        if (modalAuth) {
+            modalAuth.classList.add('active');
+            // Mostrar tab de registro
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.querySelector('.auth-tab[data-tab="register"]').classList.add('active');
+            document.getElementById('registerForm').classList.add('active');
+        }
+    }
+};
+
+window.login = function() {
+    console.log('login chamado');
+    if (window.studyCertApp) {
+        window.studyCertApp.login();
+    } else {
+        alert('Sistema ainda não carregou. Aguarde alguns segundos e tente novamente.');
+    }
+};
+
+window.register = function() {
+    console.log('register chamado');
+    if (window.studyCertApp) {
+        window.studyCertApp.register();
+    } else {
+        alert('Sistema ainda não carregou. Aguarde alguns segundos e tente novamente.');
+    }
+};
+
+window.closeAuthModal = function() {
+    console.log('closeAuthModal chamado');
+    if (window.studyCertApp) {
+        window.studyCertApp.closeAuthModal();
+    } else {
+        const modalAuth = document.getElementById('modalAuth');
+        if (modalAuth) {
+            modalAuth.classList.remove('active');
+        }
+    }
+};
+
+// Inicializar app quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded - Inicializando StudyCertApp...');
+    try {
+        window.studyCertApp = new StudyCertApp();
+        console.log('✅ StudyCertApp inicializado com sucesso!');
+        
+        // Atualizar botões após inicialização
+        if (window.studyCertApp.updateAuthUI) {
+            setTimeout(() => {
+                window.studyCertApp.updateAuthUI();
+            }, 100);
+        }
+        
+        // Disparar evento personalizado
+        window.dispatchEvent(new CustomEvent('studycert-app-ready'));
+        
+    } catch (error) {
+        console.error('❌ Erro ao inicializar StudyCertApp:', error);
+        // Mostrar botões básicos mesmo com erro
+        const authButtons = document.getElementById('authButtons');
+        if (authButtons) {
+            authButtons.innerHTML = `
+                <button class="btn btn-outline" onclick="openLogin()">Entrar</button>
+                <button class="btn btn-primary" onclick="openRegister()">Cadastrar</button>
+            `;
+        }
+    }
+});
+
+// Também inicializar quando a página estiver completamente carregada
+window.addEventListener('load', () => {
+    console.log('Página completamente carregada');
+    // Se ainda não inicializou, tentar novamente
+    if (!window.studyCertApp) {
+        console.log('Tentando inicializar novamente no load...');
+        try {
+            window.studyCertApp = new StudyCertApp();
+        } catch (e) {
+            console.error('Falha na inicialização:', e);
+        }
+    }
+});
