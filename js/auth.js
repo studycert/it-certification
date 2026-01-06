@@ -53,6 +53,12 @@ class AuthManager {
         try {
             if (!this.supabase) return;
             
+            // Verificar se já tem sessão ativa localmente
+            if (this.currentUser) {
+                console.log('✅ Sessão já ativa localmente');
+                return;
+            }
+            
             const { data: { session }, error } = await this.supabase.auth.getSession();
             
             if (error) {
