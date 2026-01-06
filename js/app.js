@@ -345,7 +345,7 @@ class StudyCertApp {
         }
     }
 
-        async login() {
+            async login() {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
         
@@ -365,33 +365,17 @@ class StudyCertApp {
             if (error) {
                 console.error('❌ Erro detalhado no login:', error);
                 
-                // TRATAMENTO CONSISTENTE para email não confirmado
+                // Email não confirmado - Mostrar botão para reenviar
                 if (error.message.includes('Email not confirmed')) {
                     this.showMessage('loginMessage', 
-                        '📧 Email não confirmado!<br>' +
-                        'Por favor, verifique sua caixa de entrada e confirme seu email.', 
-                        'warning'
+                        '❌ Email não confirmado.<br>' +
+                        'Verifique sua caixa de entrada e spam.<br>' +
+                        '<button class="btn btn-sm btn-outline" onclick="resendConfirmationEmail(\'' + email + '\')" style="margin-top: 10px; margin-right: 5px;">' +
+                        '<i class="fas fa-paper-plane"></i> Reenviar email</button>' +
+                        '<button class="btn btn-sm btn-primary" onclick="app.showAuthTab(\'register\')" style="margin-top: 10px;">' +
+                        '<i class="fas fa-user-plus"></i> Cadastrar outro email</button>', 
+                        'error'
                     );
-                    
-                    // Tentar reenviar email
-                    try {
-                        const { error: resendError } = await this.supabase.auth.resend({
-                            type: 'signup',
-                            email: email.toLowerCase().trim()
-                        });
-                        
-                        if (!resendError) {
-                            setTimeout(() => {
-                                this.showMessage('loginMessage', 
-                                    '📨 Novo email de confirmação enviado!', 
-                                    'success'
-                                );
-                            }, 1000);
-                        }
-                    } catch (resendErr) {
-                        console.log('Não foi possível reenviar email:', resendErr);
-                    }
-                    
                     return;
                 }
                 
@@ -400,7 +384,7 @@ class StudyCertApp {
                 return;
             }
             
-            // Sucesso
+            // Login bem-sucedido
             this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
             this.currentUser = data.user;
             
