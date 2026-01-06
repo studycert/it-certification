@@ -390,7 +390,7 @@ class StudyCertApp {
         }
     }
 
-    async register() {
+        async register() {
         const name = document.getElementById('registerName').value;
         const email = document.getElementById('registerEmail').value;
         const password = document.getElementById('registerPassword').value;
@@ -424,9 +424,15 @@ class StudyCertApp {
                 console.error('Erro detalhado do Supabase:', error);
                 
                 if (error.message.includes('User already registered')) {
-                    this.showMessage('registerMessage', '❌ Este email já está cadastrado. Tente fazer login.', 'error');
+                    this.showMessage('registerMessage', '❌ Este email já está cadastrado. Redirecionando para login...', 'error');
+                    setTimeout(() => {
+                        this.showAuthTab('login');
+                        document.getElementById('loginEmail').value = email;
+                    }, 1500);
+                    return;
                 } else if (error.message.includes('rate limit')) {
                     this.showMessage('registerMessage', '❌ Muitas tentativas. Aguarde alguns minutos.', 'error');
+                    return;
                 } else if (error.message.includes('fetch')) {
                     this.showMessage('registerMessage', 
                         '❌ Problema de conexão:<br>' +
@@ -435,40 +441,31 @@ class StudyCertApp {
                         '3. A chave anon está correta?', 
                         'error'
                     );
+                    return;
                 } else {
                     this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
+                    return;
                 }
             } else {
                 console.log('Usuário cadastrado com sucesso:', data);
                 
                 if (data.user?.identities?.length === 0) {
-                    this.showMessage('registerMessage', '✅ Este email já possui uma conta. Faça login.', 'success');
+                    this.showMessage('registerMessage', '✅ Este email já possui uma conta. Redirecionando para login...', 'success');
+                    setTimeout(() => {
+                        this.showAuthTab('login');
+                        document.getElementById('loginEmail').value = email;
+                    }, 1500);
+                    return;
                 } else {
                     this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
-                }
-                
-                // Tentar fazer login automaticamente
-                setTimeout(async () => {
-                    const { data: loginData, error: loginError } = await this.supabase.auth.signInWithPassword({
-                        email: email.toLowerCase().trim(),
-                        password: password
-                    });
                     
-                    if (!loginError) {
-                        this.currentUser = loginData.user;
-                        this.closeAuthModal();
-                        this.updateAuthUI();
-                        await this.ensureUserProfile();
-                        this.loadInitialData();
-                    }
-                }, 2000);
-                
-                // Limpar formulário
-                setTimeout(() => {
-                    document.getElementById('registerName').value = '';
-                    document.getElementById('registerEmail').value = '';
-                    document.getElementById('registerPassword').value = '';
-                }, 3000);
+                    // Limpar formulário
+                    setTimeout(() => {
+                        document.getElementById('registerName').value = '';
+                        document.getElementById('registerEmail').value = '';
+                        document.getElementById('registerPassword').value = '';
+                    }, 3000);
+                }
             }
             
         } catch (error) {
@@ -476,7 +473,6 @@ class StudyCertApp {
             this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
         }
     }
-
     getAuthErrorMessage(error) {
         if (error.message.includes('Invalid login credentials')) {
             return '❌ Email ou senha incorretos';
