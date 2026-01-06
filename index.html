@@ -918,151 +918,118 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </footer>
 
-    <!-- Scripts de Funcionalidades Básicas (funcionam mesmo sem app.js) -->
-    <script>
-        // ==================== FUNÇÕES BÁSICAS QUE FUNCIONAM SEM O APP.JS ====================
-        
-        // 1. Abrir modal de login
-        function openLoginModal(e) {
-            if (e) e.preventDefault();
-            console.log('Abrindo modal de login...');
-            const modal = document.getElementById('modalAuth');
-            if (modal) {
-                modal.classList.add('active');
-                switchAuthTab('login');
-                return false;
+   <!-- Na seção de scripts no final do index.html, substitua todo o script por: -->
+<script>
+// ==================== FUNÇÕES BÁSICAS ====================
+function openLoginModal(e) {
+    if (e) e.preventDefault();
+    const modal = document.getElementById('modalAuth');
+    if (modal) {
+        modal.classList.add('active');
+        switchAuthTab('login');
+    }
+}
+
+function openRegisterModal(e) {
+    if (e) e.preventDefault();
+    const modal = document.getElementById('modalAuth');
+    if (modal) {
+        modal.classList.add('active');
+        switchAuthTab('register');
+    }
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('modalAuth');
+    if (modal) modal.classList.remove('active');
+}
+
+function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    
+    document.querySelector(`.auth-tab[data-tab="${tab}"]`)?.classList.add('active');
+    document.getElementById(`${tab}Form`)?.classclist.add('active');
+}
+
+// Funções que serão sobrescritas pelo app.js
+function submitLogin() {
+    if (window.studyCertApp && window.studyCertApp.login) {
+        window.studyCertApp.login();
+    } else {
+        console.log('Aguardando app.js carregar...');
+        // Tenta novamente após 1 segundo
+        setTimeout(() => {
+            if (window.studyCertApp && window.studyCertApp.login) {
+                window.studyCertApp.login();
+            } else {
+                alert('Sistema carregando... Aguarde.');
             }
-            return false;
-        }
-        
-        // 2. Abrir modal de registro
-        function openRegisterModal(e) {
-            if (e) e.preventDefault();
-            console.log('Abrindo modal de registro...');
-            const modal = document.getElementById('modalAuth');
-            if (modal) {
-                modal.classList.add('active');
-                switchAuthTab('register');
-                return false;
+        }, 1000);
+    }
+}
+
+function submitRegister() {
+    if (window.studyCertApp && window.studyCertApp.register) {
+        window.studyCertApp.register();
+    } else {
+        console.log('Aguardando app.js carregar...');
+        setTimeout(() => {
+            if (window.studyCertApp && window.studyCertApp.register) {
+                window.studyCertApp.register();
+            } else {
+                alert('Sistema carregando... Aguarde.');
             }
-            return false;
-        }
-        
-        // 3. Fechar modal de auth
-        function closeAuthModal() {
-            console.log('Fechando modal...');
-            const modal = document.getElementById('modalAuth');
-            if (modal) {
-                modal.classList.remove('active');
+        }, 1000);
+    }
+}
+
+// Menu hambúrguer
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+            const icon = this.querySelector('i');
+            if (mainNav.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
             }
-        }
-        
-        // 4. Alternar entre tabs (login/register)
-        function switchAuthTab(tab) {
-            console.log('Alternando para tab:', tab);
-            // Esconder todas as tabs
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-            
-            // Mostrar a tab selecionada
-            document.querySelector(`.auth-tab[data-tab="${tab}"]`)?.classList.add('active');
-            document.getElementById(`${tab}Form`)?.classList.add('active');
-            
-            // Limpar mensagens
-            const loginMsg = document.getElementById('loginMessage');
-            const registerMsg = document.getElementById('registerMessage');
-            if (loginMsg) loginMsg.innerHTML = '';
-            if (registerMsg) registerMsg.innerHTML = '';
-        }
-        
-        // 5. Mostrar seções
-        function showSection(sectionId, e) {
-            if (e) e.preventDefault();
-            console.log('Mostrando seção:', sectionId);
-            
-            // Remover active de todos os links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Remover active de todas as seções
-            document.querySelectorAll('.main-content').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Adicionar active ao link clicado
-            const clickedLink = document.querySelector(`a[onclick*="${sectionId}"]`);
-            if (clickedLink) {
-                clickedLink.classList.add('active');
-            }
-            
-            // Mostrar seção correspondente
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-        
-        // 6. Menu hambúrguer
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const mainNav = document.getElementById('mainNav');
-            
-            if (menuToggle && mainNav) {
-                menuToggle.addEventListener('click', function() {
-                    mainNav.classList.toggle('active');
-                    const icon = this.querySelector('i');
-                    if (mainNav.classList.contains('active')) {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-times');
-                    } else {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-            }
-            
-            console.log('✅ Funções básicas carregadas!');
         });
-        
-        // 7. Funções que serão sobrescritas pelo app.js se ele carregar
-        function submitLogin() {
-            console.log('Login submetido (aguardando app.js)...');
-            alert('Sistema carregando... Tente novamente em alguns segundos.');
+    }
+    
+    // Verificar se app.js carregou após 3 segundos
+    setTimeout(() => {
+        if (!window.studyCertApp) {
+            console.warn('App não carregou, recarregando scripts...');
+            // Tenta carregar manualmente
+            const script = document.createElement('script');
+            script.src = 'js/app.js';
+            document.head.appendChild(script);
         }
-        
-        function submitRegister() {
-            console.log('Registro submetido (aguardando app.js)...');
-            alert('Sistema carregando... Tente novamente em alguns segundos.');
-        }
-        
-        function forgotPassword() {
-            alert('Funcionalidade disponível após o login.');
-        }
-        
-        function createNewPost() {
-            alert('Faça login para criar uma nova discussão.');
-        }
-        
-        function abrirModalSimulados() {
-            const modal = document.getElementById('modalSimulados');
-            if (modal) modal.classList.add('active');
-        }
-        
-        function fecharModalSimulados() {
-            const modal = document.getElementById('modalSimulados');
-            if (modal) modal.classList.remove('active');
-        }
-        
-        function openUploadModal() {
-            alert('Faça login para fazer upload de simulados.');
-        }
-        
-        // 8. Quando o app.js carregar, estas funções serão substituídas
-        window.basicFunctionsLoaded = true;
-        console.log('📱 Funções básicas do StudyCert prontas!');
-    </script>
+    }, 3000);
+});
+
+// Outras funções básicas
+function abrirModalSimulados() {
+    const modal = document.getElementById('modalSimulados');
+    if (modal) modal.classList.add('active');
+}
+
+function fecharModalSimulados() {
+    const modal = document.getElementById('modalSimulados');
+    if (modal) modal.classList.remove('active');
+}
+
+function openUploadModal() {
+    alert('Faça login para fazer upload de simulados.');
+}
+</script>
     
 </body>
 </html>
