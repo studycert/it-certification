@@ -345,7 +345,7 @@ class StudyCertApp {
         }
     }
 
-            async login() {
+               async login() {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
         
@@ -365,22 +365,22 @@ class StudyCertApp {
             if (error) {
                 console.error('❌ Erro detalhado no login:', error);
                 
-                // Email não confirmado - Mostrar botão para reenviar
-                if (error.message.includes('Email not confirmed')) {
-                    this.showMessage('loginMessage', 
-                        '❌ Email não confirmado.<br>' +
-                        'Verifique sua caixa de entrada e spam.<br>' +
-                        '<button class="btn btn-sm btn-outline" onclick="resendConfirmationEmail(\'' + email + '\')" style="margin-top: 10px; margin-right: 5px;">' +
-                        '<i class="fas fa-paper-plane"></i> Reenviar email</button>' +
-                        '<button class="btn btn-sm btn-primary" onclick="app.showAuthTab(\'register\')" style="margin-top: 10px;">' +
-                        '<i class="fas fa-user-plus"></i> Cadastrar outro email</button>', 
-                        'error'
-                    );
-                    return;
-                }
+                // Quando o Supabase retorna 'Invalid login credentials' pode ser:
+                // 1. Email não confirmado
+                // 2. Email/senha realmente errados
                 
-                // Outros erros
-                this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
+                // Vamos mostrar uma mensagem que cobre ambos os casos
+                this.showMessage('loginMessage', 
+                    '❌ Não foi possível fazer login.<br>' +
+                    '<strong>Possíveis causas:</strong><br>' +
+                    '1. Email não confirmado<br>' +
+                    '2. Email ou senha incorretos<br><br>' +
+                    '<button class="btn btn-sm btn-outline" onclick="resendConfirmationEmail(\'' + email + '\')" style="margin-top: 10px; margin-right: 5px;">' +
+                    '<i class="fas fa-paper-plane"></i> Reenviar email de confirmação</button>' +
+                    '<button class="btn btn-sm btn-primary" onclick="app.forgotPassword()" style="margin-top: 10px;">' +
+                    '<i class="fas fa-key"></i> Recuperar senha</button>', 
+                    'error'
+                );
                 return;
             }
             
@@ -388,7 +388,6 @@ class StudyCertApp {
             this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
             this.currentUser = data.user;
             
-            // Garantir perfil
             await this.ensureUserProfile();
             
             setTimeout(() => {
@@ -397,8 +396,6 @@ class StudyCertApp {
                 this.loadUserProgress();
                 document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
-                
-                // Recarregar dados
                 this.loadInitialData();
             }, 1500);
             
@@ -491,13 +488,13 @@ class StudyCertApp {
             this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
         }
     }
-    getAuthErrorMessage(error) {
+        getAuthErrorMessage(error) {
         if (error.message.includes('Invalid login credentials')) {
-            return '❌ Email ou senha incorretos';
+            return '❌ Email/senha incorretos ou email não confirmado';
         } else if (error.message.includes('User already registered')) {
             return '❌ Este email já está cadastrado';
         } else if (error.message.includes('Email not confirmed')) {
-            return '✅ Email não confirmado, mas permitindo acesso...';
+            return '❌ Email não confirmado';
         } else if (error.message.includes('Invalid API key')) {
             return '❌ Problema de configuração do sistema';
         } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
