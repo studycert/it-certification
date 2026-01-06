@@ -7,7 +7,7 @@ const SUPABASE_CONFIG = {
 
 // Expor para uso global
 window.SUPABASE_CONFIG = SUPABASE_CONFIG;
-console.log('✅ Configuração do Supabase carregada');
+console.log('✅ Configuração carregada');
 
 // Configurações da aplicação
 const APP_CONFIG = {
