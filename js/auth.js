@@ -1,4 +1,4 @@
-// js/auth.js - Sistema de autenticação simplificado
+// js/auth.js - Sistema de autenticação global CORRIGIDO
 class AuthManager {
     constructor() {
         this.supabase = null;
@@ -11,39 +11,39 @@ class AuthManager {
         if (this.isInitialized) return;
         
         try {
-            console.log('🔄 Inicializando AuthManager...');
+            // Configuração do Supabase
+            const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
+            const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
             
-            // Aguardar carregamento do Supabase
-            if (typeof supabase === 'undefined') {
-                console.error('❌ Supabase não carregado');
-                return;
-            }
-            
-            if (!SUPABASE_CONFIG || !SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) {
-                console.error('❌ Configuração do Supabase ausente');
-                return;
-            }
-            
-            // Criar cliente Supabase
-            this.supabase = supabase.createClient(
-                SUPABASE_CONFIG.url,
-                SUPABASE_CONFIG.anonKey,
-                {
+            if (typeof supabase !== 'undefined') {
+                this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
                     auth: {
                         autoRefreshToken: true,
                         persistSession: true,
                         detectSessionInUrl: false,
                         storage: window.localStorage,
                         storageKey: 'studycert-auth'
+                    },
+                    global: {
+                        headers: {
+                            'apikey': SUPABASE_KEY
+                        }
                     }
-                }
-            );
-            
-            // Verificar sessão existente
-            await this.checkSession();
-            this.isInitialized = true;
-            console.log('✅ AuthManager inicializado com sucesso');
-            
+                });
+                
+                // Verificar sessão atual
+                await this.checkSession();
+                this.isInitialized = true;
+                
+                console.log('✅ AuthManager inicializado com sucesso');
+                
+                // Disparar evento de inicialização
+                window.dispatchEvent(new CustomEvent('studycert-auth-ready'));
+                
+            } else {
+                console.warn('⚠️ Supabase não disponível, usando localStorage');
+                this.loadFromLocalStorage();
+            }
         } catch (error) {
             console.error('❌ Erro ao inicializar AuthManager:', error);
         }
@@ -57,18 +57,21 @@ class AuthManager {
             
             if (error) {
                 console.warn('⚠️ Erro ao verificar sessão:', error);
+                this.loadFromLocalStorage();
                 return;
             }
             
             if (session) {
                 this.currentUser = session.user;
-                console.log('✅ Sessão ativa para:', this.currentUser.email);
+                console.log('✅ Sessão ativa:', this.currentUser.email);
                 this.saveToLocalStorage();
             } else {
                 console.log('⚠️ Nenhuma sessão ativa');
+                this.loadFromLocalStorage();
             }
         } catch (error) {
             console.error('❌ Erro na verificação de sessão:', error);
+            this.loadFromLocalStorage();
         }
     }
 
@@ -80,31 +83,45 @@ class AuthManager {
                 name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0]
             };
             localStorage.setItem('studycert_user', JSON.stringify(userData));
+            localStorage.setItem('studycert_auth', 'true');
+        }
+    }
+
+    loadFromLocalStorage() {
+        try {
+            const userData = localStorage.getItem('studycert_user');
+            if (userData) {
+                const user = JSON.parse(userData);
+                this.currentUser = {
+                    id: user.id,
+                    email: user.email,
+                    user_metadata: { full_name: user.name }
+                };
+                console.log('📱 Usuário carregado do localStorage:', user.email);
+            }
+        } catch (e) {
+            console.warn('⚠️ Erro ao carregar do localStorage:', e);
         }
     }
 
     async login(email, password) {
         try {
-            console.log('🔐 Tentando login para:', email);
-            
-            if (!this.supabase) {
-                console.error('❌ Supabase não inicializado');
-                return { success: false, error: 'Sistema não inicializado' };
-            }
+            if (!this.supabase) await this.init();
             
             const { data, error } = await this.supabase.auth.signInWithPassword({
                 email: email.toLowerCase().trim(),
                 password: password
             });
 
-            if (error) {
-                console.error('❌ Erro no login:', error.message);
-                return { success: false, error: error.message };
-            }
+            if (error) throw error;
 
             this.currentUser = data.user;
             this.saveToLocalStorage();
-            console.log('✅ Login realizado com sucesso');
+            
+            // Disparar evento
+            window.dispatchEvent(new CustomEvent('studycert-auth-login', {
+                detail: { user: data.user }
+            }));
             
             return { success: true, user: data.user };
             
@@ -122,8 +139,11 @@ class AuthManager {
             
             this.currentUser = null;
             localStorage.removeItem('studycert_user');
+            localStorage.removeItem('studycert_auth');
             
-            console.log('✅ Logout realizado');
+            // Disparar evento
+            window.dispatchEvent(new CustomEvent('studycert-auth-logout'));
+            
             return { success: true };
         } catch (error) {
             console.error('❌ Erro no logout:', error);
@@ -142,11 +162,36 @@ class AuthManager {
     getSupabase() {
         return this.supabase;
     }
+
+    setUser(user) {
+        this.currentUser = user;
+        this.saveToLocalStorage();
+    }
+
+    clearUser() {
+        this.currentUser = null;
+        localStorage.removeItem('studycert_user');
+        localStorage.removeItem('studycert_auth');
+    }
 }
 
-// Criar instância global
+// Criar instância global única
 const authManager = new AuthManager();
 
+// Inicializar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', async () => {
+    // Expor para uso global
+    window.authManager = authManager;
+    window.studyCertAuth = authManager;
+    
+    console.log('🎯 AuthManager carregado e pronto');
+});
+
+// Função para verificar se está logado (para uso em outras páginas)
+function checkAuth() {
+    return authManager.isAuthenticated();
+}
+
 // Exportar para uso global
-window.authManager = authManager;
-window.AuthManager = AuthManager;
+window.checkAuth = checkAuth;
+window.logoutGlobal = () => authManager.logout();
