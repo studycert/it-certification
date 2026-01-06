@@ -1,13 +1,8 @@
 // Configurações do Supabase
 const SUPABASE_CONFIG = {
     url: 'https://uhbwudgdeyvbkqoflaqw.supabase.co',
-    // Use a SERVICE ROLE KEY ou ANON KEY correta
     anonKey: 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4'
 };
-
-// Expor para uso global
-window.SUPABASE_CONFIG = SUPABASE_CONFIG;
-console.log('✅ Configuração carregada');
 
 // Configurações da aplicação
 const APP_CONFIG = {
