@@ -416,7 +416,8 @@ class StudyCertApp {
                         full_name: name.trim(),
                         created_at: new Date().toISOString()
                     },
-                    emailRedirectTo: 'https://studycert.github.io/it-certification/'
+                    // emailRedirectTo: 'https://studycert.github.io/it-certification/'
+                    emailRedirectTo: window.location.origin // Redireciona para a página atual
                 }
             });
             
