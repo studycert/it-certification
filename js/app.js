@@ -391,64 +391,40 @@ class StudyCertApp {
     }
 
     async register() {
-        const name = document.getElementById('registerName').value;
-        const email = document.getElementById('registerEmail').value;
-        const password = document.getElementById('registerPassword').value;
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    if (!name || !email || !password) {
+        this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        this.showMessage('registerMessage', 'A senha deve ter pelo menos 6 caracteres', 'error');
+        return;
+    }
+    
+    try {
+        console.log('Tentando cadastrar usuário:', { email, name });
         
-        if (!name || !email || !password) {
-            this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
-            return;
-        }
-        
-        if (password.length < 6) {
-            this.showMessage('registerMessage', 'A senha deve ter pelo menos 6 caracteres', 'error');
-            return;
-        }
-        
-        try {
-            console.log('Tentando cadastrar usuário:', { email, name });
-            
-            const { data, error } = await this.supabase.auth.signUp({
-                email: email.toLowerCase().trim(),
-                password: password,
-                options: {
-                    data: {
-                        full_name: name.trim(),
-                        created_at: new Date().toISOString()
-                    },
-                    // emailRedirectTo: 'https://studycert.github.io/it-certification/'
-                    emailRedirectTo: window.location.origin // Redireciona para a página atual
-                }
-            });
-            
-            if (error) {
-                console.error('Erro detalhado do Supabase:', error);
+        const { data, error } = await this.supabase.auth.signUp({
+            email: email.toLowerCase().trim(),
+            password: password,
+            options: {
+                data: {
+                    full_name: name.trim(),
+                    created_at: new Date().toISOString()
+                },
+                emailRedirectTo: window.location.origin // CORRIGIDO
+            }
+        });
+
+        if (error) {
+            if (error.message.includes('User already registered')) {
+                this.showMessage('registerMessage', '✅ Este email já está cadastrado. Tente fazer login.', 'success');
                 
-                if (error.message.includes('User already registered')) {
-                    this.showMessage('registerMessage', '❌ Este email já está cadastrado. Tente fazer login.', 'error');
-                } else if (error.message.includes('rate limit')) {
-                    this.showMessage('registerMessage', '❌ Muitas tentativas. Aguarde alguns minutos.', 'error');
-                } else if (error.message.includes('fetch')) {
-                    this.showMessage('registerMessage', 
-                        '❌ Problema de conexão:<br>' +
-                        '1. Verifique sua internet<br>' +
-                        '2. A URL do Supabase está correta?<br>' +
-                        '3. A chave anon está correta?', 
-                        'error'
-                    );
-                } else {
-                    this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
-                }
-            } else {
-                console.log('Usuário cadastrado com sucesso:', data);
-                
-                if (data.user?.identities?.length === 0) {
-                    this.showMessage('registerMessage', '✅ Este email já possui uma conta. Faça login.', 'success');
-                } else {
-                    this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
-                }
-                
-                // Tentar fazer login automaticamente
+                // Tentar login automático
                 setTimeout(async () => {
                     const { data: loginData, error: loginError } = await this.supabase.auth.signInWithPassword({
                         email: email.toLowerCase().trim(),
@@ -456,43 +432,61 @@ class StudyCertApp {
                     });
                     
                     if (!loginError) {
-                        this.currentUser = loginData.user;
-                        this.closeAuthModal();
-                        this.updateAuthUI();
-                        await this.ensureUserProfile();
-                        this.loadInitialData();
+                        this.showMessage('registerMessage', '✅ Login realizado automaticamente!', 'success');
+                        setTimeout(() => {
+                            this.currentUser = loginData.user;
+                            this.closeAuthModal();
+                            this.updateAuthUI();
+                            this.loadInitialData();
+                        }, 1500);
                     }
-                }, 2000);
+                }, 1000);
                 
-                // Limpar formulário
-                setTimeout(() => {
-                    document.getElementById('registerName').value = '';
-                    document.getElementById('registerEmail').value = '';
-                    document.getElementById('registerPassword').value = '';
-                }, 3000);
+                return;
             }
             
-        } catch (error) {
-            console.error('❌ Erro no cadastro:', error);
             this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
+            return;
         }
+        
+        // Sucesso no cadastro
+        this.showMessage('registerMessage', 
+            '✅ Cadastro realizado com sucesso!<br>' +
+            '📧 Verifique seu email para confirmar sua conta.', 
+            'success'
+        );
+        
+        // Limpar formulário
+        setTimeout(() => {
+            document.getElementById('registerName').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPassword').value = '';
+            
+            // Mudar para tab de login
+            this.showAuthTab('login');
+        }, 3000);
+        
+    } catch (error) {
+        console.error('❌ Erro no cadastro:', error);
+        this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
     }
+}
 
     getAuthErrorMessage(error) {
-        if (error.message.includes('Invalid login credentials')) {
-            return '❌ Email ou senha incorretos';
-        } else if (error.message.includes('User already registered')) {
-            return '❌ Este email já está cadastrado';
-        } else if (error.message.includes('Email not confirmed')) {
-            return '✅ Email não confirmado, mas permitindo acesso...';
-        } else if (error.message.includes('Invalid API key')) {
-            return '❌ Problema de configuração do sistema';
-        } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
-            return '❌ Problema de conexão. Verifique sua internet.';
-        } else {
-            return `❌ Erro: ${error.message}`;
-        }
+    if (error.message.includes('Invalid login credentials')) {
+        return '❌ Email ou senha incorretos';
+    } else if (error.message.includes('User already registered')) {
+        return '❌ Este email já está cadastrado';
+    } else if (error.message.includes('Email not confirmed')) {
+        return '✅ Email não confirmado, mas permitindo acesso...';
+    } else if (error.message.includes('Invalid API key')) {
+        return '❌ Problema de configuração do sistema';
+    } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
+        return '❌ Problema de conexão. Verifique sua internet.';
+    } else {
+        return `❌ Erro: ${error.message}`;
     }
+}
 
     showMessage(elementId, message, type) {
         const element = document.getElementById(elementId);
