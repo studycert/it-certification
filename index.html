@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    <!-- APENAS app.js - removemos auth.js que causava conflito -->
     <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -21,24 +20,22 @@
                 <h1>Study<span>Cert</span></h1>
             </div>
             
-            <!-- Botão hambúrguer NO FINAL -->
             <button class="menu-toggle" id="menuToggle">
                 <i class="fas fa-bars"></i>
             </button>
             
             <nav id="mainNav">
                 <ul>
-                    <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
-                    <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
-                    <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
-                    <li><a href="#" class="nav-link" data-target="materiais">Material de Estudo</a></li>
-                    <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
+                    <li><a href="#" class="nav-link active" onclick="showSection('home', event)">Início</a></li>
+                    <li><a href="#" class="nav-link" onclick="showSection('certificacoes', event)">Certificações</a></li>
+                    <li><a href="#" class="nav-link" onclick="showSection('forum', event)">Fórum</a></li>
+                    <li><a href="#" class="nav-link" onclick="showSection('materiais', event)">Material de Estudo</a></li>
+                    <li><a href="#" class="nav-link" onclick="showSection('simulados', event)">Simulados</a></li>
                 </ul>
             </nav>
             <div class="auth-buttons" id="authButtons">
-                <!-- Será preenchido dinamicamente via JavaScript -->
-                <button class="btn btn-outline" onclick="studyCertApp.openLogin()">Entrar</button>
-                <button class="btn btn-primary" onclick="studyCertApp.openRegister()">Cadastrar</button>
+                <button class="btn btn-outline" onclick="openLoginModal()">Entrar</button>
+                <button class="btn btn-primary" onclick="openRegisterModal()">Cadastrar</button>
             </div>
         </div>
     </div>
@@ -46,14 +43,14 @@
     <!-- Modal de Login/Cadastro -->
     <div id="modalAuth" class="modal-auth">
         <div class="auth-container">
-            <button class="close-auth-modal" onclick="studyCertApp.closeAuthModal()">&times;</button>
+            <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
             <div class="auth-header">
                 <h2>Study<span style="color: #3498db;">Cert</span></h2>
                 <p>Sua jornada começa aqui</p>
             </div>
             <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login">Entrar</div>
-                <div class="auth-tab" data-tab="register">Cadastrar</div>
+                <div class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">Entrar</div>
+                <div class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">Cadastrar</div>
             </div>
             
             <div id="loginForm" class="auth-form active">
@@ -66,9 +63,9 @@
                     <label for="loginPassword">Senha</label>
                     <input type="password" id="loginPassword" placeholder="Sua senha" autocomplete="new-password">
                 </div>
-                <button class="btn btn-primary" onclick="studyCertApp.login()" style="width: 100%;">Entrar</button>
+                <button class="btn btn-primary" onclick="submitLogin()" style="width: 100%;">Entrar</button>
                 <div class="auth-footer">
-                    <p>Esqueceu sua senha? <a href="#" onclick="studyCertApp.forgotPassword()">Redefinir senha</a></p>
+                    <p>Esqueceu sua senha? <a href="#" onclick="forgotPassword()">Redefinir senha</a></p>
                 </div>
             </div>
             
@@ -86,7 +83,7 @@
                     <label for="registerPassword">Senha</label>
                     <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
                 </div>
-                <button class="btn btn-success" onclick="studyCertApp.register()" style="width: 100%;">Criar Conta</button>
+                <button class="btn btn-success" onclick="submitRegister()" style="width: 100%;">Criar Conta</button>
             </div>
         </div>
     </div>
@@ -96,7 +93,7 @@
         <div class="container">
             <h2>Prepare-se para suas Certificações de TI</h2>
             <p>Encontre materiais de estudo, participe de discussões no fórum e teste seus conhecimentos com nossos simulados.</p>
-            <a href="#" class="btn btn-primary" onclick="studyCertApp.openRegister()">Começar Agora</a>
+            <a href="#" class="btn btn-primary" onclick="openRegisterModal()">Começar Agora</a>
         </div>
     </section>
 
@@ -126,7 +123,7 @@
                         <p>Participe de discussões, tire dúvidas e compartilhe conhecimento com outros profissionais de TI.</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" data-target="forum">Acessar Fórum</a>
+                        <a href="#" class="btn btn-primary" onclick="showSection('forum', event)">Acessar Fórum</a>
                     </div>
                 </div>
 
@@ -138,7 +135,7 @@
                         <p>Acesse guias, resumos, videoaulas e outros recursos para sua preparação.</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" data-target="materiais">Ver Materiais</a>
+                        <a href="#" class="btn btn-primary" onclick="showSection('materiais', event)">Ver Materiais</a>
                     </div>
                 </div>
 
@@ -150,7 +147,7 @@
                         <p>Teste seus conhecimentos com nossos simulados e acompanhe seu progresso.</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary" data-target="simulados">Ver Simulados</a>
+                        <a href="#" class="btn btn-primary" onclick="showSection('simulados', event)">Ver Simulados</a>
                     </div>
                 </div>
             </div>
@@ -389,7 +386,7 @@
                 </div>
             </div>
             
-            <button class="btn btn-primary new-post-btn" onclick="studyCertApp.createNewPost()">Nova Discussão</button>
+            <button class="btn btn-primary new-post-btn" onclick="createNewPost()">Nova Discussão</button>
         </div>
     </section>
 
@@ -595,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h3>Compartilhe Seu Simulado</h3>
                 <p>Faça upload de simulados HTML para compartilhar com a comunidade</p>
                 <input type="file" id="fileUpload" accept=".html" style="display: none;">
-                <button class="btn btn-primary" onclick="studyCertApp.openUploadModal()">Upload de Arquivo</button>
+                <button class="btn btn-primary" onclick="openUploadModal()">Upload de Arquivo</button>
             </div>
 
             <div id="simuladosContent" class="simulados-container">
@@ -606,7 +603,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="card-body">
                         <span class="simulado-badge">13 Simulados Disponíveis</span>
                         <p>Pacote completo de simulados para certificação ITIL 4 Foundation.</p>
-                        <button class="show-simulados-btn" onclick="studyCertApp.abrirModalSimulados()">
+                        <button class="show-simulados-btn" onclick="abrirModalSimulados()">
                             <i class="fas fa-list"></i> Ver 13 Simulados
                         </button>
                     </div>
@@ -735,7 +732,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p>Compartilhe seu próprio simulado com a comunidade.</p>
                     </div>
                     <div class="card-footer">
-                       <button class="btn btn-primary" onclick="studyCertApp.openUploadModal()">Upload</button>
+                       <button class="btn btn-primary" onclick="openUploadModal()">Upload</button>
                     </div>
                 </div>
             </div>
@@ -747,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="modal-container">
             <div class="modal-header">
                 <h3><i class="fas fa-file-alt"></i> Simulados ITIL 4 Foundation</h3>
-                <button class="fechar-modal" onclick="studyCertApp.fecharModalSimulados()">&times;</button>
+                <button class="fechar-modal" onclick="fecharModalSimulados()">&times;</button>
             </div>
             
             <div class="modal-body" id="simuladosList">
@@ -886,11 +883,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="footer-column">
                     <h3>Links Rápidos</h3>
                     <ul class="footer-links">
-                        <li><a href="#" data-target="home">Início</a></li>
-                        <li><a href="#" data-target="certificacoes">Certificações</a></li>
-                        <li><a href="#" data-target="forum">Fórum</a></li>
-                        <li><a href="#" data-target="materiais">Material de Estudo</a></li>
-                        <li><a href="#" data-target="simulados">Simulados</a></li>
+                        <li><a href="#" onclick="showSection('home', event)">Início</a></li>
+                        <li><a href="#" onclick="showSection('certificacoes', event)">Certificações</a></li>
+                        <li><a href="#" onclick="showSection('forum', event)">Fórum</a></li>
+                        <li><a href="#" onclick="showSection('materiais', event)">Material de Estudo</a></li>
+                        <li><a href="#" onclick="showSection('simulados', event)">Simulados</a></li>
                     </ul>
                 </div>
 
@@ -920,6 +917,152 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </footer>
+
+    <!-- Scripts de Funcionalidades Básicas (funcionam mesmo sem app.js) -->
+    <script>
+        // ==================== FUNÇÕES BÁSICAS QUE FUNCIONAM SEM O APP.JS ====================
+        
+        // 1. Abrir modal de login
+        function openLoginModal(e) {
+            if (e) e.preventDefault();
+            console.log('Abrindo modal de login...');
+            const modal = document.getElementById('modalAuth');
+            if (modal) {
+                modal.classList.add('active');
+                switchAuthTab('login');
+                return false;
+            }
+            return false;
+        }
+        
+        // 2. Abrir modal de registro
+        function openRegisterModal(e) {
+            if (e) e.preventDefault();
+            console.log('Abrindo modal de registro...');
+            const modal = document.getElementById('modalAuth');
+            if (modal) {
+                modal.classList.add('active');
+                switchAuthTab('register');
+                return false;
+            }
+            return false;
+        }
+        
+        // 3. Fechar modal de auth
+        function closeAuthModal() {
+            console.log('Fechando modal...');
+            const modal = document.getElementById('modalAuth');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+        
+        // 4. Alternar entre tabs (login/register)
+        function switchAuthTab(tab) {
+            console.log('Alternando para tab:', tab);
+            // Esconder todas as tabs
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            // Mostrar a tab selecionada
+            document.querySelector(`.auth-tab[data-tab="${tab}"]`)?.classList.add('active');
+            document.getElementById(`${tab}Form`)?.classList.add('active');
+            
+            // Limpar mensagens
+            const loginMsg = document.getElementById('loginMessage');
+            const registerMsg = document.getElementById('registerMessage');
+            if (loginMsg) loginMsg.innerHTML = '';
+            if (registerMsg) registerMsg.innerHTML = '';
+        }
+        
+        // 5. Mostrar seções
+        function showSection(sectionId, e) {
+            if (e) e.preventDefault();
+            console.log('Mostrando seção:', sectionId);
+            
+            // Remover active de todos os links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Remover active de todas as seções
+            document.querySelectorAll('.main-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Adicionar active ao link clicado
+            const clickedLink = document.querySelector(`a[onclick*="${sectionId}"]`);
+            if (clickedLink) {
+                clickedLink.classList.add('active');
+            }
+            
+            // Mostrar seção correspondente
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        // 6. Menu hambúrguer
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const mainNav = document.getElementById('mainNav');
+            
+            if (menuToggle && mainNav) {
+                menuToggle.addEventListener('click', function() {
+                    mainNav.classList.toggle('active');
+                    const icon = this.querySelector('i');
+                    if (mainNav.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+            
+            console.log('✅ Funções básicas carregadas!');
+        });
+        
+        // 7. Funções que serão sobrescritas pelo app.js se ele carregar
+        function submitLogin() {
+            console.log('Login submetido (aguardando app.js)...');
+            alert('Sistema carregando... Tente novamente em alguns segundos.');
+        }
+        
+        function submitRegister() {
+            console.log('Registro submetido (aguardando app.js)...');
+            alert('Sistema carregando... Tente novamente em alguns segundos.');
+        }
+        
+        function forgotPassword() {
+            alert('Funcionalidade disponível após o login.');
+        }
+        
+        function createNewPost() {
+            alert('Faça login para criar uma nova discussão.');
+        }
+        
+        function abrirModalSimulados() {
+            const modal = document.getElementById('modalSimulados');
+            if (modal) modal.classList.add('active');
+        }
+        
+        function fecharModalSimulados() {
+            const modal = document.getElementById('modalSimulados');
+            if (modal) modal.classList.remove('active');
+        }
+        
+        function openUploadModal() {
+            alert('Faça login para fazer upload de simulados.');
+        }
+        
+        // 8. Quando o app.js carregar, estas funções serão substituídas
+        window.basicFunctionsLoaded = true;
+        console.log('📱 Funções básicas do StudyCert prontas!');
+    </script>
     
 </body>
 </html>
