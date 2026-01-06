@@ -200,45 +200,45 @@ class StudyCertApp {
         }
     }
 
-   updateAuthUI() {
-    const authButtons = document.getElementById('authButtons');
-    const uploadArea = document.getElementById('uploadArea');
-    
-    if (this.currentUser) {
-        const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
-        const initials = displayName.substring(0, 2).toUpperCase();
+    updateAuthUI() {
+        const authButtons = document.getElementById('authButtons');
+        const uploadArea = document.getElementById('uploadArea');
         
-        // Verificar se é admin
-        const isAdmin = localStorage.getItem('admin_role') || 
-                       this.currentUser.email === 'andre.martins05@gmail.com' ||
-                       this.currentUser.email === 'admin@example.com';
-        
-        authButtons.innerHTML = `
-            <div class="user-info">
-                <div class="user-avatar">${initials}</div>
-                <span>${displayName}</span>
-                ${isAdmin ? 
-                    `<div class="admin-link-container">
-                        <a href="admin.html" class="btn-admin-icon" title="Painel Administrativo">
-                            <i class="fas fa-cog"></i>
-                        </a>
-                    </div>` : 
-                    ''
-                }
-                <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
-            </div>
-        `;
-        
-        if (uploadArea) uploadArea.style.display = 'block';
-    } else {
-        authButtons.innerHTML = `
-            <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
-            <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
-        `;
-        
-        if (uploadArea) uploadArea.style.display = 'none';
+        if (this.currentUser) {
+            const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
+            const initials = displayName.substring(0, 2).toUpperCase();
+            
+            // Verificar se é admin
+            const isAdmin = localStorage.getItem('admin_role') || 
+                           this.currentUser.email === 'andre.martins05@gmail.com' ||
+                           this.currentUser.email === 'admin@example.com';
+            
+            authButtons.innerHTML = `
+                <div class="user-info">
+                    <div class="user-avatar">${initials}</div>
+                    <span>${displayName}</span>
+                    ${isAdmin ? 
+                        `<div class="admin-link-container">
+                            <a href="admin.html" class="btn-admin-icon" title="Painel Administrativo">
+                                <i class="fas fa-cog"></i>
+                            </a>
+                        </div>` : 
+                        ''
+                    }
+                    <button class="btn btn-outline" onclick="studyCertApp.logout()" style="margin-left: 10px;">Sair</button>
+                </div>
+            `;
+            
+            if (uploadArea) uploadArea.style.display = 'block';
+        } else {
+            authButtons.innerHTML = `
+                <button class="btn btn-outline" onclick="studyCertApp.openLogin()">Entrar</button>
+                <button class="btn btn-primary" onclick="studyCertApp.openRegister()">Cadastrar</button>
+            `;
+            
+            if (uploadArea) uploadArea.style.display = 'none';
+        }
     }
-}
 
     // Função para garantir perfil do usuário
     async ensureUserProfile() {
@@ -638,7 +638,7 @@ class StudyCertApp {
                 <div class="modal-container" style="max-width: 600px;">
                     <div class="modal-header">
                         <h3><i class="fas fa-cloud-upload-alt"></i> Enviar Simulado</h3>
-                        <button class="fechar-modal" onclick="app.closeUploadModal()">&times;</button>
+                        <button class="fechar-modal" onclick="studyCertApp.closeUploadModal()">&times;</button>
                     </div>
                     
                     <div class="modal-body">
@@ -687,8 +687,8 @@ class StudyCertApp {
                     </div>
                     
                     <div class="modal-footer">
-                        <button class="btn btn-outline" onclick="app.closeUploadModal()">Cancelar</button>
-                        <button class="btn btn-success" onclick="app.enviarSimulado()" id="btnEnviarSimulado">
+                        <button class="btn btn-outline" onclick="studyCertApp.closeUploadModal()">Cancelar</button>
+                        <button class="btn btn-success" onclick="studyCertApp.enviarSimulado()" id="btnEnviarSimulado">
                             <i class="fas fa-paper-plane"></i> Enviar Simulado
                         </button>
                     </div>
@@ -1171,7 +1171,7 @@ class StudyCertApp {
                             `<a href="${simulado.arquivo_url}" target="_blank" class="btn btn-primary">
                                 <i class="fas fa-external-link-alt"></i> Abrir Simulado
                             </a>` :
-                            `<button class="btn btn-primary" onclick="app.iniciarSimulado('${simulado.id}')">
+                            `<button class="btn btn-primary" onclick="studyCertApp.iniciarSimulado('${simulado.id}')">
                                 <i class="fas fa-play"></i> Iniciar Simulado
                             </button>`
                         }
@@ -1200,7 +1200,7 @@ class StudyCertApp {
                         <p>Seja o primeiro a compartilhar um simulado!</p>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-primary" onclick="app.openUploadModal()">
+                        <button class="btn btn-primary" onclick="studyCertApp.openUploadModal()">
                             <i class="fas fa-plus"></i> Compartilhar Simulado
                         </button>
                     </div>
@@ -1373,30 +1373,9 @@ class StudyCertApp {
 }
 
 // Inicializar app quando o DOM estiver pronto
-let app;
+let studyCertApp;
 document.addEventListener('DOMContentLoaded', () => {
-    app = new StudyCertApp();
+    studyCertApp = new StudyCertApp();
+    window.studyCertApp = studyCertApp;
+    console.log('✅ StudyCertApp inicializado como studyCertApp');
 });
-
-// ==================== FUNÇÕES GLOBAIS ====================
-// Autenticação
-window.openLogin = (e) => app.openLogin(e);
-window.openRegister = (e) => app.openRegister(e);
-window.closeAuthModal = () => app.closeAuthModal();
-window.login = () => app.login();
-window.register = () => app.register();
-window.logout = () => app.logout();
-
-// Simulados
-window.abrirModalSimulados = () => app.abrirModalSimulados();
-window.fecharModalSimulados = () => app.fecharModalSimulados();
-window.uploadSimulado = () => app.uploadSimulado();
-window.openUploadModal = () => app.openUploadModal();
-
-// Outras funções
-window.createNewPost = () => app.createNewPost();
-window.forgotPassword = () => app.forgotPassword();
-window.iniciarSimulado = (id) => app.iniciarSimulado(id);
-
-// Variável global para a instância do app
-window.StudyCertApp = app;
