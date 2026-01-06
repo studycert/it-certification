@@ -346,131 +346,95 @@ class StudyCertApp {
     }
 
     async login() {
-    // Obter valores e TRIMAR
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
-    
-    console.log('Login valores:', { email, password });
-    
-    if (!email || !password) {
-        this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
         
-        // Destacar campos vazios
-        if (!email) document.getElementById('loginEmail').style.borderColor = '#e74c3c';
-        if (!password) document.getElementById('loginPassword').style.borderColor = '#e74c3c';
+        console.log('Login - Email:', email, 'Senha:', password ? '***' : 'vazia');
         
-        return;
-    }
-    
-    // Resetar bordas
-    document.getElementById('loginEmail').style.borderColor = '';
-    document.getElementById('loginPassword').style.borderColor = '';
-    
-    try {
-        console.log('Tentando login para:', email);
-        
-        const { data, error } = await this.supabase.auth.signInWithPassword({ 
-            email: email.toLowerCase(), 
-            password: password 
-        });
-        
-        if (error) {
-            console.error('❌ Erro detalhado no login:', error);
-            
-            // Destacar campos em caso de erro
-            document.getElementById('loginEmail').style.borderColor = '#e74c3c';
-            document.getElementById('loginPassword').style.borderColor = '#e74c3c';
-            
-            throw error;
+        // Verificação simples
+        if (!email || email.trim() === '' || !password || password.trim() === '') {
+            this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
+            return;
         }
         
-        this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
-        this.currentUser = data.user;
-        
-        // Garantir perfil
-        await this.ensureUserProfile();
-        
-        setTimeout(() => {
-            this.closeAuthModal();
-            this.updateAuthUI();
-            this.loadUserProgress();
+        try {
+            console.log('Tentando login para:', email);
             
-            // Limpar formulário
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
+            const { data, error } = await this.supabase.auth.signInWithPassword({ 
+                email: email.toLowerCase().trim(), 
+                password: password 
+            });
             
-            // Recarregar dados do usuário
-            this.loadInitialData();
-        }, 1500);
-        
-    } catch (error) {
-        console.error('❌ Erro no login:', error);
-        this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
+            if (error) {
+                console.error('❌ Erro detalhado no login:', error);
+                throw error;
+            }
+            
+            this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
+            this.currentUser = data.user;
+            
+            // Garantir perfil
+            await this.ensureUserProfile();
+            
+            setTimeout(() => {
+                this.closeAuthModal();
+                this.updateAuthUI();
+                this.loadUserProgress();
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                
+                // Recarregar dados do usuário
+                this.loadInitialData();
+            }, 1500);
+            
+        } catch (error) {
+            console.error('❌ Erro no login:', error);
+            this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
+        }
     }
-}
 
     async register() {
-    // Obter valores e TRIMAR
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const password = document.getElementById('registerPassword').value.trim();
-    
-    console.log('Valores capturados:', { name, email, password });
-    
-    // Verificar se os campos estão preenchidos (após trim)
-    if (!name || !email || !password) {
-        this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
+        const name = document.getElementById('registerName').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
         
-        // Destacar campos vazios
-        if (!name) document.getElementById('registerName').style.borderColor = '#e74c3c';
-        if (!email) document.getElementById('registerEmail').style.borderColor = '#e74c3c';
-        if (!password) document.getElementById('registerPassword').style.borderColor = '#e74c3c';
+        console.log('Registro - Nome:', name, 'Email:', email, 'Senha:', password ? '***' : 'vazia');
         
-        return;
-    }
-    
-    // Resetar bordas se estiverem destacadas
-    document.getElementById('registerName').style.borderColor = '';
-    document.getElementById('registerEmail').style.borderColor = '';
-    document.getElementById('registerPassword').style.borderColor = '';
-    
-    if (password.length < 6) {
-        this.showMessage('registerMessage', 'A senha deve ter pelo menos 6 caracteres', 'error');
-        document.getElementById('registerPassword').style.borderColor = '#e74c3c';
-        return;
-    }
-    
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        this.showMessage('registerMessage', 'Por favor, insira um email válido', 'error');
-        document.getElementById('registerEmail').style.borderColor = '#e74c3c';
-        return;
-    }
-    
-    try {
-        console.log('Tentando cadastrar usuário:', { email, name });
+        // Verificação simples
+        if (!name || name.trim() === '' || !email || email.trim() === '' || !password || password.trim() === '') {
+            this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
+            return;
+        }
         
-        const { data, error } = await this.supabase.auth.signUp({
-            email: email.toLowerCase().trim(),
-            password: password,
-            options: {
-                data: {
-                    full_name: name,
-                    created_at: new Date().toISOString()
-                },
-                emailRedirectTo: window.location.origin
-            }
-        });
-
-        if (error) {
-            if (error.message.includes('User already registered')) {
-                this.showMessage('registerMessage', '✅ Este email já está cadastrado. Tente fazer login.', 'success');
+        if (password.length < 6) {
+            this.showMessage('registerMessage', 'A senha deve ter pelo menos 6 caracteres', 'error');
+            return;
+        }
+        
+        try {
+            console.log('Tentando cadastrar usuário:', { email, name });
+            
+            const { data, error } = await this.supabase.auth.signUp({
+                email: email.toLowerCase().trim(),
+                password: password,
+                options: {
+                    data: {
+                        full_name: name.trim(),
+                        created_at: new Date().toISOString()
+                    },
+                    emailRedirectTo: window.location.origin
+                }
+            });
+            
+            if (error) {
+                console.error('Erro detalhado do Supabase:', error);
                 
-                // Tentar login automático
-                setTimeout(async () => {
+                if (error.message.includes('User already registered')) {
+                    this.showMessage('registerMessage', '✅ Este email já está cadastrado. Tentando login automático...', 'success');
+                    
+                    // Tentar login automático
                     const { data: loginData, error: loginError } = await this.supabase.auth.signInWithPassword({
-                        email: email.toLowerCase(),
+                        email: email.toLowerCase().trim(),
                         password: password
                     });
                     
@@ -482,59 +446,76 @@ class StudyCertApp {
                             this.updateAuthUI();
                             this.loadInitialData();
                         }, 1500);
+                    } else {
+                        this.showMessage('registerMessage', '❌ Falha no login automático. Tente fazer login manualmente.', 'error');
                     }
-                }, 1000);
+                } else if (error.message.includes('rate limit')) {
+                    this.showMessage('registerMessage', '❌ Muitas tentativas. Aguarde alguns minutos.', 'error');
+                } else if (error.message.includes('fetch')) {
+                    this.showMessage('registerMessage', 
+                        '❌ Problema de conexão:<br>' +
+                        '1. Verifique sua internet<br>' +
+                        '2. A URL do Supabase está correta?<br>' +
+                        '3. A chave anon está correta?', 
+                        'error'
+                    );
+                } else {
+                    this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
+                }
+            } else {
+                console.log('Usuário cadastrado com sucesso:', data);
                 
-                return;
+                if (data.user?.identities?.length === 0) {
+                    this.showMessage('registerMessage', '✅ Este email já possui uma conta. Faça login.', 'success');
+                } else {
+                    this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
+                }
+                
+                // Tentar fazer login automaticamente
+                setTimeout(async () => {
+                    const { data: loginData, error: loginError } = await this.supabase.auth.signInWithPassword({
+                        email: email.toLowerCase().trim(),
+                        password: password
+                    });
+                    
+                    if (!loginError) {
+                        this.currentUser = loginData.user;
+                        this.closeAuthModal();
+                        this.updateAuthUI();
+                        await this.ensureUserProfile();
+                        this.loadInitialData();
+                    }
+                }, 2000);
+                
+                // Limpar formulário
+                setTimeout(() => {
+                    document.getElementById('registerName').value = '';
+                    document.getElementById('registerEmail').value = '';
+                    document.getElementById('registerPassword').value = '';
+                }, 3000);
             }
             
+        } catch (error) {
+            console.error('❌ Erro no cadastro:', error);
             this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
-            return;
         }
-        
-        // Sucesso no cadastro
-        this.showMessage('registerMessage', 
-            '✅ Cadastro realizado com sucesso!<br>' +
-            '📧 Verifique seu email para confirmar sua conta.', 
-            'success'
-        );
-        
-        // Limpar formulário
-        setTimeout(() => {
-            document.getElementById('registerName').value = '';
-            document.getElementById('registerEmail').value = '';
-            document.getElementById('registerPassword').value = '';
-            
-            // Resetar estilos
-            document.getElementById('registerName').style.borderColor = '';
-            document.getElementById('registerEmail').style.borderColor = '';
-            document.getElementById('registerPassword').style.borderColor = '';
-            
-            // Mudar para tab de login
-            this.showAuthTab('login');
-        }, 3000);
-        
-    } catch (error) {
-        console.error('❌ Erro no cadastro:', error);
-        this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
     }
-}
 
     getAuthErrorMessage(error) {
-    if (error.message.includes('Invalid login credentials')) {
-        return '❌ Email ou senha incorretos';
-    } else if (error.message.includes('User already registered')) {
-        return '❌ Este email já está cadastrado';
-    } else if (error.message.includes('Email not confirmed')) {
-        return '✅ Email não confirmado, mas permitindo acesso...';
-    } else if (error.message.includes('Invalid API key')) {
-        return '❌ Problema de configuração do sistema';
-    } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
-        return '❌ Problema de conexão. Verifique sua internet.';
-    } else {
-        return `❌ Erro: ${error.message}`;
+        if (error.message.includes('Invalid login credentials')) {
+            return '❌ Email ou senha incorretos';
+        } else if (error.message.includes('User already registered')) {
+            return '❌ Este email já está cadastrado';
+        } else if (error.message.includes('Email not confirmed')) {
+            return '✅ Email não confirmado, mas permitindo acesso...';
+        } else if (error.message.includes('Invalid API key')) {
+            return '❌ Problema de configuração do sistema';
+        } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
+            return '❌ Problema de conexão. Verifique sua internet.';
+        } else {
+            return `❌ Erro: ${error.message}`;
+        }
     }
-}
 
     showMessage(elementId, message, type) {
         const element = document.getElementById(elementId);
@@ -1087,7 +1068,7 @@ class StudyCertApp {
             let simuladosLocal = [];
             try {
                 simuladosLocal = JSON.parse(localStorage.getItem('studyCert_simulados') || '[]');
-                console.log(`📱 ${simuladosLocal.length} simulados carregados localmente`);
+                console.log(`📱 ${simuladosLocal.length} simulados carregados localmente');
             } catch (e) {
                 console.warn('⚠️ Erro ao carregar simulados locais:', e);
             }
