@@ -345,57 +345,65 @@ class StudyCertApp {
         }
     }
 
-    async login() {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    if (!email || !password) {
-        this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
-        return;
-    }
-    
-    try {
-        console.log('Tentando login para:', email);
+        async login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
         
-        const { data, error } = await this.supabase.auth.signInWithPassword({ 
-            email: email.toLowerCase().trim(), 
-            password: password 
-        });
+        if (!email || !password) {
+            this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
+            return;
+        }
         
-        if (error) {
-            console.error('❌ Erro detalhado no login:', error);
+        try {
+            console.log('Tentando login para:', email);
             
-            // BLOQUEAR login se email não confirmado
-            if (error.message.includes('Email not confirmed')) {
-                this.showMessage('loginMessage', 
-                    '❌ Email não confirmado.<br>' +
-                    'Por favor, verifique sua caixa de entrada e confirme seu email antes de fazer login.', 
-                    'error'
-                );
+            const { data, error } = await this.supabase.auth.signInWithPassword({ 
+                email: email.toLowerCase().trim(), 
+                password: password 
+            });
+            
+            if (error) {
+                console.error('❌ Erro detalhado no login:', error);
                 
-                // Opcional: reenviar email de confirmação
-                setTimeout(async () => {
-                    const { error: resendError } = await this.supabase.auth.resend({
-                        type: 'signup',
-                        email: email.toLowerCase().trim()
-                    });
-                    if (!resendError) {
-                        this.showMessage('loginMessage', 
-                            '📧 Email de confirmação reenviado! Verifique sua caixa de entrada.', 
-                            'success'
-                        );
+                // TRATAMENTO CONSISTENTE para email não confirmado
+                if (error.message.includes('Email not confirmed')) {
+                    this.showMessage('loginMessage', 
+                        '📧 Email não confirmado!<br>' +
+                        'Por favor, verifique sua caixa de entrada e confirme seu email.', 
+                        'warning'
+                    );
+                    
+                    // Tentar reenviar email
+                    try {
+                        const { error: resendError } = await this.supabase.auth.resend({
+                            type: 'signup',
+                            email: email.toLowerCase().trim()
+                        });
+                        
+                        if (!resendError) {
+                            setTimeout(() => {
+                                this.showMessage('loginMessage', 
+                                    '📨 Novo email de confirmação enviado!', 
+                                    'success'
+                                );
+                            }, 1000);
+                        }
+                    } catch (resendErr) {
+                        console.log('Não foi possível reenviar email:', resendErr);
                     }
-                }, 2000);
+                    
+                    return;
+                }
                 
+                // Outros erros
+                this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
                 return;
             }
             
-            throw error;
-        }
-        
-        this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
-        this.currentUser = data.user;     
-              
+            // Sucesso
+            this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
+            this.currentUser = data.user;
+            
             // Garantir perfil
             await this.ensureUserProfile();
             
@@ -406,13 +414,13 @@ class StudyCertApp {
                 document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
                 
-                // Recarregar dados do usuário
+                // Recarregar dados
                 this.loadInitialData();
             }, 1500);
             
         } catch (error) {
             console.error('❌ Erro no login:', error);
-            this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
+            this.showMessage('loginMessage', '❌ Erro interno. Tente novamente.', 'error');
         }
     }
 
