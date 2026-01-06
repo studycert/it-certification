@@ -1379,6 +1379,42 @@ document.addEventListener('DOMContentLoaded', () => {
     window.studyCertApp = studyCertApp;
     console.log('✅ StudyCertApp inicializado como studyCertApp');
 });
+// ==================== FUNÇÕES DE SUPORTE ====================
+// Função para alternar tabs (pode ser chamada diretamente do HTML)
+window.switchAuthTab = function(tab) {
+    if (window.studyCertApp) {
+        window.studyCertApp.showAuthTab(tab);
+    } else {
+        // Fallback
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        
+        document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
+        document.getElementById(`${tab}Form`).classList.add('active');
+    }
+};
+
+// Função para alternar seções
+window.switchSection = function(sectionId, e) {
+    if (e) e.preventDefault();
+    
+    if (window.studyCertApp) {
+        window.studyCertApp.showSection(sectionId);
+    } else {
+        // Fallback básico
+        document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+        document.querySelectorAll('.main-content').forEach(content => content.classList.remove('active'));
+        
+        const activeLink = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
+        if (activeLink) activeLink.classList.add('active');
+        
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+};
 // ==================== FUNÇÕES GLOBAIS SEGURAS ====================
 // Funções wrapper seguras que verificam se o app está carregado
 window.openLogin = function(e) {
