@@ -2135,3 +2135,36 @@ input[type="password"] {
     color: #0c5460;
     border: 1px solid #bee5eb;
 }
+/* Estilos para mensagens */
+.message {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: none;
+    font-size: 14px;
+}
+
+.message.error {
+    background-color: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.message.success {
+    background-color: #efe;
+    color: #2a7;
+    border: 1px solid #cfc;
+}
+
+/* Ajuste para o campo de senha */
+input[type="password"] {
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+/* Botões de autenticação */
+.auth-buttons {
+    display: flex !important;
+    gap: 10px;
+    align-items: center;
+}
