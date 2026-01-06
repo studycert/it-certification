@@ -1390,3 +1390,61 @@ window.iniciarSimulado = (id) => app.iniciarSimulado(id);
 
 // Variável global para a instância do app
 window.StudyCertApp = app;
+// Função global para reenviar email de confirmação
+window.resendConfirmationEmail = async function(emailToResend = null) {
+    try {
+        let email = emailToResend;
+        
+        // Se não passou email, pega do campo
+        if (!email) {
+            email = document.getElementById('loginEmail')?.value;
+        }
+        
+        if (!email) {
+            app.showMessage('loginMessage', '❌ Digite seu email primeiro.', 'error');
+            return;
+        }
+        
+        console.log('📧 Reenviando email para:', email);
+        
+        // Mostrar loading
+        app.showMessage('loginMessage', 
+            '<i class="fas fa-spinner fa-spin"></i> Enviando email...', 
+            'info'
+        );
+        
+        const { error } = await app.supabase.auth.resend({
+            type: 'signup',
+            email: email.toLowerCase().trim(),
+            options: {
+                emailRedirectTo: window.location.origin + '/'
+            }
+        });
+        
+        if (error) {
+            console.error('❌ Erro ao reenviar:', error);
+            app.showMessage('loginMessage', 
+                '❌ Erro ao reenviar email: ' + error.message, 
+                'error'
+            );
+        } else {
+            app.showMessage('loginMessage', 
+                '✅ Email reenviado com sucesso!<br>' +
+                'Verifique sua caixa de entrada e pasta de spam.', 
+                'success'
+            );
+            
+            // Atualizar a mensagem após 5 segundos
+            setTimeout(() => {
+                app.showMessage('loginMessage', 
+                    '📧 Email enviado! Aguarde alguns minutos e tente fazer login novamente.', 
+                    'info'
+                );
+            }, 5000);
+        }
+        
+    } catch (err) {
+        console.error('❌ Erro:', err);
+        app.showMessage('loginMessage', '❌ Erro ao reenviar email.', 'error');
+    }
+}
