@@ -346,62 +346,105 @@ class StudyCertApp {
     }
 
     async login() {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        
-        if (!email || !password) {
-            this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
-            return;
-        }
-        
-        try {
-            console.log('Tentando login para:', email);
-            
-            const { data, error } = await this.supabase.auth.signInWithPassword({ 
-                email: email.toLowerCase().trim(), 
-                password: password 
-            });
-            
-            if (error) {
-                console.error('❌ Erro detalhado no login:', error);
-                throw error;
-            }
-            
-            this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
-            this.currentUser = data.user;
-            
-            // Garantir perfil
-            await this.ensureUserProfile();
-            
-            setTimeout(() => {
-                this.closeAuthModal();
-                this.updateAuthUI();
-                this.loadUserProgress();
-                document.getElementById('loginEmail').value = '';
-                document.getElementById('loginPassword').value = '';
-                
-                // Recarregar dados do usuário
-                this.loadInitialData();
-            }, 1500);
-            
-        } catch (error) {
-            console.error('❌ Erro no login:', error);
-            this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
-        }
-    }
-
-    async register() {
-    const name = document.getElementById('registerName').value;
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
+    // Obter valores e TRIMAR
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
     
-    if (!name || !email || !password) {
-        this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
+    console.log('Login valores:', { email, password });
+    
+    if (!email || !password) {
+        this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
+        
+        // Destacar campos vazios
+        if (!email) document.getElementById('loginEmail').style.borderColor = '#e74c3c';
+        if (!password) document.getElementById('loginPassword').style.borderColor = '#e74c3c';
+        
         return;
     }
     
+    // Resetar bordas
+    document.getElementById('loginEmail').style.borderColor = '';
+    document.getElementById('loginPassword').style.borderColor = '';
+    
+    try {
+        console.log('Tentando login para:', email);
+        
+        const { data, error } = await this.supabase.auth.signInWithPassword({ 
+            email: email.toLowerCase(), 
+            password: password 
+        });
+        
+        if (error) {
+            console.error('❌ Erro detalhado no login:', error);
+            
+            // Destacar campos em caso de erro
+            document.getElementById('loginEmail').style.borderColor = '#e74c3c';
+            document.getElementById('loginPassword').style.borderColor = '#e74c3c';
+            
+            throw error;
+        }
+        
+        this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
+        this.currentUser = data.user;
+        
+        // Garantir perfil
+        await this.ensureUserProfile();
+        
+        setTimeout(() => {
+            this.closeAuthModal();
+            this.updateAuthUI();
+            this.loadUserProgress();
+            
+            // Limpar formulário
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            
+            // Recarregar dados do usuário
+            this.loadInitialData();
+        }, 1500);
+        
+    } catch (error) {
+        console.error('❌ Erro no login:', error);
+        this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
+    }
+}
+
+    async register() {
+    // Obter valores e TRIMAR
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value.trim();
+    
+    console.log('Valores capturados:', { name, email, password });
+    
+    // Verificar se os campos estão preenchidos (após trim)
+    if (!name || !email || !password) {
+        this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
+        
+        // Destacar campos vazios
+        if (!name) document.getElementById('registerName').style.borderColor = '#e74c3c';
+        if (!email) document.getElementById('registerEmail').style.borderColor = '#e74c3c';
+        if (!password) document.getElementById('registerPassword').style.borderColor = '#e74c3c';
+        
+        return;
+    }
+    
+    // Resetar bordas se estiverem destacadas
+    document.getElementById('registerName').style.borderColor = '';
+    document.getElementById('registerEmail').style.borderColor = '';
+    document.getElementById('registerPassword').style.borderColor = '';
+    
     if (password.length < 6) {
         this.showMessage('registerMessage', 'A senha deve ter pelo menos 6 caracteres', 'error');
+        document.getElementById('registerPassword').style.borderColor = '#e74c3c';
+        return;
+    }
+    
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        this.showMessage('registerMessage', 'Por favor, insira um email válido', 'error');
+        document.getElementById('registerEmail').style.borderColor = '#e74c3c';
         return;
     }
     
@@ -413,10 +456,10 @@ class StudyCertApp {
             password: password,
             options: {
                 data: {
-                    full_name: name.trim(),
+                    full_name: name,
                     created_at: new Date().toISOString()
                 },
-                emailRedirectTo: window.location.origin // CORRIGIDO
+                emailRedirectTo: window.location.origin
             }
         });
 
@@ -427,7 +470,7 @@ class StudyCertApp {
                 // Tentar login automático
                 setTimeout(async () => {
                     const { data: loginData, error: loginError } = await this.supabase.auth.signInWithPassword({
-                        email: email.toLowerCase().trim(),
+                        email: email.toLowerCase(),
                         password: password
                     });
                     
@@ -461,6 +504,11 @@ class StudyCertApp {
             document.getElementById('registerName').value = '';
             document.getElementById('registerEmail').value = '';
             document.getElementById('registerPassword').value = '';
+            
+            // Resetar estilos
+            document.getElementById('registerName').style.borderColor = '';
+            document.getElementById('registerEmail').style.borderColor = '';
+            document.getElementById('registerPassword').style.borderColor = '';
             
             // Mudar para tab de login
             this.showAuthTab('login');
