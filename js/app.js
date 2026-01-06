@@ -346,30 +346,56 @@ class StudyCertApp {
     }
 
     async login() {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!email || !password) {
+        this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
+        return;
+    }
+    
+    try {
+        console.log('Tentando login para:', email);
         
-        if (!email || !password) {
-            this.showMessage('loginMessage', 'Por favor, preencha todos os campos', 'error');
-            return;
-        }
+        const { data, error } = await this.supabase.auth.signInWithPassword({ 
+            email: email.toLowerCase().trim(), 
+            password: password 
+        });
         
-        try {
-            console.log('Tentando login para:', email);
+        if (error) {
+            console.error('❌ Erro detalhado no login:', error);
             
-            const { data, error } = await this.supabase.auth.signInWithPassword({ 
-                email: email.toLowerCase().trim(), 
-                password: password 
-            });
-            
-            if (error) {
-                console.error('❌ Erro detalhado no login:', error);
-                throw error;
+            // BLOQUEAR login se email não confirmado
+            if (error.message.includes('Email not confirmed')) {
+                this.showMessage('loginMessage', 
+                    '❌ Email não confirmado.<br>' +
+                    'Por favor, verifique sua caixa de entrada e confirme seu email antes de fazer login.', 
+                    'error'
+                );
+                
+                // Opcional: reenviar email de confirmação
+                setTimeout(async () => {
+                    const { error: resendError } = await this.supabase.auth.resend({
+                        type: 'signup',
+                        email: email.toLowerCase().trim()
+                    });
+                    if (!resendError) {
+                        this.showMessage('loginMessage', 
+                            '📧 Email de confirmação reenviado! Verifique sua caixa de entrada.', 
+                            'success'
+                        );
+                    }
+                }, 2000);
+                
+                return;
             }
             
-            this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
-            this.currentUser = data.user;
-            
+            throw error;
+        }
+        
+        this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
+        this.currentUser = data.user;     
+              
             // Garantir perfil
             await this.ensureUserProfile();
             
