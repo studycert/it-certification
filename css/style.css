@@ -2063,3 +2063,14 @@ footer {
     opacity: 0;
     cursor: pointer;
 }
+/* Desabilitar autocomplete estilizado */
+input:-webkit-autofill {
+    -webkit-text-fill-color: #333 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Estilizar campos de senha especificamente */
+input[type="password"] {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 0.1em;
+}
