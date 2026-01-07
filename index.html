@@ -41,7 +41,7 @@
         </div>
     </div>
 </header>
-   <!-- Modal de Login/Cadastro melhorado -->
+  <!-- Modal de Login/Cadastro CORRIGIDO -->
 <div id="modalAuth" class="modal-auth">
     <div class="auth-container">
         <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
@@ -70,7 +70,12 @@
             
             <div class="form-group">
                 <label for="loginPassword">Senha</label>
-                <input type="password" id="loginPassword" placeholder="Sua senha" autocomplete="current-password">
+                <div style="position: relative;">
+                    <input type="password" id="loginPassword" placeholder="Sua senha" autocomplete="current-password">
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer;">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
             
             <button class="btn btn-primary" onclick="login()" style="width: 100%; padding: 12px; font-size: 1rem;">
@@ -79,14 +84,14 @@
             
             <div class="auth-footer" style="margin-top: 20px; text-align: center;">
                 <p style="margin: 0; color: #666; font-size: 0.9rem;">
-                    <a href="#" onclick="forgotPassword()" style="color: var(--secondary); text-decoration: none;">
+                    <a href="#" onclick="app.forgotPassword()" style="color: var(--secondary); text-decoration: none;">
                         <i class="fas fa-key"></i> Esqueceu sua senha?
                     </a>
                 </p>
             </div>
         </div>
         
-        <!-- FORMULÁRIO DE CADASTRO MELHORADO -->
+        <!-- FORMULÁRIO DE CADASTRO -->
         <div id="registerForm" class="auth-form">
             <div id="registerMessage" class="message" style="display: none;"></div>
             
@@ -104,7 +109,7 @@
                 <label for="registerPassword">Senha * (mínimo 6 caracteres)</label>
                 <div style="position: relative;">
                     <input type="password" id="registerPassword" placeholder="Crie uma senha forte" autocomplete="new-password">
-                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('registerPassword')">
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('registerPassword')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer;">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
@@ -123,7 +128,7 @@
                 <label for="registerConfirmPassword">Confirmar Senha *</label>
                 <div style="position: relative;">
                     <input type="password" id="registerConfirmPassword" placeholder="Repita a senha" autocomplete="new-password">
-                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('registerConfirmPassword')">
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('registerConfirmPassword')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer;">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
@@ -136,8 +141,7 @@
             <div class="form-group" style="margin-top: 20px;">
                 <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; font-size: 0.9rem;">
                     <input type="checkbox" id="registerTerms" required>
-                    Concordo com os <a href="#" onclick="app.showTerms()" style="color: var(--secondary);">Termos de Uso</a> e 
-                    <a href="#" onclick="app.showPrivacy()" style="color: var(--secondary);">Política de Privacidade</a>
+                    Concordo com os <a href="#" onclick="app.showTerms()" style="color: var(--secondary);">Termos de Uso</a>
                 </label>
             </div>
             
