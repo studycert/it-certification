@@ -218,6 +218,7 @@ class AuthManager {
         try {
             if (!this.supabase) await this.init();
             
+            // CORREÇÃO: Usar o método correto para reenviar confirmação
             const { error } = await this.supabase.auth.resend({
                 type: 'signup',
                 email: email,
@@ -226,14 +227,26 @@ class AuthManager {
                 }
             });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Erro ao reenviar confirmação:', error);
+                
+                // Fallback: tentar usar resetPasswordForEmail como alternativa
+                if (error.message.includes('already confirmed') || error.message.includes('User already registered')) {
+                    return { 
+                        success: false, 
+                        error: 'Email já confirmado. Faça login normalmente.' 
+                    };
+                }
+                
+                throw error;
+            }
             
             return { success: true };
         } catch (error) {
             console.error('❌ Erro ao reenviar confirmação:', error);
             return { 
                 success: false, 
-                error: error.message 
+                error: this.getAuthErrorMessage(error) 
             };
         }
     }
@@ -251,6 +264,26 @@ class AuthManager {
             return { success: true };
         } catch (error) {
             console.error('❌ Erro ao solicitar recuperação:', error);
+            return { 
+                success: false, 
+                error: error.message 
+            };
+        }
+    }
+
+    async resetPassword(newPassword) {
+        try {
+            if (!this.supabase) await this.init();
+            
+            const { error } = await this.supabase.auth.updateUser({
+                password: newPassword
+            });
+
+            if (error) throw error;
+            
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Erro ao redefinir senha:', error);
             return { 
                 success: false, 
                 error: error.message 
@@ -313,6 +346,8 @@ class AuthManager {
             return 'Erro de conexão. Verifique sua internet.';
         } else if (message.includes('password')) {
             return 'Senha muito fraca. Use pelo menos 6 caracteres.';
+        } else if (message.includes('already confirmed')) {
+            return 'Email já confirmado. Faça login normalmente.';
         } else {
             return error.message;
         }
@@ -336,40 +371,82 @@ window.loginWithMicrosoft = function() {
     authManager.loginWithOAuth('azure');
 };
 
-// Função para reenviar confirmação
-window.resendConfirmation = async function(email) {
-    const result = await authManager.resendConfirmationEmail(email);
-    
-    if (result.success) {
-        if (window.app && window.app.showMessage) {
-            window.app.showMessage('loginMessage', 
-                `<div style="padding: 15px;">
-                    <div style="color: #27ae60; font-weight: 600; margin-bottom: 10px;">
-                        <i class="fas fa-check-circle"></i> Email reenviado!
-                    </div>
-                    <div style="font-size: 0.9rem; color: #666;">
-                        Verifique sua caixa de entrada e pasta de spam.
-                    </div>
-                </div>`, 
-                'success'
-            );
-        } else {
-            alert('✅ Email de confirmação reenviado com sucesso!');
+// Função para reenviar confirmação - CORRIGIDA
+window.resendConfirmation = async function(emailToResend = null) {
+    try {
+        let email = emailToResend;
+        
+        if (!email) {
+            email = document.getElementById('loginEmail')?.value;
         }
-    } else {
+        
+        if (!email) {
+            if (window.app && window.app.showMessage) {
+                window.app.showMessage('loginMessage', '❌ Digite seu email primeiro.', 'error');
+            }
+            return;
+        }
+        
+        console.log('📧 Reenviando confirmação para:', email);
+        
+        // Mostrar loading
         if (window.app && window.app.showMessage) {
             window.app.showMessage('loginMessage', 
-                `<div style="padding: 10px;">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <strong> Erro: ${result.error}</strong>
-                </div>`, 
+                '<div style="text-align: center; padding: 10px;">' +
+                '<i class="fas fa-spinner fa-spin" style="color: #3498db;"></i><br>' +
+                '<strong>Enviando email de confirmação...</strong><br>' +
+                '<small>Para: ' + email + '</small>' +
+                '</div>', 
+                'info'
+            );
+        }
+        
+        const result = await authManager.resendConfirmationEmail(email);
+        
+        if (result.success) {
+            if (window.app && window.app.showMessage) {
+                window.app.showMessage('loginMessage', 
+                    '<div style="text-align: center; padding: 15px;">' +
+                    '<i class="fas fa-check-circle" style="color: #27ae60;"></i><br>' +
+                    '<strong style="color: #27ae60;">Email enviado!</strong><br><br>' +
+                    '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px;">' +
+                    '<strong>Verifique sua caixa de entrada:</strong><br>' +
+                    '<code>' + email + '</code><br><br>' +
+                    '<strong>Importante:</strong><br>' +
+                    '✓ Verifique a pasta SPAM<br>' +
+                    '✓ Link válido por 24 horas<br>' +
+                    '✓ Aguarde 2-5 minutos' +
+                    '</div>' +
+                    '</div>', 
+                    'success'
+                );
+            }
+        } else {
+            if (window.app && window.app.showMessage) {
+                window.app.showMessage('loginMessage', 
+                    '<div style="padding: 10px;">' +
+                    '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i><br>' +
+                    '<strong>' + result.error + '</strong>' +
+                    '</div>', 
+                    'error'
+                );
+            }
+        }
+        
+    } catch (err) {
+        console.error('❌ Erro ao reenviar confirmação:', err);
+        if (window.app && window.app.showMessage) {
+            window.app.showMessage('loginMessage', 
+                '<div style="padding: 10px;">' +
+                '<i class="fas fa-exclamation-triangle"></i><br>' +
+                '<strong>Erro ao enviar email</strong><br>' +
+                '<small>Tente novamente mais tarde.</small>' +
+                '</div>', 
                 'error'
             );
-        } else {
-            alert('❌ Erro ao reenviar: ' + result.error);
         }
     }
-};
+}
 
 // Inicializar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
