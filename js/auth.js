@@ -1,4 +1,4 @@
-// js/auth.js - Sistema de autenticação completo com Google/Microsoft
+// js/auth.js - Sistema de autenticação global CORRIGIDO
 class AuthManager {
     constructor() {
         this.supabase = null;
@@ -11,6 +11,7 @@ class AuthManager {
         if (this.isInitialized) return;
         
         try {
+            // Configuração do Supabase
             const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
             const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
             
@@ -19,21 +20,28 @@ class AuthManager {
                     auth: {
                         autoRefreshToken: true,
                         persistSession: true,
-                        detectSessionInUrl: true,
+                        detectSessionInUrl: false,
                         storage: window.localStorage,
                         storageKey: 'studycert-auth'
+                    },
+                    global: {
+                        headers: {
+                            'apikey': SUPABASE_KEY
+                        }
                     }
                 });
                 
+                // Verificar sessão atual
                 await this.checkSession();
                 this.isInitialized = true;
                 
-                console.log('✅ AuthManager inicializado');
+                console.log('✅ AuthManager inicializado com sucesso');
                 
+                // Disparar evento de inicialização
                 window.dispatchEvent(new CustomEvent('studycert-auth-ready'));
                 
             } else {
-                console.warn('⚠️ Supabase não disponível');
+                console.warn('⚠️ Supabase não disponível, usando localStorage');
                 this.loadFromLocalStorage();
             }
         } catch (error) {
@@ -72,11 +80,10 @@ class AuthManager {
             const userData = {
                 id: this.currentUser.id,
                 email: this.currentUser.email,
-                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0],
-                avatar: this.currentUser.user_metadata?.avatar_url,
-                email_confirmed: this.currentUser.email_confirmed_at ? true : false
+                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0]
             };
             localStorage.setItem('studycert_user', JSON.stringify(userData));
+            localStorage.setItem('studycert_auth', 'true');
         }
     }
 
@@ -88,11 +95,7 @@ class AuthManager {
                 this.currentUser = {
                     id: user.id,
                     email: user.email,
-                    email_confirmed_at: user.email_confirmed ? new Date().toISOString() : null,
-                    user_metadata: { 
-                        full_name: user.name,
-                        avatar_url: user.avatar 
-                    }
+                    user_metadata: { full_name: user.name }
                 };
                 console.log('📱 Usuário carregado do localStorage:', user.email);
             }
@@ -110,21 +113,12 @@ class AuthManager {
                 password: password
             });
 
-            if (error) {
-                if (error.message.includes('Email not confirmed')) {
-                    return { 
-                        success: false, 
-                        error: 'Email não confirmado',
-                        needsConfirmation: true,
-                        email: email 
-                    };
-                }
-                throw error;
-            }
+            if (error) throw error;
 
             this.currentUser = data.user;
             this.saveToLocalStorage();
             
+            // Disparar evento
             window.dispatchEvent(new CustomEvent('studycert-auth-login', {
                 detail: { user: data.user }
             }));
@@ -133,145 +127,7 @@ class AuthManager {
             
         } catch (error) {
             console.error('❌ Erro no login:', error);
-            return { 
-                success: false, 
-                error: this.getAuthErrorMessage(error) 
-            };
-        }
-    }
-
-    async register(name, email, password) {
-    try {
-        if (!this.supabase) await this.init();
-        
-        const { data, error } = await this.supabase.auth.signUp({
-            email: email.toLowerCase().trim(),
-            password: password,
-            options: {
-                data: {
-                    full_name: name
-                },
-                emailRedirectTo: 'https://studycert.github.io/it-certification/auth-callback.html'
-            }
-        });
-
-        if (error) throw error;
-        
-        return { success: true };
-    } catch (error) {
-        console.error(`❌ Erro no login com ${provider}:`, error);
-        return { 
-            success: false, 
-            error: error.message 
-        };
-    }
-}
-
-    async register(name, email, password) {
-        try {
-            if (!this.supabase) await this.init();
-            
-            const { data, error } = await this.supabase.auth.signUp({
-                email: email.toLowerCase().trim(),
-                password: password,
-                options: {
-                    data: {
-                        full_name: name
-                    },
-                    emailRedirectTo: window.location.origin + '/auth-callback.html'
-                }
-            });
-
-            if (error) throw error;
-
-            if (data.user) {
-                this.currentUser = data.user;
-                this.saveToLocalStorage();
-                
-                if (data.user.identities && data.user.identities.length > 0) {
-                    return { 
-                        success: true, 
-                        user: data.user,
-                        needsConfirmation: false 
-                    };
-                } else {
-                    return { 
-                        success: true, 
-                        user: data.user,
-                        needsConfirmation: true 
-                    };
-                }
-            }
-            
-            return { success: false, error: 'Erro desconhecido no cadastro' };
-            
-        } catch (error) {
-            console.error('❌ Erro no cadastro:', error);
-            return { 
-                success: false, 
-                error: this.getAuthErrorMessage(error) 
-            };
-        }
-    }
-
-    async resendConfirmationEmail(email) {
-    try {
-        if (!this.supabase) await this.init();
-        
-        const { error } = await this.supabase.auth.resend({
-            type: 'signup',
-            email: email,
-            options: {
-                emailRedirectTo: 'https://studycert.github.io/it-certification/auth-callback.html'
-            }
-        });
-
-        if (error) throw error;
-        return { success: true };
-    } catch (error) {
-        console.error('❌ Erro ao reenviar confirmação:', error);
-        return { 
-            success: false, 
-            error: error.message 
-        };
-    }
-}
-    async forgotPassword(email) {
-    try {
-        if (!this.supabase) await this.init();
-        
-        const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://studycert.github.io/it-certification/reset-password.html'
-        });
-
-        if (error) throw error;
-        return { success: true };
-    } catch (error) {
-        console.error('❌ Erro ao solicitar recuperação:', error);
-        return { 
-            success: false, 
-            error: error.message 
-        };
-    }
-}
-
-    async resetPassword(newPassword) {
-        try {
-            if (!this.supabase) await this.init();
-            
-            const { error } = await this.supabase.auth.updateUser({
-                password: newPassword
-            });
-
-            if (error) throw error;
-            
-            return { success: true };
-        } catch (error) {
-            console.error('❌ Erro ao redefinir senha:', error);
-            return { 
-                success: false, 
-                error: error.message 
-            };
+            return { success: false, error: error.message };
         }
     }
 
@@ -283,7 +139,9 @@ class AuthManager {
             
             this.currentUser = null;
             localStorage.removeItem('studycert_user');
+            localStorage.removeItem('studycert_auth');
             
+            // Disparar evento
             window.dispatchEvent(new CustomEvent('studycert-auth-logout'));
             
             return { success: true };
@@ -297,142 +155,43 @@ class AuthManager {
         return !!this.currentUser;
     }
 
-    isEmailConfirmed() {
-        return this.currentUser?.email_confirmed_at ? true : false;
-    }
-
     getUser() {
         return this.currentUser;
-    }
-
-    getUserInitials() {
-        if (!this.currentUser) return 'U';
-        const name = this.currentUser.user_metadata?.full_name || this.currentUser.email;
-        return name.substring(0, 2).toUpperCase();
     }
 
     getSupabase() {
         return this.supabase;
     }
 
-    getAuthErrorMessage(error) {
-        const message = error.message.toLowerCase();
-        
-        if (message.includes('invalid login')) {
-            return 'Email ou senha incorretos';
-        } else if (message.includes('email not confirmed')) {
-            return 'Email não confirmado. Verifique sua caixa de entrada.';
-        } else if (message.includes('user already registered')) {
-            return 'Este email já está cadastrado';
-        } else if (message.includes('rate limit')) {
-            return 'Muitas tentativas. Aguarde alguns minutos.';
-        } else if (message.includes('fetch') || message.includes('network')) {
-            return 'Erro de conexão. Verifique sua internet.';
-        } else if (message.includes('password')) {
-            return 'Senha muito fraca. Use pelo menos 6 caracteres.';
-        } else if (message.includes('already confirmed')) {
-            return 'Email já confirmado. Faça login normalmente.';
-        } else {
-            return error.message;
-        }
+    setUser(user) {
+        this.currentUser = user;
+        this.saveToLocalStorage();
+    }
+
+    clearUser() {
+        this.currentUser = null;
+        localStorage.removeItem('studycert_user');
+        localStorage.removeItem('studycert_auth');
     }
 }
 
-// Criar instância global
+// Criar instância global única
 const authManager = new AuthManager();
 
-// Expor para uso global
-window.authManager = authManager;
-window.checkAuth = () => authManager.isAuthenticated();
-window.logoutGlobal = () => authManager.logout();
-
-// Funções globais para login social
-window.loginWithGoogle = function() {
-    authManager.loginWithOAuth('google');
-};
-
-window.loginWithMicrosoft = function() {
-    authManager.loginWithOAuth('azure');
-};
-
-// Função para reenviar confirmação - CORRIGIDA
-window.resendConfirmation = async function(emailToResend = null) {
-    try {
-        let email = emailToResend;
-        
-        if (!email) {
-            email = document.getElementById('loginEmail')?.value;
-        }
-        
-        if (!email) {
-            if (window.app && window.app.showMessage) {
-                window.app.showMessage('loginMessage', '❌ Digite seu email primeiro.', 'error');
-            }
-            return;
-        }
-        
-        console.log('📧 Reenviando confirmação para:', email);
-        
-        // Mostrar loading
-        if (window.app && window.app.showMessage) {
-            window.app.showMessage('loginMessage', 
-                '<div style="text-align: center; padding: 10px;">' +
-                '<i class="fas fa-spinner fa-spin" style="color: #3498db;"></i><br>' +
-                '<strong>Enviando email de confirmação...</strong><br>' +
-                '<small>Para: ' + email + '</small>' +
-                '</div>', 
-                'info'
-            );
-        }
-        
-        const result = await authManager.resendConfirmationEmail(email);
-        
-        if (result.success) {
-            if (window.app && window.app.showMessage) {
-                window.app.showMessage('loginMessage', 
-                    '<div style="text-align: center; padding: 15px;">' +
-                    '<i class="fas fa-check-circle" style="color: #27ae60;"></i><br>' +
-                    '<strong style="color: #27ae60;">Email enviado!</strong><br><br>' +
-                    '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px;">' +
-                    '<strong>Verifique sua caixa de entrada:</strong><br>' +
-                    '<code>' + email + '</code><br><br>' +
-                    '<strong>Importante:</strong><br>' +
-                    '✓ Verifique a pasta SPAM<br>' +
-                    '✓ Link válido por 24 horas<br>' +
-                    '✓ Aguarde 2-5 minutos' +
-                    '</div>' +
-                    '</div>', 
-                    'success'
-                );
-            }
-        } else {
-            if (window.app && window.app.showMessage) {
-                window.app.showMessage('loginMessage', 
-                    '<div style="padding: 10px;">' +
-                    '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i><br>' +
-                    '<strong>' + result.error + '</strong>' +
-                    '</div>', 
-                    'error'
-                );
-            }
-        }
-        
-    } catch (err) {
-        console.error('❌ Erro ao reenviar confirmação:', err);
-        if (window.app && window.app.showMessage) {
-            window.app.showMessage('loginMessage', 
-                '<div style="padding: 10px;">' +
-                '<i class="fas fa-exclamation-triangle"></i><br>' +
-                '<strong>Erro ao enviar email</strong><br>' +
-                '<small>Tente novamente mais tarde.</small>' +
-                '</div>', 
-                'error'
-            );
-        }
-    }
-}
-
 // Inicializar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Expor para uso global
+    window.authManager = authManager;
+    window.studyCertAuth = authManager;
+    
     console.log('🎯 AuthManager carregado e pronto');
 });
+
+// Função para verificar se está logado (para uso em outras páginas)
+function checkAuth() {
+    return authManager.isAuthenticated();
+}
+
+// Exportar para uso global
+window.checkAuth = checkAuth;
+window.logoutGlobal = () => authManager.logout();
