@@ -1566,20 +1566,51 @@ class StudyCertApp {
         alert('Funcionalidade de criação de posts em desenvolvimento.');
     }
 
-    forgotPassword() {
-        const email = prompt('Digite seu email para redefinir a senha:');
-        if (!email) return;
+    async forgotPassword() {
+    const email = document.getElementById('loginEmail')?.value;
+    
+    if (!email) {
+        const emailInput = prompt('Digite seu email para redefinir a senha:');
+        if (!emailInput) return;
         
-        this.supabase.auth.resetPasswordForEmail(email, {
+        this.supabase.auth.resetPasswordForEmail(emailInput, {
             redirectTo: window.location.origin + '/reset-password.html'
         }).then(({ error }) => {
             if (error) {
                 alert('Erro ao enviar email de recuperação: ' + error.message);
             } else {
-                alert('Instruções de redefinição enviadas para ' + email);
+                alert('Instruções de redefinição enviadas para ' + emailInput);
             }
         });
+    } else {
+        const result = await authManager.forgotPassword(email);
+        
+        if (result.success) {
+            this.showMessage('loginMessage', 
+                '<div style="text-align: center; padding: 15px;">' +
+                '<i class="fas fa-check-circle" style="color: #27ae60;"></i><br>' +
+                '<strong style="color: #27ae60;">Email enviado!</strong><br><br>' +
+                '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px;">' +
+                '<strong>Instruções de recuperação enviadas para:</strong><br>' +
+                '<code>' + email + '</code><br><br>' +
+                '<strong>Verifique:</strong><br>' +
+                '✓ Caixa de entrada<br>' +
+                '✓ Pasta SPAM' +
+                '</div>' +
+                '</div>', 
+                'success'
+            );
+        } else {
+            this.showMessage('loginMessage', 
+                '<div style="padding: 10px;">' +
+                '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i><br>' +
+                '<strong>Erro: ' + result.error + '</strong>' +
+                '</div>', 
+                'error'
+            );
+        }
     }
+}
 
     showGlobalError(message) {
         console.error('Erro global:', message);
