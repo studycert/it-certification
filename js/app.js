@@ -1566,51 +1566,20 @@ class StudyCertApp {
         alert('Funcionalidade de criação de posts em desenvolvimento.');
     }
 
-    async forgotPassword() {
-    const email = document.getElementById('loginEmail')?.value;
-    
-    if (!email) {
-        const emailInput = prompt('Digite seu email para redefinir a senha:');
-        if (!emailInput) return;
+    forgotPassword() {
+        const email = prompt('Digite seu email para redefinir a senha:');
+        if (!email) return;
         
-        this.supabase.auth.resetPasswordForEmail(emailInput, {
+        this.supabase.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + '/reset-password.html'
         }).then(({ error }) => {
             if (error) {
                 alert('Erro ao enviar email de recuperação: ' + error.message);
             } else {
-                alert('Instruções de redefinição enviadas para ' + emailInput);
+                alert('Instruções de redefinição enviadas para ' + email);
             }
         });
-    } else {
-        const result = await authManager.forgotPassword(email);
-        
-        if (result.success) {
-            this.showMessage('loginMessage', 
-                '<div style="text-align: center; padding: 15px;">' +
-                '<i class="fas fa-check-circle" style="color: #27ae60;"></i><br>' +
-                '<strong style="color: #27ae60;">Email enviado!</strong><br><br>' +
-                '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px;">' +
-                '<strong>Instruções de recuperação enviadas para:</strong><br>' +
-                '<code>' + email + '</code><br><br>' +
-                '<strong>Verifique:</strong><br>' +
-                '✓ Caixa de entrada<br>' +
-                '✓ Pasta SPAM' +
-                '</div>' +
-                '</div>', 
-                'success'
-            );
-        } else {
-            this.showMessage('loginMessage', 
-                '<div style="padding: 10px;">' +
-                '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i><br>' +
-                '<strong>Erro: ' + result.error + '</strong>' +
-                '</div>', 
-                'error'
-            );
-        }
     }
-}
 
     showGlobalError(message) {
         console.error('Erro global:', message);
@@ -1949,109 +1918,3 @@ window.forceTogglePassword = function(fieldId) {
     console.log('✅ Senha alterada via forceTogglePassword');
     return true;
 }
-// ==================== SOLUÇÃO SIMPLES PARA VISUALIZAÇÃO DE SENHA ====================
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔧 Configurando visualização de senha...');
-    
-    // Função simples para alternar visibilidade
-    function simpleTogglePassword(inputId) {
-        const input = document.getElementById(inputId);
-        if (!input) {
-            console.error('Campo não encontrado:', inputId);
-            return;
-        }
-        
-        const icon = document.querySelector(`button[onclick*="${inputId}"] i, button[data-field="${inputId}"] i`);
-        
-        if (input.type === 'password') {
-            input.type = 'text';
-            if (icon) icon.className = 'fas fa-eye-slash';
-        } else {
-            input.type = 'password';
-            if (icon) icon.className = 'fas fa-eye';
-        }
-    }
-    
-    // Configurar eventos para todos os botões de visualização
-    setTimeout(function() {
-        const toggleButtons = document.querySelectorAll('.password-toggle');
-        console.log('🔍 Botões encontrados:', toggleButtons.length);
-        
-        toggleButtons.forEach(button => {
-            // Remover event listeners antigos
-            const newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
-            
-            // Adicionar novo event listener
-            newButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Encontrar o campo de senha mais próximo
-                const parent = this.closest('.form-group') || this.parentElement;
-                if (!parent) return;
-                
-                const passwordField = parent.querySelector('input[type="password"], input[type="text"]');
-                if (!passwordField) return;
-                
-                // Alternar visibilidade
-                if (passwordField.type === 'password') {
-                    passwordField.type = 'text';
-                    const icon = this.querySelector('i');
-                    if (icon) icon.className = 'fas fa-eye-slash';
-                } else {
-                    passwordField.type = 'password';
-                    const icon = this.querySelector('i');
-                    if (icon) icon.className = 'fas fa-eye';
-                }
-                
-                passwordField.focus();
-            });
-        });
-        
-        // Também configurar os botões específicos do modal
-        const modalButtons = document.querySelectorAll('button[onclick*="togglePasswordVisibility"]');
-        modalButtons.forEach(button => {
-            const onclick = button.getAttribute('onclick');
-            const match = onclick.match(/togglePasswordVisibility\('([^']+)'\)/);
-            if (match) {
-                const fieldId = match[1];
-                button.setAttribute('data-field', fieldId);
-                button.onclick = function(e) {
-                    e.preventDefault();
-                    simpleTogglePassword(fieldId);
-                };
-            }
-        });
-        
-    }, 1000); // Aguardar 1 segundo para o DOM carregar completamente
-});
-
-// ==================== FUNÇÃO DE EMERGÊNCIA ====================
-window.forceShowPassword = function(fieldId) {
-    const field = document.getElementById(fieldId);
-    if (!field) {
-        alert('Campo ' + fieldId + ' não encontrado!');
-        return;
-    }
-    
-    const icon = document.querySelector(`button[onclick*="${fieldId}"] i`);
-    
-    if (field.type === 'password') {
-        field.type = 'text';
-        if (icon) {
-            icon.className = 'fas fa-eye-slash';
-            icon.style.color = '#3498db';
-        }
-        console.log('🔓 Senha visível (forçado)');
-    } else {
-        field.type = 'password';
-        if (icon) {
-            icon.className = 'fas fa-eye';
-            icon.style.color = '#666';
-        }
-        console.log('🔒 Senha oculta (forçado)');
-    }
-    
-    field.focus();
-};
