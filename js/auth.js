@@ -1,4 +1,4 @@
-// js/auth.js - Sistema de autenticação global CORRIGIDO
+// js/auth.js - Sistema de autenticação completo com Google/Microsoft
 class AuthManager {
     constructor() {
         this.supabase = null;
@@ -11,7 +11,6 @@ class AuthManager {
         if (this.isInitialized) return;
         
         try {
-            // Configuração do Supabase
             const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
             const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
             
@@ -20,28 +19,21 @@ class AuthManager {
                     auth: {
                         autoRefreshToken: true,
                         persistSession: true,
-                        detectSessionInUrl: false,
+                        detectSessionInUrl: true,
                         storage: window.localStorage,
                         storageKey: 'studycert-auth'
-                    },
-                    global: {
-                        headers: {
-                            'apikey': SUPABASE_KEY
-                        }
                     }
                 });
                 
-                // Verificar sessão atual
                 await this.checkSession();
                 this.isInitialized = true;
                 
-                console.log('✅ AuthManager inicializado com sucesso');
+                console.log('✅ AuthManager inicializado');
                 
-                // Disparar evento de inicialização
                 window.dispatchEvent(new CustomEvent('studycert-auth-ready'));
                 
             } else {
-                console.warn('⚠️ Supabase não disponível, usando localStorage');
+                console.warn('⚠️ Supabase não disponível');
                 this.loadFromLocalStorage();
             }
         } catch (error) {
@@ -80,10 +72,10 @@ class AuthManager {
             const userData = {
                 id: this.currentUser.id,
                 email: this.currentUser.email,
-                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0]
+                name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0],
+                email_confirmed: this.currentUser.email_confirmed_at ? true : false
             };
             localStorage.setItem('studycert_user', JSON.stringify(userData));
-            localStorage.setItem('studycert_auth', 'true');
         }
     }
 
@@ -95,6 +87,7 @@ class AuthManager {
                 this.currentUser = {
                     id: user.id,
                     email: user.email,
+                    email_confirmed_at: user.email_confirmed ? new Date().toISOString() : null,
                     user_metadata: { full_name: user.name }
                 };
                 console.log('📱 Usuário carregado do localStorage:', user.email);
@@ -113,12 +106,22 @@ class AuthManager {
                 password: password
             });
 
-            if (error) throw error;
+            if (error) {
+                // Verificar se é erro de email não confirmado
+                if (error.message.includes('Email not confirmed')) {
+                    return { 
+                        success: false, 
+                        error: 'Email não confirmado',
+                        needsConfirmation: true,
+                        email: email 
+                    };
+                }
+                throw error;
+            }
 
             this.currentUser = data.user;
             this.saveToLocalStorage();
             
-            // Disparar evento
             window.dispatchEvent(new CustomEvent('studycert-auth-login', {
                 detail: { user: data.user }
             }));
@@ -127,7 +130,127 @@ class AuthManager {
             
         } catch (error) {
             console.error('❌ Erro no login:', error);
-            return { success: false, error: error.message };
+            return { 
+                success: false, 
+                error: this.getAuthErrorMessage(error) 
+            };
+        }
+    }
+
+    async loginWithOAuth(provider) {
+        try {
+            if (!this.supabase) await this.init();
+            
+            const { data, error } = await this.supabase.auth.signInWithOAuth({
+                provider: provider,
+                options: {
+                    redirectTo: window.location.origin + '/auth-callback.html'
+                }
+            });
+            
+            if (error) throw error;
+            
+            return { success: true };
+        } catch (error) {
+            console.error(`❌ Erro no login com ${provider}:`, error);
+            return { 
+                success: false, 
+                error: error.message 
+            };
+        }
+    }
+
+    async register(name, email, password) {
+        try {
+            if (!this.supabase) await this.init();
+            
+            const { data, error } = await this.supabase.auth.signUp({
+                email: email.toLowerCase().trim(),
+                password: password,
+                options: {
+                    data: {
+                        full_name: name,
+                        email_redirect: window.location.origin + '/auth-callback.html'
+                    }
+                }
+            });
+
+            if (error) throw error;
+
+            if (data.user) {
+                this.currentUser = data.user;
+                this.saveToLocalStorage();
+                
+                // Não precisa mais confirmar email manualmente para OAuth
+                // Mas mantemos o fluxo para email/senha
+                if (data.user.identities && data.user.identities.length > 0) {
+                    // Se já tem identidade (Google/Microsoft), já está confirmado
+                    return { 
+                        success: true, 
+                        user: data.user,
+                        needsConfirmation: false 
+                    };
+                } else {
+                    return { 
+                        success: true, 
+                        user: data.user,
+                        needsConfirmation: true 
+                    };
+                }
+            }
+            
+            return { success: false, error: 'Erro desconhecido no cadastro' };
+            
+        } catch (error) {
+            console.error('❌ Erro no cadastro:', error);
+            return { 
+                success: false, 
+                error: this.getAuthErrorMessage(error) 
+            };
+        }
+    }
+
+    async resendConfirmationEmail(email) {
+        try {
+            if (!this.supabase) await this.init();
+            
+            const { error } = await this.supabase.auth.resend({
+                type: 'signup',
+                email: email,
+                options: {
+                    emailRedirectTo: window.location.origin + '/auth-callback.html'
+                }
+            });
+
+            if (error) throw error;
+            
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Erro ao reenviar confirmação:', error);
+            return { 
+                success: false, 
+                error: error.message 
+            };
+        }
+    }
+
+    async forgotPassword(email) {
+        try {
+            if (!this.supabase) await this.init();
+            
+            const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: window.location.origin + '/reset-password.html'
+            });
+
+            if (error) throw error;
+            
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Erro ao solicitar recuperação:', error);
+            return { 
+                success: false, 
+                error: error.message 
+            };
         }
     }
 
@@ -139,9 +262,7 @@ class AuthManager {
             
             this.currentUser = null;
             localStorage.removeItem('studycert_user');
-            localStorage.removeItem('studycert_auth');
             
-            // Disparar evento
             window.dispatchEvent(new CustomEvent('studycert-auth-logout'));
             
             return { success: true };
@@ -153,6 +274,10 @@ class AuthManager {
 
     isAuthenticated() {
         return !!this.currentUser;
+    }
+
+    isEmailConfirmed() {
+        return this.currentUser?.email_confirmed_at ? true : false;
     }
 
     getUser() {
@@ -171,27 +296,31 @@ class AuthManager {
     clearUser() {
         this.currentUser = null;
         localStorage.removeItem('studycert_user');
-        localStorage.removeItem('studycert_auth');
+    }
+
+    getAuthErrorMessage(error) {
+        const message = error.message.toLowerCase();
+        
+        if (message.includes('invalid login')) {
+            return 'Email ou senha incorretos';
+        } else if (message.includes('email not confirmed')) {
+            return 'Email não confirmado. Verifique sua caixa de entrada.';
+        } else if (message.includes('user already registered')) {
+            return 'Este email já está cadastrado';
+        } else if (message.includes('rate limit')) {
+            return 'Muitas tentativas. Aguarde alguns minutos.';
+        } else if (message.includes('fetch') || message.includes('network')) {
+            return 'Erro de conexão. Verifique sua internet.';
+        } else {
+            return error.message;
+        }
     }
 }
 
-// Criar instância global única
+// Criar instância global
 const authManager = new AuthManager();
 
-// Inicializar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', async () => {
-    // Expor para uso global
-    window.authManager = authManager;
-    window.studyCertAuth = authManager;
-    
-    console.log('🎯 AuthManager carregado e pronto');
-});
-
-// Função para verificar se está logado (para uso em outras páginas)
-function checkAuth() {
-    return authManager.isAuthenticated();
-}
-
-// Exportar para uso global
-window.checkAuth = checkAuth;
+// Expor para uso global
+window.authManager = authManager;
+window.checkAuth = () => authManager.isAuthenticated();
 window.logoutGlobal = () => authManager.logout();
