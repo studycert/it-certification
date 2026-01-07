@@ -9,6 +9,7 @@ const APP_CONFIG = {
     name: 'StudyCert',
     version: '1.0.0',
     storageBucket: 'simulados'
+    baseUrl: 'https://studycert.github.io/it-certification/'
 };
 
 // Dados estáticos
