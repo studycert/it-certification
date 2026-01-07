@@ -1638,36 +1638,87 @@ class StudyCertApp {
 }
 // ==================== FUNÇÃO GLOBAL PARA VISUALIZAÇÃO DE SENHA ====================
 window.togglePasswordVisibility = function(fieldId) {
+    console.log('🔄 togglePasswordVisibility chamado para:', fieldId);
+    
     const field = document.getElementById(fieldId);
     if (!field) {
-        console.error('Campo não encontrado:', fieldId);
+        console.error('❌ Campo não encontrado:', fieldId);
+        alert('Erro: Campo ' + fieldId + ' não encontrado');
         return;
     }
     
-    const toggleBtn = field.nextElementSibling;
-    if (!toggleBtn || !toggleBtn.classList.contains('password-toggle')) {
-        console.error('Botão de visualização não encontrado para:', fieldId);
-        return;
+    console.log('✅ Campo encontrado:', field);
+    console.log('📌 Tipo atual:', field.type);
+    
+    // Encontrar o botão corretamente
+    let toggleBtn = null;
+    
+    // Tentativa 1: Próximo elemento irmão
+    toggleBtn = field.nextElementSibling;
+    console.log('Tentativa 1 - Próximo irmão:', toggleBtn);
+    
+    // Tentativa 2: Filho do pai
+    if (!toggleBtn || !toggleBtn.classList || !toggleBtn.classList.contains('password-toggle')) {
+        toggleBtn = field.parentElement?.querySelector('.password-toggle');
+        console.log('Tentativa 2 - Query no pai:', toggleBtn);
+    }
+    
+    // Tentativa 3: Qualquer botão com a classe
+    if (!toggleBtn || !toggleBtn.classList || !toggleBtn.classList.contains('password-toggle')) {
+        toggleBtn = document.querySelector(`button[onclick*="${fieldId}"]`);
+        console.log('Tentativa 3 - Por onclick:', toggleBtn);
+    }
+    
+    if (!toggleBtn) {
+        console.error('❌ Botão de visualização não encontrado');
+        
+        // Criar botão dinamicamente se não existir
+        console.log('🛠️ Criando botão dinamicamente...');
+        toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'password-toggle';
+        toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+        toggleBtn.style.cssText = 'position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;';
+        toggleBtn.onclick = function() { window.togglePasswordVisibility(fieldId); };
+        
+        if (field.parentElement) {
+            field.parentElement.appendChild(toggleBtn);
+            console.log('✅ Botão criado dinamicamente');
+        } else {
+            alert('❌ Não foi possível criar botão. Estrutura HTML incorreta.');
+            return;
+        }
     }
     
     const icon = toggleBtn.querySelector('i');
     if (!icon) {
-        console.error('Ícone não encontrado no botão');
+        console.error('❌ Ícone não encontrado no botão');
+        alert('Erro: Ícone não encontrado');
         return;
     }
+    
+    console.log('✅ Ícone encontrado:', icon);
     
     // Alternar entre mostrar e esconder
     if (field.type === 'password') {
         field.type = 'text';
         icon.classList.remove('fa-eye');
         icon.classList.add('fa-eye-slash');
+        console.log('👁️ Senha VISÍVEL');
     } else {
         field.type = 'password';
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
+        console.log('🙈 Senha OCULTA');
     }
     
-    console.log('Visualização de senha alternada para:', fieldId, 'Tipo:', field.type);
+    // Dar foco de volta ao campo
+    field.focus();
+    
+    console.log('🎉 Toggle concluído com sucesso!');
+    console.log('📊 Status final - Campo ID:', fieldId);
+    console.log('📊 Status final - Tipo:', field.type);
+    console.log('📊 Status final - Ícone:', icon.className);
 }
 
 // Inicializar app quando o DOM estiver pronto
@@ -1707,7 +1758,7 @@ window.iniciarSimulado = (id) => app.iniciarSimulado(id);
 // Variável global para a instância do app
 window.StudyCertApp = app;
 
-// ==================== FUNÇÃO CORRIGIDA PARA REENVIAR EMAIL ====================
+// ==================== FUNÇÃO SIMPLIFICADA PARA REENVIAR EMAIL ====================
 window.resendConfirmationEmail = async function(emailToResend = null) {
     try {
         let email = emailToResend;
@@ -1727,77 +1778,70 @@ window.resendConfirmationEmail = async function(emailToResend = null) {
         app.showMessage('loginMessage', 
             '<div style="text-align: center; padding: 10px;">' +
             '<i class="fas fa-spinner fa-spin" style="color: #3498db;"></i><br>' +
-            '<strong>Processando...</strong>' +
+            '<strong>Enviando email...</strong><br>' +
+            '<small>Para: ' + email + '</small>' +
             '</div>', 
             'info'
         );
         
-        // Primeiro verificar se o usuário existe e está confirmado
-        const { data: userData, error: userError } = await app.supabase.auth.admin.getUserById(
-            // Precisamos do ID do usuário, mas não temos. Vamos tentar login primeiro.
-        );
-        
-        // Tentativa 1: Usar o método resetPasswordForEmail (funciona melhor)
+        // Método mais confiável: resetPasswordForEmail
         const { error } = await app.supabase.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + '/'
         });
         
-        console.log('📧 Resultado do resetPasswordForEmail:', { error });
+        console.log('📧 Resultado:', { error });
         
         if (error) {
-            // Se resetPassword não funcionar, tentar signUp novamente (irá dizer se já existe)
+            // Se não funcionar, tentar criar conta temporária
             const { error: signUpError } = await app.supabase.auth.signUp({
                 email: email,
-                password: 'temporaryPassword123', // Senha temporária
+                password: 'TemporaryPassword123!',
                 options: {
-                    emailRedirectTo: window.location.origin + '/'
+                    emailRedirectTo: window.location.origin + '/',
+                    data: {
+                        is_resend_request: true
+                    }
                 }
             });
             
-            console.log('📧 Resultado do signUp (teste):', { signUpError });
-            
             if (signUpError && signUpError.message.includes('already registered')) {
-                // Usuário existe mas não podemos reenviar - mostrar mensagem
                 app.showMessage('loginMessage', 
                     '<div style="text-align: center; padding: 15px;">' +
-                    '<i class="fas fa-info-circle" style="color: #3498db; font-size: 1.5rem;"></i><br>' +
+                    '<i class="fas fa-info-circle" style="color: #3498db;"></i><br>' +
                     '<strong>Email já cadastrado</strong><br><br>' +
-                    '<div style="background: #e3f2fd; padding: 10px; border-radius: 6px; margin: 10px 0;">' +
-                    '<strong>Possíveis situações:</strong><br>' +
-                    '1. Email <strong>já foi confirmado</strong> - tente fazer login<br>' +
-                    '2. Email <strong>aguardando confirmação</strong> - verifique spam<br>' +
-                    '3. <strong>Aguarde 10 minutos</strong> - às vezes há atraso<br>' +
+                    '<div style="background: #e3f2fd; padding: 10px; border-radius: 6px;">' +
+                    '<strong>O que fazer:</strong><br>' +
+                    '1. Verifique a pasta <strong>SPAM</strong><br>' +
+                    '2. Aguarde alguns minutos<br>' +
+                    '3. Tente fazer login<br>' +
+                    '4. Use "Esqueci minha senha" se necessário' +
                     '</div>' +
-                    '<button class="btn btn-primary" onclick="app.forgotPassword()" style="margin-top: 10px;">' +
-                    '<i class="fas fa-key"></i> Redefinir senha' +
-                    '</button>' +
                     '</div>', 
                     'info'
                 );
             } else {
                 app.showMessage('loginMessage', 
                     '<div style="padding: 10px;">' +
-                    '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i><br>' +
-                    '<strong>Não foi possível reenviar</strong><br>' +
-                    '<small>Tente criar uma nova conta ou contate o suporte.</small>' +
+                    '<i class="fas fa-exclamation-circle"></i><br>' +
+                    '<strong>Não foi possível enviar</strong><br>' +
+                    '<small>' + (signUpError?.message || error.message) + '</small>' +
                     '</div>', 
                     'error'
                 );
             }
         } else {
-            // Sucesso!
+            // Sucesso
             app.showMessage('loginMessage', 
                 '<div style="text-align: center; padding: 15px;">' +
-                '<i class="fas fa-check-circle" style="color: #27ae60; font-size: 1.5rem;"></i><br>' +
+                '<i class="fas fa-check-circle" style="color: #27ae60;"></i><br>' +
                 '<strong style="color: #27ae60;">Email enviado!</strong><br><br>' +
-                '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px; margin: 10px 0; text-align: left;">' +
-                '<strong><i class="fas fa-envelope"></i> Instruções enviadas para:</strong><br>' +
-                '<code style="color: #2c3e50; font-weight: bold; display: block; margin: 5px 0;">' + email + '</code>' +
-                '<strong>O que fazer:</strong><br>' +
-                '1. Verifique a <strong>caixa de entrada</strong><br>' +
-                '2. Procure na pasta <strong>spam/lixo eletrônico</strong><br>' +
-                '3. Aguarde <strong>2-5 minutos</strong><br>' +
-                '4. Se não chegar, <strong>tente novamente em 10 min</strong>' +
+                '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px;">' +
+                '<strong>Instruções enviadas para:</strong><br>' +
+                '<code>' + email + '</code><br><br>' +
+                '<strong>Verifique:</strong><br>' +
+                '✓ Caixa de entrada<br>' +
+                '✓ Pasta SPAM<br>' +
+                '✓ Aguarde 2-5 minutos' +
                 '</div>' +
                 '</div>', 
                 'success'
@@ -1805,21 +1849,72 @@ window.resendConfirmationEmail = async function(emailToResend = null) {
         }
         
     } catch (err) {
-        console.error('❌ Erro no resendConfirmationEmail:', err);
+        console.error('❌ Erro:', err);
         app.showMessage('loginMessage', 
             '<div style="padding: 10px;">' +
-            '<i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i><br>' +
-            '<strong>Erro inesperado</strong><br>' +
-            '<small>Tente novamente mais tarde.</small>' +
+            '<i class="fas fa-exclamation-triangle"></i><br>' +
+            '<strong>Erro de conexão</strong><br>' +
+            '<small>Verifique sua internet e tente novamente.</small>' +
             '</div>', 
             'error'
         );
     }
 }
 
-// Função global para alternar visibilidade da senha
-window.togglePasswordVisibility = (fieldId) => {
-    if (app && app.togglePasswordVisibility) {
-        app.togglePasswordVisibility(fieldId);
+// ==================== FUNÇÃO DE EMERGÊNCIA PARA SENHA ====================
+window.forceTogglePassword = function(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) {
+        console.error('Campo não encontrado:', fieldId);
+        return;
     }
-};
+    
+    // Encontrar ou criar botão
+    let btn = document.querySelector(`button[data-for="${fieldId}"]`);
+    if (!btn) {
+        // Criar novo botão
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('data-for', fieldId);
+        btn.innerHTML = field.type === 'password' ? '👁️' : '🙈';
+        btn.style.cssText = `
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 100;
+        `;
+        
+        // Posicionar corretamente
+        if (field.parentElement) {
+            field.parentElement.style.position = 'relative';
+            field.parentElement.appendChild(btn);
+        } else {
+            // Se não tiver pai, inserir após o campo
+            field.insertAdjacentElement('afterend', btn);
+        }
+        
+        // Configurar clique
+        btn.onclick = function() {
+            window.forceTogglePassword(fieldId);
+        };
+    }
+    
+    // Alternar visibilidade
+    if (field.type === 'password') {
+        field.type = 'text';
+        btn.innerHTML = '🙈';
+    } else {
+        field.type = 'password';
+        btn.innerHTML = '👁️';
+    }
+    
+    field.focus();
+    
+    console.log('✅ Senha alterada via forceTogglePassword');
+    return true;
+}
