@@ -17,3 +17,58 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="callback-container">
+        <div class="spinner"></div>
+        <h2 style="color: var(--primary); margin-bottom: 10px;">Autenticando...</h2>
+        <p style="color: #666;">Por favor, aguarde enquanto processamos sua autenticação.</p>
+    </div>
+    
+    <script>
+        // Aguardar o AuthManager inicializar
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Aguardar um pouco para o AuthManager processar o callback
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Verificar se há sessão ativa
+                const session = authManager.getSupabase()?.auth?.session;
+                
+                if (session) {
+                    console.log('✅ Autenticação bem-sucedida!');
+                    // Redirecionar para a página principal
+                    window.location.href = 'index.html';
+                } else {
+                    console.log('⚠️ Nenhuma sessão encontrada, redirecionando...');
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('❌ Erro no callback:', error);
+                // Em caso de erro, redirecionar para a página principal
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
