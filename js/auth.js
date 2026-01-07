@@ -140,32 +140,32 @@ class AuthManager {
         }
     }
 
-    async loginWithOAuth(provider) {
-        try {
-            if (!this.supabase) await this.init();
-            
-            const { data, error } = await this.supabase.auth.signInWithOAuth({
-                provider: provider,
-                options: {
-                    redirectTo: window.location.origin + '/auth-callback.html',
-                    queryParams: {
-                        access_type: 'offline',
-                        prompt: 'consent'
-                    }
-                }
-            });
-            
-            if (error) throw error;
-            
-            return { success: true };
-        } catch (error) {
-            console.error(`❌ Erro no login com ${provider}:`, error);
-            return { 
-                success: false, 
-                error: error.message 
-            };
-        }
+    async register(name, email, password) {
+    try {
+        if (!this.supabase) await this.init();
+        
+        const { data, error } = await this.supabase.auth.signUp({
+            email: email.toLowerCase().trim(),
+            password: password,
+            options: {
+                data: {
+                    full_name: name
+                },
+                emailRedirectTo: 'https://studycert.github.io/it-certification/auth-callback.html'
+            }
+        });
+
+        if (error) throw error;
+        
+        return { success: true };
+    } catch (error) {
+        console.error(`❌ Erro no login com ${provider}:`, error);
+        return { 
+            success: false, 
+            error: error.message 
+        };
     }
+}
 
     async register(name, email, password) {
         try {
@@ -215,61 +215,45 @@ class AuthManager {
     }
 
     async resendConfirmationEmail(email) {
-        try {
-            if (!this.supabase) await this.init();
-            
-            // CORREÇÃO: Usar o método correto para reenviar confirmação
-            const { error } = await this.supabase.auth.resend({
-                type: 'signup',
-                email: email,
-                options: {
-                    emailRedirectTo: window.location.origin + '/auth-callback.html'
-                }
-            });
-
-            if (error) {
-                console.error('Erro ao reenviar confirmação:', error);
-                
-                // Fallback: tentar usar resetPasswordForEmail como alternativa
-                if (error.message.includes('already confirmed') || error.message.includes('User already registered')) {
-                    return { 
-                        success: false, 
-                        error: 'Email já confirmado. Faça login normalmente.' 
-                    };
-                }
-                
-                throw error;
+    try {
+        if (!this.supabase) await this.init();
+        
+        const { error } = await this.supabase.auth.resend({
+            type: 'signup',
+            email: email,
+            options: {
+                emailRedirectTo: 'https://studycert.github.io/it-certification/auth-callback.html'
             }
-            
-            return { success: true };
-        } catch (error) {
-            console.error('❌ Erro ao reenviar confirmação:', error);
-            return { 
-                success: false, 
-                error: this.getAuthErrorMessage(error) 
-            };
-        }
-    }
+        });
 
+        if (error) throw error;
+        return { success: true };
+    } catch (error) {
+        console.error('❌ Erro ao reenviar confirmação:', error);
+        return { 
+            success: false, 
+            error: error.message 
+        };
+    }
+}
     async forgotPassword(email) {
-        try {
-            if (!this.supabase) await this.init();
-            
-            const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: window.location.origin + '/reset-password.html'
-            });
+    try {
+        if (!this.supabase) await this.init();
+        
+        const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://studycert.github.io/it-certification/reset-password.html'
+        });
 
-            if (error) throw error;
-            
-            return { success: true };
-        } catch (error) {
-            console.error('❌ Erro ao solicitar recuperação:', error);
-            return { 
-                success: false, 
-                error: error.message 
-            };
-        }
+        if (error) throw error;
+        return { success: true };
+    } catch (error) {
+        console.error('❌ Erro ao solicitar recuperação:', error);
+        return { 
+            success: false, 
+            error: error.message 
+        };
     }
+}
 
     async resetPassword(newPassword) {
         try {
