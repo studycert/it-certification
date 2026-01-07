@@ -345,7 +345,7 @@ class StudyCertApp {
         }
     }
 
-               async login() {
+                  async login() {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
         
@@ -554,6 +554,101 @@ class StudyCertApp {
                 progressText.textContent = 'Comece sua jornada de certificação!';
             }
         }
+    }
+        // ==================== FUNÇÕES DE VALIDAÇÃO DO MODAL ====================
+
+    // Função para mostrar/esconder senha
+    togglePasswordVisibility(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+        
+        const toggleBtn = field.parentElement.querySelector('.password-toggle');
+        if (!toggleBtn) return;
+        
+        const icon = toggleBtn.querySelector('i');
+        if (!icon) return;
+        
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Função para validar força da senha
+    validatePasswordStrength(password) {
+        const strengthBar = document.getElementById('passwordStrengthBar');
+        const lengthValid = document.getElementById('validationLength');
+        
+        if (!strengthBar || !lengthValid) return false;
+        
+        if (!password) {
+            strengthBar.style.width = '0%';
+            strengthBar.style.backgroundColor = '#eee';
+            lengthValid.className = 'validation-item invalid';
+            return false;
+        }
+        
+        if (password.length < 6) {
+            strengthBar.style.width = '20%';
+            strengthBar.style.backgroundColor = '#e74c3c';
+            lengthValid.className = 'validation-item invalid';
+            return false;
+        }
+        
+        strengthBar.style.width = '100%';
+        strengthBar.style.backgroundColor = '#27ae60';
+        lengthValid.className = 'validation-item valid';
+        return true;
+    }
+
+    // Função para verificar se as senhas coincidem
+    validatePasswordMatch() {
+        const password = document.getElementById('registerPassword')?.value;
+        const confirmPassword = document.getElementById('registerConfirmPassword')?.value;
+        const matchElement = document.getElementById('passwordMatch');
+        
+        if (!matchElement) return false;
+        
+        if (!password || !confirmPassword) {
+            matchElement.className = 'validation-item invalid';
+            matchElement.querySelector('span').textContent = 'As senhas devem coincidir';
+            return false;
+        }
+        
+        if (password === confirmPassword) {
+            matchElement.className = 'validation-item valid';
+            matchElement.querySelector('span').textContent = 'Senhas coincidem ✓';
+            return true;
+        } else {
+            matchElement.className = 'validation-item invalid';
+            matchElement.querySelector('span').textContent = 'As senhas não coincidem';
+            return false;
+        }
+    }
+
+    // Função para mostrar termos de uso
+    showTerms() {
+        this.closeAuthModal();
+        alert('Termos de Uso - StudyCert\n\n1. Aceitação dos Termos\n2. Uso da Plataforma\n3. Conteúdo do Usuário\n4. Propriedade Intelectual\n5. Privacidade\n6. Limitação de Responsabilidade\n7. Alterações nos Termos\n\nOs termos completos estão em desenvolvimento.');
+        setTimeout(() => {
+            document.getElementById('modalAuth').classList.add('active');
+            this.showAuthTab('register');
+        }, 500);
+    }
+
+    // Função para mostrar política de privacidade
+    showPrivacy() {
+        this.closeAuthModal();
+        alert('Política de Privacidade - StudyCert\n\n1. Informações Coletadas\n2. Uso das Informações\n3. Compartilhamento de Dados\n4. Segurança\n5. Seus Direitos\n6. Cookies\n7. Contato\n\nA política completa está em desenvolvimento.');
+        setTimeout(() => {
+            document.getElementById('modalAuth').classList.add('active');
+            this.showAuthTab('register');
+        }, 500);
     }
 
     // ==================== SIMULADOS ====================
@@ -1276,6 +1371,46 @@ class StudyCertApp {
                 this.register();
             }
         });
+    }
+        setupEventListeners() {
+        // ... código existente ...
+        
+        // Validação em tempo real para o formulário de cadastro
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordField = document.getElementById('registerPassword');
+            const confirmField = document.getElementById('registerConfirmPassword');
+            
+            if (passwordField) {
+                passwordField.addEventListener('input', function() {
+                    if (app && app.validatePasswordStrength) {
+                        app.validatePasswordStrength(this.value);
+                    }
+                    if (app && app.validatePasswordMatch) {
+                        app.validatePasswordMatch();
+                    }
+                });
+            }
+            
+            if (confirmField) {
+                confirmField.addEventListener('input', function() {
+                    if (app && app.validatePasswordMatch) {
+                        app.validatePasswordMatch();
+                    }
+                });
+            }
+            
+            // Configurar botões de visualização de senha
+            document.querySelectorAll('.password-toggle').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const input = this.closest('.form-group').querySelector('input[type="password"], input[type="text"]');
+                    if (input && app && app.togglePasswordVisibility) {
+                        app.togglePasswordVisibility(input.id);
+                    }
+                });
+            });
+        });
+        
+        // ... resto do código existente ...
     }
 
     // ==================== FUNÇÕES AUXILIARES ====================
