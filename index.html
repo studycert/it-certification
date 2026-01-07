@@ -94,10 +94,10 @@
                 <div style="position: relative; width: 100%;">
                     <input type="password" id="loginPassword" placeholder="Sua senha" autocomplete="current-password"
                            style="width: 100%; padding: 12px 45px 12px 12px; border: 2px solid #e1e1e1; border-radius: 6px; font-size: 16px;">
-                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword')" 
-                            style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; padding: 0;">
-                        <i class="fas fa-eye"></i>
-                    </button>
+                    <button type="button" class="password-toggle" onclick="forceShowPassword('loginPassword')" 
+        style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; padding: 0;">
+    <i class="fas fa-eye"></i>
+</button>
                 </div>
             </div>
             
@@ -138,10 +138,10 @@
                     <input type="password" id="registerPassword" placeholder="Crie uma senha forte" autocomplete="new-password"
                            style="width: 100%; padding: 12px 45px 12px 12px; border: 2px solid #e1e1e1; border-radius: 6px; font-size: 16px;"
                            oninput="app.validatePasswordStrength(this.value)">
-                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('registerPassword')" 
-                            style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; padding: 0;">
-                        <i class="fas fa-eye"></i>
-                    </button>
+                    <button type="button" class="password-toggle" onclick="forceShowPassword('registerPassword')" 
+        style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; padding: 0;">
+    <i class="fas fa-eye"></i>
+</button>
                 </div>
                 <div class="password-strength">
                     <div id="passwordStrengthBar" class="password-strength-bar"></div>
@@ -160,10 +160,10 @@
                     <input type="password" id="registerConfirmPassword" placeholder="Repita a senha" autocomplete="new-password"
                            style="width: 100%; padding: 12px 45px 12px 12px; border: 2px solid #e1e1e1; border-radius: 6px; font-size: 16px;"
                            oninput="app.validatePasswordMatch()">
-                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('registerConfirmPassword')" 
-                            style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; padding: 0;">
-                        <i class="fas fa-eye"></i>
-                    </button>
+                    <button type="button" class="password-toggle" onclick="forceShowPassword('registerConfirmPassword')" 
+        style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; padding: 0;">
+    <i class="fas fa-eye"></i>
+</button>
                 </div>
                 <div id="passwordMatch" class="validation-item invalid">
                     <i class="fas fa-circle"></i>
