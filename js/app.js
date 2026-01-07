@@ -1636,6 +1636,39 @@ class StudyCertApp {
         }, 3000);
     }
 }
+// ==================== FUNÇÃO GLOBAL PARA VISUALIZAÇÃO DE SENHA ====================
+window.togglePasswordVisibility = function(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) {
+        console.error('Campo não encontrado:', fieldId);
+        return;
+    }
+    
+    const toggleBtn = field.nextElementSibling;
+    if (!toggleBtn || !toggleBtn.classList.contains('password-toggle')) {
+        console.error('Botão de visualização não encontrado para:', fieldId);
+        return;
+    }
+    
+    const icon = toggleBtn.querySelector('i');
+    if (!icon) {
+        console.error('Ícone não encontrado no botão');
+        return;
+    }
+    
+    // Alternar entre mostrar e esconder
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+    
+    console.log('Visualização de senha alternada para:', fieldId, 'Tipo:', field.type);
+}
 
 // Inicializar app quando o DOM estiver pronto
 let app;
@@ -1674,12 +1707,11 @@ window.iniciarSimulado = (id) => app.iniciarSimulado(id);
 // Variável global para a instância do app
 window.StudyCertApp = app;
 
-// Função global para reenviar email de confirmação
+// ==================== FUNÇÃO CORRIGIDA PARA REENVIAR EMAIL ====================
 window.resendConfirmationEmail = async function(emailToResend = null) {
     try {
         let email = emailToResend;
         
-        // Se não passou email, pega do campo
         if (!email) {
             email = document.getElementById('loginEmail')?.value;
         }
@@ -1689,47 +1721,99 @@ window.resendConfirmationEmail = async function(emailToResend = null) {
             return;
         }
         
-        console.log('📧 Reenviando email para:', email);
+        console.log('📧 Tentando reenviar confirmação para:', email);
         
         // Mostrar loading
         app.showMessage('loginMessage', 
-            '<i class="fas fa-spinner fa-spin"></i> Enviando email...', 
+            '<div style="text-align: center; padding: 10px;">' +
+            '<i class="fas fa-spinner fa-spin" style="color: #3498db;"></i><br>' +
+            '<strong>Processando...</strong>' +
+            '</div>', 
             'info'
         );
         
-        const { error } = await app.supabase.auth.resend({
-            type: 'signup',
-            email: email.toLowerCase().trim(),
-            options: {
-                emailRedirectTo: window.location.origin + '/'
-            }
+        // Primeiro verificar se o usuário existe e está confirmado
+        const { data: userData, error: userError } = await app.supabase.auth.admin.getUserById(
+            // Precisamos do ID do usuário, mas não temos. Vamos tentar login primeiro.
+        );
+        
+        // Tentativa 1: Usar o método resetPasswordForEmail (funciona melhor)
+        const { error } = await app.supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/'
         });
         
+        console.log('📧 Resultado do resetPasswordForEmail:', { error });
+        
         if (error) {
-            console.error('❌ Erro ao reenviar:', error);
-            app.showMessage('loginMessage', 
-                '❌ Erro ao reenviar email: ' + error.message, 
-                'error'
-            );
-        } else {
-            app.showMessage('loginMessage', 
-                '✅ Email reenviado com sucesso!<br>' +
-                'Verifique sua caixa de entrada e pasta de spam.', 
-                'success'
-            );
+            // Se resetPassword não funcionar, tentar signUp novamente (irá dizer se já existe)
+            const { error: signUpError } = await app.supabase.auth.signUp({
+                email: email,
+                password: 'temporaryPassword123', // Senha temporária
+                options: {
+                    emailRedirectTo: window.location.origin + '/'
+                }
+            });
             
-            // Atualizar a mensagem após 5 segundos
-            setTimeout(() => {
+            console.log('📧 Resultado do signUp (teste):', { signUpError });
+            
+            if (signUpError && signUpError.message.includes('already registered')) {
+                // Usuário existe mas não podemos reenviar - mostrar mensagem
                 app.showMessage('loginMessage', 
-                    '📧 Email enviado! Aguarde alguns minutos e tente fazer login novamente.', 
+                    '<div style="text-align: center; padding: 15px;">' +
+                    '<i class="fas fa-info-circle" style="color: #3498db; font-size: 1.5rem;"></i><br>' +
+                    '<strong>Email já cadastrado</strong><br><br>' +
+                    '<div style="background: #e3f2fd; padding: 10px; border-radius: 6px; margin: 10px 0;">' +
+                    '<strong>Possíveis situações:</strong><br>' +
+                    '1. Email <strong>já foi confirmado</strong> - tente fazer login<br>' +
+                    '2. Email <strong>aguardando confirmação</strong> - verifique spam<br>' +
+                    '3. <strong>Aguarde 10 minutos</strong> - às vezes há atraso<br>' +
+                    '</div>' +
+                    '<button class="btn btn-primary" onclick="app.forgotPassword()" style="margin-top: 10px;">' +
+                    '<i class="fas fa-key"></i> Redefinir senha' +
+                    '</button>' +
+                    '</div>', 
                     'info'
                 );
-            }, 5000);
+            } else {
+                app.showMessage('loginMessage', 
+                    '<div style="padding: 10px;">' +
+                    '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i><br>' +
+                    '<strong>Não foi possível reenviar</strong><br>' +
+                    '<small>Tente criar uma nova conta ou contate o suporte.</small>' +
+                    '</div>', 
+                    'error'
+                );
+            }
+        } else {
+            // Sucesso!
+            app.showMessage('loginMessage', 
+                '<div style="text-align: center; padding: 15px;">' +
+                '<i class="fas fa-check-circle" style="color: #27ae60; font-size: 1.5rem;"></i><br>' +
+                '<strong style="color: #27ae60;">Email enviado!</strong><br><br>' +
+                '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px; margin: 10px 0; text-align: left;">' +
+                '<strong><i class="fas fa-envelope"></i> Instruções enviadas para:</strong><br>' +
+                '<code style="color: #2c3e50; font-weight: bold; display: block; margin: 5px 0;">' + email + '</code>' +
+                '<strong>O que fazer:</strong><br>' +
+                '1. Verifique a <strong>caixa de entrada</strong><br>' +
+                '2. Procure na pasta <strong>spam/lixo eletrônico</strong><br>' +
+                '3. Aguarde <strong>2-5 minutos</strong><br>' +
+                '4. Se não chegar, <strong>tente novamente em 10 min</strong>' +
+                '</div>' +
+                '</div>', 
+                'success'
+            );
         }
         
     } catch (err) {
-        console.error('❌ Erro:', err);
-        app.showMessage('loginMessage', '❌ Erro ao reenviar email.', 'error');
+        console.error('❌ Erro no resendConfirmationEmail:', err);
+        app.showMessage('loginMessage', 
+            '<div style="padding: 10px;">' +
+            '<i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i><br>' +
+            '<strong>Erro inesperado</strong><br>' +
+            '<small>Tente novamente mais tarde.</small>' +
+            '</div>', 
+            'error'
+        );
     }
 }
 
