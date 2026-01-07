@@ -73,6 +73,7 @@ class AuthManager {
                 id: this.currentUser.id,
                 email: this.currentUser.email,
                 name: this.currentUser.user_metadata?.full_name || this.currentUser.email.split('@')[0],
+                avatar: this.currentUser.user_metadata?.avatar_url,
                 email_confirmed: this.currentUser.email_confirmed_at ? true : false
             };
             localStorage.setItem('studycert_user', JSON.stringify(userData));
@@ -88,7 +89,10 @@ class AuthManager {
                     id: user.id,
                     email: user.email,
                     email_confirmed_at: user.email_confirmed ? new Date().toISOString() : null,
-                    user_metadata: { full_name: user.name }
+                    user_metadata: { 
+                        full_name: user.name,
+                        avatar_url: user.avatar 
+                    }
                 };
                 console.log('📱 Usuário carregado do localStorage:', user.email);
             }
@@ -107,7 +111,6 @@ class AuthManager {
             });
 
             if (error) {
-                // Verificar se é erro de email não confirmado
                 if (error.message.includes('Email not confirmed')) {
                     return { 
                         success: false, 
@@ -144,7 +147,11 @@ class AuthManager {
             const { data, error } = await this.supabase.auth.signInWithOAuth({
                 provider: provider,
                 options: {
-                    redirectTo: window.location.origin + '/auth-callback.html'
+                    redirectTo: window.location.origin + '/auth-callback.html',
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent'
+                    }
                 }
             });
             
@@ -169,9 +176,9 @@ class AuthManager {
                 password: password,
                 options: {
                     data: {
-                        full_name: name,
-                        email_redirect: window.location.origin + '/auth-callback.html'
-                    }
+                        full_name: name
+                    },
+                    emailRedirectTo: window.location.origin + '/auth-callback.html'
                 }
             });
 
@@ -181,10 +188,7 @@ class AuthManager {
                 this.currentUser = data.user;
                 this.saveToLocalStorage();
                 
-                // Não precisa mais confirmar email manualmente para OAuth
-                // Mas mantemos o fluxo para email/senha
                 if (data.user.identities && data.user.identities.length > 0) {
-                    // Se já tem identidade (Google/Microsoft), já está confirmado
                     return { 
                         success: true, 
                         user: data.user,
@@ -284,18 +288,14 @@ class AuthManager {
         return this.currentUser;
     }
 
+    getUserInitials() {
+        if (!this.currentUser) return 'U';
+        const name = this.currentUser.user_metadata?.full_name || this.currentUser.email;
+        return name.substring(0, 2).toUpperCase();
+    }
+
     getSupabase() {
         return this.supabase;
-    }
-
-    setUser(user) {
-        this.currentUser = user;
-        this.saveToLocalStorage();
-    }
-
-    clearUser() {
-        this.currentUser = null;
-        localStorage.removeItem('studycert_user');
     }
 
     getAuthErrorMessage(error) {
@@ -311,6 +311,8 @@ class AuthManager {
             return 'Muitas tentativas. Aguarde alguns minutos.';
         } else if (message.includes('fetch') || message.includes('network')) {
             return 'Erro de conexão. Verifique sua internet.';
+        } else if (message.includes('password')) {
+            return 'Senha muito fraca. Use pelo menos 6 caracteres.';
         } else {
             return error.message;
         }
@@ -324,3 +326,52 @@ const authManager = new AuthManager();
 window.authManager = authManager;
 window.checkAuth = () => authManager.isAuthenticated();
 window.logoutGlobal = () => authManager.logout();
+
+// Funções globais para login social
+window.loginWithGoogle = function() {
+    authManager.loginWithOAuth('google');
+};
+
+window.loginWithMicrosoft = function() {
+    authManager.loginWithOAuth('azure');
+};
+
+// Função para reenviar confirmação
+window.resendConfirmation = async function(email) {
+    const result = await authManager.resendConfirmationEmail(email);
+    
+    if (result.success) {
+        if (window.app && window.app.showMessage) {
+            window.app.showMessage('loginMessage', 
+                `<div style="padding: 15px;">
+                    <div style="color: #27ae60; font-weight: 600; margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> Email reenviado!
+                    </div>
+                    <div style="font-size: 0.9rem; color: #666;">
+                        Verifique sua caixa de entrada e pasta de spam.
+                    </div>
+                </div>`, 
+                'success'
+            );
+        } else {
+            alert('✅ Email de confirmação reenviado com sucesso!');
+        }
+    } else {
+        if (window.app && window.app.showMessage) {
+            window.app.showMessage('loginMessage', 
+                `<div style="padding: 10px;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <strong> Erro: ${result.error}</strong>
+                </div>`, 
+                'error'
+            );
+        } else {
+            alert('❌ Erro ao reenviar: ' + result.error);
+        }
+    }
+};
+
+// Inicializar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🎯 AuthManager carregado e pronto');
+});
