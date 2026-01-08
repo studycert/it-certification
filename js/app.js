@@ -200,45 +200,45 @@ class StudyCertApp {
         }
     }
 
-    updateAuthUI() {
-        const authButtons = document.getElementById('authButtons');
-        const uploadArea = document.getElementById('uploadArea');
+   updateAuthUI() {
+    const authButtons = document.getElementById('authButtons');
+    const uploadArea = document.getElementById('uploadArea');
+    
+    if (this.currentUser) {
+        const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
+        const initials = displayName.substring(0, 2).toUpperCase();
         
-        if (this.currentUser) {
-            const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
-            const initials = displayName.substring(0, 2).toUpperCase();
-            
-            // Verificar se é admin
-            const isAdmin = localStorage.getItem('admin_role') || 
-                           this.currentUser.email === 'andre.martins05@gmail.com' ||
-                           this.currentUser.email === 'admin@example.com';
-            
-            authButtons.innerHTML = `
-                <div class="user-info">
-                    <div class="user-avatar">${initials}</div>
-                    <span>${displayName}</span>
-                    ${isAdmin ? 
-                        `<div class="admin-link-container">
-                            <a href="admin.html" class="btn-admin-icon" title="Painel Administrativo">
-                                <i class="fas fa-cog"></i>
-                            </a>
-                        </div>` : 
-                        ''
-                    }
-                    <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
-                </div>
-            `;
-            
-            if (uploadArea) uploadArea.style.display = 'block';
-        } else {
-            authButtons.innerHTML = `
-                <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
-                <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
-            `;
-            
-            if (uploadArea) uploadArea.style.display = 'none';
-        }
+        // Verificar se é admin
+        const isAdmin = localStorage.getItem('admin_role') || 
+                       this.currentUser.email === 'andre.martins05@gmail.com' ||
+                       this.currentUser.email === 'admin@example.com';
+        
+        authButtons.innerHTML = `
+            <div class="user-info">
+                <div class="user-avatar">${initials}</div>
+                <span>${displayName}</span>
+                ${isAdmin ? 
+                    `<div class="admin-link-container">
+                        <a href="admin.html" class="btn-admin-icon" title="Painel Administrativo">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    </div>` : 
+                    ''
+                }
+                <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
+            </div>
+        `;
+        
+        if (uploadArea) uploadArea.style.display = 'block';
+    } else {
+        authButtons.innerHTML = `
+            <button class="btn btn-outline" onclick="app.openLogin()">Entrar</button>
+            <button class="btn btn-primary" onclick="app.openRegister()">Cadastrar</button>
+        `;
+        
+        if (uploadArea) uploadArea.style.display = 'none';
     }
+}
 
     // Função para garantir perfil do usuário
     async ensureUserProfile() {
@@ -323,29 +323,11 @@ class StudyCertApp {
     }
 
     showAuthTab(tab) {
-        // Remover active de todas as tabs
-        document.querySelectorAll('.auth-tab').forEach(t => {
-            t.classList.remove('active');
-        });
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
         
-        // Remover active de todos os forms
-        document.querySelectorAll('.auth-form').forEach(f => {
-            f.classList.remove('active');
-        });
-        
-        // Adicionar active na tab clicada
-        const clickedTab = document.querySelector(`.auth-tab[data-tab="${tab}"]`);
-        if (clickedTab) {
-            clickedTab.classList.add('active');
-        }
-        
-        // Mostrar o form correspondente
-        const formToShow = document.getElementById(`${tab}Form`);
-        if (formToShow) {
-            formToShow.classList.add('active');
-        }
-        
-        // Limpar mensagens
+        document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
+        document.getElementById(`${tab}Form`).classList.add('active');
         this.clearAuthMessages();
     }
 
@@ -382,50 +364,13 @@ class StudyCertApp {
             
             if (error) {
                 console.error('❌ Erro detalhado no login:', error);
-                
-                // Mensagem de erro mais amigável e compacta
-                const loginMessage = document.getElementById('loginMessage');
-                loginMessage.innerHTML = `
-                    <div style="padding: 10px;">
-                        <div style="color: #c0392b; font-weight: 600; margin-bottom: 8px;">
-                            <i class="fas fa-exclamation-circle"></i> Não foi possível fazer login
-                        </div>
-                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
-                            Verifique se:
-                            <ul style="margin: 5px 0 5px 20px; color: #666;">
-                                <li>Seu email foi confirmado</li>
-                                <li>Email e senha estão corretos</li>
-                            </ul>
-                        </div>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="btn btn-outline" onclick="resendConfirmationEmail('${email}')" 
-                                    style="font-size: 0.8rem; padding: 6px 10px;">
-                                <i class="fas fa-paper-plane"></i> Reenviar confirmação
-                            </button>
-                            <button class="btn btn-primary" onclick="app.forgotPassword()" 
-                                    style="font-size: 0.8rem; padding: 6px 10px;">
-                                <i class="fas fa-key"></i> Recuperar senha
-                            </button>
-                        </div>
-                    </div>
-                `;
-                loginMessage.style.display = 'block';
-                loginMessage.className = 'message error';
-                return;
+                throw error;
             }
             
-            // Login bem-sucedido
-            this.showMessage('loginMessage', 
-                '<div style="text-align: center; padding: 10px;">' +
-                '<i class="fas fa-check-circle" style="color: #27ae60; font-size: 1.5rem; margin-bottom: 10px;"></i><br>' +
-                '<strong>Login realizado com sucesso!</strong><br>' +
-                'Redirecionando...' +
-                '</div>', 
-                'success'
-            );
-            
+            this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
             this.currentUser = data.user;
             
+            // Garantir perfil
             await this.ensureUserProfile();
             
             setTimeout(() => {
@@ -434,38 +379,24 @@ class StudyCertApp {
                 this.loadUserProgress();
                 document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
+                
+                // Recarregar dados do usuário
                 this.loadInitialData();
             }, 1500);
             
         } catch (error) {
             console.error('❌ Erro no login:', error);
-            this.showMessage('loginMessage', 
-                '<div style="padding: 10px;">' +
-                '<i class="fas fa-exclamation-triangle"></i> ' +
-                'Erro interno. Tente novamente mais tarde.' +
-                '</div>', 
-                'error'
-            );
+            this.showMessage('loginMessage', this.getAuthErrorMessage(error), 'error');
         }
     }
 
     async register() {
-        const name = document.getElementById('registerName').value.trim();
-        const email = document.getElementById('registerEmail').value.trim();
+        const name = document.getElementById('registerName').value;
+        const email = document.getElementById('registerEmail').value;
         const password = document.getElementById('registerPassword').value;
-        const confirmPassword = document.getElementById('registerConfirmPassword')?.value;
-        const termsAccepted = document.getElementById('registerTerms')?.checked || false;
-        const registerBtn = document.getElementById('registerBtn');
         
-        // Validações
         if (!name || !email || !password) {
-            this.showMessage('registerMessage', 'Por favor, preencha todos os campos obrigatórios', 'error');
-            return;
-        }
-        
-        // Verificar se temos o campo de confirmação
-        if (confirmPassword !== undefined && password !== confirmPassword) {
-            this.showMessage('registerMessage', 'As senhas não coincidem', 'error');
+            this.showMessage('registerMessage', 'Por favor, preencha todos os campos', 'error');
             return;
         }
         
@@ -474,36 +405,18 @@ class StudyCertApp {
             return;
         }
         
-        // Validação de termos (se existir o campo)
-        if (document.getElementById('registerTerms') && !termsAccepted) {
-            this.showMessage('registerMessage', 'Você precisa aceitar os Termos de Uso', 'error');
-            return;
-        }
-        
-        // Validação de email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            this.showMessage('registerMessage', 'Por favor, insira um email válido', 'error');
-            return;
-        }
-        
         try {
-            if (registerBtn) {
-                registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando conta...';
-                registerBtn.disabled = true;
-            }
-            
             console.log('Tentando cadastrar usuário:', { email, name });
             
             const { data, error } = await this.supabase.auth.signUp({
-                email: email.toLowerCase(),
+                email: email.toLowerCase().trim(),
                 password: password,
                 options: {
                     data: {
-                        full_name: name,
+                        full_name: name.trim(),
                         created_at: new Date().toISOString()
                     },
-                    emailRedirectTo: window.location.origin + '/'
+                    emailRedirectTo: 'https://studycert.github.io/it-certification/'
                 }
             });
             
@@ -511,134 +424,66 @@ class StudyCertApp {
                 console.error('Erro detalhado do Supabase:', error);
                 
                 if (error.message.includes('User already registered')) {
-                    this.showMessage('registerMessage', 
-                        '<div style="padding: 10px;">' +
-                        '<i class="fas fa-info-circle" style="color: #3498db;"></i> ' +
-                        'Este email já está cadastrado.<br>' +
-                        '<small>Redirecionando para login...</small>' +
-                        '</div>', 
-                        'info'
-                    );
-                    
-                    setTimeout(() => {
-                        this.showAuthTab('login');
-                        document.getElementById('loginEmail').value = email;
-                        if (registerBtn) {
-                            registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
-                            registerBtn.disabled = false;
-                        }
-                    }, 2000);
-                    return;
-                    
+                    this.showMessage('registerMessage', '❌ Este email já está cadastrado. Tente fazer login.', 'error');
                 } else if (error.message.includes('rate limit')) {
-                    this.showMessage('registerMessage', 
-                        '<div style="padding: 10px;">' +
-                        '<i class="fas fa-clock" style="color: #f39c12;"></i> ' +
-                        'Muitas tentativas.<br>' +
-                        '<small>Aguarde alguns minutos e tente novamente.</small>' +
-                        '</div>', 
-                        'warning'
-                    );
-                    
+                    this.showMessage('registerMessage', '❌ Muitas tentativas. Aguarde alguns minutos.', 'error');
                 } else if (error.message.includes('fetch')) {
                     this.showMessage('registerMessage', 
-                        '<div style="padding: 10px;">' +
-                        '<i class="fas fa-wifi" style="color: #e74c3c;"></i> ' +
-                        'Problema de conexão.<br>' +
-                        '<small>Verifique sua internet e tente novamente.</small>' +
-                        '</div>', 
+                        '❌ Problema de conexão:<br>' +
+                        '1. Verifique sua internet<br>' +
+                        '2. A URL do Supabase está correta?<br>' +
+                        '3. A chave anon está correta?', 
                         'error'
                     );
-                    
                 } else {
-                    this.showMessage('registerMessage', 
-                        '<div style="padding: 10px;">' +
-                        '<i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i> ' +
-                        'Erro no cadastro: ' + error.message +
-                        '</div>', 
-                        'error'
-                    );
+                    this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
                 }
-                
-                if (registerBtn) {
-                    registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
-                    registerBtn.disabled = false;
-                }
-                return;
-                
             } else {
                 console.log('Usuário cadastrado com sucesso:', data);
                 
-                // Sucesso
-                this.showMessage('registerMessage', 
-                    '<div style="text-align: center; padding: 15px;">' +
-                    '<i class="fas fa-check-circle" style="color: #27ae60; font-size: 1.5rem; margin-bottom: 10px;"></i><br>' +
-                    '<strong style="color: #27ae60;">Cadastro realizado com sucesso!</strong><br><br>' +
-                    '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px; margin: 10px 0;">' +
-                    '<i class="fas fa-envelope" style="color: #3498db;"></i> ' +
-                    '<strong>Verifique seu email</strong><br>' +
-                    '<small>Enviamos um link de confirmação para:</small><br>' +
-                    '<code style="color: #2c3e50; font-weight: bold;">' + email + '</code>' +
-                    '</div>' +
-                    '<small style="color: #666;">Após confirmar, você poderá fazer login.</small>' +
-                    '</div>', 
-                    'success'
-                );
+                if (data.user?.identities?.length === 0) {
+                    this.showMessage('registerMessage', '✅ Este email já possui uma conta. Faça login.', 'success');
+                } else {
+                    this.showMessage('registerMessage', '✅ Cadastro realizado! Verifique seu email para confirmação.', 'success');
+                }
                 
-                // Limpar formulário após 3 segundos
+                // Tentar fazer login automaticamente
+                setTimeout(async () => {
+                    const { data: loginData, error: loginError } = await this.supabase.auth.signInWithPassword({
+                        email: email.toLowerCase().trim(),
+                        password: password
+                    });
+                    
+                    if (!loginError) {
+                        this.currentUser = loginData.user;
+                        this.closeAuthModal();
+                        this.updateAuthUI();
+                        await this.ensureUserProfile();
+                        this.loadInitialData();
+                    }
+                }, 2000);
+                
+                // Limpar formulário
                 setTimeout(() => {
                     document.getElementById('registerName').value = '';
                     document.getElementById('registerEmail').value = '';
                     document.getElementById('registerPassword').value = '';
-                    if (document.getElementById('registerConfirmPassword')) {
-                        document.getElementById('registerConfirmPassword').value = '';
-                    }
-                    if (document.getElementById('registerTerms')) {
-                        document.getElementById('registerTerms').checked = false;
-                    }
-                    const strengthBar = document.getElementById('passwordStrengthBar');
-                    if (strengthBar) {
-                        strengthBar.style.width = '0%';
-                        strengthBar.style.backgroundColor = '#eee';
-                    }
-                    
-                    if (registerBtn) {
-                        registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
-                        registerBtn.disabled = false;
-                    }
                 }, 3000);
-                
-                // Fechar modal automaticamente após 5 segundos
-                setTimeout(() => {
-                    this.showAuthTab('login');
-                    document.getElementById('loginEmail').value = email;
-                }, 5000);
             }
             
         } catch (error) {
             console.error('❌ Erro no cadastro:', error);
-            this.showMessage('registerMessage', 
-                '<div style="padding: 10px;">' +
-                '<i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> ' +
-                'Erro inesperado. Tente novamente.' +
-                '</div>', 
-                'error'
-            );
-            
-            if (registerBtn) {
-                registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
-                registerBtn.disabled = false;
-            }
+            this.showMessage('registerMessage', `❌ Erro: ${error.message}`, 'error');
         }
     }
 
     getAuthErrorMessage(error) {
         if (error.message.includes('Invalid login credentials')) {
-            return '❌ Email/senha incorretos ou email não confirmado';
+            return '❌ Email ou senha incorretos';
         } else if (error.message.includes('User already registered')) {
             return '❌ Este email já está cadastrado';
         } else if (error.message.includes('Email not confirmed')) {
-            return '❌ Email não confirmado';
+            return '✅ Email não confirmado, mas permitindo acesso...';
         } else if (error.message.includes('Invalid API key')) {
             return '❌ Problema de configuração do sistema';
         } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
@@ -654,9 +499,6 @@ class StudyCertApp {
             element.innerHTML = message;
             element.className = `message ${type}`;
             element.style.display = 'block';
-            
-            // Scroll para a mensagem
-            element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
 
@@ -701,102 +543,6 @@ class StudyCertApp {
                 progressText.textContent = 'Comece sua jornada de certificação!';
             }
         }
-    }
-
-    // ==================== FUNÇÕES DE VALIDAÇÃO DO MODAL ====================
-
-    // Função para mostrar/esconder senha
-    togglePasswordVisibility(fieldId) {
-        const field = document.getElementById(fieldId);
-        if (!field) return;
-        
-        const toggleBtn = field.parentElement.querySelector('.password-toggle');
-        if (!toggleBtn) return;
-        
-        const icon = toggleBtn.querySelector('i');
-        if (!icon) return;
-        
-        if (field.type === 'password') {
-            field.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            field.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    }
-
-    // Função para validar força da senha
-    validatePasswordStrength(password) {
-        const strengthBar = document.getElementById('passwordStrengthBar');
-        const lengthValid = document.getElementById('validationLength');
-        
-        if (!strengthBar || !lengthValid) return false;
-        
-        if (!password) {
-            strengthBar.style.width = '0%';
-            strengthBar.style.backgroundColor = '#eee';
-            lengthValid.className = 'validation-item invalid';
-            return false;
-        }
-        
-        if (password.length < 6) {
-            strengthBar.style.width = '20%';
-            strengthBar.style.backgroundColor = '#e74c3c';
-            lengthValid.className = 'validation-item invalid';
-            return false;
-        }
-        
-        strengthBar.style.width = '100%';
-        strengthBar.style.backgroundColor = '#27ae60';
-        lengthValid.className = 'validation-item valid';
-        return true;
-    }
-
-    // Função para verificar se as senhas coincidem
-    validatePasswordMatch() {
-        const password = document.getElementById('registerPassword')?.value;
-        const confirmPassword = document.getElementById('registerConfirmPassword')?.value;
-        const matchElement = document.getElementById('passwordMatch');
-        
-        if (!matchElement) return false;
-        
-        if (!password || !confirmPassword) {
-            matchElement.className = 'validation-item invalid';
-            matchElement.querySelector('span').textContent = 'As senhas devem coincidir';
-            return false;
-        }
-        
-        if (password === confirmPassword) {
-            matchElement.className = 'validation-item valid';
-            matchElement.querySelector('span').textContent = 'Senhas coincidem ✓';
-            return true;
-        } else {
-            matchElement.className = 'validation-item invalid';
-            matchElement.querySelector('span').textContent = 'As senhas não coincidem';
-            return false;
-        }
-    }
-
-    // Função para mostrar termos de uso
-    showTerms() {
-        this.closeAuthModal();
-        alert('Termos de Uso - StudyCert\n\n1. Aceitação dos Termos\n2. Uso da Plataforma\n3. Conteúdo do Usuário\n4. Propriedade Intelectual\n5. Privacidade\n6. Limitação de Responsabilidade\n7. Alterações nos Termos\n\nOs termos completos estão em desenvolvimento.');
-        setTimeout(() => {
-            document.getElementById('modalAuth').classList.add('active');
-            this.showAuthTab('register');
-        }, 500);
-    }
-
-    // Função para mostrar política de privacidade
-    showPrivacy() {
-        this.closeAuthModal();
-        alert('Política de Privacidade - StudyCert\n\n1. Informações Coletadas\n2. Uso das Informações\n3. Compartilhamento de Dados\n4. Segurança\n5. Seus Direitos\n6. Cookies\n7. Contato\n\nA política completa está em desenvolvimento.');
-        setTimeout(() => {
-            document.getElementById('modalAuth').classList.add('active');
-            this.showAuthTab('register');
-        }, 500);
     }
 
     // ==================== SIMULADOS ====================
@@ -1213,7 +959,7 @@ class StudyCertApp {
         }
     }
 
-    // ==================== CARREGAR SIMULADOS ====================
+    // ==================== CARREGAR SIMULADOS (CORRIGIDO) ====================
     async loadSimulados() {
         try {
             console.log('📥 Carregando simulados...');
@@ -1221,6 +967,7 @@ class StudyCertApp {
             // Carregar simulados do banco
             let simuladosDB = [];
             
+            // Tentar diferentes tipos de consulta
             try {
                 // Tentativa 1: Consulta com join correto
                 const { data, error } = await this.supabase
@@ -1473,12 +1220,10 @@ class StudyCertApp {
             });
         }
 
-        // Tabs de autenticação - CORRIGIDO
+        // Tabs de autenticação
         document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
+            tab.addEventListener('click', () => {
                 const tabName = tab.getAttribute('data-tab');
-                console.log('Tab clicada:', tabName);
                 this.showAuthTab(tabName);
             });
         });
@@ -1519,40 +1264,6 @@ class StudyCertApp {
             if (e.key === 'Enter') {
                 this.register();
             }
-        });
-        
-        // Validação em tempo real para o formulário de cadastro
-        const passwordField = document.getElementById('registerPassword');
-        const confirmField = document.getElementById('registerConfirmPassword');
-        
-        if (passwordField) {
-            passwordField.addEventListener('input', () => {
-                if (this.validatePasswordStrength) {
-                    this.validatePasswordStrength(passwordField.value);
-                }
-                if (this.validatePasswordMatch) {
-                    this.validatePasswordMatch();
-                }
-            });
-        }
-        
-        if (confirmField) {
-            confirmField.addEventListener('input', () => {
-                if (this.validatePasswordMatch) {
-                    this.validatePasswordMatch();
-                }
-            });
-        }
-        
-        // Configurar botões de visualização de senha
-        document.querySelectorAll('.password-toggle').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const input = btn.closest('.form-group')?.querySelector('input[type="password"], input[type="text"]');
-                if (input && this.togglePasswordVisibility) {
-                    this.togglePasswordVisibility(input.id);
-                }
-            });
         });
     }
 
@@ -1636,90 +1347,6 @@ class StudyCertApp {
         }, 3000);
     }
 }
-// ==================== FUNÇÃO GLOBAL PARA VISUALIZAÇÃO DE SENHA ====================
-window.togglePasswordVisibility = function(fieldId) {
-    console.log('🔄 togglePasswordVisibility chamado para:', fieldId);
-    
-    const field = document.getElementById(fieldId);
-    if (!field) {
-        console.error('❌ Campo não encontrado:', fieldId);
-        alert('Erro: Campo ' + fieldId + ' não encontrado');
-        return;
-    }
-    
-    console.log('✅ Campo encontrado:', field);
-    console.log('📌 Tipo atual:', field.type);
-    
-    // Encontrar o botão corretamente
-    let toggleBtn = null;
-    
-    // Tentativa 1: Próximo elemento irmão
-    toggleBtn = field.nextElementSibling;
-    console.log('Tentativa 1 - Próximo irmão:', toggleBtn);
-    
-    // Tentativa 2: Filho do pai
-    if (!toggleBtn || !toggleBtn.classList || !toggleBtn.classList.contains('password-toggle')) {
-        toggleBtn = field.parentElement?.querySelector('.password-toggle');
-        console.log('Tentativa 2 - Query no pai:', toggleBtn);
-    }
-    
-    // Tentativa 3: Qualquer botão com a classe
-    if (!toggleBtn || !toggleBtn.classList || !toggleBtn.classList.contains('password-toggle')) {
-        toggleBtn = document.querySelector(`button[onclick*="${fieldId}"]`);
-        console.log('Tentativa 3 - Por onclick:', toggleBtn);
-    }
-    
-    if (!toggleBtn) {
-        console.error('❌ Botão de visualização não encontrado');
-        
-        // Criar botão dinamicamente se não existir
-        console.log('🛠️ Criando botão dinamicamente...');
-        toggleBtn = document.createElement('button');
-        toggleBtn.type = 'button';
-        toggleBtn.className = 'password-toggle';
-        toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
-        toggleBtn.style.cssText = 'position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;';
-        toggleBtn.onclick = function() { window.togglePasswordVisibility(fieldId); };
-        
-        if (field.parentElement) {
-            field.parentElement.appendChild(toggleBtn);
-            console.log('✅ Botão criado dinamicamente');
-        } else {
-            alert('❌ Não foi possível criar botão. Estrutura HTML incorreta.');
-            return;
-        }
-    }
-    
-    const icon = toggleBtn.querySelector('i');
-    if (!icon) {
-        console.error('❌ Ícone não encontrado no botão');
-        alert('Erro: Ícone não encontrado');
-        return;
-    }
-    
-    console.log('✅ Ícone encontrado:', icon);
-    
-    // Alternar entre mostrar e esconder
-    if (field.type === 'password') {
-        field.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-        console.log('👁️ Senha VISÍVEL');
-    } else {
-        field.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-        console.log('🙈 Senha OCULTA');
-    }
-    
-    // Dar foco de volta ao campo
-    field.focus();
-    
-    console.log('🎉 Toggle concluído com sucesso!');
-    console.log('📊 Status final - Campo ID:', fieldId);
-    console.log('📊 Status final - Tipo:', field.type);
-    console.log('📊 Status final - Ícone:', icon.className);
-}
 
 // Inicializar app quando o DOM estiver pronto
 let app;
@@ -1729,16 +1356,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==================== FUNÇÕES GLOBAIS ====================
 // Autenticação
-window.openLogin = (e) => {
-    if (e) e.preventDefault();
-    app.openLogin(e);
-};
-
-window.openRegister = (e) => {
-    if (e) e.preventDefault();
-    app.openRegister(e);
-};
-
+window.openLogin = (e) => app.openLogin(e);
+window.openRegister = (e) => app.openRegister(e);
 window.closeAuthModal = () => app.closeAuthModal();
 window.login = () => app.login();
 window.register = () => app.register();
@@ -1757,164 +1376,3 @@ window.iniciarSimulado = (id) => app.iniciarSimulado(id);
 
 // Variável global para a instância do app
 window.StudyCertApp = app;
-
-// ==================== FUNÇÃO SIMPLIFICADA PARA REENVIAR EMAIL ====================
-window.resendConfirmationEmail = async function(emailToResend = null) {
-    try {
-        let email = emailToResend;
-        
-        if (!email) {
-            email = document.getElementById('loginEmail')?.value;
-        }
-        
-        if (!email) {
-            app.showMessage('loginMessage', '❌ Digite seu email primeiro.', 'error');
-            return;
-        }
-        
-        console.log('📧 Tentando reenviar confirmação para:', email);
-        
-        // Mostrar loading
-        app.showMessage('loginMessage', 
-            '<div style="text-align: center; padding: 10px;">' +
-            '<i class="fas fa-spinner fa-spin" style="color: #3498db;"></i><br>' +
-            '<strong>Enviando email...</strong><br>' +
-            '<small>Para: ' + email + '</small>' +
-            '</div>', 
-            'info'
-        );
-        
-        // Método mais confiável: resetPasswordForEmail
-        const { error } = await app.supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/'
-        });
-        
-        console.log('📧 Resultado:', { error });
-        
-        if (error) {
-            // Se não funcionar, tentar criar conta temporária
-            const { error: signUpError } = await app.supabase.auth.signUp({
-                email: email,
-                password: 'TemporaryPassword123!',
-                options: {
-                    emailRedirectTo: window.location.origin + '/',
-                    data: {
-                        is_resend_request: true
-                    }
-                }
-            });
-            
-            if (signUpError && signUpError.message.includes('already registered')) {
-                app.showMessage('loginMessage', 
-                    '<div style="text-align: center; padding: 15px;">' +
-                    '<i class="fas fa-info-circle" style="color: #3498db;"></i><br>' +
-                    '<strong>Email já cadastrado</strong><br><br>' +
-                    '<div style="background: #e3f2fd; padding: 10px; border-radius: 6px;">' +
-                    '<strong>O que fazer:</strong><br>' +
-                    '1. Verifique a pasta <strong>SPAM</strong><br>' +
-                    '2. Aguarde alguns minutos<br>' +
-                    '3. Tente fazer login<br>' +
-                    '4. Use "Esqueci minha senha" se necessário' +
-                    '</div>' +
-                    '</div>', 
-                    'info'
-                );
-            } else {
-                app.showMessage('loginMessage', 
-                    '<div style="padding: 10px;">' +
-                    '<i class="fas fa-exclamation-circle"></i><br>' +
-                    '<strong>Não foi possível enviar</strong><br>' +
-                    '<small>' + (signUpError?.message || error.message) + '</small>' +
-                    '</div>', 
-                    'error'
-                );
-            }
-        } else {
-            // Sucesso
-            app.showMessage('loginMessage', 
-                '<div style="text-align: center; padding: 15px;">' +
-                '<i class="fas fa-check-circle" style="color: #27ae60;"></i><br>' +
-                '<strong style="color: #27ae60;">Email enviado!</strong><br><br>' +
-                '<div style="background: #e8f5e9; padding: 10px; border-radius: 6px;">' +
-                '<strong>Instruções enviadas para:</strong><br>' +
-                '<code>' + email + '</code><br><br>' +
-                '<strong>Verifique:</strong><br>' +
-                '✓ Caixa de entrada<br>' +
-                '✓ Pasta SPAM<br>' +
-                '✓ Aguarde 2-5 minutos' +
-                '</div>' +
-                '</div>', 
-                'success'
-            );
-        }
-        
-    } catch (err) {
-        console.error('❌ Erro:', err);
-        app.showMessage('loginMessage', 
-            '<div style="padding: 10px;">' +
-            '<i class="fas fa-exclamation-triangle"></i><br>' +
-            '<strong>Erro de conexão</strong><br>' +
-            '<small>Verifique sua internet e tente novamente.</small>' +
-            '</div>', 
-            'error'
-        );
-    }
-}
-
-// ==================== FUNÇÃO DE EMERGÊNCIA PARA SENHA ====================
-window.forceTogglePassword = function(fieldId) {
-    const field = document.getElementById(fieldId);
-    if (!field) {
-        console.error('Campo não encontrado:', fieldId);
-        return;
-    }
-    
-    // Encontrar ou criar botão
-    let btn = document.querySelector(`button[data-for="${fieldId}"]`);
-    if (!btn) {
-        // Criar novo botão
-        btn = document.createElement('button');
-        btn.type = 'button';
-        btn.setAttribute('data-for', fieldId);
-        btn.innerHTML = field.type === 'password' ? '👁️' : '🙈';
-        btn.style.cssText = `
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            z-index: 100;
-        `;
-        
-        // Posicionar corretamente
-        if (field.parentElement) {
-            field.parentElement.style.position = 'relative';
-            field.parentElement.appendChild(btn);
-        } else {
-            // Se não tiver pai, inserir após o campo
-            field.insertAdjacentElement('afterend', btn);
-        }
-        
-        // Configurar clique
-        btn.onclick = function() {
-            window.forceTogglePassword(fieldId);
-        };
-    }
-    
-    // Alternar visibilidade
-    if (field.type === 'password') {
-        field.type = 'text';
-        btn.innerHTML = '🙈';
-    } else {
-        field.type = 'password';
-        btn.innerHTML = '👁️';
-    }
-    
-    field.focus();
-    
-    console.log('✅ Senha alterada via forceTogglePassword');
-    return true;
-}
