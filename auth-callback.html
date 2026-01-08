@@ -34,40 +34,188 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+        
+        .error-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="callback-container">
-        <div class="spinner"></div>
-        <h2 style="color: var(--primary); margin-bottom: 10px;">Autenticando...</h2>
-        <p style="color: #666;">Por favor, aguarde enquanto processamos sua autenticação.</p>
+        <div class="spinner" id="spinner"></div>
+        <i class="fas fa-check-circle success-icon" id="successIcon" style="display: none;"></i>
+        <i class="fas fa-exclamation-circle error-icon" id="errorIcon" style="display: none;"></i>
+        
+        <h2 id="statusTitle" style="color: var(--primary); margin-bottom: 10px;">Autenticando...</h2>
+        <p id="statusMessage" style="color: #666;">Por favor, aguarde enquanto processamos sua autenticação.</p>
+        
+        <button id="retryButton" class="btn btn-primary" style="margin-top: 20px; display: none;" onclick="retryAuth()">
+            <i class="fas fa-redo"></i> Tentar Novamente
+        </button>
+        
+        <a id="homeButton" href="index.html" class="btn btn-outline" style="margin-top: 20px; display: none;">
+            <i class="fas fa-home"></i> Voltar para o Site
+        </a>
     </div>
     
     <script>
-        // Aguardar o AuthManager inicializar
-        document.addEventListener('DOMContentLoaded', async () => {
+        // Inicializar Supabase
+        let supabaseClient;
+        
+        async function initSupabase() {
             try {
-                // Aguardar um pouco para o AuthManager processar o callback
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
+                const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
                 
-                // Verificar se há sessão ativa
-                const session = authManager.getSupabase()?.auth?.session;
-                
-                if (session) {
-                    console.log('✅ Autenticação bem-sucedida!');
-                    // Redirecionar para a página principal
-                    window.location.href = 'index.html';
-                } else {
-                    console.log('⚠️ Nenhuma sessão encontrada, redirecionando...');
-                    window.location.href = 'index.html';
+                if (typeof supabase !== 'undefined') {
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                        auth: {
+                            autoRefreshToken: true,
+                            persistSession: true,
+                            detectSessionInUrl: true,
+                            storage: window.localStorage,
+                            storageKey: 'studycert-auth'
+                        }
+                    });
+                    
+                    console.log('✅ Supabase inicializado no callback');
+                    return true;
                 }
+                return false;
             } catch (error) {
-                console.error('❌ Erro no callback:', error);
-                // Em caso de erro, redirecionar para a página principal
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 2000);
+                console.error('❌ Erro ao inicializar Supabase:', error);
+                return false;
             }
+        }
+        
+        async function processOAuthCallback() {
+            try {
+                console.log('🔄 Processando callback OAuth...');
+                
+                // Primeiro, inicializar o Supabase
+                const initialized = await initSupabase();
+                if (!initialized) {
+                    throw new Error('Não foi possível conectar ao servidor de autenticação');
+                }
+                
+                // Obter a sessão atual (isso processa o token da URL)
+                const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+                
+                if (sessionError) {
+                    console.error('❌ Erro ao obter sessão:', sessionError);
+                    
+                    // Tentar obter o usuário de outra forma
+                    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+                    
+                    if (userError || !user) {
+                        throw new Error(sessionError?.message || 'Falha na autenticação');
+                    }
+                    
+                    // Se tem usuário mas não sessão, tentar refresh
+                    const { data: refreshedSession, error: refreshError } = await supabaseClient.auth.refreshSession();
+                    
+                    if (refreshError) {
+                        throw new Error('Sessão expirada ou inválida');
+                    }
+                    
+                    showSuccess('Autenticação concluída!');
+                    redirectToHome();
+                    return;
+                }
+                
+                if (session && session.user) {
+                    console.log('✅ Usuário autenticado:', session.user.email);
+                    
+                    // Salvar informações do usuário no localStorage
+                    localStorage.setItem('studycert_user', JSON.stringify({
+                        id: session.user.id,
+                        email: session.user.email,
+                        name: session.user.user_metadata?.full_name || session.user.email.split('@')[0]
+                    }));
+                    localStorage.setItem('studycert_auth', 'true');
+                    
+                    showSuccess('Login realizado com sucesso!');
+                    
+                    // Redirecionar após 2 segundos
+                    setTimeout(() => {
+                        redirectToHome();
+                    }, 2000);
+                    
+                } else {
+                    console.log('⚠️ Nenhuma sessão encontrada');
+                    showError('Sessão não encontrada. Tente fazer login novamente.');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro no processamento OAuth:', error);
+                
+                let errorMessage = 'Erro na autenticação. ';
+                
+                if (error.message.includes('invalid_grant') || error.message.includes('code expired')) {
+                    errorMessage = 'O código de autenticação expirou. Tente novamente.';
+                } else if (error.message.includes('network') || error.message.includes('fetch')) {
+                    errorMessage = 'Problema de conexão. Verifique sua internet e tente novamente.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showError(errorMessage, true);
+            }
+        }
+        
+        function showSuccess(message) {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('successIcon').style.display = 'block';
+            document.getElementById('statusTitle').textContent = 'Sucesso!';
+            document.getElementById('statusMessage').textContent = message;
+            document.getElementById('statusTitle').style.color = 'var(--success)';
+            document.getElementById('homeButton').style.display = 'inline-block';
+        }
+        
+        function showError(message, showRetry = false) {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('errorIcon').style.display = 'block';
+            document.getElementById('statusTitle').textContent = 'Erro na Autenticação';
+            document.getElementById('statusMessage').textContent = message;
+            document.getElementById('statusTitle').style.color = 'var(--accent)';
+            document.getElementById('homeButton').style.display = 'inline-block';
+            
+            if (showRetry) {
+                document.getElementById('retryButton').style.display = 'inline-block';
+            }
+        }
+        
+        function redirectToHome() {
+            // Redirecionar para a página principal
+            window.location.href = 'https://studycert.github.io/it-certification/index.html';
+        }
+        
+        function retryAuth() {
+            // Voltar para a página de login
+            window.location.href = 'https://studycert.github.io/it-certification/index.html#login';
+        }
+        
+        // Iniciar o processamento quando a página carregar
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('📱 Página de callback carregada');
+            
+            // Pequeno delay para garantir que tudo está carregado
+            setTimeout(async () => {
+                await processOAuthCallback();
+            }, 500);
+        });
+        
+        // Também tentar processar quando a página terminar de carregar completamente
+        window.addEventListener('load', async () => {
+            console.log('🚀 Página totalmente carregada, processando auth...');
         });
     </script>
 </body>
