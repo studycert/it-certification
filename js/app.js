@@ -54,6 +54,160 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// ==================== LOGIN SOCIAL ====================
+
+async function signInWithGoogle() {
+    try {
+        if (!app.supabase) {
+            showAuthMessage('loginMessage', 'Erro de conexão. Tente novamente.', 'error');
+            return;
+        }
+
+        // URL de redirecionamento para GitHub Pages
+        const redirectUrl = 'https://studycert.github.io/it-certification/auth-callback.html';
+        
+        const { data, error } = await app.supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: redirectUrl,
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent'
+                }
+            }
+        });
+
+        if (error) {
+            console.error('Erro no login com Google:', error);
+            showAuthMessage('loginMessage', `Erro ao conectar com Google: ${error.message}`, 'error');
+        }
+
+    } catch (error) {
+        console.error('Erro no login com Google:', error);
+        showAuthMessage('loginMessage', 'Erro ao conectar com Google. Tente novamente.', 'error');
+    }
+}
+
+async function signInWithMicrosoft() {
+    try {
+        if (!app.supabase) {
+            showAuthMessage('loginMessage', 'Erro de conexão. Tente novamente.', 'error');
+            return;
+        }
+
+        // URL de redirecionamento para GitHub Pages
+        const redirectUrl = 'https://studycert.github.io/it-certification/auth-callback.html';
+        
+        const { data, error } = await app.supabase.auth.signInWithOAuth({
+            provider: 'azure',
+            options: {
+                redirectTo: redirectUrl,
+                scopes: 'email openid profile'
+            }
+        });
+
+        if (error) {
+            console.error('Erro no login com Microsoft:', error);
+            showAuthMessage('loginMessage', `Erro ao conectar com Microsoft: ${error.message}`, 'error');
+        }
+
+    } catch (error) {
+        console.error('Erro no login com Microsoft:', error);
+        showAuthMessage('loginMessage', 'Erro ao conectar com Microsoft. Tente novamente.', 'error');
+    }
+}
+
+// Função auxiliar para mostrar mensagens no modal de auth
+function showAuthMessage(elementId, message, type) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = message;
+        element.className = `message ${type}`;
+        element.style.display = 'block';
+    }
+}
+
+// Funções para mostrar/ocultar senha
+function toggleLoginPassword() {
+    const passwordField = document.getElementById('loginPassword');
+    const icon = passwordField.nextElementSibling.querySelector('i');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+function toggleRegisterPassword() {
+    const passwordField = document.getElementById('registerPassword');
+    const icon = passwordField.nextElementSibling.querySelector('i');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Adicionar efeitos hover aos botões sociais
+document.addEventListener('DOMContentLoaded', function() {
+    // Estilos dinâmicos para os botões sociais
+    const style = document.createElement('style');
+    style.textContent = `
+        .social-btn.google:hover {
+            background: #DB4437 !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(219, 68, 55, 0.3) !important;
+        }
+        
+        .social-btn.microsoft:hover {
+            background: #0078D4 !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0, 120, 212, 0.3) !important;
+        }
+        
+        .social-btn:active {
+            transform: translateY(0) !important;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Configurar tecla Enter para formulários
+    document.getElementById('loginEmail')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            login();
+        }
+    });
+    
+    document.getElementById('loginPassword')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            login();
+        }
+    });
+    
+    document.getElementById('registerEmail')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            register();
+        }
+    });
+    
+    document.getElementById('registerPassword')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            register();
+        }
+    });
+});
 
 // App principal - StudyCert
 class StudyCertApp {
@@ -1376,3 +1530,12 @@ window.iniciarSimulado = (id) => app.iniciarSimulado(id);
 
 // Variável global para a instância do app
 window.StudyCertApp = app;
+// ==================== FUNÇÕES GLOBAIS ADICIONAIS ====================
+
+// Login Social
+window.signInWithGoogle = signInWithGoogle;
+window.signInWithMicrosoft = signInWithMicrosoft;
+
+// Toggle Password
+window.toggleLoginPassword = toggleLoginPassword;
+window.toggleRegisterPassword = toggleRegisterPassword;
