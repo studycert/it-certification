@@ -2063,3 +2063,46 @@ footer {
     opacity: 0;
     cursor: pointer;
 }
+/* No style.css, adicione: */
+
+.auth-container {
+    position: relative;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.auth-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 2;
+    padding-top: 10px;
+    margin-bottom: 15px;
+}
+
+.close-auth-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 3;
+    background: rgba(255,255,255,0.9);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Para telas menores */
+@media (max-width: 768px) {
+    .auth-container {
+        max-height: 90vh;
+        margin: 20px;
+        width: calc(100% - 40px);
+    }
+    
+    .auth-header {
+        padding-right: 40px;
+    }
+}
