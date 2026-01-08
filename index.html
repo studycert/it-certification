@@ -10,6 +10,27 @@
     <script src="js/config.js"></script>
     <script src="js/app.js" defer></script>
     <script src="js/auth.js" defer></script>
+    <style>
+    /* Forçar exibição dos botões de autenticação */
+    #authButtons {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Ajustar para mobile */
+    @media (max-width: 992px) {
+        #authButtons {
+            margin-right: 10px;
+            gap: 0.5rem;
+        }
+        
+        #authButtons .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+    }
+</style>
 </head>
 <body>
     <!-- Header -->
