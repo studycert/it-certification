@@ -1,4 +1,5 @@
 // Função para ajustar botões no mobile
+/*
 function ajustarLayoutMobile() {
     const authButtons = document.getElementById('authButtons');
     if (window.innerWidth <= 768) {
@@ -11,7 +12,7 @@ function ajustarLayoutMobile() {
 // Executa ao carregar e redimensionar
 window.addEventListener('load', ajustarLayoutMobile);
 window.addEventListener('resize', ajustarLayoutMobile);
-
+*/
 // Menu hambúrguer
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
