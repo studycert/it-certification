@@ -249,6 +249,38 @@ class StudyCertApp {
                         }
                     }
                 );
+                // Listener para mudanças de autenticação
+            this.supabase.auth.onAuthStateChange((event, session) => {
+                console.log('🔄 Mudança de estado de autenticação:', event);
+                
+                if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                    this.currentUser = session?.user || null;
+                    this.updateAuthUI();
+                    
+                    if (session?.user) {
+                        this.ensureUserProfile();
+                        this.loadUserProgress();
+                        this.loadInitialData();
+                    }
+                } else if (event === 'SIGNED_OUT') {
+                    this.currentUser = null;
+                    this.updateAuthUI();
+                }
+            });
+            
+            // Testar conexão básica
+            const { data, error } = await this.supabase.auth.getSession();
+            if (error) {
+                console.error('❌ Erro na conexão do Supabase:', error);
+                if (error.message.includes('fetch')) {
+                    this.showGlobalError('Erro de conexão com o servidor. Verifique sua internet e tente novamente.');
+                }
+            } else {
+                console.log('✅ Supabase conectado com sucesso!');
+            }
+        } else {
+            throw new Error('Configuração do Supabase não encontrada');
+        }
                 
                 // Testar conexão básica
                 const { data, error } = await this.supabase.auth.getSession();
@@ -321,11 +353,47 @@ class StudyCertApp {
         }
     }
 
-    // ==================== AUTENTICAÇÃO ====================
+   // ==================== AUTENTICAÇÃO ====================
     async checkAuth() {
         try {
             if (!this.supabase) return;
             
+            // Verificar se há hash de OAuth na URL
+            const hash = window.location.hash;
+            if (hash.includes('access_token') || hash.includes('error') || hash.includes('type=')) {
+                console.log('🔑 Hash de autenticação detectado na URL:', hash.substring(0, 50) + '...');
+                
+                try {
+                    // Processar o hash - o Supabase deve lidar com isso automaticamente
+                    const { data, error } = await this.supabase.auth.getSession();
+                    
+                    if (error) {
+                        console.error('❌ Erro ao processar hash:', error);
+                    } else if (data.session) {
+                        this.currentUser = data.session.user;
+                        console.log('✅ Usuário autenticado via OAuth:', this.currentUser.email);
+                        
+                        // Limpar hash da URL
+                        window.history.replaceState(null, null, window.location.pathname + window.location.search);
+                        
+                        // Atualizar UI imediatamente
+                        this.updateAuthUI();
+                        await this.ensureUserProfile();
+                        await this.loadUserProgress();
+                        
+                        // Mostrar mensagem de sucesso
+                        this.showToast('Login realizado com sucesso!', 'success');
+                        
+                        // Recarregar dados
+                        this.loadInitialData();
+                        return;
+                    }
+                } catch (hashError) {
+                    console.warn('⚠️ Erro ao processar hash, continuando...', hashError);
+                }
+            }
+            
+            // Verificação normal de sessão
             const { data, error } = await this.supabase.auth.getSession();
             
             if (error) {
