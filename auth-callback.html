@@ -133,6 +133,125 @@
                 
                 if (session && session.user) {
                     console.log('✅ Usuário autenticado:', session.user.email);
+
+                    // Verificar se é um callback de reset de senha
+    function isResetAction() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('action') === 'reset';
+    }
+    
+    async function handleResetCallback() {
+        try {
+            console.log('🔄 Processando callback para reset de senha...');
+            
+            // Obter a sessão
+            const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+            
+            if (sessionError || !session) {
+                throw new Error('Falha na autenticação para reset de senha');
+            }
+            
+            // Se for reset de senha, redirecionar para a página de reset com o token
+            const accessToken = session.access_token;
+            
+            if (accessToken) {
+                // Armazenar o token no localStorage
+                localStorage.setItem('recovery_token', accessToken);
+                
+                // Redirecionar para a página de reset
+                window.location.href = 'https://studycert.github.io/it-certification/reset-password.html';
+            } else {
+                throw new Error('Token de acesso não encontrado');
+            }
+            
+        } catch (error) {
+            console.error('❌ Erro no callback de reset:', error);
+            showError('Erro no processo de recuperação. Tente novamente.', true);
+        }
+    }
+    
+    // Modifique a função processOAuthCallback para:
+    async function processOAuthCallback() {
+        try {
+            console.log('🔄 Processando callback OAuth...');
+            
+            // Primeiro, inicializar o Supabase
+            const initialized = await initSupabase();
+            if (!initialized) {
+                throw new Error('Não foi possível conectar ao servidor de autenticação');
+            }
+            
+            // Verificar se é para reset de senha
+            if (isResetAction()) {
+                await handleResetCallback();
+                return;
+            }
+            
+            // ... resto do código original para login normal ...
+            // Obter a sessão atual (isso processa o token da URL)
+            const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+            
+            if (sessionError) {
+                console.error('❌ Erro ao obter sessão:', sessionError);
+                
+                // Tentar obter o usuário de outra forma
+                const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+                
+                if (userError || !user) {
+                    throw new Error(sessionError?.message || 'Falha na autenticação');
+                }
+                
+                // Se tem usuário mas não sessão, tentar refresh
+                const { data: refreshedSession, error: refreshError } = await supabaseClient.auth.refreshSession();
+                
+                if (refreshError) {
+                    throw new Error('Sessão expirada ou inválida');
+                }
+                
+                showSuccess('Autenticação concluída!');
+                redirectToHome();
+                return;
+            }
+            
+            if (session && session.user) {
+                console.log('✅ Usuário autenticado:', session.user.email);
+                
+                // Salvar informações do usuário no localStorage
+                localStorage.setItem('studycert_user', JSON.stringify({
+                    id: session.user.id,
+                    email: session.user.email,
+                    name: session.user.user_metadata?.full_name || session.user.email.split('@')[0]
+                }));
+                localStorage.setItem('studycert_auth', 'true');
+                
+                showSuccess('Login realizado com sucesso!');
+                
+                // Redirecionar após 2 segundos
+                setTimeout(() => {
+                    redirectToHome();
+                }, 2000);
+                
+            } else {
+                console.log('⚠️ Nenhuma sessão encontrada');
+                showError('Sessão não encontrada. Tente fazer login novamente.');
+            }
+            
+        } catch (error) {
+            console.error('❌ Erro no processamento OAuth:', error);
+            
+            let errorMessage = 'Erro na autenticação. ';
+            
+            if (error.message.includes('invalid_grant') || error.message.includes('code expired')) {
+                errorMessage = 'O código de autenticação expirou. Tente novamente.';
+            } else if (error.message.includes('network') || error.message.includes('fetch')) {
+                errorMessage = 'Problema de conexão. Verifique sua internet e tente novamente.';
+            } else {
+                errorMessage += error.message;
+            }
+            
+            showError(errorMessage, true);
+        }
+    }
                     
                     // Salvar informações do usuário no localStorage
                     localStorage.setItem('studycert_user', JSON.stringify({
