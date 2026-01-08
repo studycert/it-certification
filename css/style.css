@@ -1726,14 +1726,16 @@ footer {
     .logo {
         order: 1;
         flex: 1;
-        min-width: 0; /* Permite que a logo encolha */
+        min-width: 0;
     }
     
-    /* Botões de autenticação - posiciona à direita */
+    /* Botões de autenticação - POSICIONAMENTO CORRETO */
     .auth-buttons {
         order: 2;
-        display: flex !important;
-        margin-left: 0 !important; /* Remove a margem automática */
+        display: flex !important; /* FORÇA EXIBIÇÃO */
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin-left: 0 !important;
         gap: 0.5rem;
         margin-right: 10px;
     }
@@ -1744,7 +1746,7 @@ footer {
         margin-left: 0;
     }
     
-    /* Ajusta a logo para não quebrar */
+    /* Ajusta a logo */
     .logo h1 {
         font-size: 1.4rem;
         white-space: nowrap;
@@ -2230,5 +2232,38 @@ footer {
 
 .form-group input:focus + label {
     color: var(--secondary);
+}
+   /* ============================
+   GARANTIR VISIBILIDADE DOS BOTÕES
+   ============================ */
+/* Remove qualquer regra que esteja escondendo os botões */
+.auth-buttons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Para desktop (acima de 992px) */
+@media (min-width: 993px) {
+    .auth-buttons {
+        gap: 0.8rem !important;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.4rem 1rem !important;
+    }
+}
+
+/* Para mobile (até 992px) */
+@media (max-width: 992px) {
+    .auth-buttons {
+        gap: 0.5rem !important;
+        margin-right: 10px !important;
+    }
+    
+    .auth-buttons .btn {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.8rem !important;
+    }
 }
 }
