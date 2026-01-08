@@ -363,9 +363,22 @@ class StudyCertApp {
         const initials = displayName.substring(0, 2).toUpperCase();
         
         // Verificar se é admin
-        const isAdmin = localStorage.getItem('admin_role') || 
+        /*const isAdmin = localStorage.getItem('admin_role') || 
                        this.currentUser.email === 'andre.martins05@gmail.com' ||
-                       this.currentUser.email === 'admin@example.com';
+                       this.currentUser.email === 'admin@example.com';*/
+        // Verificar se é admin - apenas emails específicos
+const isAdmin = this.checkAdminAccess(this.currentUser.email);
+
+// Adicione esta função na classe:
+checkAdminAccess(email) {
+    const adminEmails = [
+        'andre.martins05@gmail.com',
+        'admin@example.com'
+        // Adicione outros emails admin aqui
+    ];
+    
+    return adminEmails.includes(email.toLowerCase());
+}
         
         authButtons.innerHTML = `
             <div class="user-info">
@@ -637,7 +650,8 @@ class StudyCertApp {
         } else if (error.message.includes('User already registered')) {
             return '❌ Este email já está cadastrado';
         } else if (error.message.includes('Email not confirmed')) {
-            return '✅ Email não confirmado, mas permitindo acesso...';
+            return '📧 Verifique seu e-mail para confirmar o cadastro. Se não recebeu, 
+                <a href="#" onclick="app.resendConfirmation()">reenviar confirmação</a>.';
         } else if (error.message.includes('Invalid API key')) {
             return '❌ Problema de configuração do sistema';
         } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
@@ -665,6 +679,37 @@ class StudyCertApp {
             const userProgress = document.getElementById('userProgress');
             if (userProgress) userProgress.style.display = 'none';
             
+            // Função para reenviar email de confirmação
+async resendConfirmation() {
+    const email = document.getElementById('registerEmail')?.value || 
+                  document.getElementById('loginEmail')?.value;
+    
+    if (!email) {
+        alert('Digite seu e-mail primeiro');
+        return;
+    }
+    
+    try {
+        const { error } = await this.supabase.auth.resend({
+            type: 'signup',
+            email: email.toLowerCase().trim(),
+            options: {
+                emailRedirectTo: 'https://studycert.github.io/it-certification/'
+            }
+        });
+        
+        if (error) throw error;
+        
+        this.showMessage('registerMessage', 
+            '📧 Email de confirmação reenviado com sucesso!<br>Verifique sua caixa de entrada.', 
+            'success');
+    } catch (error) {
+        console.error('Erro ao reenviar confirmação:', error);
+        this.showMessage('registerMessage', 
+            '❌ Erro ao reenviar email: ' + error.message, 
+            'error');
+    }
+}            
             // Volta para a página inicial
             this.showSection('home');
             
