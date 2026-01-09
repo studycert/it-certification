@@ -9,46 +9,46 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/admin.js" defer></script>
-    <style>
-    html { display: none; }
-</style>
-
-<script>
-    (async function() {
+    <script>
+    async function validarAcessoAdmin() {
         try {
-            // Inicializa o Supabase rapidinho só para checar o usuário
+            // Espera o Supabase carregar se necessário
+            if (typeof supabase === 'undefined' || typeof SUPABASE_CONFIG === 'undefined') {
+                setTimeout(validarAcessoAdmin, 200);
+                return;
+            }
+
             const supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
             
-            // Pega quem está tentando entrar
-            const { data: { user } } = await supabaseClient.auth.getUser();
+            // Pega a sessão atual de forma mais persistente
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            const user = session?.user;
 
-            // Se não estiver nem logado, manda direto para o index.html
             if (!user) {
+                console.log("Sessão não encontrada, redirecionando...");
                 window.location.href = 'index.html';
                 return;
             }
 
-            // CONSULTA AS SUAS TABELAS DE ADMIN
-            // O e-mail do cara tem que estar em uma dessas duas:
+            // Busca nas suas tabelas de admin
             const [res1, res2] = await Promise.all([
                 supabaseClient.from('admin_user').select('email').eq('email', user.email).maybeSingle(),
                 supabaseClient.from('admin_usuarios').select('email').eq('email', user.email).maybeSingle()
             ]);
 
-            // Se ele estiver em qualquer uma das duas, a gente libera a página
             if (res1.data || res2.data) {
-                document.documentElement.style.display = 'block'; // Mostra a página
-                console.log("Acesso autorizado!");
+                // SUCESSO: Libera a página
+                document.documentElement.style.display = 'block';
             } else {
-                // Se não for admin, expulsa ele daqui
-                alert("Acesso negado! Você não tem permissão de administrador.");
+                alert("Seu e-mail (" + user.email + ") não tem permissão de admin nas tabelas.");
                 window.location.href = 'index.html';
             }
         } catch (error) {
-            console.error("Erro na segurança:", error);
+            console.error("Erro na validação:", error);
             window.location.href = 'index.html';
         }
-    })();
+    }
+    validarAcessoAdmin();
 </script>
 </head>
 <body>
