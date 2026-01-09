@@ -228,11 +228,6 @@ class StudyCertApp {
             console.log('Testando conexão com Supabase...');
             console.log('URL:', SUPABASE_CONFIG.url);
             console.log('Chave:', SUPABASE_CONFIG.anonKey ? 'Presente' : 'Faltando');
-
-            // ADICIONE ESTAS LINHAS AQUI:
-    const { data: { session } } = await this.supabase.auth.getSession();
-    this.currentUser = session?.user || null;
-    this.updateAuthUI(this.currentUser);
             
             // Inicializar Supabase com configurações aprimoradas
             if (typeof supabase !== 'undefined' && SUPABASE_CONFIG) {
@@ -254,78 +249,6 @@ class StudyCertApp {
                         }
                     }
                 );
-                async updateAuthUI(user) {
-    const authButtons = document.getElementById('authButtons');
-    const userProfile = document.getElementById('userProfile');
-    const userEmail = document.getElementById('userEmail');
-    const adminLinkContainer = document.getElementById('adminLinkContainer');
-
-    if (user) {
-        // Logado: Esconde botões de login, mostra perfil
-        if (authButtons) authButtons.style.display = 'none';
-        if (userProfile) userProfile.style.display = 'flex';
-        if (userEmail) userEmail.textContent = user.email.split('@')[0];
-
-        // Verifica se é admin para mostrar o escudo
-        try {
-            const { data: isAdmin } = await this.supabase
-                .from('admin_user')
-                .select('email')
-                .eq('email', user.email)
-                .maybeSingle();
-
-            if (isAdmin && adminLinkContainer) {
-                adminLinkContainer.innerHTML = `
-                    <a href="admin.html" title="Painel Admin" style="color: #f39c12; margin-right: 15px; font-size: 1.2rem;">
-                        <i class="fas fa-shield-alt"></i>
-                    </a>
-                `;
-                adminLinkContainer.style.display = 'block';
-            }
-        } catch (e) { console.log("Erro ao verificar admin"); }
-    } else {
-        // Deslogado: Mostra botões de login, esconde perfil
-        if (authButtons) authButtons.style.display = 'flex';
-        if (userProfile) userProfile.style.display = 'none';
-    }
-}
-                async updateAuthUI(user) {
-        const authButtons = document.getElementById('authButtons');
-        const userProfile = document.getElementById('userProfile');
-        const userEmail = document.getElementById('userEmail');
-        const adminLinkContainer = document.getElementById('adminLinkContainer');
-
-        if (user) {
-            // Se houver utilizador logado
-            if (authButtons) authButtons.style.display = 'none';
-            if (userProfile) userProfile.style.display = 'flex';
-            if (userEmail) userEmail.textContent = user.email.split('@')[0];
-
-            // Verificação de Admin
-            try {
-                const { data: isAdmin } = await this.supabase
-                    .from('admin_user')
-                    .select('email')
-                    .eq('email', user.email)
-                    .maybeSingle();
-
-                if (isAdmin && adminLinkContainer) {
-                    adminLinkContainer.innerHTML = `
-                        <a href="admin.html" class="btn-admin-icon" title="Painel Admin" style="color: #f39c12; margin-right: 15px; font-size: 1.2rem;">
-                            <i class="fas fa-shield-alt"></i>
-                        </a>
-                    `;
-                    adminLinkContainer.style.display = 'block';
-                }
-            } catch (err) {
-                console.error("Erro ao verificar admin:", err);
-            }
-        } else {
-            // Se não houver utilizador
-            if (authButtons) authButtons.style.display = 'flex';
-            if (userProfile) userProfile.style.display = 'none';
-        }
-    }
                 
                 // Testar conexão básica
                 const { data, error } = await this.supabase.auth.getSession();
@@ -558,41 +481,6 @@ class StudyCertApp {
             console.warn('⚠️ Erro:', err);
         }
     }
-    async updateAuthUI(user) {
-    const authButtons = document.getElementById('authButtons');
-    const userProfile = document.getElementById('userProfile');
-    const userEmail = document.getElementById('userEmail');
-    const adminLinkContainer = document.getElementById('adminLinkContainer');
-
-    if (user) {
-        // Logado: Mostra perfil e esconde botões entrar/cadastrar
-        if (authButtons) authButtons.style.display = 'none';
-        if (userProfile) userProfile.style.display = 'flex';
-        if (userEmail) userEmail.textContent = user.email.split('@')[0];
-
-        // Verifica se é admin para mostrar o escudo
-        try {
-            const { data: isAdmin } = await this.supabase
-                .from('admin_user')
-                .select('email')
-                .eq('email', user.email)
-                .maybeSingle();
-
-            if (isAdmin && adminLinkContainer) {
-                adminLinkContainer.innerHTML = `
-                    <a href="admin.html" style="color: #f39c12; margin-right: 15px; font-size: 1.2rem;">
-                        <i class="fas fa-shield-alt"></i>
-                    </a>
-                `;
-                adminLinkContainer.style.display = 'block';
-            }
-        } catch (e) { console.log(e); }
-    } else {
-        // Deslogado: Mostra botões e esconde perfil
-        if (authButtons) authButtons.style.display = 'flex';
-        if (userProfile) userProfile.style.display = 'none';
-    }
-}
 
     // Modal de Autenticação
     openLogin(e) {
@@ -659,10 +547,6 @@ class StudyCertApp {
             
             this.showMessage('loginMessage', '✅ Login realizado com sucesso!', 'success');
             this.currentUser = data.user;
-            // Dentro da função login, após o sucesso:
-this.currentUser = data.user;
-this.updateAuthUI(this.currentUser); // <-- Adicione esta linha
-this.closeAuthModal();
             
             // Garantir perfil
             await this.ensureUserProfile();
