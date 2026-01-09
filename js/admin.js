@@ -66,76 +66,94 @@ class AdminApp {
 
     async checkAuth() {
         try {
-            console.log('🔐 Verificando permissões internas...');
-            
-            // 1. Pega a sessão atual do Supabase
-            const { data: { session }, error } = await this.supabase.auth.getSession();
-            
-            if (error || !session) {
-                console.error("Sessão não encontrada");
-                window.location.href = 'index.html';
+            // Permitir acesso sem verificação em desenvolvimento
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                console.log('🔓 Modo desenvolvimento: Acesso livre permitido');
+                this.setupDevUser();
                 return;
             }
-
-            this.currentUser = session.user;
-            const userEmail = this.currentUser.email.toLowerCase();
-
-            // 2. Consulta as tabelas de admin para confirmar o acesso
-            const [res1, res2] = await Promise.all([
-                this.supabase.from('admin_user').select('email').eq('email', userEmail).maybeSingle(),
-                this.supabase.from('admin_usuarios').select('email').eq('email', userEmail).maybeSingle()
-            ]);
-
-            if (res1.data || res2.data) {
-                this.adminData = res1.data || res2.data;
-                localStorage.setItem('admin_role', 'super_admin');
-                
-                // 3. ESSENCIAL: Mostra a página (remove a tela branca do admin.html)
-                document.documentElement.style.display = 'block';
-                
-                // 4. Esconde o carregando se existir
-                const loader = document.getElementById('loadingOverlay');
-                if (loader) loader.style.display = 'none';
-
-                console.log('✅ Acesso confirmado:', userEmail);
-            } else {
-                console.error('🚫 Usuário não autorizado');
-                alert("Acesso negado para " + userEmail);
-                window.location.href = 'index.html';
+            
+            if (!this.supabase) {
+                this.setupDevUser();
+                return;
             }
+            
+            const { data, error } = await this.supabase.auth.getSession();
+            
+            if (error) {
+                console.error('❌ Erro ao verificar sessão:', error);
+                this.redirectToLogin();
+                return;
+            }
+            
+            if (!data.session) {
+                this.redirectToLogin();
+                return;
+            }
+            
+            this.currentUser = data.session.user;
+            
+            // Verificar se é admin
+            const isAdmin = await this.verificarPermissoesAdmin();
+            
+            if (!isAdmin) {
+                this.showToast('Acesso negado. Permissões de administrador necessárias.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            console.log('👤 Admin logado:', this.currentUser.email);
+            
         } catch (err) {
-            console.error('❌ Erro crítico no checkAuth:', err);
-            window.location.href = 'index.html';
+            console.error('❌ Erro na verificação de autenticação:', err);
+            this.setupDevUser();
         }
     }
-        // CONSULTA AS SUAS DUAS TABELAS REAIS
-        const [res1, res2] = await Promise.all([
-            this.supabase
-                .from('admin_user')
-                .select('email')
-                .eq('email', userEmail)
-                .maybeSingle(),
-            this.supabase
-                .from('admin_usuarios')
-                .select('email')
-                .eq('email', userEmail)
-                .maybeSingle()
-        ]);
 
-        // Se encontrar o e-mail em qualquer uma das duas, retorna TRUE
-        if (res1.data || res2.data) {
-            // Guardamos o papel de admin no storage para outras funções do app
-            localStorage.setItem('admin_role', 'super_admin');
-            this.adminData = res1.data || res2.data;
-            return true;
+    async verificarPermissoesAdmin() {
+        try {
+            // Verificar no localStorage primeiro
+            const adminRole = localStorage.getItem('admin_role');
+            const adminEmail = this.currentUser?.email;
+            
+            if (adminRole === 'super_admin' || adminRole === 'admin') {
+                return true;
+            }
+            
+            // Verificar email específico
+            const adminEmails = [
+                'admin@example.com',
+                'andre.martins05@gmail.com',
+                'admin@studyCert.com'
+            ];
+            
+            if (adminEmail && adminEmails.includes(adminEmail.toLowerCase())) {
+                localStorage.setItem('admin_role', 'super_admin');
+                return true;
+            }
+            
+            // Verificar no banco de dados
+            if (this.supabase) {
+                const { data: profile, error } = await this.supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', this.currentUser.id)
+                    .single();
+                
+                if (!error && profile && (profile.role === 'admin' || profile.role === 'super_admin')) {
+                    localStorage.setItem('admin_role', profile.role);
+                    return true;
+                }
+            }
+            
+            return false;
+        } catch (err) {
+            console.warn('⚠️ Erro ao verificar permissões:', err);
+            return false;
         }
-
-        return false;
-    } catch (err) {
-        console.warn('⚠️ Erro ao consultar tabelas de admin:', err);
-        return false;
     }
-}
 
     setupDevUser() {
         this.currentUser = {
