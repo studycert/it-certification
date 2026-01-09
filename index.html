@@ -982,8 +982,24 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </footer>
     <!-- No header do index.html, dentro do .auth-buttons, adicione: -->
-<div class="auth-buttons" id="authButtons">
-    <!-- Conteúdo existente... -->
+<div class="header-actions">
+    <div class="auth-buttons" id="authButtons">
+        <button class="btn-login" onclick="openLogin()">Entrar</button>
+        <button class="btn-register" onclick="openRegister()">Cadastrar</button>
+    </div>
+
+    <div id="userProfile" style="display: none; align-items: center; gap: 15px;">
+        <div id="adminLinkContainer" style="display: none;"></div>
+        
+        <a href="profile.html" class="user-info-link" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--secondary);"></i>
+            <span id="userEmail" style="color: var(--dark); font-weight: 500;"></span>
+        </a>
+
+        <button onclick="logout()" class="btn-logout-header" style="background: none; border: 1px solid #e74c3c; color: #e74c3c; padding: 5px 12px; border-radius: 4px; cursor: pointer;">
+            Sair
+        </button>
+    </div>
 </div>
 </body>
 </html>
