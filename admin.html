@@ -4,54 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyCert Admin - Painel Administrativo</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
-    
-    <style> html { display: none; } </style>
-
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    
-    <script>
-    async function validarAcessoAdmin() {
-        try {
-            if (typeof supabase === 'undefined' || typeof SUPABASE_CONFIG === 'undefined') {
-                setTimeout(validarAcessoAdmin, 200);
-                return;
-            }
-
-            const supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            const user = session?.user;
-
-            if (!user) {
-                window.location.href = 'index.html';
-                return;
-            }
-
-            // Busca nas tabelas de admin
-            const [res1, res2] = await Promise.all([
-                supabaseClient.from('admin_user').select('email').eq('email', user.email).maybeSingle(),
-                supabaseClient.from('admin_usuarios').select('email').eq('email', user.email).maybeSingle()
-            ]);
-
-            if (res1.data || res2.data) {
-                // SE FOR ADMIN: LIBERA A PÁGINA
-                document.documentElement.style.display = 'block';
-                console.log("Acesso autorizado para: " + user.email);
-            } else {
-                alert("Acesso negado para: " + user.email);
-                window.location.href = 'index.html';
-            }
-        } catch (error) {
-            console.error("Erro na validação:", error);
-            window.location.href = 'index.html';
-        }
-    }
-    validarAcessoAdmin();
-    </script>
-
     <script src="js/admin.js" defer></script>
 </head>
 <body>
