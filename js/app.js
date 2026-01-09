@@ -228,6 +228,23 @@ class StudyCertApp {
             console.log('Testando conexão com Supabase...');
             console.log('URL:', SUPABASE_CONFIG.url);
             console.log('Chave:', SUPABASE_CONFIG.anonKey ? 'Presente' : 'Faltando');
+            // Configurar eventos
+        this.setupEventListeners();
+        
+        // Inicializar sistema de upload
+        this.initUploadSystem();
+        
+        // Carregar dados iniciais
+        this.loadInitialData();
+        
+        // Configurar dropdown do usuário (ADICIONE ESTA LINHA)
+        this.setupUserDropdown();
+        
+    } catch (err) {
+        console.error('❌ Erro na inicialização:', err);
+        this.showGlobalError('Erro na configuração do sistema. Por favor, recarregue a página.');
+    }
+}
             
             // Inicializar Supabase com configurações aprimoradas
             if (typeof supabase !== 'undefined' && SUPABASE_CONFIG) {
@@ -368,6 +385,23 @@ class StudyCertApp {
         let isAdmin = false;
 
         try {
+            // Adicione este método após a função updateAuthUI() no app.js
+setupUserDropdown() {
+    document.addEventListener('click', (e) => {
+        const userInfo = document.querySelector('.user-info');
+        const dropdown = document.querySelector('.user-menu-dropdown');
+        
+        if (userInfo && dropdown) {
+            const isClickInside = userInfo.contains(e.target);
+            
+            if (isClickInside) {
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        }
+    });
+}
             // Consulta as duas tabelas de admin para verificar permissão real
             const [checkAdmin1, checkAdmin2] = await Promise.all([
                 this.supabase
@@ -395,16 +429,19 @@ class StudyCertApp {
             <div class="user-info">
                 <div class="user-avatar" title="${userEmail}">${initials}</div>
                 <span class="user-name-display">${displayName.split(' ')[0]}</span>
-                ${isAdmin ? `
-                    <div class="admin-link-container">
+                <div class="user-menu-dropdown">
+                    <a href="profile.html" class="btn-profile" title="Meu Perfil">
+                        <i class="fas fa-user"></i> Perfil
+                    </a>
+                    ${isAdmin ? `
                         <a href="admin.html" class="btn-admin-icon" title="Painel Administrativo">
-                            <i class="fas fa-shield-alt"></i>
+                            <i class="fas fa-shield-alt"></i> Admin
                         </a>
-                    </div>
-                ` : ''}
-                <button class="btn btn-outline btn-sm" onclick="app.logout()" style="margin-left: 10px;">
-                    <i class="fas fa-sign-out-alt"></i> Sair
-                </button>
+                    ` : ''}
+                    <button class="btn btn-outline btn-sm" onclick="app.logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
             </div>
         `;
         
