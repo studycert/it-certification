@@ -4,52 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyCert Admin - Painel Administrativo</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
+    
+    <style> html { display: none; } </style>
+
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    <script src="js/admin.js" defer></script>
+    
     <script>
     async function validarAcessoAdmin() {
         try {
-            // Espera o Supabase carregar se necessário
             if (typeof supabase === 'undefined' || typeof SUPABASE_CONFIG === 'undefined') {
                 setTimeout(validarAcessoAdmin, 200);
                 return;
             }
 
             const supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-            
-            // Pega a sessão atual de forma mais persistente
             const { data: { session } } = await supabaseClient.auth.getSession();
             const user = session?.user;
 
             if (!user) {
-                console.log("Sessão não encontrada, redirecionando...");
                 window.location.href = 'index.html';
                 return;
             }
 
-            // Busca nas suas tabelas de admin
+            // BUSCA NAS DUAS TABELAS
             const [res1, res2] = await Promise.all([
                 supabaseClient.from('admin_user').select('email').eq('email', user.email).maybeSingle(),
                 supabaseClient.from('admin_usuarios').select('email').eq('email', user.email).maybeSingle()
             ]);
 
             if (res1.data || res2.data) {
-                // SUCESSO: Libera a página
+                // SUCESSO: Mostra a página
                 document.documentElement.style.display = 'block';
             } else {
-                alert("Seu e-mail (" + user.email + ") não tem permissão de admin nas tabelas.");
+                alert("Acesso negado para: " + user.email);
                 window.location.href = 'index.html';
             }
         } catch (error) {
-            console.error("Erro na validação:", error);
             window.location.href = 'index.html';
         }
     }
     validarAcessoAdmin();
-</script>
+    </script>
+
+    <script src="js/admin.js" defer></script>
 </head>
 <body>
     <!-- Header igual ao index.html -->
