@@ -10,27 +10,6 @@
     <script src="js/config.js"></script>
     <script src="js/app.js" defer></script>
     <script src="js/auth.js" defer></script>
-    <style>
-    /* Forçar exibição dos botões de autenticação */
-    #authButtons {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-    
-    /* Ajustar para mobile */
-    @media (max-width: 992px) {
-        #authButtons {
-            margin-right: 10px;
-            gap: 0.5rem;
-        }
-        
-        #authButtons .btn {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-        }
-    }
-</style>
 </head>
 <body>
     <!-- Header -->
@@ -982,24 +961,8 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </footer>
     <!-- No header do index.html, dentro do .auth-buttons, adicione: -->
-<div class="header-actions">
-    <div class="auth-buttons" id="authButtons">
-        <button class="btn-login" onclick="openLogin()">Entrar</button>
-        <button class="btn-register" onclick="openRegister()">Cadastrar</button>
-    </div>
-
-    <div id="userProfile" style="display: none; align-items: center; gap: 15px;">
-        <div id="adminLinkContainer" style="display: none;"></div>
-        
-        <a href="profile.html" class="user-info-link" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--secondary);"></i>
-            <span id="userEmail" style="color: var(--dark); font-weight: 500;"></span>
-        </a>
-
-        <button onclick="logout()" class="btn-logout-header" style="background: none; border: 1px solid #e74c3c; color: #e74c3c; padding: 5px 12px; border-radius: 4px; cursor: pointer;">
-            Sair
-        </button>
-    </div>
+<div class="auth-buttons" id="authButtons">
+    <!-- Conteúdo existente... -->
 </div>
 </body>
 </html>
