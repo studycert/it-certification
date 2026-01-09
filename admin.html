@@ -30,20 +30,22 @@
                 return;
             }
 
-            // BUSCA NAS DUAS TABELAS
+            // Busca nas tabelas de admin
             const [res1, res2] = await Promise.all([
                 supabaseClient.from('admin_user').select('email').eq('email', user.email).maybeSingle(),
                 supabaseClient.from('admin_usuarios').select('email').eq('email', user.email).maybeSingle()
             ]);
 
             if (res1.data || res2.data) {
-                // SUCESSO: Mostra a página
+                // SE FOR ADMIN: LIBERA A PÁGINA
                 document.documentElement.style.display = 'block';
+                console.log("Acesso autorizado para: " + user.email);
             } else {
                 alert("Acesso negado para: " + user.email);
                 window.location.href = 'index.html';
             }
         } catch (error) {
+            console.error("Erro na validação:", error);
             window.location.href = 'index.html';
         }
     }
