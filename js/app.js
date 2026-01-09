@@ -354,32 +354,57 @@ class StudyCertApp {
         }
     }
 
-   updateAuthUI() {
+   async updateAuthUI() {
     const authButtons = document.getElementById('authButtons');
     const uploadArea = document.getElementById('uploadArea');
     
+    if (!authButtons) return;
+
     if (this.currentUser) {
-        const displayName = this.currentUser.user_metadata?.full_name || this.currentUser.email;
+        const userEmail = this.currentUser.email;
+        const displayName = this.currentUser.user_metadata?.full_name || userEmail;
         const initials = displayName.substring(0, 2).toUpperCase();
         
-        // Verificar se é admin
-        const isAdmin = localStorage.getItem('admin_role') || 
-                       this.currentUser.email === 'andre.martins05@gmail.com' ||
-                       this.currentUser.email === 'admin@example.com';
+        let isAdmin = false;
+
+        try {
+            // Consulta as duas tabelas de admin para verificar permissão real
+            const [checkAdmin1, checkAdmin2] = await Promise.all([
+                this.supabase
+                    .from('admin_user')
+                    .select('email')
+                    .eq('email', userEmail)
+                    .maybeSingle(),
+                this.supabase
+                    .from('admin_usuarios')
+                    .select('email')
+                    .eq('email', userEmail)
+                    .maybeSingle()
+            ]);
+
+            // Define como admin se o e-mail existir em qualquer uma das tabelas
+            if (checkAdmin1.data || checkAdmin2.data) {
+                isAdmin = true;
+            }
+        } catch (err) {
+            console.error("Erro ao validar permissões de admin:", err);
+            isAdmin = false; // Por segurança, assume que não é admin em caso de erro
+        }
         
         authButtons.innerHTML = `
             <div class="user-info">
-                <div class="user-avatar">${initials}</div>
-                <span>${displayName}</span>
-                ${isAdmin ? 
-                    `<div class="admin-link-container">
+                <div class="user-avatar" title="${userEmail}">${initials}</div>
+                <span class="user-name-display">${displayName.split(' ')[0]}</span>
+                ${isAdmin ? `
+                    <div class="admin-link-container">
                         <a href="admin.html" class="btn-admin-icon" title="Painel Administrativo">
-                            <i class="fas fa-cog"></i>
+                            <i class="fas fa-shield-alt"></i>
                         </a>
-                    </div>` : 
-                    ''
-                }
-                <button class="btn btn-outline" onclick="app.logout()" style="margin-left: 10px;">Sair</button>
+                    </div>
+                ` : ''}
+                <button class="btn btn-outline btn-sm" onclick="app.logout()" style="margin-left: 10px;">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
             </div>
         `;
         
@@ -393,7 +418,6 @@ class StudyCertApp {
         if (uploadArea) uploadArea.style.display = 'none';
     }
 }
-
     // Função para garantir perfil do usuário
     async ensureUserProfile() {
         if (!this.currentUser) return;
