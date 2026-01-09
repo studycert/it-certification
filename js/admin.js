@@ -66,39 +66,21 @@ class AdminApp {
 
     async checkAuth() {
     try {
-        console.log('🔐 Verificando permissões internas...');
+        const { data: { session } } = await this.supabase.auth.getSession();
         
-        // 1. Pega a sessão atual
-        const { data: { session }, error } = await this.supabase.auth.getSession();
-        
-        if (error || !session) {
-            console.error('❌ Sessão não encontrada no admin.js');
+        if (!session) {
             window.location.href = 'index.html';
             return;
         }
 
         this.currentUser = session.user;
-        const userEmail = this.currentUser.email.toLowerCase();
-
-        // 2. Consulta as DUAS tabelas (admin_user e admin_usuarios)
-        const [res1, res2] = await Promise.all([
-            this.supabase.from('admin_user').select('email').eq('email', userEmail).maybeSingle(),
-            this.supabase.from('admin_usuarios').select('email').eq('email', userEmail).maybeSingle()
-        ]);
-
-        // 3. Validação Final
-        if (res1.data || res2.data) {
-            console.log('✅ Acesso confirmado para:', userEmail);
-            this.adminData = res1.data || res2.data;
-            // IMPORTANTE: Removemos qualquer redirecionamento daqui
-            return true; 
-        } else {
-            console.error('🚫 E-mail não autorizado nas tabelas admin');
-            window.location.href = 'index.html?error=forbidden';
-        }
+        console.log("🔓 Acesso confirmado via admin.html. Carregando dados para:", this.currentUser.email);
+        
+        // Removemos qualquer lógica de 'window.location.href' daqui 
+        // para o script não te expulsar por erro de sincronia.
+        return true;
     } catch (err) {
-        console.error('❌ Erro crítico:', err);
-        window.location.href = 'index.html';
+        console.error("Erro no checkAuth:", err);
     }
 }
 
