@@ -68,44 +68,39 @@ class AdminApp {
     try {
         console.log('🔐 Verificando permissões internas...');
         
-        if (!this.supabase) {
-            window.location.href = 'index.html';
-            return;
-        }
-
+        // 1. Pega a sessão atual
         const { data: { session }, error } = await this.supabase.auth.getSession();
         
         if (error || !session) {
-            console.error('❌ Sessão inválida');
+            console.error('❌ Sessão não encontrada no admin.js');
             window.location.href = 'index.html';
             return;
         }
 
         this.currentUser = session.user;
-        
-        // Chamar a nova verificação baseada nas suas tabelas reais
-        const isAdmin = await this.verificarPermissoesAdmin();
-        
-        if (!isAdmin) {
-            console.error('🚫 Acesso negado para:', this.currentUser.email);
-            this.showToast('Acesso negado. Você não é um administrador autorizado.', 'error');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2000);
-            return;
-        }
+        const userEmail = this.currentUser.email.toLowerCase();
 
-        console.log('✅ Admin confirmado:', this.currentUser.email);
-        
+        // 2. Consulta as DUAS tabelas (admin_user e admin_usuarios)
+        const [res1, res2] = await Promise.all([
+            this.supabase.from('admin_user').select('email').eq('email', userEmail).maybeSingle(),
+            this.supabase.from('admin_usuarios').select('email').eq('email', userEmail).maybeSingle()
+        ]);
+
+        // 3. Validação Final
+        if (res1.data || res2.data) {
+            console.log('✅ Acesso confirmado para:', userEmail);
+            this.adminData = res1.data || res2.data;
+            // IMPORTANTE: Removemos qualquer redirecionamento daqui
+            return true; 
+        } else {
+            console.error('🚫 E-mail não autorizado nas tabelas admin');
+            window.location.href = 'index.html?error=forbidden';
+        }
     } catch (err) {
-        console.error('❌ Erro crítico na autenticação:', err);
+        console.error('❌ Erro crítico:', err);
         window.location.href = 'index.html';
     }
 }
-
-async verificarPermissoesAdmin() {
-    try {
-        const userEmail = this.currentUser.email;
 
         // CONSULTA AS SUAS DUAS TABELAS REAIS
         const [res1, res2] = await Promise.all([
