@@ -65,25 +65,49 @@ class AdminApp {
     }
 
     async checkAuth() {
-    try {
-        const { data: { session } } = await this.supabase.auth.getSession();
-        
-        if (!session) {
+        try {
+            console.log('🔐 Verificando permissões internas...');
+            
+            // 1. Pega a sessão atual do Supabase
+            const { data: { session }, error } = await this.supabase.auth.getSession();
+            
+            if (error || !session) {
+                console.error("Sessão não encontrada");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            this.currentUser = session.user;
+            const userEmail = this.currentUser.email.toLowerCase();
+
+            // 2. Consulta as tabelas de admin para confirmar o acesso
+            const [res1, res2] = await Promise.all([
+                this.supabase.from('admin_user').select('email').eq('email', userEmail).maybeSingle(),
+                this.supabase.from('admin_usuarios').select('email').eq('email', userEmail).maybeSingle()
+            ]);
+
+            if (res1.data || res2.data) {
+                this.adminData = res1.data || res2.data;
+                localStorage.setItem('admin_role', 'super_admin');
+                
+                // 3. ESSENCIAL: Mostra a página (remove a tela branca do admin.html)
+                document.documentElement.style.display = 'block';
+                
+                // 4. Esconde o carregando se existir
+                const loader = document.getElementById('loadingOverlay');
+                if (loader) loader.style.display = 'none';
+
+                console.log('✅ Acesso confirmado:', userEmail);
+            } else {
+                console.error('🚫 Usuário não autorizado');
+                alert("Acesso negado para " + userEmail);
+                window.location.href = 'index.html';
+            }
+        } catch (err) {
+            console.error('❌ Erro crítico no checkAuth:', err);
             window.location.href = 'index.html';
-            return;
         }
-
-        this.currentUser = session.user;
-        console.log("🔓 Acesso confirmado via admin.html. Carregando dados para:", this.currentUser.email);
-        
-        // Removemos qualquer lógica de 'window.location.href' daqui 
-        // para o script não te expulsar por erro de sincronia.
-        return true;
-    } catch (err) {
-        console.error("Erro no checkAuth:", err);
     }
-}
-
         // CONSULTA AS SUAS DUAS TABELAS REAIS
         const [res1, res2] = await Promise.all([
             this.supabase
