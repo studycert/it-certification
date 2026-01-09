@@ -9,6 +9,47 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/admin.js" defer></script>
+    <style>
+    html { display: none; }
+</style>
+
+<script>
+    (async function() {
+        try {
+            // Inicializa o Supabase rapidinho só para checar o usuário
+            const supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+            
+            // Pega quem está tentando entrar
+            const { data: { user } } = await supabaseClient.auth.getUser();
+
+            // Se não estiver nem logado, manda direto para o index.html
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // CONSULTA AS SUAS TABELAS DE ADMIN
+            // O e-mail do cara tem que estar em uma dessas duas:
+            const [res1, res2] = await Promise.all([
+                supabaseClient.from('admin_user').select('email').eq('email', user.email).maybeSingle(),
+                supabaseClient.from('admin_usuarios').select('email').eq('email', user.email).maybeSingle()
+            ]);
+
+            // Se ele estiver em qualquer uma das duas, a gente libera a página
+            if (res1.data || res2.data) {
+                document.documentElement.style.display = 'block'; // Mostra a página
+                console.log("Acesso autorizado!");
+            } else {
+                // Se não for admin, expulsa ele daqui
+                alert("Acesso negado! Você não tem permissão de administrador.");
+                window.location.href = 'index.html';
+            }
+        } catch (error) {
+            console.error("Erro na segurança:", error);
+            window.location.href = 'index.html';
+        }
+    })();
+</script>
 </head>
 <body>
     <!-- Header igual ao index.html -->
