@@ -31,6 +31,9 @@ const videoCategories = {
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 Inicializando sistema de videoaulas...');
     
+    // Obter parâmetros da URL
+    const urlParams = getUrlParams();
+    
     // Inicializar Supabase
     await initSupabase();
     
@@ -40,14 +43,61 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Carregar estatísticas
     await loadVideoStats();
     
-    // Carregar videoaulas
-    await loadVideos();
+    // Preencher filtros com parâmetros da URL
+    highlightActiveFilters(urlParams);
+    
+    // Carregar videoaulas com filtros da URL
+    await loadVideos(urlParams);
     
     // Configurar eventos
     setupEventListeners();
     
     console.log('✅ Sistema de videoaulas inicializado');
 });
+
+// Obter parâmetros da URL
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        category: params.get('category') || 'all',
+        search: params.get('search') || '',
+        level: params.get('level') || 'all',
+        sort: params.get('sort') || 'recent'
+    };
+}
+
+// Destacar filtros ativos da URL
+function highlightActiveFilters(params) {
+    if (params.category && params.category !== 'all') {
+        const categorySelect = document.getElementById('filterCategory');
+        if (categorySelect) {
+            categorySelect.value = params.category;
+        }
+    }
+    
+    if (params.search) {
+        const searchInput = document.getElementById('searchVideos');
+        if (searchInput) {
+            searchInput.value = decodeURIComponent(params.search);
+            searchInput.style.borderColor = '#3498db';
+            searchInput.style.boxShadow = '0 0 0 2px rgba(52, 152, 219, 0.2)';
+        }
+    }
+    
+    if (params.level && params.level !== 'all') {
+        const levelSelect = document.getElementById('filterLevel');
+        if (levelSelect) {
+            levelSelect.value = params.level;
+        }
+    }
+    
+    if (params.sort && params.sort !== 'recent') {
+        const sortSelect = document.getElementById('filterSort');
+        if (sortSelect) {
+            sortSelect.value = params.sort;
+        }
+    }
+}
 
 // Inicializar Supabase
 async function initSupabase() {
@@ -80,7 +130,7 @@ function updateAuthUI() {
     const uploadSection = document.getElementById('uploadSection');
     
     if (!window.authManager) {
-        authStatus.innerHTML = '<i class="fas fa-user"></i> Autenticação';
+        if (authStatus) authStatus.innerHTML = '<i class="fas fa-user"></i> Autenticação';
         return;
     }
     
@@ -88,32 +138,40 @@ function updateAuthUI() {
         const user = window.authManager.getUser();
         const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário';
         
-        authStatus.innerHTML = `
-            <i class="fas fa-user-circle" style="color: #27ae60;"></i>
-            <span style="margin-left: 0.5rem;">${userName}</span>
-        `;
+        if (authStatus) {
+            authStatus.innerHTML = `
+                <i class="fas fa-user-circle" style="color: #27ae60;"></i>
+                <span style="margin-left: 0.5rem;">${userName}</span>
+            `;
+        }
         
-        authContainer.innerHTML = `
-            <button onclick="logoutFromVideos()" class="btn btn-outline btn-sm">
-                <i class="fas fa-sign-out-alt"></i> Sair
-            </button>
-        `;
+        if (authContainer) {
+            authContainer.innerHTML = `
+                <button onclick="logoutFromVideos()" class="btn btn-outline btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            `;
+        }
         
         // Mostrar seção de upload para usuários autenticados
         if (uploadSection) {
             uploadSection.style.display = 'block';
         }
     } else {
-        authStatus.innerHTML = `
-            <i class="fas fa-user" style="color: #95a5a6;"></i>
-            <span style="margin-left: 0.5rem;">Visitante</span>
-        `;
+        if (authStatus) {
+            authStatus.innerHTML = `
+                <i class="fas fa-user" style="color: #95a5a6;"></i>
+                <span style="margin-left: 0.5rem;">Visitante</span>
+            `;
+        }
         
-        authContainer.innerHTML = `
-            <a href="index.html#login" class="btn btn-outline btn-sm">
-                <i class="fas fa-sign-in-alt"></i> Entrar
-            </a>
-        `;
+        if (authContainer) {
+            authContainer.innerHTML = `
+                <a href="index.html#login" class="btn btn-outline btn-sm">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </a>
+            `;
+        }
     }
 }
 
@@ -195,9 +253,13 @@ async function loadVideoStats() {
         const totalInstructors = instructors.size;
         
         // Atualizar interface
-        document.getElementById('totalVideos').textContent = totalVideos;
-        document.getElementById('totalDuration').textContent = totalHours + 'h';
-        document.getElementById('totalInstructors').textContent = totalInstructors;
+        const totalVideosEl = document.getElementById('totalVideos');
+        const totalDurationEl = document.getElementById('totalDuration');
+        const totalInstructorsEl = document.getElementById('totalInstructors');
+        
+        if (totalVideosEl) totalVideosEl.textContent = totalVideos;
+        if (totalDurationEl) totalDurationEl.textContent = totalHours + 'h';
+        if (totalInstructorsEl) totalInstructorsEl.textContent = totalInstructors;
         
     } catch (error) {
         console.error('❌ Erro ao carregar estatísticas:', error);
@@ -222,7 +284,7 @@ function parseDuration(durationStr) {
 // Carregar videoaulas
 async function loadVideos(filters = {}) {
     try {
-        console.log('📥 Carregando videoaulas...');
+        console.log('📥 Carregando videoaulas...', filters);
         
         if (!supabaseClient) {
             showNoVideos('Erro de conexão com o servidor.');
@@ -245,7 +307,8 @@ async function loadVideos(filters = {}) {
         }
         
         if (filters.search) {
-            query = query.or(`titulo.ilike.%${filters.search}%,descricao.ilike.%${filters.search}%,tags.ilike.%${filters.search}%`);
+            const searchTerm = filters.search.toLowerCase();
+            query = query.or(`titulo.ilike.%${searchTerm}%,descricao.ilike.%${searchTerm}%,tags.ilike.%${searchTerm}%`);
         }
         
         // Ordenação
@@ -284,15 +347,25 @@ function renderVideos(videos) {
     const countElement = document.getElementById('videoCount');
     
     if (!videos || videos.length === 0) {
-        countElement.textContent = '0 videoaulas';
+        if (countElement) countElement.textContent = '0 videoaulas';
         showNoVideos('Nenhuma videoaula encontrada.');
         return;
     }
     
-    countElement.textContent = `${videos.length} videoaula${videos.length !== 1 ? 's' : ''}`;
+    if (countElement) {
+        countElement.textContent = `${videos.length} videoaula${videos.length !== 1 ? 's' : ''}`;
+    }
     
     const videosHTML = videos.map(video => renderVideoCard(video)).join('');
-    grid.innerHTML = videosHTML;
+    if (grid) {
+        grid.innerHTML = videosHTML;
+        
+        // Adicionar eventos de clique aos cards
+        document.querySelectorAll('.video-card').forEach(card => {
+            const videoId = card.getAttribute('data-id');
+            card.addEventListener('click', () => openVideoModal(videoId));
+        });
+    }
 }
 
 // Renderizar card de vídeo
@@ -301,13 +374,13 @@ function renderVideoCard(video) {
     const thumbnail = video.thumbnail_url || `https://via.placeholder.com/400x225/cccccc/666666?text=${encodeURIComponent(video.titulo.substring(0, 30))}`;
     
     return `
-        <div class="video-card" data-id="${video.id}" onclick="openVideoModal('${video.id}')">
+        <div class="video-card" data-id="${video.id}">
             <div class="video-thumbnail">
                 <img src="${thumbnail}" alt="${video.titulo}" loading="lazy">
                 <div class="video-overlay">
-                    <button class="play-button">
+                    <div class="play-button">
                         <i class="fas fa-play"></i>
-                    </button>
+                    </div>
                 </div>
                 <span class="video-duration">${video.duracao || '00:00'}</span>
             </div>
@@ -370,6 +443,8 @@ function showNoVideos(message) {
     const grid = document.getElementById('videosGrid');
     const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
     
+    if (!grid) return;
+    
     grid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
             <i class="fas fa-video-slash" style="font-size: 3rem; color: #bdc3c7; margin-bottom: 1rem;"></i>
@@ -411,6 +486,11 @@ async function openVideoModal(videoId) {
     try {
         console.log('🎬 Abrindo vídeo:', videoId);
         
+        if (!supabaseClient) {
+            showNotification('Erro de conexão com o servidor.', 'error');
+            return;
+        }
+        
         // Buscar informações do vídeo
         const { data: video, error } = await supabaseClient
             .from('video_aulas')
@@ -429,14 +509,20 @@ async function openVideoModal(videoId) {
         updateVideoModal(video);
         
         // Mostrar modal
-        document.getElementById('videoModal').style.display = 'flex';
-        document.getElementById('modalVideoContainer').style.display = 'block';
-        document.getElementById('uploadProgressModal').style.display = 'none';
+        const videoModal = document.getElementById('videoModal');
+        const modalVideoContainer = document.getElementById('modalVideoContainer');
+        const uploadProgressModal = document.getElementById('uploadProgressModal');
+        
+        if (videoModal) videoModal.style.display = 'flex';
+        if (modalVideoContainer) modalVideoContainer.style.display = 'block';
+        if (uploadProgressModal) uploadProgressModal.style.display = 'none';
         
         // Configurar player de vídeo
         const videoPlayer = document.getElementById('videoPlayer');
-        videoPlayer.src = video.video_url;
-        videoPlayer.load();
+        if (videoPlayer) {
+            videoPlayer.src = video.video_url;
+            videoPlayer.load();
+        }
         
         // Atualizar botões
         updateVideoButtons();
@@ -451,13 +537,21 @@ async function openVideoModal(videoId) {
 function updateVideoModal(video) {
     const category = videoCategories[video.categoria] || videoCategories['outros'];
     
-    document.getElementById('videoTitle').textContent = video.titulo;
-    document.getElementById('videoInstructor').textContent = video.instrutor_nome || 'Instrutor';
-    document.getElementById('videoDuration').textContent = video.duracao || '00:00';
-    document.getElementById('videoViews').textContent = video.visualizacoes || 0;
-    document.getElementById('videoDate').textContent = formatDateLong(video.data_upload);
-    document.getElementById('videoDescription').textContent = video.descricao || 'Sem descrição disponível.';
-    document.getElementById('likeCount').textContent = video.curtidas || 0;
+    const videoTitle = document.getElementById('videoTitle');
+    const videoInstructor = document.getElementById('videoInstructor');
+    const videoDuration = document.getElementById('videoDuration');
+    const videoViews = document.getElementById('videoViews');
+    const videoDate = document.getElementById('videoDate');
+    const videoDescription = document.getElementById('videoDescription');
+    const likeCount = document.getElementById('likeCount');
+    
+    if (videoTitle) videoTitle.textContent = video.titulo;
+    if (videoInstructor) videoInstructor.textContent = video.instrutor_nome || 'Instrutor';
+    if (videoDuration) videoDuration.textContent = video.duracao || '00:00';
+    if (videoViews) videoViews.textContent = video.visualizacoes || 0;
+    if (videoDate) videoDate.textContent = formatDateLong(video.data_upload);
+    if (videoDescription) videoDescription.textContent = video.descricao || 'Sem descrição disponível.';
+    if (likeCount) likeCount.textContent = video.curtidas || 0;
 }
 
 // Formatar data longa
@@ -477,10 +571,16 @@ function formatDateLong(dateString) {
 // Fechar modal do vídeo
 function closeVideoModal() {
     const videoPlayer = document.getElementById('videoPlayer');
-    videoPlayer.pause();
-    videoPlayer.currentTime = 0;
+    if (videoPlayer) {
+        videoPlayer.pause();
+        videoPlayer.currentTime = 0;
+    }
     
-    document.getElementById('videoModal').style.display = 'none';
+    const videoModal = document.getElementById('videoModal');
+    if (videoModal) {
+        videoModal.style.display = 'none';
+    }
+    
     currentVideo = null;
 }
 
@@ -497,7 +597,10 @@ async function recordVideoView(videoId) {
         // Atualizar contador localmente
         if (currentVideo) {
             currentVideo.visualizacoes = (currentVideo.visualizacoes || 0) + 1;
-            document.getElementById('videoViews').textContent = currentVideo.visualizacoes;
+            const videoViews = document.getElementById('videoViews');
+            if (videoViews) {
+                videoViews.textContent = currentVideo.visualizacoes;
+            }
         }
         
     } catch (error) {
@@ -509,6 +612,11 @@ async function recordVideoView(videoId) {
 async function likeVideo() {
     if (!currentUser) {
         showNotification('Faça login para curtir vídeos.', 'warning');
+        return;
+    }
+    
+    if (!currentVideo || !supabaseClient) {
+        showNotification('Erro ao curtir vídeo.', 'error');
         return;
     }
     
@@ -537,7 +645,9 @@ async function likeVideo() {
                 .eq('id', currentVideo.id);
             
             currentVideo.curtidas = (currentVideo.curtidas || 1) - 1;
-            button.innerHTML = '<i class="far fa-thumbs-up"></i> ' + currentVideo.curtidas;
+            if (button) {
+                button.innerHTML = '<i class="far fa-thumbs-up"></i> ' + currentVideo.curtidas;
+            }
             showNotification('Curtida removida.', 'info');
             
         } else {
@@ -556,11 +666,15 @@ async function likeVideo() {
                 .eq('id', currentVideo.id);
             
             currentVideo.curtidas = (currentVideo.curtidas || 0) + 1;
-            button.innerHTML = '<i class="fas fa-thumbs-up" style="color: #3498db;"></i> ' + currentVideo.curtidas;
+            if (button) {
+                button.innerHTML = '<i class="fas fa-thumbs-up" style="color: #3498db;"></i> ' + currentVideo.curtidas;
+            }
             showNotification('Videoaula curtida!', 'success');
         }
         
-        likeCount.textContent = currentVideo.curtidas;
+        if (likeCount) {
+            likeCount.textContent = currentVideo.curtidas;
+        }
         
     } catch (error) {
         console.error('❌ Erro ao curtir vídeo:', error);
@@ -598,7 +712,7 @@ function downloadVideo() {
 
 // Atualizar botões do vídeo
 function updateVideoButtons() {
-    if (!currentUser) return;
+    if (!currentUser || !currentVideo) return;
     
     // Verificar se já curtiu
     checkIfLiked();
@@ -606,7 +720,7 @@ function updateVideoButtons() {
 
 // Verificar se usuário já curtiu o vídeo
 async function checkIfLiked() {
-    if (!currentUser || !currentVideo) return;
+    if (!currentUser || !currentVideo || !supabaseClient) return;
     
     try {
         const { data: existingLike } = await supabaseClient
@@ -617,10 +731,12 @@ async function checkIfLiked() {
             .single();
         
         const button = document.getElementById('likeButton');
-        if (existingLike) {
-            button.innerHTML = '<i class="fas fa-thumbs-up" style="color: #3498db;"></i> ' + (currentVideo.curtidas || 0);
-        } else {
-            button.innerHTML = '<i class="far fa-thumbs-up"></i> ' + (currentVideo.curtidas || 0);
+        if (button) {
+            if (existingLike) {
+                button.innerHTML = '<i class="fas fa-thumbs-up" style="color: #3498db;"></i> ' + (currentVideo.curtidas || 0);
+            } else {
+                button.innerHTML = '<i class="far fa-thumbs-up"></i> ' + (currentVideo.curtidas || 0);
+            }
         }
         
     } catch (error) {
@@ -642,7 +758,10 @@ function checkAuthAndUploadVideo() {
         return;
     }
     
-    document.getElementById('videoFileInput').click();
+    const videoFileInput = document.getElementById('videoFileInput');
+    if (videoFileInput) {
+        videoFileInput.click();
+    }
 }
 
 // Manipular seleção de arquivo de vídeo
@@ -671,13 +790,20 @@ function handleVideoFileSelect(e) {
 // Mostrar progresso de upload
 function showUploadProgress() {
     // Mostrar modal de progresso
-    document.getElementById('videoModal').style.display = 'flex';
-    document.getElementById('modalVideoContainer').style.display = 'none';
-    document.getElementById('uploadProgressModal').style.display = 'block';
+    const videoModal = document.getElementById('videoModal');
+    const modalVideoContainer = document.getElementById('modalVideoContainer');
+    const uploadProgressModal = document.getElementById('uploadProgressModal');
+    
+    if (videoModal) videoModal.style.display = 'flex';
+    if (modalVideoContainer) modalVideoContainer.style.display = 'none';
+    if (uploadProgressModal) uploadProgressModal.style.display = 'block';
     
     // Atualizar informações do arquivo
-    document.getElementById('uploadFileName').textContent = currentUploadFile.name;
-    document.getElementById('uploadFileSize').textContent = `Tamanho: ${formatFileSize(currentUploadFile.size)}`;
+    const uploadFileName = document.getElementById('uploadFileName');
+    const uploadFileSize = document.getElementById('uploadFileSize');
+    
+    if (uploadFileName) uploadFileName.textContent = currentUploadFile.name;
+    if (uploadFileSize) uploadFileSize.textContent = `Tamanho: ${formatFileSize(currentUploadFile.size)}`;
     
     // Iniciar upload
     uploadVideoFile();
@@ -685,7 +811,7 @@ function showUploadProgress() {
 
 // Fazer upload do arquivo de vídeo
 async function uploadVideoFile() {
-    if (!currentUser || !currentUploadFile) {
+    if (!currentUser || !currentUploadFile || !supabaseClient) {
         showNotification('Erro: usuário ou arquivo não identificado.', 'error');
         return;
     }
@@ -707,32 +833,15 @@ async function uploadVideoFile() {
         
         console.log('📤 Iniciando upload para:', filePath);
         
-        // Configurar progresso
-        let lastUpdate = Date.now();
-        let uploadSpeed = 0;
-        let uploadedBytes = 0;
+        // Atualizar progresso inicial
+        updateUploadProgress(5, 0, 0);
         
-        // Fazer upload com monitoramento de progresso
+        // Fazer upload
         const { data: uploadData, error: uploadError } = await supabaseClient.storage
             .from('video_aulas')
             .upload(filePath, currentUploadFile, {
                 cacheControl: '3600',
-                upsert: false,
-                onUploadProgress: (progress) => {
-                    const now = Date.now();
-                    const timeDiff = now - lastUpdate;
-                    
-                    if (timeDiff > 500) { // Atualizar a cada 500ms
-                        const percent = Math.round((progress.loaded / progress.total) * 100);
-                        const newBytes = progress.loaded - uploadedBytes;
-                        uploadSpeed = newBytes / (timeDiff / 1000); // bytes por segundo
-                        
-                        updateUploadProgress(percent, uploadSpeed, progress.total - progress.loaded);
-                        
-                        lastUpdate = now;
-                        uploadedBytes = progress.loaded;
-                    }
-                }
+                upsert: false
             });
         
         if (uploadError) {
@@ -806,53 +915,79 @@ function formatFileSize(bytes) {
 
 // Mostrar formulário de upload
 function showUploadForm() {
-    document.getElementById('uploadFormModal').style.display = 'flex';
+    const uploadFormModal = document.getElementById('uploadFormModal');
+    if (uploadFormModal) {
+        uploadFormModal.style.display = 'flex';
+    }
     
     // Preencher título automaticamente
     if (currentUploadFile) {
-        const fileNameWithoutExt = currentUploadFile.name.replace(/\.[^/.]+$/, "");
-        document.getElementById('videoTitleInput').value = fileNameWithoutExt;
+        const videoTitleInput = document.getElementById('videoTitleInput');
+        if (videoTitleInput) {
+            const fileNameWithoutExt = currentUploadFile.name.replace(/\.[^/.]+$/, "");
+            videoTitleInput.value = fileNameWithoutExt;
+        }
     }
 }
 
 // Fechar formulário de upload
 function closeUploadFormModal() {
-    document.getElementById('uploadFormModal').style.display = 'none';
-    document.getElementById('videoUploadForm').reset();
+    const uploadFormModal = document.getElementById('uploadFormModal');
+    if (uploadFormModal) {
+        uploadFormModal.style.display = 'none';
+    }
+    
+    const videoUploadForm = document.getElementById('videoUploadForm');
+    if (videoUploadForm) {
+        videoUploadForm.reset();
+    }
+    
     currentUploadFile = null;
     uploadedVideoUrl = null;
 }
 
 // Enviar formulário de vídeo
-async function submitVideoForm(event) {
-    event.preventDefault();
-    
+async function submitVideoForm() {
     if (!currentUser || !uploadedVideoUrl) {
         showNotification('Erro: vídeo não carregado.', 'error');
         return;
     }
     
     const submitBtn = document.getElementById('submitVideoBtn');
-    const originalText = submitBtn.innerHTML;
+    const originalText = submitBtn ? submitBtn.innerHTML : '';
     
     try {
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
-        submitBtn.disabled = true;
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
+            submitBtn.disabled = true;
+        }
         
         const user = currentUser;
         const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário';
+        
+        // Obter valores dos campos
+        const videoTitleInput = document.getElementById('videoTitleInput');
+        const videoDescriptionInput = document.getElementById('videoDescriptionInput');
+        const videoCategorySelect = document.getElementById('videoCategorySelect');
+        const videoLevelSelect = document.getElementById('videoLevelSelect');
+        const videoTagsInput = document.getElementById('videoTagsInput');
+        const videoThumbnailInput = document.getElementById('videoThumbnailInput');
+        
+        if (!videoTitleInput || !videoCategorySelect || !videoLevelSelect) {
+            throw new Error('Campos obrigatórios não encontrados.');
+        }
         
         // Obter duração do vídeo (simplificado)
         const videoDuration = await getVideoDuration(currentUploadFile);
         
         // Preparar dados da videoaula
         const videoData = {
-            titulo: document.getElementById('videoTitleInput').value.trim(),
-            descricao: document.getElementById('videoDescriptionInput').value.trim() || null,
-            categoria: document.getElementById('videoCategorySelect').value,
-            nivel: document.getElementById('videoLevelSelect').value,
-            tags: document.getElementById('videoTagsInput').value.trim() || null,
-            thumbnail_url: document.getElementById('videoThumbnailInput').value.trim() || null,
+            titulo: videoTitleInput.value.trim(),
+            descricao: videoDescriptionInput ? videoDescriptionInput.value.trim() : null,
+            categoria: videoCategorySelect.value,
+            nivel: videoLevelSelect.value,
+            tags: videoTagsInput ? videoTagsInput.value.trim() : null,
+            thumbnail_url: videoThumbnailInput ? videoThumbnailInput.value.trim() : null,
             video_url: uploadedVideoUrl,
             duracao: formatDuration(videoDuration),
             duracao_segundos: videoDuration,
@@ -893,8 +1028,11 @@ async function submitVideoForm(event) {
     } catch (error) {
         console.error('❌ Erro ao salvar videoaula:', error);
         showNotification(`Erro: ${error.message}`, 'error');
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+        
+        if (submitBtn) {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
     }
 }
 
@@ -963,6 +1101,20 @@ function showNotification(message, type = 'info') {
         maxWidth: '400px',
         wordBreak: 'break-word'
     });
+    
+    // Adicionar estilos de animação
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
     
     // Adicionar ao corpo
     document.body.appendChild(notification);
