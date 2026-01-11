@@ -33,7 +33,6 @@
                     <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
                     <li><a href="#" class="nav-link" data-target="materiais">Material de Estudo</a></li>
                     <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
-                    <li><a href="video-aulas.html" class="nav-link">Videoaulas</a></li>
                 </ul>
             </nav>
             <div class="auth-buttons" id="authButtons">
@@ -521,135 +520,132 @@
                 </div>
             </div>
         </div>
-      
-    <!-- JavaScript para busca em tempo real -->
-    <script>
-        // Versão mais completa do JavaScript (opcional)
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchMaterials');
-    
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase().trim();
-            const cards = document.querySelectorAll('#materialsContent .material-card');
-            let visibleCount = 0;
-            
-            cards.forEach(card => {
-                const cardName = card.getAttribute('data-name').toLowerCase();
-                const cardTitle = card.querySelector('h3').textContent.toLowerCase();
-                const cardDescription = card.querySelector('p').textContent.toLowerCase();
-                
-                const matches = cardName.includes(searchTerm) || 
-                               cardTitle.includes(searchTerm) || 
-                               cardDescription.includes(searchTerm);
-                
-                if (matches || searchTerm === '') {
-                    card.style.display = 'block';
-                    card.style.animation = 'fadeIn 0.3s ease';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            // Mostrar mensagem se nenhum resultado for encontrado
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            if (visibleCount === 0 && searchTerm !== '') {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.id = 'noResultsMessage';
-                    message.innerHTML = `
-                        <div style="text-align: center; padding: 3rem; color: #666;">
-                            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                            <h3>Nenhuma certificação encontrada</h3>
-                            <p>Tente buscar por "Azure", "AWS", "LPIC", "ITIL", "Security" ou "CCNA"</p>
-                        </div>
-                    `;
-                    document.getElementById('materialsContent').appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        });
-    }
-});
-    </script>
-</section>
-    <!-- AGORA CRIE UMA NOVA SEÇÃO PARA VIDEOAULAS -->
-<section id="videoaulas" class="main-content">
-    <div class="container">
-        <div class="section-title">
+
+        <!-- Seção de Videoaulas -->
+        <div class="section-title" style="margin-top: 4rem;">
             <h2>Videoaulas</h2>
             <p>Aprenda com instrutores especializados</p>
         </div>
 
-        <div id="videosContent" class="cards-container">
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-play-circle"></i> LPIC-1: Comandos Essenciais</h3>
+        <!-- Campo de busca para videoaulas -->
+        <div class="search-filter" style="margin-bottom: 2rem;">
+            <input type="text" id="searchVideos" placeholder="🔍 Buscar videoaula..." 
+                   style="width: 100%; padding: 0.8rem 1rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+        </div>
+
+        <div id="videosContent" class="materials-grid">
+            <!-- Videoaula 1 - LPIC-1 -->
+            <div class="material-card" data-name="LPIC-1">
+                <div class="material-icon">
+                    <i class="fas fa-server"></i>
                 </div>
-                <div class="card-body">
+                <div class="material-content">
+                    <h3>LPIC-1: Comandos Essenciais</h3>
                     <p>Curso completo cobrindo todos os comandos essenciais para o exame LPIC-1.</p>
                     <p><strong>Duração:</strong> 6 horas</p>
                     <p><strong>Categoria:</strong> Linux</p>
-                </div>
-                <div class="card-footer">
-                    <a href="video-aulas.html?category=linux&search=LPIC-1" class="btn btn-primary">
+                    <a href="video-aulas.html?cert=lpic&video=lpic1-comandos" class="btn btn-primary">
                         <i class="fas fa-play"></i> Assistir Videoaulas
                     </a>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-play-circle"></i> ITIL 4 Foundation</h3>
+            <!-- Videoaula 2 - ITIL 4 -->
+            <div class="material-card" data-name="ITIL 4">
+                <div class="material-icon">
+                    <i class="fas fa-cube"></i>
                 </div>
-                <div class="card-body">
+                <div class="material-content">
+                    <h3>ITIL 4 Foundation</h3>
                     <p>Videoaulas cobrindo o framework ITIL 4 e conceitos de gerenciamento de serviços.</p>
                     <p><strong>Duração:</strong> 5 horas</p>
                     <p><strong>Categoria:</strong> ITIL 4</p>
-                </div>
-                <div class="card-footer">
-                    <a href="video-aulas.html?category=itil&search=ITIL+4" class="btn btn-primary">
+                    <a href="video-aulas.html?cert=itil4&video=itil4-foundation" class="btn btn-primary">
                         <i class="fas fa-play"></i> Assistir Videoaulas
                     </a>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-play-circle"></i> Security+ SY0-601</h3>
+            <!-- Videoaula 3 - Security+ -->
+            <div class="material-card" data-name="Security+">
+                <div class="material-icon">
+                    <i class="fas fa-shield-alt"></i>
                 </div>
-                <div class="card-body">
+                <div class="material-content">
+                    <h3>Security+ SY0-601</h3>
                     <p>Preparação completa para o exame CompTIA Security+.</p>
                     <p><strong>Duração:</strong> 12 horas</p>
                     <p><strong>Categoria:</strong> Segurança</p>
-                </div>
-                <div class="card-footer">
-                    <a href="video-aulas.html?category=security&search=Security%2B" class="btn btn-primary">
+                    <a href="video-aulas.html?cert=security&video=security-plus" class="btn btn-primary">
                         <i class="fas fa-play"></i> Assistir Videoaulas
                     </a>
                 </div>
             </div>
-            
-            <!-- Card adicional para ver todas as videoaulas -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-video"></i> Todas as Videoaulas</h3>
+
+            <!-- Videoaula 4 - Azure -->
+            <div class="material-card" data-name="Microsoft Azure">
+                <div class="material-icon">
+                    <i class="fab fa-microsoft"></i>
                 </div>
-                <div class="card-body">
+                <div class="material-content">
+                    <h3>Azure Fundamentals</h3>
+                    <p>Videoaulas para preparação do exame AZ-900: Azure Fundamentals.</p>
+                    <p><strong>Duração:</strong> 8 horas</p>
+                    <p><strong>Categoria:</strong> Cloud</p>
+                    <a href="video-aulas.html?cert=azure&video=azure-fundamentals" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Assistir Videoaulas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Videoaula 5 - AWS -->
+            <div class="material-card" data-name="Amazon AWS">
+                <div class="material-icon">
+                    <i class="fab fa-aws"></i>
+                </div>
+                <div class="material-content">
+                    <h3>AWS Cloud Practitioner</h3>
+                    <p>Videoaulas completas para certificação AWS Cloud Practitioner.</p>
+                    <p><strong>Duração:</strong> 7 horas</p>
+                    <p><strong>Categoria:</strong> Cloud</p>
+                    <a href="video-aulas.html?cert=aws&video=aws-cloud-practitioner" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Assistir Videoaulas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Videoaula 6 - CCNA -->
+            <div class="material-card" data-name="CCNA">
+                <div class="material-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="material-content">
+                    <h3>CCNA 200-301</h3>
+                    <p>Curso completo para certificação Cisco Certified Network Associate.</p>
+                    <p><strong>Duração:</strong> 15 horas</p>
+                    <p><strong>Categoria:</strong> Redes</p>
+                    <a href="video-aulas.html?cert=ccna&video=ccna-completo" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Assistir Videoaulas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Todas as Videoaulas -->
+            <div class="material-card" data-name="Todas as Videoaulas">
+                <div class="material-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="material-content">
+                    <h3>Todas as Videoaulas</h3>
                     <p>Acesse nossa biblioteca completa de videoaulas para todas as certificações.</p>
                     <p><strong>Conteúdo:</strong> +50 videoaulas disponíveis</p>
-                </div>
-                <div class="card-footer">
                     <a href="video-aulas.html" class="btn btn-success">
                         <i class="fas fa-film"></i> Ver Todas as Videoaulas
                     </a>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Simulados Content -->
     <section id="simulados" class="main-content">
@@ -960,7 +956,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         <li><a href="#" data-target="forum">Fórum</a></li>
                         <li><a href="#" data-target="materiais">Material de Estudo</a></li>
                         <li><a href="#" data-target="simulados">Simulados</a></li>
-                        <li><a href="video-aulas.html">Videoaulas</a></li>
                     </ul>
                 </div>
 
@@ -990,9 +985,104 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </footer>
-    <!-- No header do index.html, dentro do .auth-buttons, adicione: -->
-<div class="auth-buttons" id="authButtons">
-    <!-- Conteúdo existente... -->
-</div>
+
+    <script>
+        // JavaScript para busca em tempo real de materiais
+        document.addEventListener('DOMContentLoaded', function() {
+            // Busca para materiais de estudo
+            const searchMaterials = document.getElementById('searchMaterials');
+            if (searchMaterials) {
+                searchMaterials.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    const cards = document.querySelectorAll('#materialsContent .material-card');
+                    let visibleCount = 0;
+                    
+                    cards.forEach(card => {
+                        const cardName = card.getAttribute('data-name').toLowerCase();
+                        const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+                        const cardDescription = card.querySelector('p').textContent.toLowerCase();
+                        
+                        const matches = cardName.includes(searchTerm) || 
+                                       cardTitle.includes(searchTerm) || 
+                                       cardDescription.includes(searchTerm);
+                        
+                        if (matches || searchTerm === '') {
+                            card.style.display = 'block';
+                            card.style.animation = 'fadeIn 0.3s ease';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    
+                    // Mostrar mensagem se nenhum resultado for encontrado
+                    const noResultsMessage = document.getElementById('noResultsMessage');
+                    if (visibleCount === 0 && searchTerm !== '') {
+                        if (!noResultsMessage) {
+                            const message = document.createElement('div');
+                            message.id = 'noResultsMessage';
+                            message.innerHTML = `
+                                <div style="text-align: center; padding: 3rem; color: #666;">
+                                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                    <h3>Nenhuma certificação encontrada</h3>
+                                    <p>Tente buscar por "Azure", "AWS", "LPIC", "ITIL", "Security" ou "CCNA"</p>
+                                </div>
+                            `;
+                            document.getElementById('materialsContent').appendChild(message);
+                        }
+                    } else if (noResultsMessage) {
+                        noResultsMessage.remove();
+                    }
+                });
+            }
+            
+            // Busca para videoaulas
+            const searchVideos = document.getElementById('searchVideos');
+            if (searchVideos) {
+                searchVideos.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    const cards = document.querySelectorAll('#videosContent .material-card');
+                    let visibleCount = 0;
+                    
+                    cards.forEach(card => {
+                        const cardName = card.getAttribute('data-name').toLowerCase();
+                        const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+                        const cardDescription = card.querySelector('p').textContent.toLowerCase();
+                        
+                        const matches = cardName.includes(searchTerm) || 
+                                       cardTitle.includes(searchTerm) || 
+                                       cardDescription.includes(searchTerm);
+                        
+                        if (matches || searchTerm === '') {
+                            card.style.display = 'block';
+                            card.style.animation = 'fadeIn 0.3s ease';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    
+                    // Mostrar mensagem se nenhum resultado for encontrado
+                    const noVideosMessage = document.getElementById('noVideosMessage');
+                    if (visibleCount === 0 && searchTerm !== '') {
+                        if (!noVideosMessage) {
+                            const message = document.createElement('div');
+                            message.id = 'noVideosMessage';
+                            message.innerHTML = `
+                                <div style="text-align: center; padding: 3rem; color: #666;">
+                                    <i class="fas fa-video-slash" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                    <h3>Nenhuma videoaula encontrada</h3>
+                                    <p>Tente buscar por "Azure", "AWS", "LPIC", "ITIL", "Security", "CCNA" ou "Todas"</p>
+                                </div>
+                            `;
+                            document.getElementById('videosContent').appendChild(message);
+                        }
+                    } else if (noVideosMessage) {
+                        noVideosMessage.remove();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
