@@ -9,98 +9,6 @@
     <link rel="stylesheet" href="css/video-aulas.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/auth.js" defer></script>
-    <style>
-        .video-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto 2rem auto;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        
-        #videoPlayer {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 16/9;
-            border-radius: 12px;
-        }
-        
-        .video-info {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-top: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        
-        .video-controls {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .chapter-list {
-            margin-top: 2rem;
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        
-        .chapter-item {
-            padding: 0.8rem;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .chapter-item:hover {
-            background: #f0f7ff;
-            border-radius: 6px;
-        }
-        
-        .chapter-item.active {
-            background: #e3f2fd;
-            border-left: 4px solid var(--secondary);
-        }
-        
-        .chapter-item i {
-            color: var(--secondary);
-            font-size: 0.9rem;
-        }
-        
-        .progress-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-        
-        .progress-bar-mini {
-            flex: 1;
-            height: 4px;
-            background: #e0e0e0;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        
-        .progress-fill-mini {
-            height: 100%;
-            background: var(--secondary);
-            width: 0%;
-            transition: width 0.3s;
-        }
-    </style>
 </head>
 <body>
     <!-- Header -->
@@ -170,6 +78,7 @@
                         <option value="azure">Azure</option>
                         <option value="security">Security+</option>
                         <option value="ccna">CCNA</option>
+                        <option value="outros">Outros</option>
                     </select>
                     
                     <select id="filterLevel" class="filter-select">
@@ -230,7 +139,7 @@
             <button class="close-modal" onclick="closeVideoModal()">&times;</button>
             
             <div class="video-modal-body">
-                <div id="modalVideoContainer" style="display: none;">
+                <div id="modalVideoContainer">
                     <div class="video-container">
                         <video id="videoPlayer" controls controlsList="nodownload">
                             Seu navegador não suporta a tag de vídeo.
@@ -294,7 +203,7 @@
             <button class="close-modal" onclick="closeUploadFormModal()">&times;</button>
             <h3><i class="fas fa-video"></i> Informações da Videoaula</h3>
             
-            <form id="videoUploadForm" onsubmit="submitVideoForm(event)">
+            <form id="videoUploadForm">
                 <div class="form-group">
                     <label for="videoTitleInput">Título da Videoaula *</label>
                     <input type="text" id="videoTitleInput" required 
@@ -350,7 +259,7 @@
                     <button type="button" class="btn btn-outline" onclick="closeUploadFormModal()">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary" id="submitVideoBtn">
+                    <button type="button" class="btn btn-primary" onclick="submitVideoForm()" id="submitVideoBtn">
                         <i class="fas fa-paper-plane"></i> Publicar Videoaula
                     </button>
                 </div>
@@ -371,7 +280,7 @@
                     <ul class="footer-links">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="materiais.html">Materiais</a></li>
-                        <li><a href="simulados.html">Simulados</a></li>
+                        <li><a href="video-aulas.html">Videoaulas</a></li>
                         <li><a href="forum.html">Fórum</a></li>
                     </ul>
                 </div>
