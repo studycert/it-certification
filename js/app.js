@@ -305,21 +305,27 @@ class StudyCertApp {
     }
 
     showSection(sectionId) {
-        // Remover active de todos
-        document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
-        document.querySelectorAll('.main-content').forEach(content => content.classList.remove('active'));
-        
-        // Adicionar active ao clicado
-        const activeLink = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
-        if (activeLink) activeLink.classList.add('active');
-        
-        // Mostrar seção correspondente
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            targetSection.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+    // Se for um link para página externa (como video-aulas.html), não faça nada
+    // Permite que links normais funcionem normalmente
+    if (sectionId && (sectionId.includes('.html') || sectionId.includes('http'))) {
+        return; // Deixa o link normal funcionar
     }
+    
+    // Remover active de todos
+    document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+    document.querySelectorAll('.main-content').forEach(content => content.classList.remove('active'));
+    
+    // Adicionar active ao clicado
+    const activeLink = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
+    if (activeLink) activeLink.classList.add('active');
+    
+    // Mostrar seção correspondente
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
 
     // ==================== AUTENTICAÇÃO ====================
     async checkAuth() {
