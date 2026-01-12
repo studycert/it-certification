@@ -89,28 +89,6 @@
             font-size: 0.85rem;
         }
         
-        .upload-area-video {
-            border: 2px dashed #ddd;
-            border-radius: 10px;
-            padding: 3rem 2rem;
-            text-align: center;
-            background: #f8f9fa;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 1.5rem;
-        }
-        
-        .upload-area-video:hover {
-            border-color: #3498db;
-            background: #e8f4fc;
-        }
-        
-        .upload-area-video i {
-            font-size: 3rem;
-            color: #3498db;
-            margin-bottom: 1rem;
-        }
-        
         /* Modal de vídeo */
         .video-modal-content {
             max-width: 900px;
@@ -135,6 +113,41 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+        
+        /* Grid de vídeos */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        /* Estatísticas */
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        
+        .hero-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .hero-stats i {
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -452,6 +465,9 @@
                 // Mostrar barra de autenticação
                 document.getElementById('authBar').style.display = 'block';
                 
+                // Criar tabela videoaulas se não existir
+                await createVideoaulasTableIfNeeded();
+                
                 // Carregar videoaulas
                 await loadVideosFromSupabase();
                 
@@ -525,6 +541,29 @@
                 
             } catch (error) {
                 console.error('❌ Erro ao inicializar Supabase:', error);
+            }
+        }
+
+        // Criar tabela videoaulas se não existir
+        async function createVideoaulasTableIfNeeded() {
+            try {
+                // Verificar se a tabela existe
+                const { data, error } = await supabaseClient
+                    .from('videoaulas')
+                    .select('count')
+                    .limit(1);
+                
+                if (error) {
+                    console.log('⚠️ Tabela videoaulas não encontrada, usando materiais para videoaulas');
+                    return false;
+                }
+                
+                console.log('✅ Tabela videoaulas encontrada');
+                return true;
+                
+            } catch (error) {
+                console.warn('⚠️ Não foi possível verificar a tabela videoaulas:', error);
+                return false;
             }
         }
 
@@ -611,29 +650,54 @@
                     return;
                 }
                 
-                // Buscar videoaulas
-                const { data, error } = await supabaseClient
+                let videos = [];
+                
+                // Tentar carregar da tabela videoaulas
+                const { data: videoaulasData, error: videoaulasError } = await supabaseClient
                     .from('videoaulas')
                     .select('*')
                     .eq('publico', true)
                     .order('data_upload', { ascending: false });
                 
-                if (error) {
-                    console.error('❌ Erro ao carregar videoaulas:', error);
+                if (!videoaulasError && videoaulasData) {
+                    videos = videoaulasData;
+                    console.log(`✅ ${videos.length} videoaulas carregadas da tabela videoaulas`);
+                } else {
+                    console.log('⚠️ Tabela videoaulas vazia ou não encontrada, usando materiais do tipo video');
                     
-                    // Se a tabela não existir, usar dados de exemplo
-                    console.log('⚠️ Tabela videoaulas não encontrada, usando dados de exemplo');
-                    const exampleVideos = getExampleVideos();
-                    updateVideosInterface(exampleVideos);
-                    updateVideoStats(exampleVideos);
-                    return;
+                    // Carregar da tabela materiais filtrando por tipo video
+                    const { data: materiaisData, error: materiaisError } = await supabaseClient
+                        .from('materiais')
+                        .select('*')
+                        .eq('tipo', 'video')
+                        .eq('publico', true)
+                        .order('data_upload', { ascending: false });
+                    
+                    if (!materiaisError && materiaisData) {
+                        videos = materiaisData.map(material => ({
+                            id: material.id,
+                            titulo: material.titulo,
+                            descricao: material.descricao,
+                            video_url: material.arquivo_url,
+                            categoria: material.categoria || 'Outros',
+                            nivel: material.nivel || 'iniciante',
+                            duracao: material.duracao || '00:00',
+                            visualizacoes: material.visualizacoes || 0,
+                            likes: 0,
+                            usuario_id: material.usuario_id,
+                            data_upload: material.data_upload,
+                            publico: material.publico
+                        }));
+                        console.log(`✅ ${videos.length} vídeos carregados da tabela materiais`);
+                    } else {
+                        console.log('⚠️ Nenhum vídeo encontrado, usando dados de exemplo');
+                        videos = getExampleVideos();
+                    }
                 }
                 
-                console.log(`✅ ${data?.length || 0} videoaulas carregadas`);
-                
                 // Atualizar interface
-                updateVideosInterface(data || []);
-                updateVideoStats(data || []);
+                updateVideosInterface(videos);
+                updateVideoStats(videos);
                 
             } catch (error) {
                 console.error('❌ Erro:', error);
@@ -646,19 +710,44 @@
             const container = document.getElementById('videosGrid');
             const countElement = document.getElementById('videoCount');
             
-            if (!videos || videos.length === 0) {
+            // Filtrar para remover duplicatas (mantenha apenas vídeos únicos por certificação)
+            const uniqueVideos = filterUniqueVideosByCertification(videos);
+            
+            if (uniqueVideos.length === 0) {
                 countElement.textContent = '0 videoaulas';
                 showNoVideos('Nenhuma videoaula encontrada.');
                 return;
             }
             
-            countElement.textContent = `${videos.length} videoaula${videos.length !== 1 ? 's' : ''}`;
+            countElement.textContent = `${uniqueVideos.length} videoaula${uniqueVideos.length !== 1 ? 's' : ''}`;
             
-            const videosHTML = videos.map(video => 
+            const videosHTML = uniqueVideos.map(video => 
                 renderVideoCard(video)
             ).join('');
             
             container.innerHTML = videosHTML;
+        }
+
+        // Filtrar vídeos únicos por certificação (para evitar repetições)
+        function filterUniqueVideosByCertification(videos) {
+            const seen = new Set();
+            const uniqueVideos = [];
+            
+            // Ordenar por visualizações (mais populares primeiro)
+            videos.sort((a, b) => (b.visualizacoes || 0) - (a.visualizacoes || 0));
+            
+            for (const video of videos) {
+                const key = `${video.categoria}-${video.nivel}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    uniqueVideos.push(video);
+                }
+                
+                // Limitar a 6 vídeos para não sobrecarregar
+                if (uniqueVideos.length >= 6) break;
+            }
+            
+            return uniqueVideos;
         }
 
         // Renderizar card de videoaula
@@ -667,7 +756,6 @@
             const videoTitle = video.titulo || 'Videoaula sem título';
             const videoDesc = video.descricao || 'Sem descrição';
             const videoUrl = video.video_url || '#';
-            const videoThumbnail = video.thumbnail_url || '';
             const videoDuration = video.duracao || '00:00';
             const videoViews = video.visualizacoes || 0;
             const videoDate = formatDateCompact(video.data_upload || video.created_at);
@@ -677,13 +765,13 @@
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && video.usuario_id === currentUserId;
             
+            // Mapear categoria para ícone
+            const categoryIcon = getCategoryIcon(videoCategory);
+            
             return `
                 <div class="video-card" data-id="${videoId}">
                     <div class="video-thumbnail" onclick="playVideo('${videoId}', '${videoTitle}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${videoDesc}')">
-                        ${videoThumbnail ? 
-                            `<img src="${videoThumbnail}" alt="${videoTitle}">` :
-                            `<i class="fas fa-play-circle"></i>`
-                        }
+                        <i class="fas ${categoryIcon}"></i>
                     </div>
                     
                     <div class="video-info">
@@ -718,6 +806,26 @@
                     </div>
                 </div>
             `;
+        }
+
+        // Obter ícone baseado na categoria
+        function getCategoryIcon(category) {
+            const icons = {
+                'ITIL 4': 'fa-cube',
+                'LPIC-1/LPIC-2': 'fa-server',
+                'LPIC-1': 'fa-server',
+                'LPIC-2': 'fa-server',
+                'Linux': 'fa-server',
+                'AWS': 'fa-aws',
+                'Azure': 'fa-microsoft',
+                'Security+': 'fa-shield-alt',
+                'Security': 'fa-shield-alt',
+                'CCNA': 'fa-network-wired',
+                'Outros': 'fa-video',
+                'Geral': 'fa-video'
+            };
+            
+            return icons[category] || 'fa-video';
         }
 
         // Mostrar mensagem quando não há videoaulas
@@ -786,7 +894,7 @@
             }
         }
 
-        // Dados de exemplo para videoaulas
+        // Dados de exemplo para videoaulas (apenas categorias únicas)
         function getExampleVideos() {
             return [
                 {
@@ -797,7 +905,7 @@
                     duracao: '45:30',
                     visualizacoes: 1250,
                     data_upload: new Date().toISOString(),
-                    categoria: 'linux',
+                    categoria: 'LPIC-1/LPIC-2',
                     nivel: 'iniciante',
                     usuario_id: 'user1',
                     publico: true
@@ -810,9 +918,61 @@
                     duracao: '38:15',
                     visualizacoes: 890,
                     data_upload: new Date(Date.now() - 86400000).toISOString(),
-                    categoria: 'itil',
+                    categoria: 'ITIL 4',
                     nivel: 'iniciante',
                     usuario_id: 'user2',
+                    publico: true
+                },
+                {
+                    id: '3',
+                    titulo: 'AWS Cloud Practitioner - Fundamentos',
+                    descricao: 'Conceitos básicos de computação em nuvem AWS',
+                    video_url: '#',
+                    duracao: '52:10',
+                    visualizacoes: 750,
+                    data_upload: new Date(Date.now() - 172800000).toISOString(),
+                    categoria: 'AWS',
+                    nivel: 'iniciante',
+                    usuario_id: 'user3',
+                    publico: true
+                },
+                {
+                    id: '4',
+                    titulo: 'Azure Fundamentals AZ-900',
+                    descricao: 'Preparação para certificação Azure Fundamentals',
+                    video_url: '#',
+                    duracao: '41:25',
+                    visualizacoes: 620,
+                    data_upload: new Date(Date.now() - 259200000).toISOString(),
+                    categoria: 'Azure',
+                    nivel: 'iniciante',
+                    usuario_id: 'user4',
+                    publico: true
+                },
+                {
+                    id: '5',
+                    titulo: 'Security+ - Fundamentos de Segurança',
+                    descricao: 'Conceitos essenciais para certificação Security+',
+                    video_url: '#',
+                    duracao: '36:45',
+                    visualizacoes: 580,
+                    data_upload: new Date(Date.now() - 345600000).toISOString(),
+                    categoria: 'Security+',
+                    nivel: 'intermediario',
+                    usuario_id: 'user5',
+                    publico: true
+                },
+                {
+                    id: '6',
+                    titulo: 'CCNA - Fundamentos de Redes',
+                    descricao: 'Conceitos básicos de redes para certificação CCNA',
+                    video_url: '#',
+                    duracao: '48:20',
+                    visualizacoes: 920,
+                    data_upload: new Date(Date.now() - 432000000).toISOString(),
+                    categoria: 'CCNA',
+                    nivel: 'intermediario',
+                    usuario_id: 'user6',
                     publico: true
                 }
             ];
@@ -1000,25 +1160,54 @@
                     data_upload: new Date().toISOString()
                 };
                 
-                // Salvar no banco de dados
-                // Nota: Você precisará criar a tabela 'videoaulas' no Supabase
-                const { data: dbData, error: dbError } = await supabaseClient
-                    .from('videoaulas')
-                    .insert([videoData])
-                    .select()
-                    .single();
-                
-                if (dbError) {
-                    console.error('❌ Erro ao salvar no banco:', dbError);
+                // Primeiro tentar salvar na tabela videoaulas
+                let savedToVideoaulas = false;
+                try {
+                    const { data: dbData, error: dbError } = await supabaseClient
+                        .from('videoaulas')
+                        .insert([videoData])
+                        .select()
+                        .single();
                     
-                    // Se a tabela não existir, mostrar mensagem
-                    if (dbError.message.includes('relation "videoaulas" does not exist')) {
-                        showNotification('Tabela de videoaulas não configurada no banco.', 'warning');
-                    } else {
-                        throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                    if (dbError) {
+                        console.warn('⚠️ Não foi possível salvar na tabela videoaulas:', dbError.message);
+                        throw dbError;
                     }
-                } else {
-                    console.log('✅ Videoaula salva no banco:', dbData);
+                    
+                    savedToVideoaulas = true;
+                    console.log('✅ Videoaula salva na tabela videoaulas:', dbData);
+                    
+                } catch (videoError) {
+                    // Se falhar, salvar na tabela materiais
+                    console.log('🔄 Salvando na tabela materiais...');
+                    
+                    const materialData = {
+                        titulo: title,
+                        descricao: description || null,
+                        tipo: 'video',
+                        categoria: category,
+                        certificacao: 'videoaulas',
+                        arquivo_url: urlData.publicUrl,
+                        arquivo_nome: file.name,
+                        arquivo_tamanho_kb: Math.round(file.size / 1024),
+                        usuario_id: user.id,
+                        visualizacoes: 0,
+                        downloads: 0,
+                        publico: true,
+                        data_upload: new Date().toISOString()
+                    };
+                    
+                    const { data: materialDbData, error: materialDbError } = await supabaseClient
+                        .from('materiais')
+                        .insert([materialData])
+                        .select()
+                        .single();
+                    
+                    if (materialDbError) {
+                        throw new Error(`Erro ao salvar na tabela materiais: ${materialDbError.message}`);
+                    }
+                    
+                    console.log('✅ Videoaula salva na tabela materiais:', materialDbData);
                 }
                 
                 // Concluir
@@ -1048,6 +1237,7 @@
             document.getElementById('videoViews').textContent = views;
             document.getElementById('videoDate').textContent = date;
             document.getElementById('videoDescription').textContent = description;
+            document.getElementById('videoInstructor').textContent = 'Instrutor';
             
             const videoPlayer = document.getElementById('videoPlayer');
             videoPlayer.src = url;
@@ -1069,10 +1259,19 @@
         async function recordVideoView(videoId) {
             try {
                 if (supabaseClient) {
-                    await supabaseClient
+                    // Primeiro tentar atualizar na tabela videoaulas
+                    const { error: videoaulasError } = await supabaseClient
                         .from('videoaulas')
                         .update({ visualizacoes: supabaseClient.raw('visualizacoes + 1') })
                         .eq('id', videoId);
+                    
+                    if (videoaulasError) {
+                        // Se falhar, tentar na tabela materiais
+                        await supabaseClient
+                            .from('materiais')
+                            .update({ visualizacoes: supabaseClient.raw('visualizacoes + 1') })
+                            .eq('id', videoId);
+                    }
                 }
             } catch (error) {
                 console.error('Erro ao registrar visualização:', error);
@@ -1080,17 +1279,14 @@
         }
 
         function likeVideo() {
-            // Implementar like
             showNotification('Funcionalidade de like em desenvolvimento.', 'info');
         }
 
         function toggleWatchLater() {
-            // Implementar watch later
             showNotification('Funcionalidade "Assistir Depois" em desenvolvimento.', 'info');
         }
 
         function downloadVideo() {
-            // Implementar download
             showNotification('Download de videoaulas em breve.', 'info');
         }
 
@@ -1137,44 +1333,40 @@
             try {
                 console.log('🗑️ Iniciando exclusão da videoaula:', videoToDelete.id);
                 
-                // 1. Buscar a videoaula
-                const { data: video, error: fetchError } = await supabaseClient
-                    .from('videoaulas')
-                    .select('*')
-                    .eq('id', videoToDelete.id)
-                    .single();
+                let deleted = false;
                 
-                if (fetchError) {
-                    console.error('❌ Erro ao buscar videoaula:', fetchError);
-                    throw new Error('Videoaula não encontrada.');
-                }
-                
-                // 2. Verificar se o usuário é o dono
-                if (video.usuario_id !== currentUser.id) {
-                    showNotification('Você só pode excluir suas próprias videoaulas.', 'error');
-                    closeDeleteModal();
-                    return;
-                }
-                
-                // 3. Excluir do banco de dados
-                const { error: deleteError } = await supabaseClient
+                // Primeiro tentar excluir da tabela videoaulas
+                const { error: videoaulasError } = await supabaseClient
                     .from('videoaulas')
                     .delete()
                     .eq('id', videoToDelete.id);
                 
-                if (deleteError) {
-                    console.error('❌ Erro ao excluir do banco:', deleteError);
-                    throw new Error(`Erro ao excluir videoaula: ${deleteError.message}`);
+                if (!videoaulasError) {
+                    deleted = true;
+                    console.log('✅ Videoaula excluída da tabela videoaulas');
+                } else {
+                    // Se falhar, tentar excluir da tabela materiais
+                    const { error: materiaisError } = await supabaseClient
+                        .from('materiais')
+                        .delete()
+                        .eq('id', videoToDelete.id);
+                    
+                    if (!materiaisError) {
+                        deleted = true;
+                        console.log('✅ Videoaula excluída da tabela materiais');
+                    } else {
+                        throw new Error(`Erro ao excluir videoaula: ${materiaisError.message}`);
+                    }
                 }
                 
-                console.log('✅ Videoaula excluída com sucesso');
-                
-                // Fechar modal e mostrar mensagem
-                closeDeleteModal();
-                showNotification('✅ Videoaula excluída com sucesso!', 'success');
-                
-                // Recarregar a lista de videoaulas
-                loadVideosFromSupabase();
+                if (deleted) {
+                    // Fechar modal e mostrar mensagem
+                    closeDeleteModal();
+                    showNotification('✅ Videoaula excluída com sucesso!', 'success');
+                    
+                    // Recarregar a lista de videoaulas
+                    loadVideosFromSupabase();
+                }
                 
             } catch (error) {
                 console.error('❌ Erro na exclusão:', error);
@@ -1197,12 +1389,10 @@
         }
 
         function searchVideos() {
-            // Implementar busca
             handleSearch();
         }
 
         function filterVideos() {
-            // Implementar filtragem combinada
             console.log('Filtrando videoaulas...');
         }
 
