@@ -8,7 +8,135 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/video-aulas.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
     <script src="js/auth.js" defer></script>
+    <style>
+        /* Estilos específicos para videoaulas */
+        .video-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+        }
+        
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-thumbnail i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.8;
+        }
+        
+        .video-info {
+            padding: 1.2rem;
+        }
+        
+        .video-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            line-height: 1.3;
+        }
+        
+        .video-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 0.8rem;
+        }
+        
+        .video-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .video-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-video {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .upload-area-video {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1.5rem;
+        }
+        
+        .upload-area-video:hover {
+            border-color: #3498db;
+            background: #e8f4fc;
+        }
+        
+        .upload-area-video i {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal de vídeo */
+        .video-modal-content {
+            max-width: 900px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -29,11 +157,11 @@
     </header>
 
     <!-- Barra de Autenticação -->
-    <div class="auth-bar-improved" id="authBar">
+    <div class="auth-bar-improved" id="authBar" style="display: none;">
         <div class="container">
             <div class="auth-container-improved">
                 <div id="authStatus">
-                    <i class="fas fa-user-circle"></i> Carregando...
+                    <i class="fas fa-user-circle"></i> Verificando...
                 </div>
                 <div id="authContainer"></div>
             </div>
@@ -113,7 +241,7 @@
                 </div>
             </div>
 
-            <!-- Seção de Upload (para instrutores/admins) -->
+            <!-- Seção de Upload -->
             <section class="upload-video-section" id="uploadSection" style="display: none;">
                 <div class="section-header">
                     <h2><i class="fas fa-cloud-upload-alt"></i> Compartilhe Suas Videoaulas</h2>
@@ -134,7 +262,7 @@
     </main>
 
     <!-- Modal do Player de Vídeo -->
-    <div id="videoModal" class="modal-overlay video-modal">
+    <div id="videoModal" class="modal-overlay video-modal" style="display: none;">
         <div class="modal-content video-modal-content">
             <button class="close-modal" onclick="closeVideoModal()">&times;</button>
             
@@ -173,37 +301,19 @@
                         </div>
                     </div>
                 </div>
-                
-                <div id="uploadProgressModal" class="upload-progress-modal" style="display: none;">
-                    <h3><i class="fas fa-upload"></i> Enviando Videoaula</h3>
-                    
-                    <div class="progress-info">
-                        <div class="progress-bar-large">
-                            <div id="modalProgressBar" class="progress-fill-large"></div>
-                        </div>
-                        <div class="progress-details">
-                            <span id="progressStatus">Preparando upload...</span>
-                            <span id="progressPercent">0%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="upload-details">
-                        <div id="uploadFileName">Nenhum arquivo selecionado</div>
-                        <div id="uploadFileSize">Tamanho: --</div>
-                        <div id="uploadTimeRemaining">Tempo restante: --</div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Formulário de Upload -->
-    <div id="uploadFormModal" class="modal-overlay">
+    <!-- Modal de Upload de Videoaula -->
+    <div id="uploadFormModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <button class="close-modal" onclick="closeUploadFormModal()">&times;</button>
-            <h3><i class="fas fa-video"></i> Informações da Videoaula</h3>
+            <h3><i class="fas fa-video"></i> Compartilhar Videoaula</h3>
             
             <form id="videoUploadForm">
+                <div id="selectedVideoInfo" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;"></div>
+                
                 <div class="form-group">
                     <label for="videoTitleInput">Título da Videoaula *</label>
                     <input type="text" id="videoTitleInput" required 
@@ -242,19 +352,6 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="videoTagsInput">Tags (separadas por vírgula)</label>
-                    <input type="text" id="videoTagsInput" 
-                           placeholder="linux, comandos, terminal, bash">
-                </div>
-                
-                <div class="form-group">
-                    <label for="videoThumbnailInput">Thumbnail (URL da imagem)</label>
-                    <input type="text" id="videoThumbnailInput" 
-                           placeholder="https://exemplo.com/thumbnail.jpg">
-                    <small>Opcional. Se não informar, usaremos uma imagem padrão.</small>
-                </div>
-                
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" onclick="closeUploadFormModal()">
                         Cancelar
@@ -264,6 +361,33 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteConfirmModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeDeleteModal()">&times;</button>
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary);">
+                <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Confirmar Exclusão
+            </h3>
+            
+            <div id="deleteVideoInfo" style="margin-bottom: 1.5rem;">
+                <p>Tem certeza que deseja excluir esta videoaula?</p>
+                <p id="deleteVideoTitle" style="font-weight: bold; color: #e74c3c; margin: 1rem 0; padding: 0.8rem; background: #fdf2f2; border-radius: 6px;"></p>
+                <p style="color: #666; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i> Esta ação não pode ser desfeita.
+                </p>
+            </div>
+            
+            <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                <button onclick="closeDeleteModal()" class="btn btn-outline">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button onclick="confirmDeleteVideo()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Excluir Permanentemente
+                </button>
+            </div>
         </div>
     </div>
 
@@ -291,7 +415,859 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
-    <script src="js/video-aulas.js"></script>
+    <!-- JavaScript para Videoaulas -->
+    <script>
+        // ============================================
+        // JAVASCRIPT PARA PÁGINA DE VIDEOAULAS
+        // ============================================
+
+        // Configurações
+        const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
+
+        // Variáveis globais
+        let supabaseClient = null;
+        let currentUploadFile = null;
+        let currentUser = null;
+        let videoToDelete = null;
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Inicializando página de videoaulas...');
+            
+            // Configurar eventos
+            setupEventListeners();
+            
+            // Aguardar carregamento do authManager
+            setTimeout(async () => {
+                // Inicializar Supabase
+                await initSupabase();
+                
+                // Atualizar interface de autenticação
+                updateAuthUI();
+                
+                // Mostrar barra de autenticação
+                document.getElementById('authBar').style.display = 'block';
+                
+                // Carregar videoaulas
+                await loadVideosFromSupabase();
+                
+                console.log('✅ Página de videoaulas inicializada com sucesso');
+            }, 300);
+        });
+
+        // ============================================
+        // CONFIGURAÇÃO DE EVENTOS
+        // ============================================
+
+        function setupEventListeners() {
+            // Input de arquivo de vídeo
+            const videoInput = document.getElementById('videoFileInput');
+            if (videoInput) {
+                videoInput.addEventListener('change', handleVideoSelect);
+            }
+            
+            // Busca
+            document.getElementById('searchVideos')?.addEventListener('input', handleSearch);
+            
+            // Filtros
+            document.getElementById('filterCategory')?.addEventListener('change', handleFilterChange);
+            document.getElementById('filterLevel')?.addEventListener('change', handleFilterChange);
+            document.getElementById('filterSort')?.addEventListener('change', handleFilterChange);
+            
+            // Fechar modais ao clicar fora
+            setupModalClickOutside();
+        }
+
+        function setupModalClickOutside() {
+            // Modal de vídeo
+            document.getElementById('videoModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeVideoModal();
+                }
+            });
+            
+            // Modal de upload
+            document.getElementById('uploadFormModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeUploadFormModal();
+                }
+            });
+            
+            // Modal de exclusão
+            document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeDeleteModal();
+                }
+            });
+        }
+
+        // ============================================
+        // INICIALIZAÇÃO DO SUPABASE
+        // ============================================
+
+        async function initSupabase() {
+            try {
+                // Usar authManager se disponível
+                if (window.authManager && window.authManager.getSupabase()) {
+                    supabaseClient = window.authManager.getSupabase();
+                    console.log('✅ Usando Supabase do authManager');
+                } else {
+                    // Criar novo cliente
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                        auth: { persistSession: true }
+                    });
+                    console.log('✅ Criado novo cliente Supabase');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao inicializar Supabase:', error);
+            }
+        }
+
+        // ============================================
+        // AUTENTICAÇÃO
+        // ============================================
+
+        function updateAuthUI() {
+            const authStatus = document.getElementById('authStatus');
+            const authContainer = document.getElementById('authContainer');
+            
+            if (!window.authManager) {
+                authStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Autenticação';
+                return;
+            }
+            
+            if (window.authManager.isAuthenticated()) {
+                currentUser = window.authManager.getUser();
+                const userName = currentUser.user_metadata?.full_name || 
+                                currentUser.email?.split('@')[0] || 
+                                'Usuário';
+                
+                authStatus.innerHTML = `
+                    <i class="fas fa-user-circle" style="color: #27ae60; margin-right: 0.5rem;"></i>
+                    <span>${userName}</span>
+                `;
+                
+                authContainer.innerHTML = `
+                    <div class="auth-user-info-compact">
+                        <button onclick="logoutFromPage()" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                `;
+                
+                // Mostrar seção de upload
+                document.getElementById('uploadSection').style.display = 'block';
+            } else {
+                currentUser = null;
+                authStatus.innerHTML = `
+                    <i class="fas fa-user" style="color: #95a5a6; margin-right: 0.5rem;"></i>
+                    <span>Visitante</span>
+                `;
+                
+                authContainer.innerHTML = `
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="index.html#login" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </a>
+                        <a href="index.html#register" class="btn btn-primary btn-sm">
+                            <i class="fas fa-user-plus"></i> Cadastrar
+                        </a>
+                    </div>
+                `;
+                
+                // Ocultar seção de upload
+                document.getElementById('uploadSection').style.display = 'none';
+            }
+        }
+
+        async function logoutFromPage() {
+            if (window.authManager) {
+                try {
+                    await window.authManager.logout();
+                    updateAuthUI();
+                    setTimeout(() => window.location.reload(), 500);
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                }
+            }
+        }
+
+        // ============================================
+        // CARREGAMENTO DE VIDEOAULAS
+        // ============================================
+
+        async function loadVideosFromSupabase() {
+            try {
+                console.log('📥 Carregando videoaulas...');
+                
+                if (!supabaseClient) {
+                    console.error('❌ Supabase não inicializado');
+                    showNoVideos('Erro de conexão com o banco de dados.');
+                    return;
+                }
+                
+                // Buscar videoaulas
+                const { data, error } = await supabaseClient
+                    .from('videoaulas')
+                    .select('*')
+                    .eq('publico', true)
+                    .order('data_upload', { ascending: false });
+                
+                if (error) {
+                    console.error('❌ Erro ao carregar videoaulas:', error);
+                    
+                    // Se a tabela não existir, usar dados de exemplo
+                    console.log('⚠️ Tabela videoaulas não encontrada, usando dados de exemplo');
+                    const exampleVideos = getExampleVideos();
+                    updateVideosInterface(exampleVideos);
+                    updateVideoStats(exampleVideos);
+                    return;
+                }
+                
+                console.log(`✅ ${data?.length || 0} videoaulas carregadas`);
+                
+                // Atualizar interface
+                updateVideosInterface(data || []);
+                updateVideoStats(data || []);
+                
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                showNoVideos('Erro na conexão com o servidor.');
+            }
+        }
+
+        // Atualizar interface com lista de videoaulas
+        function updateVideosInterface(videos) {
+            const container = document.getElementById('videosGrid');
+            const countElement = document.getElementById('videoCount');
+            
+            if (!videos || videos.length === 0) {
+                countElement.textContent = '0 videoaulas';
+                showNoVideos('Nenhuma videoaula encontrada.');
+                return;
+            }
+            
+            countElement.textContent = `${videos.length} videoaula${videos.length !== 1 ? 's' : ''}`;
+            
+            const videosHTML = videos.map(video => 
+                renderVideoCard(video)
+            ).join('');
+            
+            container.innerHTML = videosHTML;
+        }
+
+        // Renderizar card de videoaula
+        function renderVideoCard(video) {
+            const videoId = video.id;
+            const videoTitle = video.titulo || 'Videoaula sem título';
+            const videoDesc = video.descricao || 'Sem descrição';
+            const videoUrl = video.video_url || '#';
+            const videoThumbnail = video.thumbnail_url || '';
+            const videoDuration = video.duracao || '00:00';
+            const videoViews = video.visualizacoes || 0;
+            const videoDate = formatDateCompact(video.data_upload || video.created_at);
+            const videoCategory = video.categoria || 'Geral';
+            const videoLevel = video.nivel || 'iniciante';
+            
+            const currentUserId = currentUser?.id;
+            const isOwner = currentUserId && video.usuario_id === currentUserId;
+            
+            return `
+                <div class="video-card" data-id="${videoId}">
+                    <div class="video-thumbnail" onclick="playVideo('${videoId}', '${videoTitle}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${videoDesc}')">
+                        ${videoThumbnail ? 
+                            `<img src="${videoThumbnail}" alt="${videoTitle}">` :
+                            `<i class="fas fa-play-circle"></i>`
+                        }
+                    </div>
+                    
+                    <div class="video-info">
+                        <h3 class="video-title" title="${videoTitle}">${videoTitle}</h3>
+                        
+                        <div class="video-meta">
+                            <span><i class="fas fa-tag"></i> ${videoCategory}</span>
+                            <span><i class="fas fa-signal"></i> ${videoLevel}</span>
+                            <span><i class="fas fa-clock"></i> ${videoDuration}</span>
+                        </div>
+                        
+                        <div class="video-description">${videoDesc}</div>
+                        
+                        <div class="video-meta" style="margin-top: 0.5rem;">
+                            <span><i class="fas fa-eye"></i> ${videoViews} visualizações</span>
+                            <span><i class="fas fa-calendar"></i> ${videoDate}</span>
+                        </div>
+                        
+                        <div class="video-actions">
+                            <button class="btn btn-primary btn-video" 
+                                    onclick="playVideo('${videoId}', '${videoTitle}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${videoDesc}')">
+                                <i class="fas fa-play"></i> Assistir
+                            </button>
+                            
+                            ${isOwner ? `
+                                <button class="btn btn-outline btn-video" 
+                                        onclick="showDeleteVideoModal('${videoId}', '${videoTitle}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mostrar mensagem quando não há videoaulas
+        function showNoVideos(message) {
+            const container = document.getElementById('videosGrid');
+            const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
+            
+            container.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #666; grid-column: 1 / -1;">
+                    <i class="fas fa-video-slash" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h3>${message}</h3>
+                    <p>Seja o primeiro a compartilhar uma videoaula!</p>
+                    ${isAuthenticated ? 
+                        `<button class="btn btn-primary" onclick="checkAuthAndUploadVideo()" style="margin-top: 1rem;">
+                            <i class="fas fa-plus"></i> Compartilhar Videoaula
+                        </button>` : 
+                        `<a href="index.html#login" class="btn btn-primary" style="margin-top: 1rem;">
+                            <i class="fas fa-sign-in-alt"></i> Faça login
+                        </a>`
+                    }
+                </div>
+            `;
+        }
+
+        // Atualizar estatísticas de videoaulas
+        function updateVideoStats(videos) {
+            const totalVideos = videos.length;
+            const totalDuration = videos.reduce((sum, video) => sum + (parseDuration(video.duracao) || 0), 0);
+            const uniqueInstructors = [...new Set(videos.map(v => v.usuario_id))].length;
+            
+            document.getElementById('totalVideos').textContent = totalVideos;
+            document.getElementById('totalDuration').textContent = formatDuration(totalDuration);
+            document.getElementById('totalInstructors').textContent = uniqueInstructors;
+        }
+
+        // Converter duração de string para minutos
+        function parseDuration(duration) {
+            if (!duration) return 0;
+            const parts = duration.split(':');
+            if (parts.length === 2) {
+                return parseInt(parts[0]) + parseInt(parts[1]) / 60;
+            } else if (parts.length === 3) {
+                return parseInt(parts[0]) * 60 + parseInt(parts[1]) + parseInt(parts[2]) / 60;
+            }
+            return 0;
+        }
+
+        // Formatar duração
+        function formatDuration(minutes) {
+            if (minutes < 60) {
+                return `${Math.round(minutes)} min`;
+            } else {
+                const hours = Math.floor(minutes / 60);
+                const mins = Math.round(minutes % 60);
+                return `${hours}h${mins > 0 ? ` ${mins}min` : ''}`;
+            }
+        }
+
+        // Formatar data compacta
+        function formatDateCompact(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('pt-BR');
+            } catch (e) {
+                return '--/--/----';
+            }
+        }
+
+        // Dados de exemplo para videoaulas
+        function getExampleVideos() {
+            return [
+                {
+                    id: '1',
+                    titulo: 'LPIC-1 - Comandos Linux Essenciais',
+                    descricao: 'Aprenda os comandos mais importantes para o exame LPIC-1',
+                    video_url: '#',
+                    duracao: '45:30',
+                    visualizacoes: 1250,
+                    data_upload: new Date().toISOString(),
+                    categoria: 'linux',
+                    nivel: 'iniciante',
+                    usuario_id: 'user1',
+                    publico: true
+                },
+                {
+                    id: '2',
+                    titulo: 'ITIL 4 Foundation - Conceitos Básicos',
+                    descricao: 'Introdução ao framework ITIL 4 e seus principais conceitos',
+                    video_url: '#',
+                    duracao: '38:15',
+                    visualizacoes: 890,
+                    data_upload: new Date(Date.now() - 86400000).toISOString(),
+                    categoria: 'itil',
+                    nivel: 'iniciante',
+                    usuario_id: 'user2',
+                    publico: true
+                }
+            ];
+        }
+
+        // ============================================
+        // FUNÇÕES DE UPLOAD DE VIDEOAULAS
+        // ============================================
+
+        function checkAuthAndUploadVideo() {
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                showNotification('Faça login para compartilhar videoaulas.', 'warning');
+                setTimeout(() => {
+                    window.location.href = 'index.html#login';
+                }, 1500);
+                return;
+            }
+            
+            document.getElementById('videoFileInput').click();
+        }
+
+        function handleVideoSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Validar tamanho do arquivo (500MB máximo)
+            const maxSize = 500 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('Arquivo muito grande! O tamanho máximo permitido é 500MB.');
+                return;
+            }
+            
+            // Validar tipo de arquivo
+            const validTypes = ['video/mp4', 'video/webm', 'video/avi', 'video/quicktime', 'video/x-matroska'];
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(mp4|webm|avi|mov|mkv)$/i)) {
+                alert('Por favor, selecione um arquivo de vídeo válido (MP4, WebM, AVI, MOV, MKV).');
+                return;
+            }
+            
+            showVideoUploadForm(file);
+        }
+
+        function showVideoUploadForm(file) {
+            currentUploadFile = file;
+            
+            // Atualizar informações do arquivo no modal
+            document.getElementById('selectedVideoInfo').innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 60px; height: 60px; background: #3498db; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-video" style="color: white; font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">${file.name}</div>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            ${formatFileSize(file.size)} • ${file.type}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Preencher título automaticamente
+            const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+            document.getElementById('videoTitleInput').value = fileNameWithoutExt;
+            
+            // Resetar campos
+            document.getElementById('videoDescriptionInput').value = '';
+            document.getElementById('videoCategorySelect').value = '';
+            document.getElementById('videoLevelSelect').value = '';
+            
+            // Mostrar modal
+            document.getElementById('uploadFormModal').style.display = 'flex';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function closeUploadFormModal() {
+            document.getElementById('uploadFormModal').style.display = 'none';
+            document.getElementById('videoFileInput').value = '';
+            currentUploadFile = null;
+        }
+
+        async function submitVideoForm() {
+            const title = document.getElementById('videoTitleInput').value.trim();
+            const description = document.getElementById('videoDescriptionInput').value.trim();
+            const category = document.getElementById('videoCategorySelect').value;
+            const level = document.getElementById('videoLevelSelect').value;
+            const file = currentUploadFile;
+            
+            // Validações
+            if (!title) {
+                alert('Por favor, insira um título para a videoaula.');
+                document.getElementById('videoTitleInput').focus();
+                return;
+            }
+            
+            if (!category) {
+                alert('Por favor, selecione uma categoria.');
+                document.getElementById('videoCategorySelect').focus();
+                return;
+            }
+            
+            if (!level) {
+                alert('Por favor, selecione um nível.');
+                document.getElementById('videoLevelSelect').focus();
+                return;
+            }
+            
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                alert('Sessão expirada. Faça login novamente.');
+                window.location.href = 'index.html#login';
+                return;
+            }
+            
+            const user = window.authManager.getUser();
+            if (!user || !user.id) {
+                alert('Erro: usuário não identificado.');
+                return;
+            }
+            
+            // Desabilitar botão
+            const submitBtn = document.getElementById('submitVideoBtn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            submitBtn.disabled = true;
+            
+            try {
+                console.log('🚀 Iniciando upload de videoaula...');
+                
+                // Limpar nome do arquivo
+                const cleanFileName = file.name
+                    .toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/\s+/g, '_')
+                    .replace(/[^\w\.\-]/g, '')
+                    .replace(/_{2,}/g, '_')
+                    .replace(/^_+|_+$/g, '');
+                
+                const fileName = `video_${Date.now()}_${cleanFileName}`;
+                const filePath = `videoaulas/${user.id}/${fileName}`;
+                
+                console.log('📤 Upload para:', filePath);
+                
+                // Fazer upload para o storage
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('materiais')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false,
+                        contentType: file.type
+                    });
+                
+                if (uploadError) {
+                    console.error('❌ Erro no upload:', uploadError);
+                    throw new Error(`Falha no upload: ${uploadError.message}`);
+                }
+                
+                console.log('✅ Upload bem-sucedido:', uploadData);
+                
+                // Obter URL pública
+                const { data: urlData } = supabaseClient.storage
+                    .from('materiais')
+                    .getPublicUrl(filePath);
+                
+                console.log('🔗 URL pública:', urlData.publicUrl);
+                
+                // Preparar dados para salvar no banco
+                const videoData = {
+                    titulo: title,
+                    descricao: description || null,
+                    categoria: category,
+                    nivel: level,
+                    video_url: urlData.publicUrl,
+                    arquivo_nome: file.name,
+                    arquivo_tamanho_kb: Math.round(file.size / 1024),
+                    duracao: '00:00', // Aqui você poderia extrair a duração do vídeo
+                    usuario_id: user.id,
+                    visualizacoes: 0,
+                    likes: 0,
+                    publico: true,
+                    data_upload: new Date().toISOString()
+                };
+                
+                // Salvar no banco de dados
+                // Nota: Você precisará criar a tabela 'videoaulas' no Supabase
+                const { data: dbData, error: dbError } = await supabaseClient
+                    .from('videoaulas')
+                    .insert([videoData])
+                    .select()
+                    .single();
+                
+                if (dbError) {
+                    console.error('❌ Erro ao salvar no banco:', dbError);
+                    
+                    // Se a tabela não existir, mostrar mensagem
+                    if (dbError.message.includes('relation "videoaulas" does not exist')) {
+                        showNotification('Tabela de videoaulas não configurada no banco.', 'warning');
+                    } else {
+                        throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                    }
+                } else {
+                    console.log('✅ Videoaula salva no banco:', dbData);
+                }
+                
+                // Concluir
+                closeUploadFormModal();
+                showNotification('🎉 Videoaula compartilhada com sucesso!', 'success');
+                
+                // Recarregar videoaulas
+                loadVideosFromSupabase();
+                
+            } catch (error) {
+                console.error('❌ Erro no processo de upload:', error);
+                showNotification(`❌ Erro: ${error.message}`, 'error');
+            } finally {
+                // Reativar botão
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Videoaula';
+                submitBtn.disabled = false;
+            }
+        }
+
+        // ============================================
+        // FUNÇÕES DO PLAYER DE VÍDEO
+        // ============================================
+
+        function playVideo(videoId, title, url, duration, views, date, description) {
+            document.getElementById('videoTitle').textContent = title;
+            document.getElementById('videoDuration').textContent = duration;
+            document.getElementById('videoViews').textContent = views;
+            document.getElementById('videoDate').textContent = date;
+            document.getElementById('videoDescription').textContent = description;
+            
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.src = url;
+            
+            // Registrar visualização
+            recordVideoView(videoId);
+            
+            // Mostrar modal
+            document.getElementById('videoModal').style.display = 'flex';
+        }
+
+        function closeVideoModal() {
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.pause();
+            videoPlayer.src = '';
+            document.getElementById('videoModal').style.display = 'none';
+        }
+
+        async function recordVideoView(videoId) {
+            try {
+                if (supabaseClient) {
+                    await supabaseClient
+                        .from('videoaulas')
+                        .update({ visualizacoes: supabaseClient.raw('visualizacoes + 1') })
+                        .eq('id', videoId);
+                }
+            } catch (error) {
+                console.error('Erro ao registrar visualização:', error);
+            }
+        }
+
+        function likeVideo() {
+            // Implementar like
+            showNotification('Funcionalidade de like em desenvolvimento.', 'info');
+        }
+
+        function toggleWatchLater() {
+            // Implementar watch later
+            showNotification('Funcionalidade "Assistir Depois" em desenvolvimento.', 'info');
+        }
+
+        function downloadVideo() {
+            // Implementar download
+            showNotification('Download de videoaulas em breve.', 'info');
+        }
+
+        // ============================================
+        // FUNÇÕES DE EXCLUSÃO
+        // ============================================
+
+        function showDeleteVideoModal(videoId, videoTitle) {
+            videoToDelete = {
+                id: videoId,
+                title: videoTitle
+            };
+            
+            document.getElementById('deleteVideoTitle').textContent = videoTitle;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            videoToDelete = null;
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        async function confirmDeleteVideo() {
+            if (!videoToDelete) {
+                showNotification('Erro: Nenhuma videoaula selecionada para exclusão.', 'error');
+                closeDeleteModal();
+                return;
+            }
+            
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                showNotification('Sessão expirada. Faça login novamente.', 'error');
+                closeDeleteModal();
+                window.location.href = 'index.html#login';
+                return;
+            }
+            
+            const currentUser = window.authManager.getUser();
+            if (!currentUser || !currentUser.id) {
+                showNotification('Erro: usuário não identificado.', 'error');
+                closeDeleteModal();
+                return;
+            }
+            
+            try {
+                console.log('🗑️ Iniciando exclusão da videoaula:', videoToDelete.id);
+                
+                // 1. Buscar a videoaula
+                const { data: video, error: fetchError } = await supabaseClient
+                    .from('videoaulas')
+                    .select('*')
+                    .eq('id', videoToDelete.id)
+                    .single();
+                
+                if (fetchError) {
+                    console.error('❌ Erro ao buscar videoaula:', fetchError);
+                    throw new Error('Videoaula não encontrada.');
+                }
+                
+                // 2. Verificar se o usuário é o dono
+                if (video.usuario_id !== currentUser.id) {
+                    showNotification('Você só pode excluir suas próprias videoaulas.', 'error');
+                    closeDeleteModal();
+                    return;
+                }
+                
+                // 3. Excluir do banco de dados
+                const { error: deleteError } = await supabaseClient
+                    .from('videoaulas')
+                    .delete()
+                    .eq('id', videoToDelete.id);
+                
+                if (deleteError) {
+                    console.error('❌ Erro ao excluir do banco:', deleteError);
+                    throw new Error(`Erro ao excluir videoaula: ${deleteError.message}`);
+                }
+                
+                console.log('✅ Videoaula excluída com sucesso');
+                
+                // Fechar modal e mostrar mensagem
+                closeDeleteModal();
+                showNotification('✅ Videoaula excluída com sucesso!', 'success');
+                
+                // Recarregar a lista de videoaulas
+                loadVideosFromSupabase();
+                
+            } catch (error) {
+                console.error('❌ Erro na exclusão:', error);
+                showNotification(`❌ Erro: ${error.message}`, 'error');
+                closeDeleteModal();
+            }
+        }
+
+        // ============================================
+        // FUNÇÕES DE BUSCA E FILTRO
+        // ============================================
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchVideos').value.toLowerCase();
+            filterVideos();
+        }
+
+        function handleFilterChange() {
+            filterVideos();
+        }
+
+        function searchVideos() {
+            // Implementar busca
+            handleSearch();
+        }
+
+        function filterVideos() {
+            // Implementar filtragem combinada
+            console.log('Filtrando videoaulas...');
+        }
+
+        // ============================================
+        // FUNÇÕES AUXILIARES
+        // ============================================
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                  type === 'error' ? 'exclamation-circle' : 
+                                  type === 'warning' ? 'exclamation-triangle' : 
+                                  'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            Object.assign(notification.style, {
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                padding: '12px 20px',
+                borderRadius: '6px',
+                background: type === 'success' ? '#27ae60' : 
+                           type === 'error' ? '#e74c3c' : 
+                           type === 'warning' ? '#f39c12' : '#3498db',
+                color: 'white',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                zIndex: '9999',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                animation: 'slideInRight 0.3s ease-out'
+            });
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // ============================================
+        // EXPORTAR FUNÇÕES PARA USO GLOBAL
+        // ============================================
+
+        window.checkAuthAndUploadVideo = checkAuthAndUploadVideo;
+        window.closeUploadFormModal = closeUploadFormModal;
+        window.submitVideoForm = submitVideoForm;
+        window.closeDeleteModal = closeDeleteModal;
+        window.confirmDeleteVideo = confirmDeleteVideo;
+        window.showDeleteVideoModal = showDeleteVideoModal;
+        window.playVideo = playVideo;
+        window.closeVideoModal = closeVideoModal;
+        window.likeVideo = likeVideo;
+        window.toggleWatchLater = toggleWatchLater;
+        window.downloadVideo = downloadVideo;
+        window.searchVideos = searchVideos;
+        window.logoutFromPage = logoutFromPage;
+    </script>
 </body>
 </html>
