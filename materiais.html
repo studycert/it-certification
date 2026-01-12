@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/materiais.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="js/config.js"></script> <!-- ADICIONE ESTA LINHA -->
+    <script src="js/config.js"></script>
     <script src="js/auth.js" defer></script>
     <style>
         /* Melhorias específicas para a página */
@@ -656,22 +656,390 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
-    <script src="js/pmg-academy.js"></script>
+    <!-- JavaScript do PMG Academy -->
     <script>
-        // Função para depurar o banco manualmente
-function debugPMGDatabase() {
-    if (window.pmgManager) {
-        pmgManager.debugDatabase();
-    } else {
-        alert('PMG Manager não está inicializado. Recarregue a página.');
-    }
-}
-
-// Expor para uso global
-window.debugPMGDatabase = debugPMGDatabase;
-        // PMG Academy Manager
-        let pmgManager = null;
+        // Sistema PMG Academy - Versão Simplificada e Funcional
+        console.log('🔄 Carregando sistema PMG Academy...');
+        
+        const PMGAcademy = {
+            supabase: null,
+            files: [],
+            isLoading: false,
+            
+            // Inicializar Supabase
+            async initSupabase() {
+                try {
+                    console.log('🔧 Inicializando Supabase...');
+                    
+                    // Verificar dependências
+                    if (typeof supabase === 'undefined') {
+                        throw new Error('Biblioteca Supabase não carregada');
+                    }
+                    
+                    if (typeof SUPABASE_CONFIG === 'undefined') {
+                        throw new Error('Configuração não encontrada');
+                    }
+                    
+                    // Criar cliente Supabase
+                    this.supabase = supabase.createClient(
+                        SUPABASE_CONFIG.url,
+                        SUPABASE_CONFIG.anonKey,
+                        {
+                            auth: { persistSession: false },
+                            global: { 
+                                headers: { 
+                                    'apikey': SUPABASE_CONFIG.anonKey,
+                                    'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+                                }
+                            }
+                        }
+                    );
+                    
+                    console.log('✅ Supabase inicializado');
+                    return true;
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao inicializar Supabase:', error);
+                    return false;
+                }
+            },
+            
+            // Carregar todos os arquivos
+            async loadAllFiles() {
+                if (this.isLoading) return;
+                
+                console.log('📥 Carregando todos os arquivos...');
+                
+                this.isLoading = true;
+                const loadingElement = document.getElementById('pmg-files-loading');
+                const filesListElement = document.getElementById('pmg-files-list');
+                
+                try {
+                    // Mostrar loading
+                    if (loadingElement) {
+                        loadingElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Buscando arquivos no banco...</span>';
+                        loadingElement.style.display = 'block';
+                    }
+                    
+                    // Inicializar Supabase se necessário
+                    if (!this.supabase) {
+                        const initialized = await this.initSupabase();
+                        if (!initialized) {
+                            throw new Error('Não foi possível conectar ao banco');
+                        }
+                    }
+                    
+                    // Buscar TODOS os materiais
+                    console.log('🔍 Executando consulta...');
+                    const { data, error } = await this.supabase
+                        .from('materiais')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    
+                    if (error) {
+                        console.error('❌ Erro na consulta:', error);
+                        throw error;
+                    }
+                    
+                    this.files = data || [];
+                    console.log(`✅ ${this.files.length} arquivos encontrados`);
+                    
+                    // Log detalhado
+                    if (this.files.length > 0) {
+                        console.log('📋 Lista de arquivos:');
+                        this.files.forEach((file, index) => {
+                            console.log(`${index + 1}. ${file.nome || 'Sem nome'} (${file.categoria || 'N/A'})`);
+                        });
+                    }
+                    
+                    // Esconder loading
+                    if (loadingElement) {
+                        loadingElement.style.display = 'none';
+                    }
+                    
+                    // Renderizar arquivos
+                    if (filesListElement) {
+                        filesListElement.style.display = 'block';
+                        this.renderFiles(filesListElement);
+                    }
+                    
+                    // Atualizar contadores
+                    this.updateCounters();
+                    
+                    console.log('🎉 Arquivos carregados com sucesso!');
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar arquivos:', error);
+                    
+                    if (loadingElement) {
+                        loadingElement.innerHTML = `
+                            <div style="color: #e74c3c; text-align: center; padding: 20px;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>Erro: ${error.message}</p>
+                                <button onclick="PMGAcademy.loadAllFiles()" 
+                                        style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; margin-top: 10px; cursor: pointer;">
+                                    <i class="fas fa-redo"></i> Tentar Novamente
+                                </button>
+                            </div>
+                        `;
+                    }
+                } finally {
+                    this.isLoading = false;
+                }
+            },
+            
+            // Renderizar arquivos
+            renderFiles(container) {
+                if (this.files.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: #666;">
+                            <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 15px; display: block; color: #bdc3c7;"></i>
+                            <p>Nenhum arquivo encontrado na tabela 'materiais'</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                console.log(`🎨 Renderizando ${this.files.length} arquivos`);
+                
+                // Agrupar por categoria
+                const groupedByCategory = {};
+                this.files.forEach(file => {
+                    const category = file.categoria || 'Geral';
+                    if (!groupedByCategory[category]) {
+                        groupedByCategory[category] = [];
+                    }
+                    groupedByCategory[category].push(file);
+                });
+                
+                let html = `
+                    <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 10px 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <p style="margin: 0; color: #155724; font-size: 0.9em;">
+                            <i class="fas fa-database"></i>
+                            ${this.files.length} arquivos carregados do banco de dados
+                        </p>
+                    </div>
+                `;
+                
+                // Renderizar cada categoria
+                Object.entries(groupedByCategory).forEach(([category, files]) => {
+                    const color = this.getCategoryColor(category);
+                    
+                    html += `
+                        <div class="file-category">
+                            <h5 style="color: ${color};">
+                                <i class="fas ${this.getCategoryIcon(category)}"></i> ${category} (${files.length})
+                            </h5>
+                            <div class="file-list">
+                    `;
+                    
+                    files.forEach((file, index) => {
+                        html += this.renderFileItem(file, index);
+                    });
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Botão de download
+                if (this.files.length > 0) {
+                    const downloadableCount = this.files.filter(f => 
+                        f.arquivo_url && f.arquivo_url !== '#' && f.arquivo_url.startsWith('http')
+                    ).length;
+                    
+                    html += `
+                        <div style="text-align: center; margin-top: 25px;">
+                            <button onclick="PMGAcademy.downloadAllFiles()" class="download-all-btn" ${downloadableCount === 0 ? 'disabled style="opacity: 0.5;"' : ''}>
+                                <i class="fas fa-download"></i> 
+                                ${downloadableCount > 0 ? 
+                                    `Baixar ${downloadableCount} Arquivos` : 
+                                    'Nenhum arquivo disponível para download'}
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
+            },
+            
+            // Renderizar item individual
+            renderFileItem(file, index) {
+                const fileId = file.id || `file-${index}`;
+                const fileName = file.nome || file.arquivo_nome || `Arquivo ${index + 1}`;
+                const fileDesc = file.descricao || 'Sem descrição';
+                const fileUrl = file.arquivo_url || '#';
+                const fileSize = file.arquivo_tamanho_kb ? 
+                    (file.arquivo_tamanho_kb / 1024).toFixed(1) + ' MB' : 'N/A';
+                
+                const fileType = this.getFileType(file);
+                const typeColor = this.getTypeColor(fileType);
+                const typeIcon = this.getTypeIcon(fileType);
+                
+                // Verificar se URL é válida
+                const hasValidUrl = fileUrl && fileUrl !== '#' && 
+                                  fileUrl !== 'undefined' && 
+                                  fileUrl.startsWith('http');
+                
+                return `
+                    <div class="file-item" data-file-id="${fileId}">
+                        <i class="fas ${typeIcon}" style="color: ${typeColor};"></i>
+                        <div style="flex: 1; min-width: 0;">
+                            <div class="file-name" title="${fileName}">
+                                ${fileName}
+                            </div>
+                            <div style="color: #666; font-size: 0.85em; margin-top: 3px;">
+                                ${fileDesc}
+                            </div>
+                            <div style="display: flex; gap: 8px; font-size: 0.75em; color: #95a5a6; margin-top: 5px;">
+                                ${file.categoria ? `<span><i class="fas fa-tag"></i> ${file.categoria}</span>` : ''}
+                                ${file.fonte ? `<span><i class="fas fa-building"></i> ${file.fonte}</span>` : ''}
+                                ${hasValidUrl ? 
+                                    `<span style="color: #27ae60;"><i class="fas fa-check-circle"></i> Disponível</span>` : 
+                                    `<span style="color: #e74c3c;"><i class="fas fa-times-circle"></i> Sem link</span>`}
+                            </div>
+                        </div>
+                        <span class="file-size">${fileSize}</span>
+                        <div class="file-actions">
+                            ${hasValidUrl ? `
+                                <a href="${fileUrl}" 
+                                   target="_blank" 
+                                   class="btn-view" 
+                                   onclick="PMGAcademy.trackView('${fileId}')"
+                                   title="Visualizar">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="${fileUrl}" 
+                                   download="${this.sanitizeFileName(fileName)}" 
+                                   class="btn-download" 
+                                   onclick="PMGAcademy.trackDownload('${fileId}')"
+                                   title="Baixar">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            ` : `
+                                <span class="btn-view disabled" title="Link não disponível">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                                <span class="btn-download disabled" title="Download não disponível">
+                                    <i class="fas fa-download"></i>
+                                </span>
+                            `}
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // Métodos auxiliares
+            sanitizeFileName(name) {
+                return name.replace(/[^\w\s.-]/gi, '_');
+            },
+            
+            getFileType(file) {
+                const fileName = (file.arquivo_nome || '').toLowerCase();
+                if (fileName.endsWith('.pdf')) return 'pdf';
+                if (fileName.endsWith('.ppt') || fileName.endsWith('.pptx')) return 'ppt';
+                if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) return 'doc';
+                if (fileName.endsWith('.html') || fileName.endsWith('.htm')) return 'html';
+                if (fileName.endsWith('.zip') || fileName.endsWith('.rar')) return 'zip';
+                return 'other';
+            },
+            
+            getTypeColor(type) {
+                const colors = {
+                    pdf: '#e74c3c', ppt: '#e67e22', doc: '#3498db', 
+                    html: '#9b59b6', zip: '#2ecc71', other: '#7f8c8d'
+                };
+                return colors[type] || colors.other;
+            },
+            
+            getTypeIcon(type) {
+                const icons = {
+                    pdf: 'fa-file-pdf', ppt: 'fa-file-powerpoint', 
+                    doc: 'fa-file-word', html: 'fa-file-code', 
+                    zip: 'fa-file-archive', other: 'fa-file'
+                };
+                return icons[type] || icons.other;
+            },
+            
+            getCategoryColor(category) {
+                const colors = {
+                    'ITIL 4': '#154360', 'ITIL': '#1B4F72', 'Azure': '#0078D4',
+                    'AWS': '#FF9900', 'Linux': '#E95420', 'Security': '#27ae60',
+                    'Cloud': '#3498db', 'Geral': '#2C3E50'
+                };
+                return colors[category] || '#2C3E50';
+            },
+            
+            getCategoryIcon(category) {
+                const icons = {
+                    'ITIL 4': 'fa-cube', 'ITIL': 'fa-cube', 'Azure': 'fa-microsoft',
+                    'AWS': 'fa-aws', 'Linux': 'fa-server', 'Security': 'fa-shield-alt',
+                    'Cloud': 'fa-cloud', 'Geral': 'fa-folder'
+                };
+                return icons[category] || 'fa-folder';
+            },
+            
+            updateCounters() {
+                // Atualizar contadores no card
+                const fileCountElement = document.getElementById('pmg-file-count');
+                const totalSizeElement = document.getElementById('pmg-total-size');
+                
+                if (fileCountElement) {
+                    fileCountElement.textContent = this.files.length;
+                }
+                
+                if (totalSizeElement) {
+                    const totalKB = this.files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0);
+                    totalSizeElement.textContent = (totalKB / 1024).toFixed(1) + ' MB';
+                }
+                
+                // Atualizar estatísticas estimadas
+                const viewsElement = document.getElementById('pmg-total-views');
+                const downloadsElement = document.getElementById('pmg-total-downloads');
+                const studentsElement = document.getElementById('pmg-students');
+                
+                if (viewsElement) viewsElement.textContent = (this.files.length * 20).toLocaleString();
+                if (downloadsElement) downloadsElement.textContent = (this.files.length * 10).toLocaleString();
+                if (studentsElement) studentsElement.textContent = Math.floor(this.files.length * 5).toLocaleString();
+            },
+            
+            trackView(fileId) {
+                console.log(`👁️ Visualizando: ${fileId}`);
+                // Aqui você pode implementar tracking real
+            },
+            
+            trackDownload(fileId) {
+                console.log(`📥 Baixando: ${fileId}`);
+                // Aqui você pode implementar tracking real
+            },
+            
+            downloadAllFiles() {
+                const downloadableFiles = this.files.filter(file => 
+                    file.arquivo_url && file.arquivo_url !== '#' && 
+                    file.arquivo_url.startsWith('http')
+                );
+                
+                if (downloadableFiles.length === 0) {
+                    alert('Nenhum arquivo com link disponível para download.');
+                    return;
+                }
+                
+                if (confirm(`Deseja baixar ${downloadableFiles.length} arquivos?\n\nOs arquivos serão baixados individualmente.`)) {
+                    downloadableFiles.forEach((file, index) => {
+                        setTimeout(() => {
+                            const link = document.createElement('a');
+                            link.href = file.arquivo_url;
+                            link.download = this.sanitizeFileName(file.nome || file.arquivo_nome);
+                            link.target = '_blank';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }, index * 300);
+                    });
+                }
+            }
+        };
         
         // Funções globais
         function togglePmgFiles() {
@@ -679,36 +1047,63 @@ window.debugPMGDatabase = debugPMGDatabase;
             const icon = document.querySelector('.toggle-pmg-files .toggle-icon');
             const toggleBtn = document.querySelector('.toggle-pmg-btn');
             
-            if (!container || !icon || !toggleBtn) return;
-            
             if (container.style.display === 'none' || container.style.display === '') {
                 // Abrir
                 container.style.display = 'block';
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-                toggleBtn.classList.add('active');
+                if (icon) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                }
+                if (toggleBtn) {
+                    toggleBtn.classList.add('active');
+                }
                 
-                // Carregar arquivos se não foram carregados ainda
-                if (pmgManager && pmgManager.files.length === 0) {
-                    pmgManager.loadPMGFiles();
+                // Carregar arquivos se ainda não carregou
+                if (PMGAcademy.files.length === 0) {
+                    console.log('📂 Card aberto, carregando arquivos...');
+                    PMGAcademy.loadAllFiles();
                 }
             } else {
                 // Fechar
                 container.style.display = 'none';
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-                toggleBtn.classList.remove('active');
+                if (icon) {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('active');
+                }
             }
         }
         
         function downloadAllPmgFiles() {
-            if (pmgManager) {
-                pmgManager.downloadAllFiles();
-            } else {
-                alert('Sistema PMG Academy não está disponível no momento.');
-            }
+            PMGAcademy.downloadAllFiles();
         }
         
+        // Expor para uso global
+        window.PMGAcademy = PMGAcademy;
+        window.togglePmgFiles = togglePmgFiles;
+        window.downloadAllPmgFiles = downloadAllPmgFiles;
+        window.pmgManager = PMGAcademy; // Compatibilidade
+        
+        // Inicializar quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 DOM carregado, PMG Academy pronto');
+            
+            // Se estiver na página ITIL 4, abrir automaticamente
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('cert') === 'itil4') {
+                console.log('🎯 Página ITIL 4 detectada');
+                
+                // Pequeno delay para garantir que tudo carregou
+                setTimeout(() => {
+                    console.log('📂 Abrindo card PMG Academy automaticamente...');
+                    togglePmgFiles();
+                }, 1000);
+            }
+        });
+        
+        // Funções auxiliares para outros recursos
         function checkAuthAndUpload() {
             alert('Funcionalidade de upload em desenvolvimento.');
         }
@@ -721,141 +1116,7 @@ window.debugPMGDatabase = debugPMGDatabase;
             document.getElementById('deleteConfirmModal').style.display = 'none';
         }
         
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Página de materiais carregada');
-            
-            // Inicializar PMG Manager
-            try {
-                pmgManager = new PMGAcademyManager();
-                console.log('PMG Manager inicializado');
-                
-                // Configurar estatísticas iniciais
-                pmgManager.updateFileCounters();
-                pmgManager.updateStatsUI();
-                
-            } catch (error) {
-                console.error('Erro ao inicializar PMG Manager:', error);
-                document.getElementById('pmg-files-loading').innerHTML = 
-                    '<div class="error-state">' +
-                    '<i class="fas fa-exclamation-triangle"></i>' +
-                    '<p>Erro ao inicializar sistema. Recarregue a página.</p>' +
-                    '</div>';
-            }
-            
-            // Configurar filtros
-            const searchInput = document.getElementById('searchMaterial');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const materials = document.querySelectorAll('.material-item-compact');
-                    
-                    materials.forEach(material => {
-                        const title = material.querySelector('.material-title-compact')?.textContent.toLowerCase() || '';
-                        const description = material.querySelector('.material-description-compact')?.textContent.toLowerCase() || '';
-                        
-                        if (title.includes(searchTerm) || description.includes(searchTerm) || searchTerm === '') {
-                            material.style.display = 'grid';
-                        } else {
-                            material.style.display = 'none';
-                        }
-                    });
-                });
-            }
-            
-            // Configurar filtro de tipo
-            const filterType = document.getElementById('filterType');
-            if (filterType) {
-                filterType.addEventListener('change', function() {
-                    const selectedType = this.value;
-                    const materials = document.querySelectorAll('.material-item-compact');
-                    
-                    materials.forEach(material => {
-                        const materialType = material.getAttribute('data-type');
-                        
-                        if (selectedType === 'all' || materialType === selectedType || materialType === 'collection') {
-                            material.style.display = 'grid';
-                        } else {
-                            material.style.display = 'none';
-                        }
-                    });
-                });
-            }
-            
-            // Verificar autenticação
-            if (window.authManager && authManager.isAuthenticated()) {
-                document.getElementById('uploadSection').style.display = 'block';
-            }
-            
-            // Configurar eventos de arquivo
-            const fileInput = document.getElementById('fileInputPage');
-            if (fileInput) {
-                fileInput.addEventListener('change', function(e) {
-                    if (e.target.files.length > 0) {
-                        const file = e.target.files[0];
-                        alert(`Arquivo selecionado: ${file.name}\nTamanho: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
-                    }
-                });
-            }
-            
-            // Abrir automaticamente o card PMG se estiver na página ITIL 4
-            const urlParams = new URLSearchParams(window.location.search);
-            const cert = urlParams.get('cert');
-            
-            if (cert === 'itil4') {
-                // Pequeno delay para garantir que tudo carregou
-                setTimeout(() => {
-                    const pmgCard = document.querySelector('.pmg-academy-card');
-                    if (pmgCard) {
-                        togglePmgFiles();
-                    }
-                }, 500);
-            }
-        });
-        
-        // Funções de notificação
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 12px 20px;
-                background: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : '#3498db'};
-                color: white;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                z-index: 9999;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                animation: slideIn 0.3s ease;
-            `;
-            
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                <span>${message}</span>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease forwards';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
-        
-        // Expor funções para uso global
-        window.togglePmgFiles = togglePmgFiles;
-        window.downloadAllPmgFiles = downloadAllPmgFiles;
-        window.checkAuthAndUpload = checkAuthAndUpload;
-        window.closeUploadModal = closeUploadModal;
-        window.closeDeleteModal = closeDeleteModal;
-        window.showNotification = showNotification;
+        console.log('✅ Sistema PMG Academy carregado com sucesso!');
     </script>
 </body>
 </html>
