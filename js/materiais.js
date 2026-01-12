@@ -1087,107 +1087,158 @@ async function confirmDeleteMaterial() {
         closeDeleteModal();
     }
 }
-// Arquivo: materiais.js (adição)
+/* Arquivo: materiais.css (adição) */
 
-// Função para rastrear downloads
-function trackDownload(materialId) {
-    // Salvar no localStorage
-    let downloads = JSON.parse(localStorage.getItem('studyCert_downloads') || '{}');
-    
-    if (!downloads[materialId]) {
-        downloads[materialId] = {
-            count: 0,
-            lastDownload: null
-        };
-    }
-    
-    downloads[materialId].count++;
-    downloads[materialId].lastDownload = new Date().toISOString();
-    
-    localStorage.setItem('studyCert_downloads', JSON.stringify(downloads));
-    
-    // Atualizar contador na página
-    const counterElement = document.getElementById(`downloads-${materialId}`);
-    if (counterElement) {
-        const currentCount = parseInt(counterElement.textContent) || 0;
-        counterElement.textContent = currentCount + 1;
-    }
-    
-    // Incrementar contador de views também
-    trackView(materialId);
-    
-    console.log(`Download registrado: ${materialId}`);
+/* Estilos para o card PMG Academy */
+.pmg-files-container {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    border-left: 4px solid #4ECDC4;
+    margin-top: 15px;
+    transition: all 0.3s ease;
 }
 
-// Função para rastrear visualizações
-function trackView(materialId) {
-    let views = JSON.parse(localStorage.getItem('studyCert_views') || '{}');
-    
-    if (!views[materialId]) {
-        views[materialId] = {
-            count: 0,
-            lastView: null
-        };
-    }
-    
-    views[materialId].count++;
-    views[materialId].lastView = new Date().toISOString();
-    
-    localStorage.setItem('studyCert_views', JSON.stringify(views));
-    
-    // Atualizar contador na página
-    const viewsElement = document.getElementById(`views-${materialId}`);
-    if (viewsElement) {
-        const currentViews = parseInt(viewsElement.textContent) || 0;
-        viewsElement.textContent = currentViews + 1;
-    }
+.loading-files {
+    text-align: center;
+    padding: 20px;
+    color: #666;
 }
 
-// Carregar estatísticas do localStorage quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    // Carregar estatísticas para o material PMG Academy
-    loadMaterialStats('itil4-pmg-academy');
-});
-
-function loadMaterialStats(materialId) {
-    // Carregar downloads
-    const downloads = JSON.parse(localStorage.getItem('studyCert_downloads') || '{}');
-    const downloadsElement = document.getElementById(`downloads-${materialId}`);
-    if (downloadsElement && downloads[materialId]) {
-        downloadsElement.textContent = downloads[materialId].count || 0;
-    }
-    
-    // Carregar visualizações
-    const views = JSON.parse(localStorage.getItem('studyCert_views') || '{}');
-    const viewsElement = document.getElementById(`views-${materialId}`);
-    if (viewsElement && views[materialId]) {
-        viewsElement.textContent = views[materialId].count || 0;
-    }
+.loading-files i {
+    margin-right: 10px;
 }
 
-// Função para mostrar modal de exclusão (apenas para demonstração)
-function showDeleteModal(materialId) {
-    if (!authManager.isAuthenticated()) {
-        alert('Você precisa estar logado para excluir materiais.');
-        return;
-    }
-    
-    const deleteModal = document.getElementById('deleteConfirmModal');
-    const materialName = document.getElementById('deleteMaterialName');
-    
-    if (materialId === 'itil4-pmg-academy') {
-        materialName.textContent = 'ITIL® 4 Foundation | PMG Academy';
-    }
-    
-    deleteModal.style.display = 'flex';
+.file-category {
+    margin-bottom: 20px;
 }
 
-function closeDeleteModal() {
-    document.getElementById('deleteConfirmModal').style.display = 'none';
+.file-category h5 {
+    color: #2C3E50;
+    margin: 0 0 10px 0;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #ddd;
 }
 
-function confirmDeleteMaterial() {
-    // Aqui você implementaria a lógica real de exclusão
-    alert('Funcionalidade de exclusão em desenvolvimento. No ambiente real, isso removeria o material do banco de dados.');
-    closeDeleteModal();
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    transition: all 0.3s;
+}
+
+.file-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    border-left: 3px solid #4ECDC4;
+}
+
+.file-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.file-name {
+    flex: 1;
+    font-size: 0.9rem;
+    color: #2C3E50;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-size {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    background: #f1f2f6;
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.file-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-view, .btn-download {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-view {
+    background: rgba(52, 152, 219, 0.1);
+    color: #3498db;
+    border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.btn-view:hover {
+    background: #3498db;
+    color: white;
+}
+
+.btn-download {
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.btn-download:hover {
+    background: #2ecc71;
+    color: white;
+}
+
+/* Botão de download tudo */
+.download-all-btn {
+    width: 100%;
+    margin-top: 15px;
+    background: linear-gradient(135deg, #4ECDC4, #44A08D);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.download-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+}
+
+.download-all-btn i {
+    font-size: 1.2em;
+}
+
+/* Ícones por tipo de arquivo */
+.icon-pdf { background: #e74c3c; }
+.icon-ppt { background: #e67e22; }
+.icon-doc { background: #3498db; }
+.icon-zip { background: #9b59b6; }
+.icon-txt { background: #7f8c8d; }
