@@ -1087,3 +1087,107 @@ async function confirmDeleteMaterial() {
         closeDeleteModal();
     }
 }
+// Arquivo: materiais.js (adição)
+
+// Função para rastrear downloads
+function trackDownload(materialId) {
+    // Salvar no localStorage
+    let downloads = JSON.parse(localStorage.getItem('studyCert_downloads') || '{}');
+    
+    if (!downloads[materialId]) {
+        downloads[materialId] = {
+            count: 0,
+            lastDownload: null
+        };
+    }
+    
+    downloads[materialId].count++;
+    downloads[materialId].lastDownload = new Date().toISOString();
+    
+    localStorage.setItem('studyCert_downloads', JSON.stringify(downloads));
+    
+    // Atualizar contador na página
+    const counterElement = document.getElementById(`downloads-${materialId}`);
+    if (counterElement) {
+        const currentCount = parseInt(counterElement.textContent) || 0;
+        counterElement.textContent = currentCount + 1;
+    }
+    
+    // Incrementar contador de views também
+    trackView(materialId);
+    
+    console.log(`Download registrado: ${materialId}`);
+}
+
+// Função para rastrear visualizações
+function trackView(materialId) {
+    let views = JSON.parse(localStorage.getItem('studyCert_views') || '{}');
+    
+    if (!views[materialId]) {
+        views[materialId] = {
+            count: 0,
+            lastView: null
+        };
+    }
+    
+    views[materialId].count++;
+    views[materialId].lastView = new Date().toISOString();
+    
+    localStorage.setItem('studyCert_views', JSON.stringify(views));
+    
+    // Atualizar contador na página
+    const viewsElement = document.getElementById(`views-${materialId}`);
+    if (viewsElement) {
+        const currentViews = parseInt(viewsElement.textContent) || 0;
+        viewsElement.textContent = currentViews + 1;
+    }
+}
+
+// Carregar estatísticas do localStorage quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Carregar estatísticas para o material PMG Academy
+    loadMaterialStats('itil4-pmg-academy');
+});
+
+function loadMaterialStats(materialId) {
+    // Carregar downloads
+    const downloads = JSON.parse(localStorage.getItem('studyCert_downloads') || '{}');
+    const downloadsElement = document.getElementById(`downloads-${materialId}`);
+    if (downloadsElement && downloads[materialId]) {
+        downloadsElement.textContent = downloads[materialId].count || 0;
+    }
+    
+    // Carregar visualizações
+    const views = JSON.parse(localStorage.getItem('studyCert_views') || '{}');
+    const viewsElement = document.getElementById(`views-${materialId}`);
+    if (viewsElement && views[materialId]) {
+        viewsElement.textContent = views[materialId].count || 0;
+    }
+}
+
+// Função para mostrar modal de exclusão (apenas para demonstração)
+function showDeleteModal(materialId) {
+    if (!authManager.isAuthenticated()) {
+        alert('Você precisa estar logado para excluir materiais.');
+        return;
+    }
+    
+    const deleteModal = document.getElementById('deleteConfirmModal');
+    const materialName = document.getElementById('deleteMaterialName');
+    
+    if (materialId === 'itil4-pmg-academy') {
+        materialName.textContent = 'ITIL® 4 Foundation | PMG Academy';
+    }
+    
+    deleteModal.style.display = 'flex';
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteConfirmModal').style.display = 'none';
+}
+
+function confirmDeleteMaterial() {
+    // Aqui você implementaria a lógica real de exclusão
+    alert('Funcionalidade de exclusão em desenvolvimento. No ambiente real, isso removeria o material do banco de dados.');
+    closeDeleteModal();
+}
