@@ -658,6 +658,17 @@
     <!-- JavaScript -->
     <script src="js/pmg-academy.js"></script>
     <script>
+        // Função para depurar o banco manualmente
+function debugPMGDatabase() {
+    if (window.pmgManager) {
+        pmgManager.debugDatabase();
+    } else {
+        alert('PMG Manager não está inicializado. Recarregue a página.');
+    }
+}
+
+// Expor para uso global
+window.debugPMGDatabase = debugPMGDatabase;
         // PMG Academy Manager
         let pmgManager = null;
         
