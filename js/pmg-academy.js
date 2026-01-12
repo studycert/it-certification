@@ -1,5 +1,5 @@
 // Arquivo: js/pmg-academy.js
-// Sistema PMG Academy - Corrigido
+// Sistema PMG Academy - Corrigido para buscar arquivos reais do Supabase
 
 class PMGAcademyManager {
     constructor() {
@@ -8,7 +8,7 @@ class PMGAcademyManager {
         this.stats = {
             totalViews: 0,
             totalDownloads: 0,
-            totalStudents: 1247
+            totalStudents: 0
         };
         this.isLoading = false;
         this.hasError = false;
@@ -19,28 +19,30 @@ class PMGAcademyManager {
         console.log('🔄 Inicializando PMG Academy Manager...');
         
         try {
-            // Inicializar Supabase com configurações seguras
+            // Configuração do Supabase - Use a mesma do seu app.js
             const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
             const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoYnd1ZGdkZXl2Ymtxb2ZsYXF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MDgxOTcsImV4cCI6MjA0OTQ4NDE5N30.92T3gmlMbI_mst6h1mk15yE0J1CvH6B1fZkPSlUj3vY';
-            
-            // Verificar se Supabase está disponível
-            if (typeof supabase === 'undefined') {
-                console.error('❌ Supabase não está disponível');
-                this.handleError('Biblioteca Supabase não carregada');
-                return;
-            }
             
             this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
                 auth: {
                     autoRefreshToken: false,
                     persistSession: false
+                },
+                global: {
+                    headers: { 
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
                 }
             });
             
             console.log('✅ Supabase inicializado');
             
-            // Carregar estatísticas iniciais
-            await this.loadInitialStats();
+            // Testar conexão
+            await this.testConnection();
+            
+            // Carregar estatísticas de downloads dos arquivos
+            await this.loadStatsFromFiles();
             
             // Atualizar interface
             this.updateStatsUI();
@@ -48,7 +50,24 @@ class PMGAcademyManager {
             
         } catch (error) {
             console.error('❌ Erro ao inicializar PMG Academy Manager:', error);
-            this.handleError('Erro na inicialização');
+            this.handleError('Erro na conexão com o banco de dados');
+        }
+    }
+
+    async testConnection() {
+        try {
+            // Testar conexão com uma consulta simples
+            const { data, error } = await this.supabase
+                .from('materiais')
+                .select('count')
+                .limit(1);
+            
+            if (error) throw error;
+            console.log('✅ Conexão com Supabase testada com sucesso');
+            
+        } catch (error) {
+            console.error('❌ Falha no teste de conexão:', error);
+            throw error;
         }
     }
 
@@ -58,7 +77,7 @@ class PMGAcademyManager {
             return;
         }
         
-        console.log('📥 Carregando arquivos PMG Academy...');
+        console.log('📥 Buscando arquivos PMG Academy do banco...');
         
         this.isLoading = true;
         this.hasError = false;
@@ -69,63 +88,135 @@ class PMGAcademyManager {
         try {
             // Mostrar loading
             if (loadingElement) {
-                loadingElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Buscando arquivos...</span>';
+                loadingElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Buscando arquivos no banco de dados...</span>';
                 loadingElement.style.display = 'block';
             }
-            if (filesListElement) {
-                filesListElement.style.display = 'none';
-                filesListElement.innerHTML = '';
-            }
             
-            // Verificar conexão com Supabase
-            if (!this.supabase) {
-                throw new Error('Conexão com Supabase não disponível');
-            }
+            // Fazer várias tentativas de busca com diferentes critérios
+            console.log('🔍 Tentando buscar arquivos com diferentes critérios...');
             
-            // Buscar arquivos do Supabase - consulta mais simples e segura
-            console.log('🔍 Buscando arquivos no banco...');
-            
-            let query = this.supabase
+            // TENTATIVA 1: Buscar por categoria ITIL 4
+            console.log('Tentativa 1: Buscando por categoria ITIL 4');
+            let { data: files1, error: error1 } = await this.supabase
                 .from('materiais')
                 .select('*')
-                .limit(20);
+                .ilike('categoria', '%ITIL%')
+                .order('created_at', { ascending: false });
             
-            // Primeiro, tentar buscar todos os materiais
-            const { data: allFiles, error: allError } = await query;
-            
-            if (allError) {
-                console.warn('⚠️ Erro na consulta geral:', allError);
-                throw allError;
+            if (error1) {
+                console.warn('Erro na tentativa 1:', error1);
             }
             
-            console.log(`📄 Total de materiais encontrados: ${allFiles ? allFiles.length : 0}`);
+            // TENTATIVA 2: Buscar por fonte PMG Academy
+            console.log('Tentativa 2: Buscando por fonte PMG Academy');
+            let { data: files2, error: error2 } = await this.supabase
+                .from('materiais')
+                .select('*')
+                .ilike('fonte', '%PMG%')
+                .order('created_at', { ascending: false });
             
-            // Filtrar localmente por PMG Academy
-            this.files = allFiles ? allFiles.filter(file => {
-                const categoria = file.categoria || '';
-                const fonte = file.fonte || '';
-                const nome = file.nome || '';
+            if (error2) {
+                console.warn('Erro na tentativa 2:', error2);
+            }
+            
+            // TENTATIVA 3: Buscar por nome que contenha PMG
+            console.log('Tentativa 3: Buscando por nome PMG');
+            let { data: files3, error: error3 } = await this.supabase
+                .from('materiais')
+                .select('*')
+                .or('nome.ilike.%PMG%,nome.ilike.%pmg%,descricao.ilike.%PMG%,descricao.ilike.%pmg%')
+                .order('created_at', { ascending: false });
+            
+            if (error3) {
+                console.warn('Erro na tentativa 3:', error3);
+            }
+            
+            // TENTATIVA 4: Buscar todos os materiais
+            console.log('Tentativa 4: Buscando todos os materiais');
+            let { data: allFiles, error: error4 } = await this.supabase
+                .from('materiais')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(50);
+            
+            if (error4) {
+                console.warn('Erro na tentativa 4:', error4);
+            }
+            
+            // Combinar resultados, removendo duplicatas
+            let combinedFiles = [];
+            const seenIds = new Set();
+            
+            [files1, files2, files3, allFiles].forEach(fileList => {
+                if (fileList && Array.isArray(fileList)) {
+                    fileList.forEach(file => {
+                        if (file && file.id && !seenIds.has(file.id)) {
+                            seenIds.add(file.id);
+                            combinedFiles.push(file);
+                        }
+                    });
+                }
+            });
+            
+            console.log(`📊 Resultados combinados: ${combinedFiles.length} arquivos`);
+            
+            // Filtrar para mostrar apenas arquivos relevantes
+            this.files = combinedFiles.filter(file => {
+                // Verificar se é do PMG Academy ou ITIL
+                const nome = (file.nome || '').toLowerCase();
+                const descricao = (file.descricao || '').toLowerCase();
+                const categoria = (file.categoria || '').toLowerCase();
+                const fonte = (file.fonte || '').toLowerCase();
                 
-                // Verificar se é da PMG Academy
-                return categoria.includes('ITIL') || 
-                       fonte.includes('PMG') || 
+                return nome.includes('pmg') || 
+                       nome.includes('itil') ||
+                       descricao.includes('pmg') ||
+                       descricao.includes('itil') ||
+                       categoria.includes('itil') ||
                        fonte.includes('pmg') ||
-                       nome.includes('PMG') ||
-                       nome.includes('pmg');
-            }) : [];
+                       // Se não temos critérios claros, mostrar todos
+                       combinedFiles.length <= 30; // Se temos poucos arquivos, mostrar todos
+            });
             
             console.log(`📦 Arquivos PMG Academy filtrados: ${this.files.length}`);
             
-            // Se não encontrou arquivos específicos, usar dados de exemplo
+            // Se ainda não temos arquivos, buscar da tabela simulados
             if (this.files.length === 0) {
-                console.log('📋 Nenhum arquivo PMG encontrado, usando dados de exemplo');
-                this.files = this.getExampleFiles();
+                console.log('🔄 Tentando buscar da tabela simulados...');
+                const { data: simulados, error: simError } = await this.supabase
+                    .from('simulados')
+                    .select('*')
+                    .ilike('categoria', '%ITIL%')
+                    .limit(20);
+                
+                if (!simError && simulados && simulados.length > 0) {
+                    console.log(`📚 Encontrados ${simulados.length} simulados ITIL`);
+                    this.files = simulados.map(sim => ({
+                        id: sim.id,
+                        nome: sim.nome || 'Simulado ITIL',
+                        descricao: sim.descricao || 'Material de estudo ITIL',
+                        arquivo_url: sim.arquivo_url || '#',
+                        arquivo_nome: sim.arquivo_nome || 'simulado.html',
+                        arquivo_tamanho_kb: sim.arquivo_tamanho_kb || 0,
+                        tipo: 'html',
+                        categoria: 'ITIL 4',
+                        fonte: 'StudyCert',
+                        created_at: sim.created_at || sim.data_upload
+                    }));
+                }
             }
             
-            // Esconder loading e mostrar arquivos
+            // Se ainda vazio, mostrar mensagem informativa
+            if (this.files.length === 0) {
+                console.log('ℹ️ Nenhum arquivo encontrado no banco');
+                this.files = []; // Manter vazio, não usar dados de exemplo
+            }
+            
+            // Esconder loading e mostrar resultados
             if (loadingElement) {
                 loadingElement.style.display = 'none';
             }
+            
             if (filesListElement) {
                 filesListElement.style.display = 'block';
                 this.renderFiles();
@@ -134,89 +225,72 @@ class PMGAcademyManager {
             // Atualizar contadores
             this.updateFileCounters();
             
-            console.log('✅ Arquivos carregados com sucesso');
+            // Atualizar estatísticas baseadas nos arquivos
+            await this.loadStatsFromFiles();
+            
+            console.log('✅ Processamento de arquivos concluído');
             
         } catch (error) {
-            console.error('❌ Erro ao carregar arquivos PMG:', error);
+            console.error('❌ Erro crítico ao carregar arquivos:', error);
             this.hasError = true;
             
-            // Mostrar mensagem de erro amigável
-            if (loadingElement) {
-                loadingElement.innerHTML = `
-                    <div class="error-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Não foi possível carregar os arquivos.</p>
-                        <p style="font-size: 0.9em; margin-top: 10px;">
-                            <button onclick="pmgManager.retryLoadFiles()" 
-                                    style="background: #4ECDC4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-                                <i class="fas fa-redo"></i> Tentar novamente
-                            </button>
-                        </p>
-                    </div>
-                `;
+            // Mostrar mensagem de erro específica
+            let errorMessage = 'Não foi possível carregar os arquivos do banco de dados.';
+            
+            if (error.message.includes('JWT')) {
+                errorMessage = 'Problema de autenticação com o banco de dados.';
+            } else if (error.message.includes('network') || error.message.includes('fetch')) {
+                errorMessage = 'Problema de conexão com a internet.';
             }
             
-            // Usar dados de exemplo em caso de erro
-            this.files = this.getExampleFiles();
-            this.renderFiles();
-            this.updateFileCounters();
+            this.showErrorInUI(errorMessage);
             
         } finally {
             this.isLoading = false;
         }
     }
 
-    getExampleFiles() {
-        return [
-            {
-                id: '1',
-                nome: 'ITIL 4 Foundation - Guia Completo PMG Academy',
-                descricao: 'Material completo da PMG Academy para certificação ITIL 4 Foundation',
-                arquivo_url: '#',
-                arquivo_nome: 'itil4-pmg-guia-completo.pdf',
-                arquivo_tamanho_kb: 12400,
-                tipo: 'pdf',
-                categoria: 'ITIL 4',
-                fonte: 'PMG Academy',
-                created_at: '2024-01-15T10:30:00Z'
-            },
-            {
-                id: '2',
-                nome: 'Apresentação ITIL 4 - Módulo 1',
-                descricao: 'Apresentação PPT do módulo 1 da PMG Academy',
-                arquivo_url: '#',
-                arquivo_nome: 'itil4-modulo1.ppt',
-                arquivo_tamanho_kb: 7800,
-                tipo: 'ppt',
-                categoria: 'ITIL 4',
-                fonte: 'PMG Academy',
-                created_at: '2024-01-16T14:20:00Z'
-            },
-            {
-                id: '3',
-                nome: 'Exercícios Resolvidos ITIL 4',
-                descricao: 'Lista de exercícios com gabarito da PMG Academy',
-                arquivo_url: '#',
-                arquivo_nome: 'exercicios-itil4.docx',
-                arquivo_tamanho_kb: 5200,
-                tipo: 'doc',
-                categoria: 'ITIL 4',
-                fonte: 'PMG Academy',
-                created_at: '2024-01-17T09:15:00Z'
-            },
-            {
-                id: '4',
-                nome: 'Resumo Conceitos Fundamentais',
-                descricao: 'Resumo dos conceitos básicos do ITIL 4',
-                arquivo_url: '#',
-                arquivo_nome: 'resumo-conceitos.pdf',
-                arquivo_tamanho_kb: 8200,
-                tipo: 'pdf',
-                categoria: 'ITIL 4',
-                fonte: 'PMG Academy',
-                created_at: '2024-01-18T11:45:00Z'
+    async loadStatsFromFiles() {
+        try {
+            // Calcular estatísticas baseadas nos arquivos
+            let totalViews = 0;
+            let totalDownloads = 0;
+            
+            // Tentar buscar estatísticas do banco
+            const { data: stats, error } = await this.supabase
+                .from('material_stats')
+                .select('*')
+                .eq('material_group', 'PMG Academy - ITIL 4')
+                .single();
+            
+            if (!error && stats) {
+                this.stats.totalViews = stats.total_views || 0;
+                this.stats.totalDownloads = stats.total_downloads || 0;
+                this.stats.totalStudents = stats.total_students || 0;
+            } else {
+                // Calcular baseado nos arquivos
+                this.files.forEach(file => {
+                    totalViews += file.views || 0;
+                    totalDownloads += file.downloads || 0;
+                });
+                
+                this.stats.totalViews = totalViews;
+                this.stats.totalDownloads = totalDownloads;
+                this.stats.totalStudents = Math.floor(totalDownloads / 3); // Estimativa
             }
-        ];
+            
+            // Salvar no localStorage para cache
+            this.saveStatsToLocalStorage();
+            
+        } catch (error) {
+            console.warn('⚠️ Não foi possível carregar estatísticas:', error);
+            // Usar valores padrão
+            this.stats = {
+                totalViews: this.files.length * 15,
+                totalDownloads: this.files.length * 8,
+                totalStudents: this.files.length * 5
+            };
+        }
     }
 
     renderFiles() {
@@ -229,34 +303,45 @@ class PMGAcademyManager {
         if (this.files.length === 0) {
             filesListElement.innerHTML = `
                 <div style="text-align: center; padding: 30px; color: #666;">
-                    <i class="fas fa-folder-open" style="font-size: 2.5rem; margin-bottom: 15px; display: block; color: #bdc3c7;"></i>
-                    <h4 style="color: #2C3E50; margin-bottom: 10px;">Nenhum arquivo disponível</h4>
-                    <p>Os arquivos da PMG Academy estarão disponíveis em breve.</p>
+                    <i class="fas fa-database" style="font-size: 2.5rem; margin-bottom: 15px; display: block; color: #bdc3c7;"></i>
+                    <h4 style="color: #2C3E50; margin-bottom: 10px;">Nenhum arquivo encontrado</h4>
+                    <p>Não foram encontrados arquivos da PMG Academy no banco de dados.</p>
+                    <p style="font-size: 0.9em; margin-top: 10px; color: #7f8c8d;">
+                        <i class="fas fa-info-circle"></i> Os arquivos devem estar na tabela 'materiais' com categoria 'ITIL 4' ou fonte 'PMG Academy'
+                    </p>
                 </div>
             `;
             return;
         }
+        
+        console.log(`🎨 Renderizando ${this.files.length} arquivos...`);
         
         // Agrupar arquivos por tipo
         const filesByType = {
             pdf: [],
             ppt: [],
             doc: [],
+            html: [],
             outros: []
         };
         
         this.files.forEach(file => {
-            const ext = file.tipo || (file.arquivo_nome ? file.arquivo_nome.split('.').pop().toLowerCase() : 'outros');
+            // Determinar tipo pelo nome do arquivo ou extensão
+            let tipo = 'outros';
+            const fileName = (file.arquivo_nome || '').toLowerCase();
+            const fileType = file.tipo || '';
             
-            if (ext === 'pdf') {
-                filesByType.pdf.push(file);
-            } else if (['ppt', 'pptx'].includes(ext)) {
-                filesByType.ppt.push(file);
-            } else if (['doc', 'docx'].includes(ext)) {
-                filesByType.doc.push(file);
-            } else {
-                filesByType.outros.push(file);
+            if (fileName.endsWith('.pdf') || fileType === 'pdf' || fileName.includes('.pdf')) {
+                tipo = 'pdf';
+            } else if (fileName.endsWith('.ppt') || fileName.endsWith('.pptx') || fileType === 'ppt') {
+                tipo = 'ppt';
+            } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx') || fileType === 'doc') {
+                tipo = 'doc';
+            } else if (fileName.endsWith('.html') || fileName.endsWith('.htm') || fileType === 'html') {
+                tipo = 'html';
             }
+            
+            filesByType[tipo].push(file);
         });
         
         let html = '';
@@ -276,18 +361,29 @@ class PMGAcademyManager {
             html += this.renderFileCategory('Documentos', filesByType.doc, '#3498db', 'fa-file-word');
         }
         
+        // HTML
+        if (filesByType.html.length > 0) {
+            html += this.renderFileCategory('Simulados HTML', filesByType.html, '#9b59b6', 'fa-file-code');
+        }
+        
         // Outros
         if (filesByType.outros.length > 0) {
             html += this.renderFileCategory('Outros', filesByType.outros, '#7f8c8d', 'fa-file');
         }
         
-        // Botão para baixar tudo (se houver arquivos)
+        // Botão para baixar tudo
         if (this.files.length > 0) {
             html += `
-                <button class="download-all-btn" onclick="pmgManager.downloadAllFiles()" style="margin-top: 20px;">
-                    <i class="fas fa-file-archive"></i>
-                    Baixar Todos os Arquivos (${this.files.length})
-                </button>
+                <div style="text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px dashed #ddd;">
+                    <p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">
+                        <i class="fas fa-info-circle"></i> 
+                        ${this.files.length} arquivos encontrados no banco de dados
+                    </p>
+                    <button class="download-all-btn" onclick="pmgManager.downloadAllFiles()">
+                        <i class="fas fa-file-archive"></i>
+                        Baixar Todos os Arquivos (${this.files.length})
+                    </button>
+                </div>
             `;
         }
         
@@ -306,22 +402,36 @@ class PMGAcademyManager {
         files.forEach((file, index) => {
             const fileSize = file.arquivo_tamanho_kb ? 
                 (file.arquivo_tamanho_kb / 1024).toFixed(1) + ' MB' : 
-                'N/A';
+                (file.size ? (file.size / 1024 / 1024).toFixed(1) + ' MB' : 'N/A');
             
             const fileName = file.nome || file.arquivo_nome || `Arquivo ${index + 1}`;
             const fileId = file.id || `file-${index}`;
-            const fileUrl = file.arquivo_url || '#';
+            const fileUrl = file.arquivo_url || file.url || '#';
+            const isExternal = fileUrl.startsWith('http');
+            
+            // Formatar data
+            let fileDate = '';
+            if (file.created_at) {
+                const date = new Date(file.created_at);
+                fileDate = date.toLocaleDateString('pt-BR');
+            }
             
             html += `
                 <div class="file-item" data-file-id="${fileId}">
                     <i class="fas ${icon}" style="color: ${color};"></i>
-                    <span class="file-name" title="${fileName}">
-                        ${fileName}
-                    </span>
+                    <div style="flex: 1; min-width: 0;">
+                        <div class="file-name" title="${fileName}">
+                            ${fileName}
+                        </div>
+                        <div style="display: flex; gap: 10px; font-size: 0.8em; color: #7f8c8d; margin-top: 3px;">
+                            ${fileDate ? `<span><i class="far fa-calendar"></i> ${fileDate}</span>` : ''}
+                            ${file.categoria ? `<span><i class="fas fa-tag"></i> ${file.categoria}</span>` : ''}
+                        </div>
+                    </div>
                     <span class="file-size">${fileSize}</span>
                     <div class="file-actions">
                         <a href="${fileUrl}" 
-                           target="_blank" 
+                           ${isExternal ? 'target="_blank"' : ''}
                            class="btn-view"
                            onclick="pmgManager.trackView('${fileId}')"
                            title="Visualizar">
@@ -348,76 +458,22 @@ class PMGAcademyManager {
     }
 
     updateFileCounters() {
-        // Atualizar contagem de arquivos
         const fileCountElement = document.getElementById('pmg-file-count');
         if (fileCountElement) {
             fileCountElement.textContent = this.files.length;
         }
         
-        // Calcular tamanho total
         const totalSizeKB = this.files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0);
         const totalSizeMB = (totalSizeKB / 1024).toFixed(1);
         const totalSizeElement = document.getElementById('pmg-total-size');
         if (totalSizeElement) {
             totalSizeElement.textContent = totalSizeMB + ' MB';
         }
-    }
-
-    async loadInitialStats() {
-        try {
-            // Carregar do localStorage primeiro
-            this.loadStatsFromLocalStorage();
-            
-            // Tentar carregar do banco (opcional)
-            if (this.supabase) {
-                try {
-                    const { data: stats, error } = await this.supabase
-                        .from('material_stats')
-                        .select('*')
-                        .eq('material_group', 'PMG Academy - ITIL 4')
-                        .single();
-                    
-                    if (!error && stats) {
-                        this.stats = {
-                            totalViews: stats.total_views || 0,
-                            totalDownloads: stats.total_downloads || 0,
-                            totalStudents: stats.total_students || 1247
-                        };
-                        
-                        // Salvar no localStorage
-                        this.saveStatsToLocalStorage();
-                    }
-                } catch (dbError) {
-                    console.warn('⚠️ Não foi possível carregar estatísticas do banco:', dbError);
-                }
-            }
-            
-        } catch (error) {
-            console.warn('⚠️ Erro ao carregar estatísticas:', error);
-        }
-    }
-
-    loadStatsFromLocalStorage() {
-        try {
-            const stats = localStorage.getItem('pmg_academy_stats');
-            if (stats) {
-                const parsed = JSON.parse(stats);
-                this.stats = {
-                    totalViews: parsed.totalViews || 0,
-                    totalDownloads: parsed.totalDownloads || 0,
-                    totalStudents: parsed.totalStudents || 1247
-                };
-            }
-        } catch (e) {
-            console.warn('⚠️ Erro ao carregar estatísticas do localStorage:', e);
-        }
-    }
-
-    saveStatsToLocalStorage() {
-        try {
-            localStorage.setItem('pmg_academy_stats', JSON.stringify(this.stats));
-        } catch (e) {
-            console.warn('⚠️ Erro ao salvar estatísticas no localStorage:', e);
+        
+        // Atualizar contador geral também
+        const totalMaterialsElement = document.getElementById('totalMaterials');
+        if (totalMaterialsElement) {
+            totalMaterialsElement.textContent = this.files.length;
         }
     }
 
@@ -431,81 +487,89 @@ class PMGAcademyManager {
         if (studentsElement) studentsElement.textContent = this.stats.totalStudents.toLocaleString();
     }
 
-    trackView(fileId) {
+    saveStatsToLocalStorage() {
         try {
-            // Incrementar contador local
-            this.stats.totalViews++;
-            this.updateStatsUI();
-            this.saveStatsToLocalStorage();
-            
-            console.log(`👁️ Visualização registrada para arquivo: ${fileId}`);
-            
-            // Mostrar notificação
-            if (window.showNotification) {
-                window.showNotification('Visualização registrada!', 'success');
-            }
-            
-        } catch (error) {
-            console.error('❌ Erro ao registrar visualização:', error);
+            localStorage.setItem('pmg_academy_stats', JSON.stringify(this.stats));
+        } catch (e) {
+            console.warn('⚠️ Erro ao salvar estatísticas no localStorage:', e);
         }
     }
 
-    trackDownload(fileId) {
+    loadStatsFromLocalStorage() {
         try {
-            // Incrementar contador local
-            this.stats.totalDownloads++;
-            this.updateStatsUI();
-            this.saveStatsToLocalStorage();
-            
-            console.log(`📥 Download registrado para arquivo: ${fileId}`);
-            
-            // Mostrar notificação
-            if (window.showNotification) {
-                window.showNotification('Download iniciado!', 'success');
+            const stats = localStorage.getItem('pmg_academy_stats');
+            if (stats) {
+                this.stats = JSON.parse(stats);
             }
-            
+        } catch (e) {
+            console.warn('⚠️ Erro ao carregar estatísticas do localStorage:', e);
+        }
+    }
+
+    trackView(fileId) {
+        this.stats.totalViews++;
+        this.updateStatsUI();
+        this.saveStatsToLocalStorage();
+        
+        // Atualizar no banco (opcional)
+        this.updateStatsInDatabase();
+        
+        console.log(`👁️ Visualização: ${fileId}`);
+    }
+
+    trackDownload(fileId) {
+        this.stats.totalDownloads++;
+        this.updateStatsUI();
+        this.saveStatsToLocalStorage();
+        
+        // Atualizar no banco (opcional)
+        this.updateStatsInDatabase();
+        
+        console.log(`📥 Download: ${fileId}`);
+    }
+
+    async updateStatsInDatabase() {
+        try {
+            await this.supabase
+                .from('material_stats')
+                .upsert({
+                    material_group: 'PMG Academy - ITIL 4',
+                    total_views: this.stats.totalViews,
+                    total_downloads: this.stats.totalDownloads,
+                    total_students: this.stats.totalStudents,
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'material_group'
+                });
         } catch (error) {
-            console.error('❌ Erro ao registrar download:', error);
+            console.warn('⚠️ Não foi possível atualizar estatísticas no banco:', error);
         }
     }
 
     downloadAllFiles() {
-        try {
-            if (this.files.length === 0) {
-                alert('Nenhum arquivo disponível para download.');
-                return;
-            }
+        if (this.files.length === 0) {
+            alert('Nenhum arquivo disponível para download.');
+            return;
+        }
+        
+        if (confirm(`Deseja baixar todos os ${this.files.length} arquivos?\n\nOs arquivos serão baixados individualmente.`)) {
+            this.trackDownload('all');
             
-            if (confirm(`Deseja baixar todos os ${this.files.length} arquivos do PMG Academy?\n\nOs arquivos serão baixados individualmente.`)) {
-                // Registrar download múltiplo
-                this.trackDownload('all');
-                
-                // Mostrar notificação
-                if (window.showNotification) {
-                    window.showNotification(`Iniciando download de ${this.files.length} arquivos...`, 'info');
-                }
-                
-                // Simular download (em ambiente real, os links funcionariam)
-                this.files.forEach((file, index) => {
-                    setTimeout(() => {
-                        if (file.arquivo_url && file.arquivo_url !== '#') {
-                            const link = document.createElement('a');
-                            link.href = file.arquivo_url;
-                            link.download = file.nome || file.arquivo_nome || `arquivo-${index + 1}`;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                        } else {
-                            console.log(`Arquivo ${index + 1}: ${file.nome} - Link não disponível`);
-                        }
-                    }, index * 500);
-                });
-            }
+            this.files.forEach((file, index) => {
+                setTimeout(() => {
+                    if (file.arquivo_url && file.arquivo_url !== '#') {
+                        const link = document.createElement('a');
+                        link.href = file.arquivo_url;
+                        link.download = file.nome || file.arquivo_nome || `arquivo-${index + 1}`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                }, index * 300);
+            });
             
-        } catch (error) {
-            console.error('❌ Erro ao baixar arquivos:', error);
             if (window.showNotification) {
-                window.showNotification('Erro ao baixar arquivos. Tente novamente.', 'error');
+                window.showNotification(`Iniciando download de ${this.files.length} arquivos...`, 'info');
             }
         }
     }
@@ -515,50 +579,94 @@ class PMGAcademyManager {
         this.loadPMGFiles();
     }
 
-    handleError(message) {
-        console.error(`❌ ${message}`);
-        this.hasError = true;
-        
-        // Atualizar interface com estado de erro
+    showErrorInUI(message) {
         const loadingElement = document.getElementById('pmg-files-loading');
         if (loadingElement) {
             loadingElement.innerHTML = `
                 <div class="error-state">
                     <i class="fas fa-exclamation-triangle"></i>
                     <p>${message}</p>
-                    <p style="font-size: 0.9em; margin-top: 10px;">
-                        Usando dados de demonstração...
-                    </p>
+                    <div style="margin-top: 15px;">
+                        <button onclick="pmgManager.debugDatabase()" 
+                                style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-right: 10px;">
+                            <i class="fas fa-bug"></i> Depurar Banco
+                        </button>
+                        <button onclick="pmgManager.retryLoadFiles()" 
+                                style="background: #2ecc71; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+                            <i class="fas fa-redo"></i> Tentar novamente
+                        </button>
+                    </div>
                 </div>
             `;
         }
-        
-        // Usar dados de exemplo
-        this.files = this.getExampleFiles();
-        this.updateFileCounters();
-        this.updateStatsUI();
     }
 
-    showNotification(message, type = 'info') {
-        // Esta função será chamada pela função global showNotification
-        console.log(`📢 ${type.toUpperCase()}: ${message}`);
+    async debugDatabase() {
+        console.log('🔧 Iniciando depuração do banco de dados...');
+        
+        try {
+            // 1. Listar todas as tabelas disponíveis
+            console.log('📋 Listando informações do banco...');
+            
+            // Testar várias tabelas possíveis
+            const tables = ['materiais', 'materials', 'arquivos', 'files', 'simulados', 'study_materials'];
+            
+            for (const table of tables) {
+                console.log(`🔍 Testando tabela: ${table}`);
+                try {
+                    const { data, error } = await this.supabase
+                        .from(table)
+                        .select('*')
+                        .limit(3);
+                    
+                    if (!error && data) {
+                        console.log(`✅ Tabela "${table}" encontrada com ${data.length} registros`);
+                        console.log('📊 Amostra de dados:', data);
+                        
+                        // Mostrar na tela
+                        alert(`Tabela "${table}" encontrada!\n\nRegistros: ${data.length}\n\nAmostra:\n${JSON.stringify(data, null, 2)}`);
+                        return;
+                    }
+                } catch (err) {
+                    console.log(`❌ Tabela "${table}" não encontrada ou erro:`, err.message);
+                }
+            }
+            
+            alert('❌ Nenhuma tabela de materiais encontrada no banco de dados.\n\nVerifique se os arquivos foram cadastrados corretamente.');
+            
+        } catch (error) {
+            console.error('❌ Erro na depuração:', error);
+            alert(`Erro na depuração: ${error.message}`);
+        }
+    }
+
+    handleError(message) {
+        console.error(`❌ ${message}`);
+        this.hasError = true;
+        this.showErrorInUI(message);
     }
 }
 
-// Inicializar automaticamente quando o script carregar
+// Inicialização automática
 console.log('📚 PMG Academy Manager carregado');
 window.PMGAcademyManager = PMGAcademyManager;
 
-// Função auxiliar para expor métodos globalmente
-window.pmgManager = null;
-
 // Inicializar quando o DOM estiver pronto
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('🚀 Inicializando PMG Academy Manager...');
-        window.pmgManager = new PMGAcademyManager();
-    });
-} else {
-    console.log('🚀 Inicializando PMG Academy Manager (DOM já carregado)...');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Inicializando PMG Academy Manager...');
     window.pmgManager = new PMGAcademyManager();
-}
+    
+    // Se estiver na página ITIL 4, carregar automaticamente
+    const urlParams = new URLSearchParams(window.location.search);
+    const cert = urlParams.get('cert');
+    
+    if (cert === 'itil4') {
+        setTimeout(() => {
+            const pmgCard = document.querySelector('.pmg-academy-card');
+            if (pmgCard) {
+                console.log('🎯 Abrindo card PMG Academy automaticamente...');
+                togglePmgFiles();
+            }
+        }, 1000);
+    }
+});
