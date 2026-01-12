@@ -89,6 +89,192 @@
             color: var(--gray);
             margin-bottom: 0.5rem;
         }
+        
+        /* Estilos específicos para o card PMG Academy */
+        .pmg-academy-card {
+            border-left: 4px solid #4ECDC4 !important;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 249, 250, 1) 100%);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.1) !important;
+        }
+        
+        .pmg-academy-card:hover {
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.15) !important;
+            transform: translateY(-2px);
+        }
+        
+        .pmg-files-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #4ECDC4;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .loading-files {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .loading-files i {
+            margin-right: 10px;
+        }
+        
+        .file-category {
+            margin-bottom: 20px;
+        }
+        
+        .file-category h5 {
+            color: #2C3E50;
+            margin: 0 0 10px 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .file-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border-left: 3px solid #4ECDC4;
+        }
+        
+        .file-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .file-name {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #2C3E50;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .file-size {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            background: #f1f2f6;
+            padding: 2px 8px;
+            border-radius: 10px;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .btn-view, .btn-download {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .btn-view {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-view:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-download {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-download:hover {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        /* Botão de download tudo */
+        .download-all-btn {
+            width: 100%;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .download-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .download-all-btn i {
+            font-size: 1.2em;
+        }
+        
+        /* Ícones por tipo de arquivo */
+        .icon-pdf { background: #e74c3c; }
+        .icon-ppt { background: #e67e22; }
+        .icon-doc { background: #3498db; }
+        .icon-zip { background: #9b59b6; }
+        .icon-txt { background: #7f8c8d; }
+        
+        /* Botão toggle */
+        .toggle-pmg-btn.active {
+            background: #4ECDC4 !important;
+            color: white !important;
+        }
+        
+        /* Badge premium */
+        .premium-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 8px;
+            box-shadow: 0 2px 5px rgba(255, 215, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -126,7 +312,7 @@
         <div class="container">
             <a href="index.html"><i class="fas fa-home"></i> Home</a> > 
             <a href="index.html#materiais">Material de Estudo</a> > 
-            <span id="currentCertification">Carregando certificação...</span>
+            <span id="currentCertification">ITIL 4 Foundation</span>
         </div>
     </section>
 
@@ -134,15 +320,15 @@
     <main class="materials-page-container">
         <div class="container">
             <!-- Hero da Certificação -->
-            <section class="certification-hero" id="certificationHero">
+            <section class="certification-hero" id="certificationHero" style="background: linear-gradient(135deg, #154360 0%, #1B4F72 100%);">
                 <div class="certification-hero-content">
                     <div class="certification-icon-large" id="certIcon">
                         <i class="fas fa-cube"></i>
                     </div>
-                    <h1 id="certTitle">Certificação</h1>
+                    <h1 id="certTitle">ITIL 4 Foundation</h1>
                     <div class="certification-level-badge" id="certLevel">Nível: Foundation</div>
                     <p id="certDescription" style="max-width: 600px; margin: 0 auto; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                        Recursos de estudo para sua preparação
+                        Recursos de estudo para preparação da certificação ITIL 4 Foundation
                     </p>
                 </div>
             </section>
@@ -234,62 +420,69 @@
                     <span class="materials-count" id="materialsCount">0 materiais</span>
                 </div>
                 <div id="materialsContainer">
-                     <!-- Card específico para ITIL 4 Foundation | PMG Academy -->
-        <div class="material-item-compact" data-type="pdf" data-views="0" data-downloads="0">
-            <div class="material-icon-compact icon-pdf">
-                <i class="fas fa-file-pdf"></i>
-            </div>
-            <div class="material-content-compact">
-                <div class="material-header-compact">
-                    <a href="https://drive.google.com/file/d/1YOUR_FILE_ID/view?usp=sharing" 
-                       target="_blank" 
-                       class="material-title-compact" 
-                       onclick="trackDownload('itil4-pmg-academy')">
-                        <strong>ITIL® 4 Foundation | PMG Academy</strong>
-                        <span style="color: #e74c3c; font-size: 0.8em; margin-left: 5px;">
-                            <i class="fas fa-crown"></i> Recomendado
-                        </span>
-                    </a>
-                    <div class="material-meta-compact">
-                        <span><i class="fas fa-tag"></i> ITIL 4 Foundation</span>
-                        <span><i class="fas fa-file-pdf"></i> PDF</span>
-                        <span><i class="fas fa-file-archive"></i> 4.5 MB</span>
-                        <span><i class="fas fa-calendar"></i> 2024</span>
+                    <!-- Card expansível PMG Academy -->
+                    <div class="material-item-compact pmg-academy-card" data-type="collection">
+                        <div class="material-icon-compact" style="background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="material-content-compact">
+                            <div class="material-header-compact">
+                                <a href="#" class="material-title-compact toggle-pmg-files" 
+                                   onclick="togglePmgFiles(); return false;">
+                                    <strong>ITIL® 4 Foundation | PMG Academy</strong>
+                                    <span class="premium-badge">
+                                        <i class="fas fa-crown"></i> Pacote Premium
+                                    </span>
+                                    <i class="fas fa-chevron-down toggle-icon" style="margin-left: 10px; font-size: 0.9em;"></i>
+                                </a>
+                                <div class="material-meta-compact">
+                                    <span><i class="fas fa-tag"></i> ITIL 4 Foundation</span>
+                                    <span><i class="fas fa-layer-group"></i> 
+                                        <span id="pmg-file-count">Carregando...</span> arquivos
+                                    </span>
+                                    <span><i class="fas fa-file-archive"></i> 
+                                        <span id="pmg-total-size">...</span> total
+                                    </span>
+                                    <span><i class="fas fa-calendar"></i> 2024</span>
+                                </div>
+                            </div>
+                            <div class="material-description-compact">
+                                Pacote completo da PMG Academy para certificação ITIL 4 Foundation. Inclui apresentações, apostilas, exercícios e materiais complementares diretamente do banco de dados.
+                            </div>
+                            <div class="material-stats-compact">
+                                <span><i class="fas fa-eye"></i> <span id="pmg-total-views">0</span> visualizações</span>
+                                <span><i class="fas fa-download"></i> <span id="pmg-total-downloads">0</span> downloads</span>
+                                <span><i class="fas fa-users"></i> <span id="pmg-students">0</span> estudantes</span>
+                            </div>
+                            
+                            <!-- Área de arquivos (inicialmente oculta) -->
+                            <div id="pmg-files-container" class="pmg-files-container" style="display: none; margin-top: 15px;">
+                                <!-- Loading enquanto busca os arquivos -->
+                                <div id="pmg-files-loading" class="loading-files">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Carregando arquivos do PMG Academy...</span>
+                                </div>
+                                
+                                <!-- Lista de arquivos será carregada aqui -->
+                                <div id="pmg-files-list" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="material-actions-compact">
+                            <button class="btn btn-primary toggle-pmg-btn" onclick="togglePmgFiles()" title="Ver arquivos">
+                                <i class="fas fa-folder-open"></i>
+                            </button>
+                            <button class="btn btn-success" onclick="downloadAllPmgFiles()" title="Baixar tudo">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="material-description-compact">
-                    Material completo da PMG Academy para preparação do exame ITIL 4 Foundation. Inclui conceitos fundamentais, práticas, dimensões do serviço e cadeia de valor.
-                </div>
-                <div class="material-stats-compact">
-                    <span><i class="fas fa-eye"></i> <span id="views-itil4-pmg">0</span> visualizações</span>
-                    <span><i class="fas fa-download"></i> <span id="downloads-itil4-pmg">0</span> downloads</span>
-                    <span><i class="fas fa-star"></i> 4.9/5.0</span>
-                </div>
-            </div>
-            <div class="material-actions-compact">
-                <a href="https://drive.google.com/file/d/1YOUR_FILE_ID/view?usp=sharing" 
-                   target="_blank" 
-                   class="btn btn-primary" 
-                   onclick="trackDownload('itil4-pmg-academy')"
-                   title="Abrir material">
-                    <i class="fas fa-external-link-alt"></i>
-                </a>
-                <a href="https://drive.google.com/uc?export=download&id=1YOUR_FILE_ID" 
-                   class="btn btn-success"
-                   onclick="trackDownload('itil4-pmg-academy')"
-                   title="Baixar PDF">
-                    <i class="fas fa-download"></i>
-                </a>
-                <button class="btn btn-outline" onclick="showDeleteModal('itil4-pmg-academy')" title="Excluir">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Outros materiais serão carregados dinamicamente aqui -->
-                    <div class="loading-message-compact">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Carregando materiais...</p>
+                    
+                    <!-- Outros materiais serão carregados dinamicamente -->
+                    <div id="other-materials">
+                        <div class="loading-message-compact">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Carregando mais materiais...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -432,5 +625,122 @@
 
     <!-- JavaScript específico da página de materiais -->
     <script src="js/materiais.js"></script>
+    <script src="js/pmg-academy.js"></script>
+    
+    <script>
+        // Funções globais para o card PMG Academy
+        let pmgManager;
+        
+        function togglePmgFiles() {
+            const container = document.getElementById('pmg-files-container');
+            const icon = document.querySelector('.toggle-pmg-files .toggle-icon');
+            const toggleBtn = document.querySelector('.toggle-pmg-btn');
+            
+            if (container.style.display === 'none' || container.style.display === '') {
+                // Abrir e carregar arquivos
+                container.style.display = 'block';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+                toggleBtn.classList.add('active');
+                
+                if (window.pmgManager && window.pmgManager.files.length === 0) {
+                    window.pmgManager.loadPMGFiles();
+                }
+            } else {
+                // Fechar
+                container.style.display = 'none';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+                toggleBtn.classList.remove('active');
+            }
+        }
+        
+        function downloadAllPmgFiles() {
+            if (window.pmgManager) {
+                window.pmgManager.downloadAllFiles();
+            } else {
+                alert('Sistema PMG Academy não está carregado. Recarregue a página.');
+            }
+        }
+        
+        // Inicializar quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar o PMG Manager
+            window.pmgManager = new PMGAcademyManager();
+            
+            // Se estiver na página ITIL 4, abrir automaticamente o card após carregar
+            const urlParams = new URLSearchParams(window.location.search);
+            const cert = urlParams.get('cert');
+            
+            if (cert === 'itil4') {
+                // Pequeno delay para garantir que tudo carregou
+                setTimeout(() => {
+                    // Verificar se o card existe antes de tentar abrir
+                    const pmgCard = document.querySelector('.pmg-academy-card');
+                    if (pmgCard) {
+                        togglePmgFiles();
+                    }
+                }, 1000);
+            }
+            
+            // Configurar filtros
+            const searchInput = document.getElementById('searchMaterial');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const materials = document.querySelectorAll('.material-item-compact');
+                    
+                    materials.forEach(material => {
+                        const title = material.querySelector('.material-title-compact')?.textContent.toLowerCase() || '';
+                        const description = material.querySelector('.material-description-compact')?.textContent.toLowerCase() || '';
+                        
+                        if (title.includes(searchTerm) || description.includes(searchTerm) || searchTerm === '') {
+                            material.style.display = 'grid';
+                        } else {
+                            material.style.display = 'none';
+                        }
+                    });
+                });
+            }
+            
+            // Configurar filtro de tipo
+            const filterType = document.getElementById('filterType');
+            if (filterType) {
+                filterType.addEventListener('change', function() {
+                    const selectedType = this.value;
+                    const materials = document.querySelectorAll('.material-item-compact');
+                    
+                    materials.forEach(material => {
+                        const materialType = material.getAttribute('data-type');
+                        
+                        if (selectedType === 'all' || materialType === selectedType || materialType === 'collection') {
+                            material.style.display = 'grid';
+                        } else {
+                            material.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
+        
+        // Funções auxiliares
+        function checkAuthAndUpload() {
+            if (authManager && authManager.isAuthenticated()) {
+                document.getElementById('fileInputPage').click();
+            } else {
+                alert('Faça login para compartilhar materiais!');
+                // Redirecionar para página de login
+                window.location.href = 'index.html';
+            }
+        }
+        
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
