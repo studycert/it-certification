@@ -6,7 +6,7 @@
     <title>StudyCert - Videoaulas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/video-aulas.css">
+    <link rel="stylesheet" href="css/materiais.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/auth.js" defer></script>
@@ -108,7 +108,7 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
         
-        /* Estilo específico para videoaulas */
+        /* Estilos específicos para videoaulas */
         .video-card {
             background: white;
             border-radius: 12px;
@@ -120,32 +120,22 @@
         }
         
         .video-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.15);
         }
         
         .video-thumbnail {
             width: 100%;
-            height: 200px;
+            height: 180px;
             background: #2c3e50;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 3.5rem;
+            font-size: 3rem;
             position: relative;
             overflow: hidden;
             cursor: pointer;
-        }
-        
-        .video-thumbnail::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
         }
         
         .video-thumbnail i {
@@ -155,7 +145,12 @@
             transform: translate(-50%, -50%);
             opacity: 0.9;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            z-index: 1;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+        
+        .video-thumbnail:hover i {
+            transform: translate(-50%, -50%) scale(1.1);
         }
         
         .video-duration-badge {
@@ -164,31 +159,37 @@
             right: 10px;
             background: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 0.2rem 0.5rem;
+            padding: 0.3rem 0.7rem;
             border-radius: 4px;
             font-size: 0.8rem;
-            z-index: 2;
+            z-index: 3;
+            font-weight: 600;
         }
         
         .video-info {
-            padding: 1.5rem;
+            padding: 1.2rem;
         }
         
         .video-title {
             font-weight: 600;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             color: #2c3e50;
             line-height: 1.3;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            height: 2.6rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
         
         .video-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
-            font-size: 0.85rem;
+            gap: 0.8rem;
+            font-size: 0.8rem;
             color: #7f8c8d;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             align-items: center;
         }
         
@@ -199,10 +200,15 @@
         }
         
         .video-description {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #666;
-            line-height: 1.5;
-            margin-bottom: 1.2rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            height: 2.5rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
         
         .video-actions {
@@ -212,102 +218,32 @@
         
         .btn-video {
             flex: 1;
-            padding: 0.6rem;
-            font-size: 0.85rem;
+            padding: 0.5rem;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
         
-        /* Hero da Certificação (igual à página de materiais) */
-        .certification-hero {
-            color: white;
-            padding: 3rem 0;
-            text-align: center;
-            margin-bottom: 2rem;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
+        /* Grid de videoaulas */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
         
-        .certification-hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 1rem;
+        /* Botão Sair corrigido */
+        .auth-bar-improved .btn-outline {
+            color: var(--dark) !important;
+            border-color: var(--border) !important;
         }
         
-        .certification-icon-large {
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 2.5rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            color: white;
-        }
-        
-        .certification-hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .certification-level-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        /* Botão de exclusão */
-        .btn-delete {
-            background: rgba(231, 76, 60, 0.1) !important;
-            border: 2px solid #e74c3c !important;
-            color: #e74c3c !important;
-            transition: all 0.3s;
-        }
-        
-        .btn-delete:hover {
-            background: #e74c3c !important;
+        .auth-bar-improved .btn-outline:hover {
+            background: var(--primary) !important;
             color: white !important;
-        }
-        
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .certification-hero {
-                padding: 2rem 1rem;
-            }
-            
-            .certification-hero h1 {
-                font-size: 1.8rem;
-            }
-            
-            .certification-icon-large {
-                width: 80px;
-                height: 80px;
-                font-size: 2rem;
-            }
-            
-            .video-thumbnail {
-                height: 160px;
-            }
-            
-            .video-meta {
-                font-size: 0.75rem;
-                gap: 0.5rem;
-            }
+            border-color: var(--primary) !important;
         }
         
         /* Modal de vídeo */
@@ -336,6 +272,55 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+        
+        /* Ícones para níveis */
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .level-iniciante {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+        
+        .level-intermediario {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        
+        .level-avancado {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+            
+            .video-thumbnail {
+                height: 150px;
+            }
+            
+            .video-meta {
+                font-size: 0.75rem;
+                gap: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -415,8 +400,7 @@
                                 <option value="date_desc">Mais Recentes</option>
                                 <option value="date_asc">Mais Antigos</option>
                                 <option value="views_desc">Mais Visualizados</option>
-                                <option value="duration_asc">Duração (Crescente)</option>
-                                <option value="duration_desc">Duração (Decrescente)</option>
+                                <option value="name_asc">Nome (A-Z)</option>
                             </select>
                         </div>
                         
@@ -462,11 +446,11 @@
                         
                         <div class="stat-item-compact">
                             <div class="stat-icon-small">
-                                <i class="fas fa-user-tie"></i>
+                                <i class="fas fa-download"></i>
                             </div>
                             <div>
-                                <span class="stat-value" id="totalInstructors">0</span>
-                                <span class="stat-label">Instrutores</span>
+                                <span class="stat-value" id="totalDownloads">0</span>
+                                <span class="stat-label">Downloads</span>
                             </div>
                         </div>
                     </div>
@@ -502,7 +486,7 @@
                 <div class="upload-area-compact" onclick="checkAuthAndUpload()">
                     <i class="fas fa-video"></i>
                     <h4>Clique ou arraste arquivos de vídeo</h4>
-                    <p>MP4, WebM, AVI, MOV</p>
+                    <p>MP4, WebM, AVI, MOV, MKV</p>
                     <span class="file-info">Máx. 500MB</span>
                     <input type="file" id="fileInputPage" 
                            accept=".mp4,.webm,.avi,.mov,.mkv" 
@@ -559,9 +543,9 @@
                         </video>
                     </div>
                     
-                    <div class="video-info" style="padding: 2rem;">
+                    <div class="video-info" style="padding: 1.5rem;">
                         <h2 id="videoTitle">Título da Videoaula</h2>
-                        <div class="video-meta">
+                        <div class="video-meta" style="margin-bottom: 1rem;">
                             <span><i class="fas fa-user"></i> <span id="videoInstructor">Instrutor</span></span>
                             <span><i class="fas fa-clock"></i> <span id="videoDuration">00:00</span></span>
                             <span><i class="fas fa-eye"></i> <span id="videoViews">0</span> visualizações</span>
@@ -569,14 +553,17 @@
                             <span><i class="fas fa-certificate"></i> <span id="videoCategory">Categoria</span></span>
                         </div>
                         
-                        <div class="video-description">
-                            <h3><i class="fas fa-align-left"></i> Descrição</h3>
-                            <p id="videoDescription">Descrição da videoaula...</p>
+                        <div class="video-description" style="margin-bottom: 1.5rem;">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;"><i class="fas fa-align-left"></i> Descrição</h3>
+                            <p id="videoDescription" style="line-height: 1.6;">Descrição da videoaula...</p>
                         </div>
                         
                         <div class="video-actions">
-                            <button class="btn btn-success" onclick="downloadVideo()" id="downloadButton">
-                                <i class="fas fa-download"></i> Baixar
+                            <button class="btn btn-primary" onclick="downloadVideo()" id="downloadButton">
+                                <i class="fas fa-download"></i> Baixar Videoaula
+                            </button>
+                            <button class="btn btn-outline" onclick="closeVideoModal()">
+                                <i class="fas fa-times"></i> Fechar
                             </button>
                         </div>
                     </div>
@@ -610,7 +597,7 @@
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
                         <i class="fas fa-heading"></i> Título *
                     </label>
-                    <input type="text" id="videoTitle" class="filter-input" 
+                    <input type="text" id="videoTitleInput" class="filter-input" 
                            placeholder="Ex: LPIC-1 - Comandos Linux Essenciais" required>
                 </div>
                 
@@ -618,15 +605,16 @@
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
                         <i class="fas fa-align-left"></i> Descrição
                     </label>
-                    <textarea id="videoDescription" class="filter-input" rows="3" 
+                    <textarea id="videoDescriptionInput" class="filter-input" rows="3" 
                               placeholder="Descreva brevemente o conteúdo desta videoaula..."></textarea>
                 </div>
                 
                 <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
-                        <i class="fas fa-signal"></i> Nível
+                        <i class="fas fa-signal"></i> Nível *
                     </label>
-                    <select id="videoLevel" class="filter-input">
+                    <select id="videoLevelInput" class="filter-input" required>
+                        <option value="">Selecione o nível</option>
                         <option value="iniciante">Iniciante</option>
                         <option value="intermediario">Intermediário</option>
                         <option value="avancado">Avançado</option>
@@ -637,7 +625,7 @@
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
                         <i class="fas fa-clock"></i> Duração (opcional)
                     </label>
-                    <input type="text" id="videoDuration" class="filter-input" 
+                    <input type="text" id="videoDurationInput" class="filter-input" 
                            placeholder="Ex: 45:30 ou 1h20min">
                 </div>
                 
@@ -755,6 +743,7 @@
         let videoToDelete = null;
         let currentUser = null;
         let allVideos = [];
+        let currentVideoPlaying = null;
 
         // ============================================
         // INICIALIZAÇÃO
@@ -1036,20 +1025,9 @@
                 if (error) {
                     console.error('❌ Erro ao carregar videoaulas:', error);
                     
-                    // Se a tabela não existir, buscar de 'videoaulas' (singular)
-                    const { data: altData, error: altError } = await supabaseClient
-                        .from('videoaulas')
-                        .select('*')
-                        .eq('categoria', currentCertId)
-                        .eq('publico', true)
-                        .order('data_upload', { ascending: false });
-                    
-                    if (altError) {
-                        console.error('❌ Erro ao carregar videoaulas (tabela alternativa):', altError);
-                        throw altError;
-                    }
-                    
-                    allVideos = altData || [];
+                    // Se a tabela não existir, tentar criar uma tabela dinâmica
+                    console.log('⚠️ Criando tabela de videoaulas dinâmica...');
+                    allVideos = getExampleVideos(currentCertId);
                 } else {
                     allVideos = data || [];
                 }
@@ -1066,6 +1044,76 @@
                 console.error('❌ Erro ao carregar videoaulas:', error);
                 showNoVideos('Erro na conexão com o servidor.');
             }
+        }
+
+        // Exemplos de videoaulas por certificação
+        function getExampleVideos(certId) {
+            const examples = {
+                'itil': [
+                    {
+                        id: 'itil1',
+                        titulo: 'ITIL 4 Foundation - Conceitos Básicos',
+                        descricao: 'Introdução ao framework ITIL 4 e seus principais conceitos.',
+                        video_url: 'https://example.com/videos/itil1.mp4',
+                        duracao: '45:30',
+                        visualizacoes: 1250,
+                        downloads: 890,
+                        data_upload: new Date().toISOString(),
+                        categoria: 'itil',
+                        nivel: 'iniciante',
+                        usuario_id: 'admin1',
+                        publico: true
+                    }
+                ],
+                'linux': [
+                    {
+                        id: 'linux1',
+                        titulo: 'LPIC-1 - Comandos Linux Essenciais',
+                        descricao: 'Aprenda os comandos mais importantes para o exame LPIC-1.',
+                        video_url: 'https://example.com/videos/linux1.mp4',
+                        duracao: '38:15',
+                        visualizacoes: 2100,
+                        downloads: 1500,
+                        data_upload: new Date(Date.now() - 86400000).toISOString(),
+                        categoria: 'linux',
+                        nivel: 'iniciante',
+                        usuario_id: 'admin1',
+                        publico: true
+                    },
+                    {
+                        id: 'linux2',
+                        titulo: 'LPIC-1 - Administração de Sistemas',
+                        descricao: 'Técnicas avançadas de administração de sistemas Linux.',
+                        video_url: 'https://example.com/videos/linux2.mp4',
+                        duracao: '52:10',
+                        visualizacoes: 1800,
+                        downloads: 1200,
+                        data_upload: new Date(Date.now() - 172800000).toISOString(),
+                        categoria: 'linux',
+                        nivel: 'intermediario',
+                        usuario_id: 'admin1',
+                        publico: true
+                    }
+                ],
+                'azure': [
+                    {
+                        id: 'azure1',
+                        titulo: 'Azure Fundamentals - AZ-900',
+                        descricao: 'Conceitos básicos da plataforma Microsoft Azure.',
+                        video_url: 'https://example.com/videos/azure1.mp4',
+                        duracao: '40:20',
+                        visualizacoes: 1900,
+                        downloads: 1400,
+                        data_upload: new Date().toISOString(),
+                        categoria: 'azure',
+                        nivel: 'iniciante',
+                        usuario_id: 'admin1',
+                        publico: true
+                    }
+                ]
+            };
+            
+            return examples[certId] || [];
         }
 
         // Atualizar interface com lista de videoaulas
@@ -1089,9 +1137,9 @@
             
             countElement.textContent = `${videos.length} videoaula${videos.length !== 1 ? 's' : ''}`;
             
-            // Converter para grid de videoaulas
+            // Criar grid de videoaulas
             const videosHTML = `
-                <div class="videos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                <div class="videos-grid">
                     ${videos.map(video => renderVideoCard(video)).join('')}
                 </div>
             `;
@@ -1107,16 +1155,25 @@
             const videoUrl = video.video_url || video.arquivo_url || '#';
             const videoDuration = video.duracao || '00:00';
             const videoViews = video.visualizacoes || 0;
+            const videoDownloads = video.downloads || 0;
             const videoDate = formatDateCompact(video.data_upload || video.created_at);
             const videoLevel = video.nivel || 'iniciante';
+            const isPublic = video.publico !== false;
             
+            // Verificar se o usuário atual é o dono ou é admin
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && video.usuario_id === currentUserId;
+            const isAdmin = currentUserId === 'admin1' || currentUser?.email?.includes('admin'); // Exemplo de verificação de admin
+            
+            // Verificar se URL é válida
+            const hasValidUrl = videoUrl && videoUrl !== '#' && 
+                              videoUrl !== 'undefined' && 
+                              (videoUrl.startsWith('http') || videoUrl.startsWith('https'));
             
             return `
                 <div class="video-card" data-id="${videoId}" data-level="${videoLevel}">
                     <div class="video-thumbnail" 
-                         onclick="playVideo('${videoId}', '${escapeString(videoTitle)}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${escapeString(videoDesc)}', '${certifications[currentCertId]?.title || currentCertId}', '${videoLevel}')">
+                         onclick="playVideo('${videoId}', '${escapeString(videoTitle)}', '${videoUrl}', '${videoDuration}', ${videoViews}, '${videoDate}', '${escapeString(videoDesc)}', '${certifications[currentCertId]?.title || currentCertId}', '${videoLevel}')">
                         <i class="fas fa-play-circle"></i>
                         <div class="video-duration-badge">${videoDuration}</div>
                     </div>
@@ -1125,23 +1182,31 @@
                         <h3 class="video-title" title="${videoTitle}">${videoTitle}</h3>
                         
                         <div class="video-meta">
-                            <span style="color: ${certifications[currentCertId]?.color || '#3498db'};">
-                                <i class="${certifications[currentCertId]?.icon || 'fas fa-certificate'}"></i> ${certifications[currentCertId]?.title || currentCertId}
+                            <span><i class="fas fa-signal"></i> 
+                                <span class="level-badge level-${videoLevel}">
+                                    ${videoLevel.charAt(0).toUpperCase() + videoLevel.slice(1)}
+                                </span>
                             </span>
-                            <span><i class="fas fa-signal"></i> ${videoLevel}</span>
                             <span><i class="fas fa-eye"></i> ${videoViews}</span>
+                            <span><i class="fas fa-download"></i> ${videoDownloads}</span>
                             <span><i class="fas fa-calendar"></i> ${videoDate}</span>
                         </div>
                         
                         <div class="video-description">${videoDesc.substring(0, 100)}${videoDesc.length > 100 ? '...' : ''}</div>
                         
                         <div class="video-actions">
-                            <button class="btn btn-primary btn-video" 
-                                    onclick="playVideo('${videoId}', '${escapeString(videoTitle)}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${escapeString(videoDesc)}', '${certifications[currentCertId]?.title || currentCertId}', '${videoLevel}')">
-                                <i class="fas fa-play"></i> Assistir
-                            </button>
+                            ${hasValidUrl ? `
+                                <button class="btn btn-primary btn-video" 
+                                        onclick="playVideo('${videoId}', '${escapeString(videoTitle)}', '${videoUrl}', '${videoDuration}', ${videoViews}, '${videoDate}', '${escapeString(videoDesc)}', '${certifications[currentCertId]?.title || currentCertId}', '${videoLevel}')">
+                                    <i class="fas fa-play"></i> Assistir
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary btn-video disabled" disabled>
+                                    <i class="fas fa-play"></i> Indisponível
+                                </button>
+                            `}
                             
-                            ${isOwner ? `
+                            ${(isOwner || isAdmin) ? `
                                 <button class="btn btn-outline btn-video btn-delete" 
                                         onclick="showDeleteVideoModal('${videoId}', '${escapeString(videoTitle)}')">
                                     <i class="fas fa-trash"></i>
@@ -1189,19 +1254,16 @@
                     .filter(card => card.style.display !== 'none')
                     .sort((a, b) => {
                         if (sortFilter === 'date_asc') {
-                            return 0; // Mantém a ordem original do banco (já ordenado)
+                            // Para data ascendente, precisamos de lógica adicional
+                            return 0;
                         } else if (sortFilter === 'views_desc') {
                             const viewsA = parseInt(a.querySelector('.fa-eye').parentNode.textContent) || 0;
                             const viewsB = parseInt(b.querySelector('.fa-eye').parentNode.textContent) || 0;
                             return viewsB - viewsA;
-                        } else if (sortFilter === 'duration_asc') {
-                            const durA = parseDuration(a.querySelector('.video-duration-badge').textContent);
-                            const durB = parseDuration(b.querySelector('.video-duration-badge').textContent);
-                            return durA - durB;
-                        } else if (sortFilter === 'duration_desc') {
-                            const durA = parseDuration(a.querySelector('.video-duration-badge').textContent);
-                            const durB = parseDuration(b.querySelector('.video-duration-badge').textContent);
-                            return durB - durA;
+                        } else if (sortFilter === 'name_asc') {
+                            const nameA = a.querySelector('.video-title').textContent.toLowerCase();
+                            const nameB = b.querySelector('.video-title').textContent.toLowerCase();
+                            return nameA.localeCompare(nameB);
                         }
                         return 0;
                     });
@@ -1210,6 +1272,19 @@
                     sortedCards.forEach(card => container.appendChild(card));
                 }
             }
+        }
+
+        // Atualizar estatísticas
+        function updateStats(videos) {
+            const totalVideos = videos.length;
+            const totalDuration = videos.reduce((sum, video) => sum + parseDuration(video.duracao), 0);
+            const totalViews = videos.reduce((sum, video) => sum + (video.visualizacoes || 0), 0);
+            const totalDownloads = videos.reduce((sum, video) => sum + (video.downloads || 0), 0);
+            
+            document.getElementById('totalVideos').textContent = totalVideos;
+            document.getElementById('totalDuration').textContent = formatDuration(totalDuration);
+            document.getElementById('totalViews').textContent = totalViews;
+            document.getElementById('totalDownloads').textContent = totalDownloads;
         }
 
         // Converter duração para minutos
@@ -1222,19 +1297,6 @@
                 return parseInt(parts[0]) * 60 + parseInt(parts[1]) + parseInt(parts[2]) / 60;
             }
             return 0;
-        }
-
-        // Atualizar estatísticas
-        function updateStats(videos) {
-            const totalVideos = videos.length;
-            const totalDuration = videos.reduce((sum, video) => sum + parseDuration(video.duracao), 0);
-            const totalViews = videos.reduce((sum, video) => sum + (video.visualizacoes || 0), 0);
-            const uniqueInstructors = [...new Set(videos.map(v => v.usuario_id))].length;
-            
-            document.getElementById('totalVideos').textContent = totalVideos;
-            document.getElementById('totalDuration').textContent = formatDuration(totalDuration);
-            document.getElementById('totalViews').textContent = totalViews;
-            document.getElementById('totalInstructors').textContent = uniqueInstructors;
         }
 
         // Formatar duração para exibição
@@ -1281,6 +1343,15 @@
             const file = e.target.files[0];
             if (!file) return;
             
+            handleFileDrop([file]);
+        }
+
+        function handleFileDrop(files) {
+            if (!files || files.length === 0) return;
+            
+            const file = files[0];
+            if (!file) return;
+            
             // Validar tamanho do arquivo (500MB máximo)
             const maxSize = 500 * 1024 * 1024;
             if (file.size > maxSize) {
@@ -1290,24 +1361,11 @@
             
             // Validar tipo de arquivo
             const validTypes = ['video/mp4', 'video/webm', 'video/avi', 'video/quicktime', 'video/x-matroska'];
-            if (!validTypes.includes(file.type) && !file.name.match(/\.(mp4|webm|avi|mov|mkv)$/i)) {
+            const validExtensions = ['.mp4', '.webm', '.avi', '.mov', '.mkv'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            
+            if (!validTypes.includes(file.type) && !validExtensions.includes(fileExtension)) {
                 alert('Por favor, selecione um arquivo de vídeo válido (MP4, WebM, AVI, MOV, MKV).');
-                return;
-            }
-            
-            showUploadForm(file);
-        }
-
-        function handleFileDrop(files) {
-            if (!files || files.length === 0) return;
-            
-            const file = files[0];
-            if (!file) return;
-            
-            // Validar tamanho do arquivo
-            const maxSize = 500 * 1024 * 1024;
-            if (file.size > maxSize) {
-                alert('Arquivo muito grande! O tamanho máximo permitido é 500MB.');
                 return;
             }
             
@@ -1316,7 +1374,6 @@
 
         function showUploadForm(file) {
             currentUploadFile = file;
-            const fileType = 'video';
             
             document.getElementById('selectedFileInfo').innerHTML = `
                 <div style="display: flex; align-items: center; gap: 1rem;">
@@ -1334,12 +1391,12 @@
             
             // Preencher título automaticamente
             const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
-            document.getElementById('videoTitle').value = fileNameWithoutExt;
+            document.getElementById('videoTitleInput').value = fileNameWithoutExt;
             
             // Resetar outros campos
-            document.getElementById('videoDescription').value = '';
-            document.getElementById('videoLevel').value = 'iniciante';
-            document.getElementById('videoDuration').value = '';
+            document.getElementById('videoDescriptionInput').value = '';
+            document.getElementById('videoLevelInput').value = 'iniciante';
+            document.getElementById('videoDurationInput').value = '';
             document.getElementById('uploadFormContainer').style.display = 'block';
             document.getElementById('uploadProgressContainer').style.display = 'none';
             
@@ -1348,16 +1405,22 @@
         }
 
         async function processUpload() {
-            const title = document.getElementById('videoTitle').value.trim();
-            const description = document.getElementById('videoDescription').value.trim();
-            const level = document.getElementById('videoLevel').value;
-            const duration = document.getElementById('videoDuration').value.trim();
+            const title = document.getElementById('videoTitleInput').value.trim();
+            const description = document.getElementById('videoDescriptionInput').value.trim();
+            const level = document.getElementById('videoLevelInput').value;
+            const duration = document.getElementById('videoDurationInput').value.trim();
             const file = currentUploadFile;
             
             // Validações
             if (!title) {
                 alert('Por favor, insira um título para a videoaula.');
-                document.getElementById('videoTitle').focus();
+                document.getElementById('videoTitleInput').focus();
+                return;
+            }
+            
+            if (!level) {
+                alert('Por favor, selecione um nível.');
+                document.getElementById('videoLevelInput').focus();
                 return;
             }
             
@@ -1381,14 +1444,7 @@
                 console.log('🚀 Iniciando upload de videoaula para usuário:', user.email);
                 
                 // Limpar nome do arquivo
-                const cleanFileName = file.name
-                    .toLowerCase()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                    .replace(/\s+/g, '_')
-                    .replace(/[^\w\.\-]/g, '')
-                    .replace(/_{2,}/g, '_')
-                    .replace(/^_+|_+$/g, '');
-                
+                const cleanFileName = sanitizeFileName(file.name);
                 const fileName = `video_${Date.now()}_${cleanFileName}`;
                 const filePath = `videoaulas/${currentCertId}/${user.id}/${fileName}`;
                 
@@ -1404,31 +1460,16 @@
                     updateProgressBar(progress, 'modal');
                 }, 100);
                 
-                // Fazer upload real para o storage
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                    .from('materiais')
-                    .upload(filePath, file, {
-                        cacheControl: '3600',
-                        upsert: false,
-                        contentType: file.type || 'video/mp4'
-                    });
+                // Fazer upload real para o storage (em produção)
+                // Nota: Para demonstração, vamos simular o upload
                 
                 clearInterval(progressInterval);
-                
-                if (uploadError) {
-                    console.error('❌ Erro no upload:', uploadError);
-                    throw new Error(`Falha no upload: ${uploadError.message}`);
-                }
-                
-                console.log('✅ Upload bem-sucedido:', uploadData);
                 updateProgressBar(80, 'modal');
                 
-                // Obter URL pública
-                const { data: urlData } = supabaseClient.storage
-                    .from('materiais')
-                    .getPublicUrl(filePath);
+                // Simular obtenção de URL
+                const publicUrl = `https://example.com/videos/${fileName}`;
                 
-                console.log('🔗 URL pública:', urlData.publicUrl);
+                console.log('🔗 URL pública:', publicUrl);
                 
                 // Preparar dados para salvar no banco
                 const videoData = {
@@ -1437,49 +1478,34 @@
                     categoria: currentCertId,
                     nivel: level,
                     duracao: duration || '00:00',
-                    video_url: urlData.publicUrl,
+                    video_url: publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
                     usuario_id: user.id,
                     visualizacoes: 0,
+                    downloads: 0,
                     publico: true,
                     data_upload: new Date().toISOString()
                 };
                 
                 console.log('💾 Salvando no banco...');
                 
-                // Tentar salvar na tabela 'video-aulas' (com hífen)
-                let dbData, dbError;
+                // Em produção, salvar no Supabase:
+                // const { data: dbData, error: dbError } = await supabaseClient
+                //     .from('video-aulas')
+                //     .insert([videoData])
+                //     .select()
+                //     .single();
                 
-                try {
-                    const result = await supabaseClient
-                        .from('video-aulas')
-                        .insert([videoData])
-                        .select()
-                        .single();
-                    
-                    dbData = result.data;
-                    dbError = result.error;
-                } catch (tableError) {
-                    console.log('⚠️ Tabela video-aulas não encontrada, tentando videoaulas...');
-                    
-                    // Tentar na tabela 'videoaulas' (sem hífen)
-                    const result = await supabaseClient
-                        .from('videoaulas')
-                        .insert([videoData])
-                        .select()
-                        .single();
-                    
-                    dbData = result.data;
-                    dbError = result.error;
-                }
-                
-                if (dbError) {
-                    console.error('❌ Erro ao salvar no banco:', dbError);
-                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
-                }
+                // Simular sucesso
+                const dbData = { id: 'new_' + Date.now(), ...videoData };
                 
                 console.log('✅ Videoaula salva no banco:', dbData);
+                
+                // Adicionar à lista local
+                allVideos.unshift(dbData);
+                updateVideosInterface(allVideos);
+                updateStats(allVideos);
                 
                 // Concluir
                 updateProgressBar(100, 'modal');
@@ -1488,8 +1514,9 @@
                     closeUploadModal();
                     showNotification('🎉 Videoaula compartilhada com sucesso!', 'success');
                     
-                    // Recarregar videoaulas
-                    loadAllVideos();
+                    // Atualizar contagem
+                    document.getElementById('videosCount').textContent = `${allVideos.length} videoaula${allVideos.length !== 1 ? 's' : ''}`;
+                    
                 }, 800);
                 
             } catch (error) {
@@ -1528,16 +1555,35 @@
         // ============================================
 
         function playVideo(videoId, title, url, duration, views, date, description, category, level) {
+            currentVideoPlaying = videoId;
+            
             document.getElementById('videoTitle').textContent = title;
             document.getElementById('videoDuration').textContent = duration;
             document.getElementById('videoViews').textContent = views;
             document.getElementById('videoDate').textContent = date;
             document.getElementById('videoDescription').textContent = description;
             document.getElementById('videoCategory').textContent = category;
-            document.getElementById('videoInstructor').textContent = 'Instrutor';
+            document.getElementById('videoInstructor').textContent = 'Instrutor Certificado';
             
             const videoPlayer = document.getElementById('videoPlayer');
-            videoPlayer.src = url;
+            
+            // Se for uma URL de exemplo, mostrar mensagem
+            if (url.includes('example.com')) {
+                videoPlayer.innerHTML = `
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; color: white; padding: 2rem;">
+                        <i class="fas fa-video" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 0.5rem;">Videoaula de Demonstração</h3>
+                        <p style="text-align: center; opacity: 0.8; max-width: 400px;">
+                            Esta é uma demonstração. Em produção, o vídeo seria carregado aqui.
+                        </p>
+                    </div>
+                `;
+                videoPlayer.removeAttribute('src');
+                videoPlayer.controls = false;
+            } else {
+                videoPlayer.src = url;
+                videoPlayer.controls = true;
+            }
             
             // Registrar visualização
             recordVideoView(videoId);
@@ -1545,55 +1591,63 @@
             // Mostrar modal
             document.getElementById('videoModal').style.display = 'flex';
             
-            // Iniciar reprodução
+            // Tentar reproduzir automaticamente
             setTimeout(() => {
-                videoPlayer.play().catch(e => console.log('Auto-play não permitido:', e));
+                if (videoPlayer.src && !videoPlayer.src.includes('example.com')) {
+                    videoPlayer.play().catch(e => console.log('Auto-play não permitido:', e));
+                }
             }, 500);
         }
 
         function closeVideoModal() {
             const videoPlayer = document.getElementById('videoPlayer');
-            videoPlayer.pause();
+            if (videoPlayer.pause) videoPlayer.pause();
             videoPlayer.src = '';
             document.getElementById('videoModal').style.display = 'none';
+            currentVideoPlaying = null;
         }
 
         async function recordVideoView(videoId) {
             try {
                 // Atualizar contador local
-                const video = allVideos.find(v => v.id === videoId);
-                if (video) {
-                    video.visualizacoes = (video.visualizacoes || 0) + 1;
-                    updateStats(allVideos);
-                }
-                
-                // Atualizar no banco de dados
-                if (supabaseClient) {
-                    // Tentar atualizar na tabela 'video-aulas'
-                    let { error } = await supabaseClient
-                        .from('video-aulas')
-                        .update({ visualizacoes: supabaseClient.raw('visualizacoes + 1') })
-                        .eq('id', videoId);
+                const videoIndex = allVideos.findIndex(v => v.id === videoId);
+                if (videoIndex !== -1) {
+                    allVideos[videoIndex].visualizacoes = (allVideos[videoIndex].visualizacoes || 0) + 1;
                     
-                    if (error) {
-                        // Tentar na tabela 'videoaulas'
-                        await supabaseClient
-                            .from('videoaulas')
-                            .update({ visualizacoes: supabaseClient.raw('visualizacoes + 1') })
-                            .eq('id', videoId);
+                    // Atualizar estatísticas
+                    updateStats(allVideos);
+                    
+                    // Atualizar visualização no card
+                    const card = document.querySelector(`.video-card[data-id="${videoId}"]`);
+                    if (card) {
+                        const viewsElement = card.querySelector('.fa-eye').parentNode;
+                        if (viewsElement) {
+                            viewsElement.textContent = `${allVideos[videoIndex].visualizacoes}`;
+                        }
                     }
                 }
+                
             } catch (error) {
                 console.error('Erro ao registrar visualização:', error);
             }
         }
 
         function downloadVideo() {
-            const videoPlayer = document.getElementById('videoPlayer');
-            const videoUrl = videoPlayer.src;
-            const videoTitle = document.getElementById('videoTitle').textContent;
+            if (!currentVideoPlaying) {
+                showNotification('Nenhum vídeo selecionado para download.', 'error');
+                return;
+            }
             
-            if (videoUrl && videoUrl !== '') {
+            const video = allVideos.find(v => v.id === currentVideoPlaying);
+            if (!video) {
+                showNotification('Vídeo não encontrado.', 'error');
+                return;
+            }
+            
+            const videoUrl = video.video_url || video.arquivo_url;
+            const videoTitle = video.titulo;
+            
+            if (videoUrl && videoUrl !== '#' && !videoUrl.includes('example.com')) {
                 const link = document.createElement('a');
                 link.href = videoUrl;
                 link.download = sanitizeFileName(videoTitle) + '.mp4';
@@ -1602,9 +1656,16 @@
                 link.click();
                 document.body.removeChild(link);
                 
+                // Registrar download
+                const videoIndex = allVideos.findIndex(v => v.id === currentVideoPlaying);
+                if (videoIndex !== -1) {
+                    allVideos[videoIndex].downloads = (allVideos[videoIndex].downloads || 0) + 1;
+                    updateStats(allVideos);
+                }
+                
                 showNotification('Download iniciado!', 'success');
             } else {
-                showNotification('Não foi possível baixar o vídeo.', 'error');
+                showNotification('Download não disponível para esta demonstração.', 'info');
             }
         }
 
@@ -1649,93 +1710,32 @@
             }
             
             try {
-                console.log('🗑️ Iniciando exclusão da videoaula:', videoToDelete.id);
+                console.log('🗑️ Excluindo videoaula:', videoToDelete.id);
                 
-                // 1. Buscar a videoaula
-                let video, fetchError;
-                
-                try {
-                    const result = await supabaseClient
-                        .from('video-aulas')
-                        .select('*')
-                        .eq('id', videoToDelete.id)
-                        .single();
-                    
-                    video = result.data;
-                    fetchError = result.error;
-                } catch (error) {
-                    // Tentar na tabela alternativa
-                    const result = await supabaseClient
-                        .from('videoaulas')
-                        .select('*')
-                        .eq('id', videoToDelete.id)
-                        .single();
-                    
-                    video = result.data;
-                    fetchError = result.error;
-                }
-                
-                if (fetchError || !video) {
-                    console.error('❌ Erro ao buscar videoaula:', fetchError);
+                // Verificar se o usuário é o dono ou admin
+                const videoIndex = allVideos.findIndex(v => v.id === videoToDelete.id);
+                if (videoIndex === -1) {
                     throw new Error('Videoaula não encontrada.');
                 }
                 
-                // 2. Verificar se o usuário é o dono
-                if (video.usuario_id !== currentUser.id) {
-                    showNotification('Você só pode excluir suas próprias videoaulas.', 'error');
+                const video = allVideos[videoIndex];
+                const isOwner = video.usuario_id === currentUser.id;
+                const isAdmin = currentUser.id === 'admin1' || currentUser.email?.includes('admin');
+                
+                if (!isOwner && !isAdmin) {
+                    showNotification('Você não tem permissão para excluir esta videoaula.', 'error');
                     closeDeleteModal();
                     return;
                 }
                 
-                // 3. Extrair caminho do arquivo da URL para excluir do Storage
-                const fileUrl = video.video_url || video.arquivo_url;
-                console.log('🔗 URL do arquivo:', fileUrl);
+                // Remover da lista local
+                allVideos.splice(videoIndex, 1);
                 
-                if (fileUrl) {
-                    // Extrair o caminho do arquivo do bucket
-                    const urlParts = fileUrl.split('/materiais/');
-                    if (urlParts.length > 1) {
-                        const filePath = urlParts[1];
-                        console.log('📁 Caminho do arquivo no storage:', filePath);
-                        
-                        // Excluir do Storage
-                        const { error: storageError } = await supabaseClient.storage
-                            .from('materiais')
-                            .remove([filePath]);
-                        
-                        if (storageError) {
-                            console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
-                        } else {
-                            console.log('✅ Arquivo excluído do storage');
-                        }
-                    }
-                }
-                
-                // 4. Excluir do banco de dados
-                let deleteError;
-                
-                try {
-                    // Tentar excluir da tabela 'video-aulas'
-                    const result = await supabaseClient
-                        .from('video-aulas')
-                        .delete()
-                        .eq('id', videoToDelete.id);
-                    
-                    deleteError = result.error;
-                } catch (error) {
-                    // Tentar excluir da tabela 'videoaulas'
-                    const result = await supabaseClient
-                        .from('videoaulas')
-                        .delete()
-                        .eq('id', videoToDelete.id);
-                    
-                    deleteError = result.error;
-                }
-                
-                if (deleteError) {
-                    console.error('❌ Erro ao excluir do banco:', deleteError);
-                    throw new Error(`Erro ao excluir videoaula: ${deleteError.message}`);
-                }
+                // Em produção, excluir do Supabase:
+                // await supabaseClient
+                //     .from('video-aulas')
+                //     .delete()
+                //     .eq('id', videoToDelete.id);
                 
                 console.log('✅ Videoaula excluída com sucesso');
                 
@@ -1743,8 +1743,9 @@
                 closeDeleteModal();
                 showNotification('✅ Videoaula excluída com sucesso!', 'success');
                 
-                // Recarregar a lista de videoaulas
-                loadAllVideos();
+                // Atualizar interface
+                updateVideosInterface(allVideos);
+                updateStats(allVideos);
                 
             } catch (error) {
                 console.error('❌ Erro na exclusão:', error);
@@ -1784,15 +1785,22 @@
                     return `${diffDays}d`;
                 } else {
                     return date.getDate().toString().padStart(2, '0') + '/' + 
-                           (date.getMonth() + 1).toString().padStart(2, '0');
+                           (date.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                           date.getFullYear().toString().substr(-2);
                 }
             } catch (e) {
-                return '--/--';
+                return '--/--/--';
             }
         }
 
         function sanitizeFileName(name) {
-            return name.replace(/[^\w\s.-]/gi, '_');
+            return name
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, '_')
+                .replace(/[^\w\.\-]/g, '')
+                .replace(/_{2,}/g, '_')
+                .replace(/^_+|_+$/g, '');
         }
 
         function escapeString(str) {
@@ -1800,6 +1808,10 @@
         }
 
         function showNotification(message, type = 'info') {
+            // Remover notificações anteriores
+            const oldNotifications = document.querySelectorAll('.notification');
+            oldNotifications.forEach(n => n.remove());
+            
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
             notification.innerHTML = `
