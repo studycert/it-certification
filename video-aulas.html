@@ -300,6 +300,19 @@
             color: #e74c3c;
         }
         
+        /* Botão de exclusão visível */
+        .btn-delete {
+            background: rgba(231, 76, 60, 0.1) !important;
+            border: 2px solid #e74c3c !important;
+            color: #e74c3c !important;
+            transition: all 0.3s;
+        }
+        
+        .btn-delete:hover {
+            background: #e74c3c !important;
+            color: white !important;
+        }
+        
         /* Responsividade */
         @media (max-width: 768px) {
             .videos-grid {
@@ -762,6 +775,7 @@
                 
                 // Obter certificação da URL
                 currentCertId = getUrlParameter('cert') || 'itil';
+                console.log('📌 Certificação atual:', currentCertId);
                 
                 // Carregar informações da certificação
                 loadCertification(currentCertId);
@@ -906,6 +920,8 @@
             
             if (window.authManager.isAuthenticated()) {
                 currentUser = window.authManager.getUser();
+                console.log('👤 Usuário logado:', currentUser);
+                
                 const userName = currentUser.user_metadata?.full_name || 
                                 currentUser.email?.split('@')[0] || 
                                 'Usuário';
@@ -976,6 +992,8 @@
 
         // Carregar informações da certificação com banner personalizado
         function loadCertification(certId) {
+            console.log('🎨 Carregando certificação:', certId);
+            
             const cert = certifications[certId] || certifications['itil'];
             
             // Atualizar elementos da página
@@ -998,6 +1016,8 @@
             hero.className = 'certification-hero ' + cert.bannerClass;
             
             document.title = `StudyCert Videoaulas - ${cert.title}`;
+            
+            console.log('✅ Certificação carregada:', cert.title);
         }
 
         // ============================================
@@ -1014,8 +1034,8 @@
                     return;
                 }
                 
-                // Buscar TODOS os vídeos da categoria atual
-                const { data, error } = await supabaseClient
+                // Tentar buscar da tabela video-aulas (com hífen)
+                let { data, error } = await supabaseClient
                     .from('video-aulas')
                     .select('*')
                     .eq('categoria', currentCertId)
@@ -1023,16 +1043,34 @@
                     .order('data_upload', { ascending: false });
                 
                 if (error) {
-                    console.error('❌ Erro ao carregar videoaulas:', error);
+                    console.log('⚠️ Tabela video-aulas não encontrada, tentando videoaulas...');
                     
-                    // Se a tabela não existir, tentar criar uma tabela dinâmica
-                    console.log('⚠️ Criando tabela de videoaulas dinâmica...');
-                    allVideos = getExampleVideos(currentCertId);
-                } else {
-                    allVideos = data || [];
+                    // Tentar da tabela videoaulas (sem hífen)
+                    const result = await supabaseClient
+                        .from('videoaulas')
+                        .select('*')
+                        .eq('categoria', currentCertId)
+                        .eq('publico', true)
+                        .order('data_upload', { ascending: false });
+                    
+                    data = result.data;
+                    error = result.error;
                 }
                 
-                console.log(`✅ ${allVideos.length} videoaulas carregadas`);
+                if (error) {
+                    console.error('❌ Erro ao carregar videoaulas:', error);
+                    
+                    // Verificar se a tabela existe, se não, criar automaticamente
+                    if (error.message.includes('relation') && error.message.includes('does not exist')) {
+                        console.log('📋 Criando tabela de videoaulas local...');
+                        allVideos = getLocalVideos(currentCertId);
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    allVideos = data || [];
+                    console.log(`✅ ${allVideos.length} videoaulas carregadas do banco`);
+                }
                 
                 // Atualizar interface
                 updateVideosInterface(allVideos);
@@ -1046,74 +1084,17 @@
             }
         }
 
-        // Exemplos de videoaulas por certificação
-        function getExampleVideos(certId) {
-            const examples = {
-                'itil': [
-                    {
-                        id: 'itil1',
-                        titulo: 'ITIL 4 Foundation - Conceitos Básicos',
-                        descricao: 'Introdução ao framework ITIL 4 e seus principais conceitos.',
-                        video_url: 'https://example.com/videos/itil1.mp4',
-                        duracao: '45:30',
-                        visualizacoes: 1250,
-                        downloads: 890,
-                        data_upload: new Date().toISOString(),
-                        categoria: 'itil',
-                        nivel: 'iniciante',
-                        usuario_id: 'admin1',
-                        publico: true
-                    }
-                ],
-                'linux': [
-                    {
-                        id: 'linux1',
-                        titulo: 'LPIC-1 - Comandos Linux Essenciais',
-                        descricao: 'Aprenda os comandos mais importantes para o exame LPIC-1.',
-                        video_url: 'https://example.com/videos/linux1.mp4',
-                        duracao: '38:15',
-                        visualizacoes: 2100,
-                        downloads: 1500,
-                        data_upload: new Date(Date.now() - 86400000).toISOString(),
-                        categoria: 'linux',
-                        nivel: 'iniciante',
-                        usuario_id: 'admin1',
-                        publico: true
-                    },
-                    {
-                        id: 'linux2',
-                        titulo: 'LPIC-1 - Administração de Sistemas',
-                        descricao: 'Técnicas avançadas de administração de sistemas Linux.',
-                        video_url: 'https://example.com/videos/linux2.mp4',
-                        duracao: '52:10',
-                        visualizacoes: 1800,
-                        downloads: 1200,
-                        data_upload: new Date(Date.now() - 172800000).toISOString(),
-                        categoria: 'linux',
-                        nivel: 'intermediario',
-                        usuario_id: 'admin1',
-                        publico: true
-                    }
-                ],
-                'azure': [
-                    {
-                        id: 'azure1',
-                        titulo: 'Azure Fundamentals - AZ-900',
-                        descricao: 'Conceitos básicos da plataforma Microsoft Azure.',
-                        video_url: 'https://example.com/videos/azure1.mp4',
-                        duracao: '40:20',
-                        visualizacoes: 1900,
-                        downloads: 1400,
-                        data_upload: new Date().toISOString(),
-                        categoria: 'azure',
-                        nivel: 'iniciante',
-                        usuario_id: 'admin1',
-                        publico: true
-                    }
-                ]
-            };
-            
-            return examples[certId] || [];
+        // Obter vídeos locais (para quando não há banco)
+        function getLocalVideos(certId) {
+            const localVideos = JSON.parse(localStorage.getItem(`studycert_videos_${certId}`)) || [];
+            console.log(`📱 ${localVideos.length} videoaulas carregadas do localStorage`);
+            return localVideos;
+        }
+
+        // Salvar vídeos localmente
+        function saveLocalVideos(certId, videos) {
+            localStorage.setItem(`studycert_videos_${certId}`, JSON.stringify(videos));
+            console.log(`💾 ${videos.length} videoaulas salvas no localStorage`);
         }
 
         // Atualizar interface com lista de videoaulas
@@ -1149,7 +1130,7 @@
 
         // Renderizar card de videoaula
         function renderVideoCard(video) {
-            const videoId = video.id;
+            const videoId = video.id || `local_${Date.now()}_${Math.random()}`;
             const videoTitle = video.titulo || 'Videoaula sem título';
             const videoDesc = video.descricao || 'Sem descrição';
             const videoUrl = video.video_url || video.arquivo_url || '#';
@@ -1162,8 +1143,22 @@
             
             // Verificar se o usuário atual é o dono ou é admin
             const currentUserId = currentUser?.id;
-            const isOwner = currentUserId && video.usuario_id === currentUserId;
-            const isAdmin = currentUserId === 'admin1' || currentUser?.email?.includes('admin'); // Exemplo de verificação de admin
+            const videoUserId = video.usuario_id || video.user_id;
+            const isOwner = currentUserId && videoUserId === currentUserId;
+            
+            // Verificar se é admin (por ID de usuário ou email)
+            const isAdmin = currentUserId === 'admin1' || 
+                          currentUser?.id === 'admin' || 
+                          currentUser?.email?.includes('admin') ||
+                          currentUser?.email === 'superadmin@studycert.com';
+            
+            console.log('🔍 Verificando permissões:', {
+                currentUserId,
+                videoUserId,
+                isOwner,
+                isAdmin,
+                userEmail: currentUser?.email
+            });
             
             // Verificar se URL é válida
             const hasValidUrl = videoUrl && videoUrl !== '#' && 
@@ -1254,8 +1249,7 @@
                     .filter(card => card.style.display !== 'none')
                     .sort((a, b) => {
                         if (sortFilter === 'date_asc') {
-                            // Para data ascendente, precisamos de lógica adicional
-                            return 0;
+                            return 0; // Mantém ordem
                         } else if (sortFilter === 'views_desc') {
                             const viewsA = parseInt(a.querySelector('.fa-eye').parentNode.textContent) || 0;
                             const viewsB = parseInt(b.querySelector('.fa-eye').parentNode.textContent) || 0;
@@ -1443,79 +1437,98 @@
             try {
                 console.log('🚀 Iniciando upload de videoaula para usuário:', user.email);
                 
-                // Limpar nome do arquivo
-                const cleanFileName = sanitizeFileName(file.name);
-                const fileName = `video_${Date.now()}_${cleanFileName}`;
-                const filePath = `videoaulas/${currentCertId}/${user.id}/${fileName}`;
-                
-                console.log('📤 Upload para:', filePath);
-                
-                // Simular progresso
+                // Mostrar progresso simulado
                 let progress = 0;
                 const progressInterval = setInterval(() => {
-                    progress += 3;
-                    if (progress > 70) {
+                    progress += 10;
+                    if (progress >= 90) {
                         clearInterval(progressInterval);
                     }
                     updateProgressBar(progress, 'modal');
-                }, 100);
+                }, 200);
                 
-                // Fazer upload real para o storage (em produção)
-                // Nota: Para demonstração, vamos simular o upload
+                // Criar ID único para o vídeo
+                const videoId = `video_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
                 
-                clearInterval(progressInterval);
-                updateProgressBar(80, 'modal');
-                
-                // Simular obtenção de URL
-                const publicUrl = `https://example.com/videos/${fileName}`;
-                
-                console.log('🔗 URL pública:', publicUrl);
-                
-                // Preparar dados para salvar no banco
+                // Preparar dados do vídeo
                 const videoData = {
+                    id: videoId,
                     titulo: title,
-                    descricao: description || null,
+                    descricao: description || '',
                     categoria: currentCertId,
                     nivel: level,
                     duracao: duration || '00:00',
-                    video_url: publicUrl,
+                    video_url: `#demo_${videoId}`, // URL de demonstração
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
                     usuario_id: user.id,
+                    user_id: user.id,
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
-                    data_upload: new Date().toISOString()
+                    data_upload: new Date().toISOString(),
+                    created_at: new Date().toISOString()
                 };
                 
-                console.log('💾 Salvando no banco...');
+                console.log('📝 Dados do vídeo:', videoData);
                 
-                // Em produção, salvar no Supabase:
-                // const { data: dbData, error: dbError } = await supabaseClient
-                //     .from('video-aulas')
-                //     .insert([videoData])
-                //     .select()
-                //     .single();
+                // Tentar salvar no Supabase primeiro
+                let savedToDatabase = false;
                 
-                // Simular sucesso
-                const dbData = { id: 'new_' + Date.now(), ...videoData };
+                if (supabaseClient) {
+                    try {
+                        // Tentar na tabela video-aulas
+                        const { error: error1 } = await supabaseClient
+                            .from('video-aulas')
+                            .insert([videoData]);
+                        
+                        if (!error1) {
+                            savedToDatabase = true;
+                            console.log('✅ Videoaula salva no Supabase (tabela video-aulas)');
+                        } else {
+                            // Tentar na tabela videoaulas
+                            const { error: error2 } = await supabaseClient
+                                .from('videoaulas')
+                                .insert([videoData]);
+                            
+                            if (!error2) {
+                                savedToDatabase = true;
+                                console.log('✅ Videoaula salva no Supabase (tabela videoaulas)');
+                            } else {
+                                console.warn('⚠️ Não foi possível salvar no Supabase:', error2.message);
+                            }
+                        }
+                    } catch (dbError) {
+                        console.warn('⚠️ Erro ao salvar no Supabase:', dbError.message);
+                    }
+                }
                 
-                console.log('✅ Videoaula salva no banco:', dbData);
+                // Se não salvou no banco, salvar localmente
+                if (!savedToDatabase) {
+                    // Adicionar à lista local
+                    allVideos.unshift(videoData);
+                    
+                    // Salvar no localStorage
+                    saveLocalVideos(currentCertId, allVideos);
+                    
+                    console.log('💾 Videoaula salva localmente');
+                } else {
+                    // Recarregar do banco
+                    await loadAllVideos();
+                }
                 
-                // Adicionar à lista local
-                allVideos.unshift(dbData);
-                updateVideosInterface(allVideos);
-                updateStats(allVideos);
-                
-                // Concluir
+                clearInterval(progressInterval);
                 updateProgressBar(100, 'modal');
                 
                 setTimeout(() => {
                     closeUploadModal();
                     showNotification('🎉 Videoaula compartilhada com sucesso!', 'success');
                     
-                    // Atualizar contagem
-                    document.getElementById('videosCount').textContent = `${allVideos.length} videoaula${allVideos.length !== 1 ? 's' : ''}`;
+                    // Se não salvou no banco, atualizar interface manualmente
+                    if (!savedToDatabase) {
+                        updateVideosInterface(allVideos);
+                        updateStats(allVideos);
+                    }
                     
                 }, 800);
                 
@@ -1567,15 +1580,18 @@
             
             const videoPlayer = document.getElementById('videoPlayer');
             
-            // Se for uma URL de exemplo, mostrar mensagem
-            if (url.includes('example.com')) {
+            // Se for uma URL de demonstração
+            if (url.includes('#demo_') || !url.startsWith('http')) {
                 videoPlayer.innerHTML = `
                     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; color: white; padding: 2rem;">
                         <i class="fas fa-video" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                        <h3 style="margin-bottom: 0.5rem;">Videoaula de Demonstração</h3>
+                        <h3 style="margin-bottom: 0.5rem;">${title}</h3>
                         <p style="text-align: center; opacity: 0.8; max-width: 400px;">
-                            Esta é uma demonstração. Em produção, o vídeo seria carregado aqui.
+                            Esta é uma demonstração da videoaula. Em produção, o vídeo real seria carregado aqui.
                         </p>
+                        <div style="margin-top: 1rem; color: #3498db;">
+                            <i class="fas fa-info-circle"></i> Duração: ${duration}
+                        </div>
                     </div>
                 `;
                 videoPlayer.removeAttribute('src');
@@ -1593,7 +1609,7 @@
             
             // Tentar reproduzir automaticamente
             setTimeout(() => {
-                if (videoPlayer.src && !videoPlayer.src.includes('example.com')) {
+                if (videoPlayer.src && !videoPlayer.src.includes('#demo_')) {
                     videoPlayer.play().catch(e => console.log('Auto-play não permitido:', e));
                 }
             }, 500);
@@ -1603,6 +1619,7 @@
             const videoPlayer = document.getElementById('videoPlayer');
             if (videoPlayer.pause) videoPlayer.pause();
             videoPlayer.src = '';
+            videoPlayer.innerHTML = '';
             document.getElementById('videoModal').style.display = 'none';
             currentVideoPlaying = null;
         }
@@ -1625,6 +1642,9 @@
                             viewsElement.textContent = `${allVideos[videoIndex].visualizacoes}`;
                         }
                     }
+                    
+                    // Salvar localmente se aplicável
+                    saveLocalVideos(currentCertId, allVideos);
                 }
                 
             } catch (error) {
@@ -1647,7 +1667,7 @@
             const videoUrl = video.video_url || video.arquivo_url;
             const videoTitle = video.titulo;
             
-            if (videoUrl && videoUrl !== '#' && !videoUrl.includes('example.com')) {
+            if (videoUrl && videoUrl !== '#' && !videoUrl.includes('#demo_')) {
                 const link = document.createElement('a');
                 link.href = videoUrl;
                 link.download = sanitizeFileName(videoTitle) + '.mp4';
@@ -1661,11 +1681,12 @@
                 if (videoIndex !== -1) {
                     allVideos[videoIndex].downloads = (allVideos[videoIndex].downloads || 0) + 1;
                     updateStats(allVideos);
+                    saveLocalVideos(currentCertId, allVideos);
                 }
                 
                 showNotification('Download iniciado!', 'success');
             } else {
-                showNotification('Download não disponível para esta demonstração.', 'info');
+                showNotification('Esta é uma demonstração. Em produção, o download estaria disponível.', 'info');
             }
         }
 
@@ -1712,15 +1733,22 @@
             try {
                 console.log('🗑️ Excluindo videoaula:', videoToDelete.id);
                 
-                // Verificar se o usuário é o dono ou admin
+                // Verificar se o vídeo existe
                 const videoIndex = allVideos.findIndex(v => v.id === videoToDelete.id);
                 if (videoIndex === -1) {
                     throw new Error('Videoaula não encontrada.');
                 }
                 
                 const video = allVideos[videoIndex];
-                const isOwner = video.usuario_id === currentUser.id;
-                const isAdmin = currentUser.id === 'admin1' || currentUser.email?.includes('admin');
+                
+                // Verificar se o usuário é o dono ou admin
+                const isOwner = video.usuario_id === currentUser.id || video.user_id === currentUser.id;
+                const isAdmin = currentUser.id === 'admin1' || 
+                              currentUser.id === 'admin' || 
+                              currentUser.email?.includes('admin') ||
+                              currentUser.email === 'superadmin@studycert.com';
+                
+                console.log('🔍 Permissões para exclusão:', { isOwner, isAdmin, userEmail: currentUser.email });
                 
                 if (!isOwner && !isAdmin) {
                     showNotification('Você não tem permissão para excluir esta videoaula.', 'error');
@@ -1728,14 +1756,42 @@
                     return;
                 }
                 
+                // Tentar excluir do Supabase
+                let deletedFromDatabase = false;
+                
+                if (supabaseClient) {
+                    try {
+                        // Tentar excluir da tabela video-aulas
+                        const { error: error1 } = await supabaseClient
+                            .from('video-aulas')
+                            .delete()
+                            .eq('id', videoToDelete.id);
+                        
+                        if (!error1) {
+                            deletedFromDatabase = true;
+                            console.log('✅ Videoaula excluída do Supabase (tabela video-aulas)');
+                        } else {
+                            // Tentar excluir da tabela videoaulas
+                            const { error: error2 } = await supabaseClient
+                                .from('videoaulas')
+                                .delete()
+                                .eq('id', videoToDelete.id);
+                            
+                            if (!error2) {
+                                deletedFromDatabase = true;
+                                console.log('✅ Videoaula excluída do Supabase (tabela videoaulas)');
+                            }
+                        }
+                    } catch (dbError) {
+                        console.warn('⚠️ Erro ao excluir do Supabase:', dbError.message);
+                    }
+                }
+                
                 // Remover da lista local
                 allVideos.splice(videoIndex, 1);
                 
-                // Em produção, excluir do Supabase:
-                // await supabaseClient
-                //     .from('video-aulas')
-                //     .delete()
-                //     .eq('id', videoToDelete.id);
+                // Salvar no localStorage
+                saveLocalVideos(currentCertId, allVideos);
                 
                 console.log('✅ Videoaula excluída com sucesso');
                 
@@ -1746,6 +1802,11 @@
                 // Atualizar interface
                 updateVideosInterface(allVideos);
                 updateStats(allVideos);
+                
+                // Se excluiu do banco, recarregar
+                if (deletedFromDatabase) {
+                    await loadAllVideos();
+                }
                 
             } catch (error) {
                 console.error('❌ Erro na exclusão:', error);
@@ -1804,7 +1865,11 @@
         }
 
         function escapeString(str) {
-            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+            return str
+                .replace(/'/g, "\\'")
+                .replace(/"/g, '\\"')
+                .replace(/\n/g, ' ')
+                .replace(/\r/g, ' ');
         }
 
         function showNotification(message, type = 'info') {
