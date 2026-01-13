@@ -108,9 +108,10 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
         
-        /* Card especial para PMG Academy */
+        /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
         .pmg-academy-container {
             margin-bottom: 2rem;
+            display: block !important;
         }
         
         .pmg-academy-card {
@@ -353,6 +354,16 @@
             .pmg-academy-icon {
                 margin-bottom: 1rem;
             }
+            
+            .pmg-stats {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .pmg-stat {
+                flex: 1;
+                min-width: 80px;
+            }
         }
     </style>
 </head>
@@ -492,13 +503,13 @@
                 </div>
             </div>
 
-            <!-- Card PMG Academy (apenas para ITIL) -->
+            <!-- Card PMG Academy (apenas para ITIL) - TODOS OS 20 ARQUIVOS AQUI -->
             <div id="pmg-academy-container" class="pmg-academy-container"></div>
 
-            <!-- Lista de Materiais -->
+            <!-- Lista de Materiais (apenas materiais da comunidade) -->
             <div class="materials-list-card-compact">
                 <div class="materials-list-header-compact">
-                    <h3><i class="fas fa-list"></i> Materiais Disponíveis</h3>
+                    <h3><i class="fas fa-list"></i> Materiais da Comunidade</h3>
                     <span class="materials-count" id="materialsCount">0 materiais</span>
                 </div>
                 <div id="materialsContainer">
@@ -716,6 +727,7 @@
         let currentCertId = 'itil4';
         let materialToDelete = null;
         let currentUser = null;
+        let allMaterials = [];
 
         // ============================================
         // INICIALIZAÇÃO
@@ -966,7 +978,7 @@
         }
 
         // ============================================
-        // CARREGAMENTO DE MATERIAIS
+        // CARREGAMENTO DE MATERIAIS - TODOS NO CARD PMG
         // ============================================
 
         async function loadAllMaterials() {
@@ -979,7 +991,7 @@
                     return;
                 }
                 
-                // Buscar materiais da certificação atual
+                // Buscar TODOS os materiais da certificação atual
                 const { data, error } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -992,39 +1004,24 @@
                     throw error;
                 }
                 
-                console.log(`✅ ${data?.length || 0} materiais carregados`);
+                allMaterials = data || [];
+                console.log(`✅ ${allMaterials.length} materiais carregados`);
                 
-                // Separar materiais PMG Academy dos outros (somente para ITIL)
+                // PARA ITIL4: Mostrar TODOS os materiais no card PMG Academy
                 if (currentCertId === 'itil4') {
-                    const pmgFiles = data.filter(material => 
-                        material.categoria === 'PMG Academy' || 
-                        (material.descricao && material.descricao.includes('PMG')) ||
-                        (material.titulo && material.titulo.includes('PMG'))
-                    );
+                    // Todos os materiais vão para o card PMG Academy
+                    loadPMGAcademyCard(allMaterials);
                     
-                    const otherMaterials = data.filter(material => 
-                        !(material.categoria === 'PMG Academy' || 
-                          (material.descricao && material.descricao.includes('PMG')) ||
-                          (material.titulo && material.titulo.includes('PMG')))
-                    );
-                    
-                    // Carregar card PMG Academy (somente para ITIL)
-                    if (pmgFiles.length > 0) {
-                        loadPMGAcademyCard(pmgFiles);
-                    } else {
-                        document.getElementById('pmg-academy-container').innerHTML = '';
-                    }
-                    
-                    // Carregar outros materiais
-                    updateOtherMaterials(otherMaterials);
+                    // Não mostrar materiais na lista da comunidade para ITIL
+                    updateOtherMaterials([]);
                 } else {
-                    // Para outras certificações, mostrar todos os materiais
+                    // Para outras certificações, mostrar normalmente
                     document.getElementById('pmg-academy-container').innerHTML = '';
-                    updateOtherMaterials(data || []);
+                    updateOtherMaterials(allMaterials);
                 }
                 
                 // Atualizar estatísticas
-                updateStats(data || []);
+                updateStats(allMaterials);
                 
             } catch (error) {
                 console.error('❌ Erro ao carregar materiais:', error);
@@ -1032,17 +1029,23 @@
             }
         }
 
-        // Carregar card PMG Academy (somente para ITIL)
-        function loadPMGAcademyCard(pmgFiles) {
+        // Carregar card PMG Academy - TODOS OS ARQUIVOS AQUI
+        function loadPMGAcademyCard(files = []) {
             const container = document.getElementById('pmg-academy-container');
             
-            // Agrupar arquivos por tipo
-            const groupedFiles = groupFilesByType(pmgFiles);
+            if (!container) return;
             
-            // Criar estatísticas
-            const totalViews = pmgFiles.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
-            const totalDownloads = pmgFiles.reduce((sum, file) => sum + (file.downloads || 0), 0);
-            const totalSizeMB = (pmgFiles.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1);
+            // Estatísticas
+            const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+            const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+            const totalSizeMB = files.length > 0 ? 
+                (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+            
+            // Agrupar arquivos por tipo
+            const groupedFiles = groupFilesByType(files);
+            
+            // Determinar se mostrar botão de toggle (apenas se houver arquivos)
+            const hasFiles = files.length > 0;
             
             const pmgCardHTML = `
                 <div class="pmg-academy-card">
@@ -1053,20 +1056,27 @@
                         <div class="pmg-academy-title">
                             <h3>ITIL® 4 Foundation | PMG Academy</h3>
                             <span class="pmg-badge">
-                                <i class="fas fa-crown"></i> Pacote Premium - ${pmgFiles.length} arquivos
+                                <i class="fas fa-crown"></i> 
+                                ${hasFiles ? 
+                                    `Pacote Completo - ${files.length} arquivos` : 
+                                    'Conteúdo Especializado'}
                             </span>
                         </div>
                     </div>
                     
                     <div class="pmg-academy-content">
                         <p style="margin-bottom: 1.5rem; color: #666;">
-                            Pacote completo da PMG Academy para certificação ITIL 4 Foundation. 
-                            Inclui apresentações, apostilas, exercícios e materiais complementares.
+                            ${hasFiles ? 
+                                `Pacote completo da PMG Academy para certificação ITIL 4 Foundation. 
+                                Inclui apresentações, apostilas, exercícios e materiais complementares.` :
+                                `Recursos especializados para certificação ITIL 4 Foundation. 
+                                Conteúdo premium e materiais exclusivos.`
+                            }
                         </p>
                         
                         <div class="pmg-stats">
                             <div class="pmg-stat">
-                                <div class="pmg-stat-value">${pmgFiles.length}</div>
+                                <div class="pmg-stat-value">${files.length}</div>
                                 <div class="pmg-stat-label">Arquivos</div>
                             </div>
                             <div class="pmg-stat">
@@ -1083,14 +1093,21 @@
                             </div>
                         </div>
                         
-                        <button class="pmg-toggle-btn" onclick="togglePmgFiles()" id="pmgToggleBtn">
-                            <i class="fas fa-folder-open"></i>
-                            <span>Mostrar ${pmgFiles.length} Arquivos</span>
-                        </button>
-                        
-                        <div id="pmg-files-container" style="display: none; margin-top: 1.5rem;">
-                            ${renderPMGFileGroups(groupedFiles)}
-                        </div>
+                        ${hasFiles ? `
+                            <button class="pmg-toggle-btn" onclick="togglePmgFiles()" id="pmgToggleBtn">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Mostrar ${files.length} Arquivos</span>
+                            </button>
+                            
+                            <div id="pmg-files-container" style="display: none; margin-top: 1.5rem;">
+                                ${renderPMGFileGroups(groupedFiles)}
+                            </div>
+                        ` : `
+                            <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                                <i class="fas fa-box-open" style="font-size: 2rem; color: #4ECDC4; margin-bottom: 0.5rem;"></i>
+                                <p style="color: #666;">Nenhum arquivo disponível no momento.</p>
+                            </div>
+                        `}
                     </div>
                 </div>
             `;
@@ -1098,6 +1115,7 @@
             container.innerHTML = pmgCardHTML;
         }
 
+        // Função para agrupar arquivos por tipo
         function groupFilesByType(files) {
             const groups = {};
             
@@ -1112,10 +1130,17 @@
             return groups;
         }
 
+        // Renderizar grupos de arquivos PMG
         function renderPMGFileGroups(groups) {
             let html = '';
             
-            Object.entries(groups).forEach(([type, files]) => {
+            // Ordenar grupos por tipo (PDF primeiro, depois Docs, etc.)
+            const typeOrder = ['pdf', 'doc', 'ppt', 'video', 'txt', 'zip', 'other'];
+            const sortedGroups = Object.entries(groups).sort((a, b) => {
+                return typeOrder.indexOf(a[0]) - typeOrder.indexOf(b[0]);
+            });
+            
+            sortedGroups.forEach(([type, files]) => {
                 const typeName = getTypeName(type);
                 const typeIcon = getFileIcon(type);
                 
@@ -1135,6 +1160,7 @@
             return html;
         }
 
+        // Renderizar card individual de arquivo PMG
         function renderPMGFileCard(file) {
             const fileId = file.id;
             const fileName = file.titulo || file.arquivo_nome || 'Arquivo';
@@ -1143,6 +1169,7 @@
             const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
             const fileType = file.tipo || detectFileType(file.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
+            const uploadDate = formatDateCompact(file.data_upload);
             
             // Verificar se URL é válida
             const hasValidUrl = fileUrl && fileUrl !== '#' && 
@@ -1163,7 +1190,7 @@
                         <div class="pmg-file-meta">
                             <span><i class="fas fa-file"></i> ${fileType.toUpperCase()}</span>
                             <span><i class="fas fa-hdd"></i> ${fileSize}</span>
-                            <span><i class="fas fa-eye"></i> ${file.visualizacoes || 0}</span>
+                            <span><i class="fas fa-calendar"></i> ${uploadDate}</span>
                         </div>
                         ${fileDesc ? `<p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">${fileDesc}</p>` : ''}
                     </div>
@@ -1197,28 +1224,7 @@
             `;
         }
 
-        function togglePmgFiles() {
-            const container = document.getElementById('pmg-files-container');
-            const toggleBtn = document.getElementById('pmgToggleBtn');
-            
-            if (container.style.display === 'none' || container.style.display === '') {
-                // Abrir
-                container.style.display = 'block';
-                toggleBtn.innerHTML = `
-                    <i class="fas fa-folder-minus"></i>
-                    <span>Ocultar Arquivos</span>
-                `;
-            } else {
-                // Fechar
-                container.style.display = 'none';
-                toggleBtn.innerHTML = `
-                    <i class="fas fa-folder-open"></i>
-                    <span>Mostrar Arquivos</span>
-                `;
-            }
-        }
-
-        // Atualizar outros materiais
+        // Atualizar outros materiais (para não-ITIL)
         function updateOtherMaterials(materials) {
             const container = document.getElementById('materialsContainer');
             const countElement = document.getElementById('materialsCount');
@@ -1228,7 +1234,7 @@
                     <div class="no-materials-message-compact">
                         <i class="fas fa-folder-open"></i>
                         <div>
-                            <h4>Nenhum material encontrado</h4>
+                            <h4>Nenhum material disponível</h4>
                             <p>Seja o primeiro a compartilhar um material!</p>
                         </div>
                     </div>
@@ -1246,7 +1252,7 @@
             container.innerHTML = materialsHTML;
         }
 
-        // Renderizar item de material
+        // Renderizar item de material (para não-ITIL)
         function renderMaterialItem(material) {
             const fileType = material.tipo || detectFileType(material.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
@@ -1322,8 +1328,11 @@
             `;
         }
 
-        // Filtrar materiais
+        // Filtrar materiais (apenas para não-ITIL)
         function filterMaterials() {
+            // Só aplica filtros se não for ITIL
+            if (currentCertId === 'itil4') return;
+            
             const typeFilter = document.getElementById('filterType').value;
             const sortFilter = document.getElementById('filterSort').value;
             const searchFilter = document.getElementById('searchMaterial').value.toLowerCase();
@@ -1356,22 +1365,6 @@
             
             // Atualizar contagem
             document.getElementById('materialsCount').textContent = `${visibleCount} material${visibleCount !== 1 ? 's' : ''}`;
-            
-            // Ordenar (implementação básica)
-            if (sortFilter === 'date_desc') {
-                // Já está ordenado por data descendente por padrão
-            } else if (sortFilter === 'name_asc') {
-                const container = document.getElementById('materialsContainer');
-                const sortedItems = Array.from(items)
-                    .filter(item => item.style.display !== 'none')
-                    .sort((a, b) => {
-                        const titleA = a.querySelector('.material-title-compact').textContent.toLowerCase();
-                        const titleB = b.querySelector('.material-title-compact').textContent.toLowerCase();
-                        return titleA.localeCompare(titleB);
-                    });
-                
-                sortedItems.forEach(item => container.appendChild(item));
-            }
         }
 
         // Atualizar estatísticas
@@ -1879,6 +1872,33 @@
                     }
                 }, 300);
             }, 3000);
+        }
+
+        // ============================================
+        // FUNÇÕES PARA CARD PMG ACADEMY
+        // ============================================
+
+        function togglePmgFiles() {
+            const container = document.getElementById('pmg-files-container');
+            const toggleBtn = document.getElementById('pmgToggleBtn');
+            
+            if (!container || !toggleBtn) return;
+            
+            if (container.style.display === 'none' || container.style.display === '') {
+                // Abrir
+                container.style.display = 'block';
+                toggleBtn.innerHTML = `
+                    <i class="fas fa-folder-minus"></i>
+                    <span>Ocultar Arquivos</span>
+                `;
+            } else {
+                // Fechar
+                container.style.display = 'none';
+                toggleBtn.innerHTML = `
+                    <i class="fas fa-folder-open"></i>
+                    <span>Mostrar Arquivos</span>
+                `;
+            }
         }
 
         // ============================================
