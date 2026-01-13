@@ -14,29 +14,101 @@
         /* Banners personalizados por certificação */
         .itil-banner {
             background: linear-gradient(135deg, #1a237e 0%, #283593 25%, #3949ab 50%, #5c6bc0 75%, #7986cb 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .itil-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M50,20 L60,40 L80,45 L65,60 L70,80 L50,70 L30,80 L35,60 L20,45 L40,40 Z" fill="white"/></svg>');
         }
         
         .azure-banner {
             background: linear-gradient(135deg, #0078D4 0%, #005A9E 25%, #004578 50%, #002050 75%, #001135 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .azure-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><rect x="30" y="30" width="40" height="40" rx="5" fill="white"/><polygon points="50,20 70,35 70,65 50,80 30,65 30,35" fill="white"/></svg>');
         }
         
         .aws-banner {
             background: linear-gradient(135deg, #FF9900 0%, #FF6B00 25%, #FF4500 50%, #FF3300 75%, #FF2200 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .aws-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,50 Q50,20 70,50 Q50,80 30,50 Z" fill="white"/></svg>');
         }
         
         .linux-banner {
             background: linear-gradient(135deg, #E95420 0%, #C34113 25%, #A42E0A 50%, #852006 75%, #661A03 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .linux-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><ellipse cx="50" cy="40" rx="35" ry="20" fill="white"/><ellipse cx="50" cy="70" rx="40" ry="25" fill="white"/></svg>');
         }
         
         .security-banner {
             background: linear-gradient(135deg, #27ae60 0%, #1e8449 25%, #145a32 50%, #0c351d 75%, #041509 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .security-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M50,20 L70,30 L70,60 Q70,80 50,90 Q30,80 30,60 L30,30 Z" fill="white"/></svg>');
         }
         
         .ccna-banner {
             background: linear-gradient(135deg, #00a0d2 0%, #00749E 25%, #005577 50%, #003955 75%, #001f33 100%) !important;
+            position: relative;
+            overflow: hidden;
         }
         
-        /* Estilos específicos para videoaulas */
+        .ccna-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
+        }
+        
+        /* Estilo específico para videoaulas */
         .video-card {
             background: white;
             border-radius: 12px;
@@ -63,17 +135,17 @@
             font-size: 3.5rem;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
         
-        .video-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-        
-        .video-card:hover .video-thumbnail img {
-            transform: scale(1.05);
+        .video-thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
         }
         
         .video-thumbnail i {
@@ -86,14 +158,16 @@
             z-index: 1;
         }
         
-        .video-thumbnail::after {
-            content: '';
+        .video-duration-badge {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 2;
         }
         
         .video-info {
@@ -146,118 +220,94 @@
             gap: 0.5rem;
         }
         
-        .video-duration-badge {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.8);
+        /* Hero da Certificação (igual à página de materiais) */
+        .certification-hero {
             color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            z-index: 2;
-        }
-        
-        /* Banner hero com nome da certificação */
-        .hero-video {
-            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
-            color: white;
-            padding: 4rem 0;
+            padding: 3rem 0;
             text-align: center;
             margin-bottom: 2rem;
-            border-radius: 0 0 20px 20px;
+            border-radius: 12px;
             position: relative;
             overflow: hidden;
         }
         
-        .hero-video::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M20,20 L40,40 L60,20 L80,40 L60,60 L80,80 L60,80 L40,60 L20,80 L20,60 L40,40 L20,20 Z" fill="white"/></svg>');
-        }
-        
-        .hero-video-content {
+        .certification-hero-content {
             position: relative;
             z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
         }
         
-        .hero-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: rgba(255, 255, 255, 0.9);
+        .certification-icon-large {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: white;
         }
         
-        .hero-video h1 {
+        .certification-hero h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
-        .hero-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-top: 2rem;
-        }
-        
-        .hero-stats span {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .hero-stats i {
-            font-size: 2rem;
-            opacity: 0.9;
-        }
-        
-        .hero-stats .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-        
-        .hero-stats .stat-label {
+        .certification-level-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
             font-size: 0.9rem;
-            opacity: 0.8;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
-        /* Upload área */
-        .upload-area-video {
-            border: 2px dashed #ddd;
-            border-radius: 12px;
-            padding: 3rem 2rem;
-            text-align: center;
-            background: #f8f9fa;
-            cursor: pointer;
+        /* Botão de exclusão */
+        .btn-delete {
+            background: rgba(231, 76, 60, 0.1) !important;
+            border: 2px solid #e74c3c !important;
+            color: #e74c3c !important;
             transition: all 0.3s;
-            margin-top: 1.5rem;
         }
         
-        .upload-area-video:hover {
-            border-color: #3498db;
-            background: #e8f4fc;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
+        .btn-delete:hover {
+            background: #e74c3c !important;
+            color: white !important;
         }
         
-        .upload-area-video i {
-            font-size: 3.5rem;
-            color: #3498db;
-            margin-bottom: 1rem;
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .certification-hero {
+                padding: 2rem 1rem;
+            }
+            
+            .certification-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .certification-icon-large {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+            
+            .video-thumbnail {
+                height: 160px;
+            }
+            
+            .video-meta {
+                font-size: 0.75rem;
+                gap: 0.5rem;
+            }
         }
         
         /* Modal de vídeo */
@@ -286,39 +336,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-        }
-        
-        /* Botão de exclusão */
-        .btn-delete-video {
-            background: rgba(231, 76, 60, 0.1) !important;
-            border: 2px solid #e74c3c !important;
-            color: #e74c3c !important;
-            transition: all 0.3s;
-        }
-        
-        .btn-delete-video:hover {
-            background: #e74c3c !important;
-            color: white !important;
-        }
-        
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .hero-video {
-                padding: 3rem 1rem;
-            }
-            
-            .hero-video h1 {
-                font-size: 2rem;
-            }
-            
-            .hero-stats {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-            
-            .video-thumbnail {
-                height: 160px;
-            }
         }
     </style>
 </head>
@@ -352,90 +369,118 @@
         </div>
     </div>
 
-    <!-- Conteúdo Principal -->
-    <main class="video-aulas-container">
+    <!-- Breadcrumb -->
+    <section class="breadcrumb-improved">
         <div class="container">
-            <!-- Hero Videoaulas -->
-            <section class="hero-video">
-                <div class="hero-video-content">
-                    <div class="hero-icon">
-                        <i class="fas fa-video"></i>
+            <a href="index.html"><i class="fas fa-home"></i> Home</a> > 
+            <a href="index.html#videoaulas">Videoaulas</a> > 
+            <span id="currentCertification">Carregando...</span>
+        </div>
+    </section>
+
+    <!-- Conteúdo Principal -->
+    <main class="materials-page-container">
+        <div class="container">
+            <!-- Hero da Certificação (dinâmico) -->
+            <section class="certification-hero" id="certificationHero">
+                <div class="certification-hero-content">
+                    <div class="certification-icon-large" id="certIcon">
+                        <i class="fas fa-cube"></i>
                     </div>
-                    <h1>Videoaulas de TI</h1>
-                    <p class="hero-subtitle">Aprenda com instrutores especializados através de videoaulas de alta qualidade para todas as certificações</p>
-                    <div class="hero-stats">
-                        <span>
-                            <i class="fas fa-play-circle"></i>
-                            <span class="stat-value" id="totalVideos">0</span>
-                            <span class="stat-label">Videoaulas</span>
-                        </span>
-                        <span>
-                            <i class="fas fa-clock"></i>
-                            <span class="stat-value" id="totalDuration">0h</span>
-                            <span class="stat-label">de Conteúdo</span>
-                        </span>
-                        <span>
-                            <i class="fas fa-users"></i>
-                            <span class="stat-value" id="totalInstructors">0</span>
-                            <span class="stat-label">Instrutores</span>
-                        </span>
-                        <span>
-                            <i class="fas fa-certificate"></i>
-                            <span class="stat-value">6</span>
-                            <span class="stat-label">Certificações</span>
-                        </span>
-                    </div>
+                    <h1 id="certTitle">Videoaulas</h1>
+                    <div class="certification-level-badge" id="certLevel">Carregando...</div>
+                    <p id="certDescription" style="max-width: 600px; margin: 0 auto; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                        Videoaulas especializadas para sua preparação
+                    </p>
                 </div>
             </section>
 
-            <!-- Filtros e Busca -->
-            <div class="video-filters-row">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchVideos" placeholder="Buscar videoaulas, instrutores, tópicos...">
-                    <button onclick="searchVideos()" class="btn btn-primary">
-                        <i class="fas fa-search"></i>
-                    </button>
+            <!-- Filtros e Estatísticas -->
+            <div class="filters-stats-row">
+                <!-- Filtros -->
+                <div class="filters-card-compact">
+                    <h4><i class="fas fa-filter"></i> Filtros</h4>
+                    <div class="filters-grid-compact">
+                        <div class="filter-group">
+                            <select id="filterLevel" class="filter-select">
+                                <option value="all">Todos os Níveis</option>
+                                <option value="iniciante">Iniciante</option>
+                                <option value="intermediario">Intermediário</option>
+                                <option value="avancado">Avançado</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <select id="filterSort" class="filter-select">
+                                <option value="date_desc">Mais Recentes</option>
+                                <option value="date_asc">Mais Antigos</option>
+                                <option value="views_desc">Mais Visualizados</option>
+                                <option value="duration_asc">Duração (Crescente)</option>
+                                <option value="duration_desc">Duração (Decrescente)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <input type="text" id="searchVideo" class="filter-input" 
+                                   placeholder="Buscar videoaula...">
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="filter-controls">
-                    <select id="filterCategory" class="filter-select">
-                        <option value="all">Todas Categorias</option>
-                        <option value="itil">ITIL 4</option>
-                        <option value="linux">LPIC-1/LPIC-2</option>
-                        <option value="aws">AWS</option>
-                        <option value="azure">Azure</option>
-                        <option value="security">Security+</option>
-                        <option value="ccna">CCNA</option>
-                        <option value="outros">Outros</option>
-                    </select>
-                    
-                    <select id="filterLevel" class="filter-select">
-                        <option value="all">Todos Níveis</option>
-                        <option value="iniciante">Iniciante</option>
-                        <option value="intermediario">Intermediário</option>
-                        <option value="avancado">Avançado</option>
-                    </select>
-                    
-                    <select id="filterSort" class="filter-select">
-                        <option value="recent">Mais Recentes</option>
-                        <option value="popular">Mais Populares</option>
-                        <option value="duration">Duração</option>
-                        <option value="rating">Melhor Avaliadas</option>
-                    </select>
+
+                <!-- Estatísticas -->
+                <div class="stats-card-compact">
+                    <div class="stats-grid-compact">
+                        <div class="stat-item-compact">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div>
+                                <span class="stat-value" id="totalVideos">0</span>
+                                <span class="stat-label">Videoaulas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-item-compact">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <span class="stat-value" id="totalDuration">0h</span>
+                                <span class="stat-label">Duração Total</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-item-compact">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div>
+                                <span class="stat-value" id="totalViews">0</span>
+                                <span class="stat-label">Visualizações</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-item-compact">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div>
+                                <span class="stat-value" id="totalInstructors">0</span>
+                                <span class="stat-label">Instrutores</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Grid de Videoaulas -->
-            <div class="video-grid-container">
-                <h2 class="section-title">
-                    <i class="fas fa-play-circle"></i> Videoaulas Disponíveis
-                    <span class="video-count" id="videoCount">0 videoaulas</span>
-                </h2>
-                
-                <div id="videosGrid" class="videos-grid">
-                    <!-- Videoaulas serão carregadas dinamicamente -->
-                    <div class="loading-videos">
+            <!-- Lista de Videoaulas -->
+            <div class="materials-list-card-compact">
+                <div class="materials-list-header-compact">
+                    <h3><i class="fas fa-video"></i> Videoaulas Disponíveis</h3>
+                    <span class="materials-count" id="videosCount">0 videoaulas</span>
+                </div>
+                <div id="videosContainer">
+                    <div class="loading-message-compact">
                         <i class="fas fa-spinner fa-spin"></i>
                         <p>Carregando videoaulas...</p>
                     </div>
@@ -443,27 +488,66 @@
             </div>
 
             <!-- Seção de Upload -->
-            <section class="upload-video-section" id="uploadSection" style="display: none;">
-                <div class="section-header">
-                    <h2><i class="fas fa-cloud-upload-alt"></i> Compartilhe Suas Videoaulas</h2>
-                    <p>Seja um instrutor e ajude outros estudantes compartilhando seu conhecimento</p>
+            <section class="upload-section-card-compact" id="uploadSection">
+                <div class="upload-header-compact">
+                    <div class="upload-icon-small">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div>
+                        <h3>Compartilhe Suas Videoaulas</h3>
+                        <p class="upload-subtitle">Ajude outros estudantes compartilhando seus vídeos educativos</p>
+                    </div>
                 </div>
                 
-                <div class="upload-card">
-                    <div class="upload-area-video" onclick="checkAuthAndUploadVideo()">
-                        <i class="fas fa-video"></i>
-                        <h3>Clique para fazer upload de videoaula</h3>
-                        <p>Formatos suportados: MP4, WebM, AVI, MOV</p>
-                        <span class="file-info">Máx. 500MB por vídeo</span>
+                <div class="upload-area-compact" onclick="checkAuthAndUpload()">
+                    <i class="fas fa-video"></i>
+                    <h4>Clique ou arraste arquivos de vídeo</h4>
+                    <p>MP4, WebM, AVI, MOV</p>
+                    <span class="file-info">Máx. 500MB</span>
+                    <input type="file" id="fileInputPage" 
+                           accept=".mp4,.webm,.avi,.mov,.mkv" 
+                           style="display: none;">
+                </div>
+                
+                <div id="uploadProgressPage" class="upload-progress-compact" style="display: none;">
+                    <div class="progress-container-compact">
+                        <div id="progressBar" class="progress-bar-compact"></div>
                     </div>
-                    <input type="file" id="videoFileInput" accept=".mp4,.webm,.avi,.mov,.mkv" style="display: none;">
+                    <div class="progress-info-compact">
+                        <span>Enviando...</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
                 </div>
             </section>
         </div>
     </main>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>StudyCert Videoaulas</h3>
+                    <p>Aprenda através de videoaulas com instrutores certificados e experiência prática.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Links Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="materiais.html">Materiais</a></li>
+                        <li><a href="video-aulas.html">Videoaulas</a></li>
+                        <li><a href="forum.html">Fórum</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 StudyCert. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
     <!-- Modal do Player de Vídeo -->
-    <div id="videoModal" class="modal-overlay video-modal" style="display: none;">
+    <div id="videoModal" class="modal-overlay" style="display: none;">
         <div class="modal-content video-modal-content">
             <button class="close-modal" onclick="closeVideoModal()">&times;</button>
             
@@ -491,12 +575,6 @@
                         </div>
                         
                         <div class="video-actions">
-                            <button class="btn btn-primary" onclick="likeVideo()" id="likeButton">
-                                <i class="far fa-thumbs-up"></i> <span id="likeCount">0</span>
-                            </button>
-                            <button class="btn btn-outline" onclick="toggleWatchLater()" id="watchLaterButton">
-                                <i class="far fa-bookmark"></i> Assistir Depois
-                            </button>
                             <button class="btn btn-success" onclick="downloadVideo()" id="downloadButton">
                                 <i class="fas fa-download"></i> Baixar
                             </button>
@@ -507,62 +585,71 @@
         </div>
     </div>
 
-    <!-- Modal de Upload de Videoaula -->
-    <div id="uploadFormModal" class="modal-overlay" style="display: none;">
+    <!-- Modal de Upload -->
+    <div id="uploadModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <button class="close-modal" onclick="closeUploadFormModal()">&times;</button>
-            <h3><i class="fas fa-video"></i> Compartilhar Videoaula</h3>
+            <button class="close-modal" onclick="closeUploadModal()">&times;</button>
+            <h3 style="color: var(--primary); margin-bottom: 1.5rem;">
+                <i class="fas fa-upload"></i> Compartilhar Videoaula
+            </h3>
             
-            <form id="videoUploadForm">
-                <div id="selectedVideoInfo" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;"></div>
+            <div id="uploadProgressContainer" class="upload-progress" style="display: none;">
+                <div class="progress-container">
+                    <div id="modalProgressBar" class="progress-bar"></div>
+                </div>
+                <div class="progress-info">
+                    <span>Enviando arquivo...</span>
+                    <span id="modalProgressPercent">0%</span>
+                </div>
+            </div>
+            
+            <div id="uploadFormContainer">
+                <div id="selectedFileInfo" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;"></div>
                 
-                <div class="form-group">
-                    <label for="videoTitleInput">Título da Videoaula *</label>
-                    <input type="text" id="videoTitleInput" required 
-                           placeholder="Ex: LPIC-1 - Comandos Linux Essenciais">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                        <i class="fas fa-heading"></i> Título *
+                    </label>
+                    <input type="text" id="videoTitle" class="filter-input" 
+                           placeholder="Ex: LPIC-1 - Comandos Linux Essenciais" required>
                 </div>
                 
-                <div class="form-group">
-                    <label for="videoDescriptionInput">Descrição</label>
-                    <textarea id="videoDescriptionInput" rows="4" 
-                              placeholder="Descreva o conteúdo da videoaula..."></textarea>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                        <i class="fas fa-align-left"></i> Descrição
+                    </label>
+                    <textarea id="videoDescription" class="filter-input" rows="3" 
+                              placeholder="Descreva brevemente o conteúdo desta videoaula..."></textarea>
                 </div>
                 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="videoCategorySelect">Categoria *</label>
-                        <select id="videoCategorySelect" required>
-                            <option value="">Selecione uma categoria</option>
-                            <option value="itil">ITIL 4</option>
-                            <option value="linux">LPIC-1/LPIC-2</option>
-                            <option value="aws">AWS</option>
-                            <option value="azure">Azure</option>
-                            <option value="security">Security+</option>
-                            <option value="ccna">CCNA</option>
-                            <option value="outros">Outros</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="videoLevelSelect">Nível *</label>
-                        <select id="videoLevelSelect" required>
-                            <option value="">Selecione o nível</option>
-                            <option value="iniciante">Iniciante</option>
-                            <option value="intermediario">Intermediário</option>
-                            <option value="avancado">Avançado</option>
-                        </select>
-                    </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                        <i class="fas fa-signal"></i> Nível
+                    </label>
+                    <select id="videoLevel" class="filter-input">
+                        <option value="iniciante">Iniciante</option>
+                        <option value="intermediario">Intermediário</option>
+                        <option value="avancado">Avançado</option>
+                    </select>
                 </div>
                 
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" onclick="closeUploadFormModal()">
-                        Cancelar
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                        <i class="fas fa-clock"></i> Duração (opcional)
+                    </label>
+                    <input type="text" id="videoDuration" class="filter-input" 
+                           placeholder="Ex: 45:30 ou 1h20min">
+                </div>
+                
+                <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                    <button onclick="closeUploadModal()" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancelar
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="submitVideoForm()" id="submitVideoBtn">
-                        <i class="fas fa-paper-plane"></i> Publicar Videoaula
+                    <button onclick="processUpload()" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Enviar Videoaula
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -576,7 +663,7 @@
             
             <div id="deleteVideoInfo" style="margin-bottom: 1.5rem;">
                 <p>Tem certeza que deseja excluir esta videoaula?</p>
-                <p id="deleteVideoTitle" style="font-weight: bold; color: #e74c3c; margin: 1rem 0; padding: 0.8rem; background: #fdf2f2; border-radius: 6px;"></p>
+                <p id="deleteVideoName" style="font-weight: bold; color: #e74c3c; margin: 1rem 0; padding: 0.8rem; background: #fdf2f2; border-radius: 6px;"></p>
                 <p style="color: #666; font-size: 0.9rem;">
                     <i class="fas fa-info-circle"></i> Esta ação não pode ser desfeita.
                 </p>
@@ -593,30 +680,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>StudyCert Videoaulas</h3>
-                    <p>Aprenda através de videoaulas com instrutores certificados e experiência prática.</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Links Rápidos</h3>
-                    <ul class="footer-links">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="materiais.html">Materiais</a></li>
-                        <li><a href="video-aulas.html">Videoaulas</a></li>
-                        <li><a href="forum.html">Fórum</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 StudyCert. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
     <!-- JavaScript para Videoaulas -->
     <script>
         // ============================================
@@ -627,22 +690,71 @@
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-        // Mapeamento de certificações
-        const videoCertifications = {
-            'itil': { name: 'ITIL 4', color: '#1a237e', icon: 'fas fa-cube' },
-            'linux': { name: 'LPIC-1/LPIC-2', color: '#E95420', icon: 'fas fa-server' },
-            'aws': { name: 'AWS', color: '#FF9900', icon: 'fab fa-aws' },
-            'azure': { name: 'Azure', color: '#0078D4', icon: 'fab fa-microsoft' },
-            'security': { name: 'Security+', color: '#27ae60', icon: 'fas fa-shield-alt' },
-            'ccna': { name: 'CCNA', color: '#00a0d2', icon: 'fas fa-network-wired' },
-            'outros': { name: 'Outros', color: '#7f8c8d', icon: 'fas fa-video' }
+        // Mapeamento de certificações com banners personalizados
+        const certifications = {
+            'itil': { 
+                title: 'ITIL 4 Foundation', 
+                level: 'Foundation', 
+                icon: 'fas fa-cube', 
+                bannerClass: 'itil-banner',
+                iconClass: '',
+                color: '#154360',
+                description: 'Videoaulas especializadas para certificação ITIL 4 Foundation'
+            },
+            'azure': { 
+                title: 'Microsoft Azure', 
+                level: 'Cloud', 
+                icon: 'fab fa-microsoft', 
+                bannerClass: 'azure-banner',
+                iconClass: 'azure-icon',
+                color: '#0078D4',
+                description: 'Videoaulas para certificações Azure (AZ-900, AZ-104, etc.)'
+            },
+            'aws': { 
+                title: 'Amazon AWS', 
+                level: 'Cloud', 
+                icon: 'fab fa-aws', 
+                bannerClass: 'aws-banner',
+                iconClass: 'aws-icon',
+                color: '#FF9900',
+                description: 'Videoaulas para Cloud Practitioner, Solutions Architect e outras certificações AWS'
+            },
+            'linux': { 
+                title: 'LPIC-1 e LPIC-2', 
+                level: 'Linux', 
+                icon: 'fas fa-server', 
+                bannerClass: 'linux-banner',
+                iconClass: 'linux-icon',
+                color: '#E95420',
+                description: 'Videoaulas para certificações Linux Professional Institute'
+            },
+            'security': { 
+                title: 'Security+', 
+                level: 'Segurança', 
+                icon: 'fas fa-shield-alt', 
+                bannerClass: 'security-banner',
+                iconClass: 'security-icon',
+                color: '#27ae60',
+                description: 'Videoaulas para preparação da certificação CompTIA Security+'
+            },
+            'ccna': { 
+                title: 'CCNA', 
+                level: 'Rede', 
+                icon: 'fas fa-network-wired', 
+                bannerClass: 'ccna-banner',
+                iconClass: 'ccna-icon',
+                color: '#00a0d2',
+                description: 'Videoaulas para Cisco Certified Network Associate'
+            }
         };
 
         // Variáveis globais
         let supabaseClient = null;
         let currentUploadFile = null;
-        let currentUser = null;
+        let currentCertId = 'itil';
         let videoToDelete = null;
+        let currentUser = null;
+        let allVideos = [];
 
         // ============================================
         // INICIALIZAÇÃO
@@ -659,6 +771,12 @@
                 // Inicializar Supabase
                 await initSupabase();
                 
+                // Obter certificação da URL
+                currentCertId = getUrlParameter('cert') || 'itil';
+                
+                // Carregar informações da certificação
+                loadCertification(currentCertId);
+                
                 // Atualizar interface de autenticação
                 updateAuthUI();
                 
@@ -666,7 +784,7 @@
                 document.getElementById('authBar').style.display = 'block';
                 
                 // Carregar videoaulas
-                await loadVideosFromSupabase();
+                await loadAllVideos();
                 
                 console.log('✅ Página de videoaulas inicializada com sucesso');
             }, 300);
@@ -677,36 +795,79 @@
         // ============================================
 
         function setupEventListeners() {
-            // Input de arquivo de vídeo
-            const videoInput = document.getElementById('videoFileInput');
-            if (videoInput) {
-                videoInput.addEventListener('change', handleVideoSelect);
+            // Input de arquivo
+            const fileInput = document.getElementById('fileInputPage');
+            if (fileInput) {
+                fileInput.addEventListener('change', handleFileSelect);
             }
             
-            // Busca
-            document.getElementById('searchVideos')?.addEventListener('input', filterVideos);
+            // Drag and drop
+            const uploadArea = document.querySelector('.upload-area-compact');
+            if (uploadArea) {
+                uploadArea.addEventListener('dragover', handleDragOver);
+                uploadArea.addEventListener('dragleave', handleDragLeave);
+                uploadArea.addEventListener('drop', handleDrop);
+            }
             
             // Filtros
-            document.getElementById('filterCategory')?.addEventListener('change', filterVideos);
             document.getElementById('filterLevel')?.addEventListener('change', filterVideos);
             document.getElementById('filterSort')?.addEventListener('change', filterVideos);
+            document.getElementById('searchVideo')?.addEventListener('input', filterVideos);
             
             // Fechar modais ao clicar fora
             setupModalClickOutside();
         }
 
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const uploadArea = document.querySelector('.upload-area-compact');
+            if (uploadArea) {
+                uploadArea.style.background = '#e8f4fc';
+                uploadArea.style.borderColor = '#2980b9';
+                uploadArea.style.transform = 'translateY(-3px)';
+            }
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const uploadArea = document.querySelector('.upload-area-compact');
+            if (uploadArea) {
+                uploadArea.style.background = '#f8fafc';
+                uploadArea.style.borderColor = '#ddd';
+                uploadArea.style.transform = 'translateY(0)';
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const uploadArea = document.querySelector('.upload-area-compact');
+            if (uploadArea) {
+                uploadArea.style.background = '#f8fafc';
+                uploadArea.style.borderColor = '#ddd';
+                uploadArea.style.transform = 'translateY(0)';
+            }
+            
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                handleFileDrop(files);
+            }
+        }
+
         function setupModalClickOutside() {
+            // Modal de upload
+            document.getElementById('uploadModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeUploadModal();
+                }
+            });
+            
             // Modal de vídeo
             document.getElementById('videoModal')?.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeVideoModal();
-                }
-            });
-            
-            // Modal de upload
-            document.getElementById('uploadFormModal')?.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeUploadFormModal();
                 }
             });
             
@@ -811,12 +972,52 @@
         }
 
         // ============================================
+        // FUNÇÕES PRINCIPAIS
+        // ============================================
+
+        // Obter parâmetro da URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            const results = regex.exec(window.location.href);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Carregar informações da certificação com banner personalizado
+        function loadCertification(certId) {
+            const cert = certifications[certId] || certifications['itil'];
+            
+            // Atualizar elementos da página
+            document.getElementById('currentCertification').textContent = cert.title;
+            document.getElementById('certIcon').innerHTML = `<i class="${cert.icon}"></i>`;
+            
+            // Aplicar classe do ícone se existir
+            if (cert.iconClass) {
+                document.getElementById('certIcon').className = `certification-icon-large ${cert.iconClass}`;
+            } else {
+                document.getElementById('certIcon').style.color = cert.color;
+            }
+            
+            document.getElementById('certTitle').textContent = cert.title;
+            document.getElementById('certLevel').textContent = `Nível: ${cert.level}`;
+            document.getElementById('certDescription').textContent = cert.description;
+            
+            // Aplicar banner personalizado
+            const hero = document.getElementById('certificationHero');
+            hero.className = 'certification-hero ' + cert.bannerClass;
+            
+            document.title = `StudyCert Videoaulas - ${cert.title}`;
+        }
+
+        // ============================================
         // CARREGAMENTO DE VIDEOAULAS
         // ============================================
 
-        async function loadVideosFromSupabase() {
+        async function loadAllVideos() {
             try {
-                console.log('📥 Carregando videoaulas...');
+                console.log('📥 Carregando videoaulas para:', currentCertId);
                 
                 if (!supabaseClient) {
                     console.error('❌ Supabase não inicializado');
@@ -824,52 +1025,76 @@
                     return;
                 }
                 
-                // Buscar videoaulas
+                // Buscar TODOS os vídeos da categoria atual
                 const { data, error } = await supabaseClient
-                    .from('videoaulas')
+                    .from('video-aulas')
                     .select('*')
+                    .eq('categoria', currentCertId)
                     .eq('publico', true)
                     .order('data_upload', { ascending: false });
                 
                 if (error) {
                     console.error('❌ Erro ao carregar videoaulas:', error);
                     
-                    // Se a tabela não existir, usar dados de exemplo
-                    console.log('⚠️ Tabela videoaulas não encontrada, usando dados de exemplo');
-                    const exampleVideos = getExampleVideos();
-                    updateVideosInterface(exampleVideos);
-                    updateVideoStats(exampleVideos);
-                    return;
+                    // Se a tabela não existir, buscar de 'videoaulas' (singular)
+                    const { data: altData, error: altError } = await supabaseClient
+                        .from('videoaulas')
+                        .select('*')
+                        .eq('categoria', currentCertId)
+                        .eq('publico', true)
+                        .order('data_upload', { ascending: false });
+                    
+                    if (altError) {
+                        console.error('❌ Erro ao carregar videoaulas (tabela alternativa):', altError);
+                        throw altError;
+                    }
+                    
+                    allVideos = altData || [];
+                } else {
+                    allVideos = data || [];
                 }
                 
-                console.log(`✅ ${data?.length || 0} videoaulas carregadas`);
+                console.log(`✅ ${allVideos.length} videoaulas carregadas`);
                 
                 // Atualizar interface
-                updateVideosInterface(data || []);
-                updateVideoStats(data || []);
+                updateVideosInterface(allVideos);
+                
+                // Atualizar estatísticas
+                updateStats(allVideos);
                 
             } catch (error) {
-                console.error('❌ Erro:', error);
+                console.error('❌ Erro ao carregar videoaulas:', error);
                 showNoVideos('Erro na conexão com o servidor.');
             }
         }
 
         // Atualizar interface com lista de videoaulas
         function updateVideosInterface(videos) {
-            const container = document.getElementById('videosGrid');
-            const countElement = document.getElementById('videoCount');
+            const container = document.getElementById('videosContainer');
+            const countElement = document.getElementById('videosCount');
             
             if (!videos || videos.length === 0) {
+                container.innerHTML = `
+                    <div class="no-materials-message-compact">
+                        <i class="fas fa-video-slash"></i>
+                        <div>
+                            <h4>Nenhuma videoaula disponível</h4>
+                            <p>Seja o primeiro a compartilhar uma videoaula!</p>
+                        </div>
+                    </div>
+                `;
                 countElement.textContent = '0 videoaulas';
-                showNoVideos('Nenhuma videoaula encontrada.');
                 return;
             }
             
             countElement.textContent = `${videos.length} videoaula${videos.length !== 1 ? 's' : ''}`;
             
-            const videosHTML = videos.map(video => 
-                renderVideoCard(video)
-            ).join('');
+            // Converter para grid de videoaulas
+            const videosHTML = `
+                <div class="videos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                    ${videos.map(video => renderVideoCard(video)).join('')}
+                </div>
+            `;
             
             container.innerHTML = videosHTML;
         }
@@ -879,27 +1104,19 @@
             const videoId = video.id;
             const videoTitle = video.titulo || 'Videoaula sem título';
             const videoDesc = video.descricao || 'Sem descrição';
-            const videoUrl = video.video_url || '#';
-            const videoThumbnail = video.thumbnail_url || '';
+            const videoUrl = video.video_url || video.arquivo_url || '#';
             const videoDuration = video.duracao || '00:00';
             const videoViews = video.visualizacoes || 0;
             const videoDate = formatDateCompact(video.data_upload || video.created_at);
-            const videoCategory = video.categoria || 'outros';
             const videoLevel = video.nivel || 'iniciante';
             
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && video.usuario_id === currentUserId;
             
-            const certInfo = videoCertifications[videoCategory] || videoCertifications.outros;
-            
             return `
-                <div class="video-card" data-id="${videoId}" data-category="${videoCategory}" data-level="${videoLevel}">
+                <div class="video-card" data-id="${videoId}" data-level="${videoLevel}">
                     <div class="video-thumbnail" 
-                         onclick="playVideo('${videoId}', '${videoTitle}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${videoDesc}', '${certInfo.name}', '${videoLevel}')">
-                        ${videoThumbnail ? 
-                            `<img src="${videoThumbnail}" alt="${videoTitle}">` :
-                            `<div style="background: ${certInfo.color}; width: 100%; height: 100%;"></div>`
-                        }
+                         onclick="playVideo('${videoId}', '${escapeString(videoTitle)}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${escapeString(videoDesc)}', '${certifications[currentCertId]?.title || currentCertId}', '${videoLevel}')">
                         <i class="fas fa-play-circle"></i>
                         <div class="video-duration-badge">${videoDuration}</div>
                     </div>
@@ -908,8 +1125,8 @@
                         <h3 class="video-title" title="${videoTitle}">${videoTitle}</h3>
                         
                         <div class="video-meta">
-                            <span style="color: ${certInfo.color};">
-                                <i class="${certInfo.icon}"></i> ${certInfo.name}
+                            <span style="color: ${certifications[currentCertId]?.color || '#3498db'};">
+                                <i class="${certifications[currentCertId]?.icon || 'fas fa-certificate'}"></i> ${certifications[currentCertId]?.title || currentCertId}
                             </span>
                             <span><i class="fas fa-signal"></i> ${videoLevel}</span>
                             <span><i class="fas fa-eye"></i> ${videoViews}</span>
@@ -920,13 +1137,13 @@
                         
                         <div class="video-actions">
                             <button class="btn btn-primary btn-video" 
-                                    onclick="playVideo('${videoId}', '${videoTitle}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${videoDesc}', '${certInfo.name}', '${videoLevel}')">
+                                    onclick="playVideo('${videoId}', '${escapeString(videoTitle)}', '${videoUrl}', '${videoDuration}', '${videoViews}', '${videoDate}', '${escapeString(videoDesc)}', '${certifications[currentCertId]?.title || currentCertId}', '${videoLevel}')">
                                 <i class="fas fa-play"></i> Assistir
                             </button>
                             
                             ${isOwner ? `
-                                <button class="btn btn-outline btn-video btn-delete-video" 
-                                        onclick="showDeleteVideoModal('${videoId}', '${videoTitle}')">
+                                <button class="btn btn-outline btn-video btn-delete" 
+                                        onclick="showDeleteVideoModal('${videoId}', '${escapeString(videoTitle)}')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             ` : ''}
@@ -938,26 +1155,23 @@
 
         // Filtrar videoaulas
         function filterVideos() {
-            const categoryFilter = document.getElementById('filterCategory').value;
             const levelFilter = document.getElementById('filterLevel').value;
             const sortFilter = document.getElementById('filterSort').value;
-            const searchFilter = document.getElementById('searchVideos').value.toLowerCase();
+            const searchFilter = document.getElementById('searchVideo').value.toLowerCase();
             
             const cards = document.querySelectorAll('.video-card');
             let visibleCount = 0;
             
             cards.forEach(card => {
-                const category = card.getAttribute('data-category');
                 const level = card.getAttribute('data-level');
                 const title = card.querySelector('.video-title').textContent.toLowerCase();
                 const description = card.querySelector('.video-description').textContent.toLowerCase();
                 
                 // Aplicar filtros
-                const categoryMatch = categoryFilter === 'all' || category === categoryFilter;
                 const levelMatch = levelFilter === 'all' || level === levelFilter;
                 const searchMatch = title.includes(searchFilter) || description.includes(searchFilter);
                 
-                if (categoryMatch && levelMatch && searchMatch) {
+                if (levelMatch && searchMatch) {
                     card.style.display = 'block';
                     visibleCount++;
                 } else {
@@ -966,57 +1180,39 @@
             });
             
             // Atualizar contagem
-            document.getElementById('videoCount').textContent = `${visibleCount} videoaula${visibleCount !== 1 ? 's' : ''}`;
+            document.getElementById('videosCount').textContent = `${visibleCount} videoaula${visibleCount !== 1 ? 's' : ''}`;
             
-            // Ordenar
-            if (sortFilter === 'popular') {
-                const container = document.getElementById('videosGrid');
+            // Ordenar se necessário
+            if (sortFilter !== 'date_desc') {
+                const container = document.querySelector('.videos-grid');
                 const sortedCards = Array.from(cards)
                     .filter(card => card.style.display !== 'none')
                     .sort((a, b) => {
-                        const viewsA = parseInt(a.querySelector('.fa-eye').parentNode.textContent) || 0;
-                        const viewsB = parseInt(b.querySelector('.fa-eye').parentNode.textContent) || 0;
-                        return viewsB - viewsA;
+                        if (sortFilter === 'date_asc') {
+                            return 0; // Mantém a ordem original do banco (já ordenado)
+                        } else if (sortFilter === 'views_desc') {
+                            const viewsA = parseInt(a.querySelector('.fa-eye').parentNode.textContent) || 0;
+                            const viewsB = parseInt(b.querySelector('.fa-eye').parentNode.textContent) || 0;
+                            return viewsB - viewsA;
+                        } else if (sortFilter === 'duration_asc') {
+                            const durA = parseDuration(a.querySelector('.video-duration-badge').textContent);
+                            const durB = parseDuration(b.querySelector('.video-duration-badge').textContent);
+                            return durA - durB;
+                        } else if (sortFilter === 'duration_desc') {
+                            const durA = parseDuration(a.querySelector('.video-duration-badge').textContent);
+                            const durB = parseDuration(b.querySelector('.video-duration-badge').textContent);
+                            return durB - durA;
+                        }
+                        return 0;
                     });
                 
-                sortedCards.forEach(card => container.appendChild(card));
+                if (container) {
+                    sortedCards.forEach(card => container.appendChild(card));
+                }
             }
         }
 
-        // Mostrar mensagem quando não há videoaulas
-        function showNoVideos(message) {
-            const container = document.getElementById('videosGrid');
-            const isAuthenticated = window.authManager && window.authManager.isAuthenticated();
-            
-            container.innerHTML = `
-                <div style="text-align: center; padding: 3rem; color: #666; grid-column: 1 / -1;">
-                    <i class="fas fa-video-slash" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                    <h3>${message}</h3>
-                    <p>Seja o primeiro a compartilhar uma videoaula!</p>
-                    ${isAuthenticated ? 
-                        `<button class="btn btn-primary" onclick="checkAuthAndUploadVideo()" style="margin-top: 1rem;">
-                            <i class="fas fa-plus"></i> Compartilhar Videoaula
-                        </button>` : 
-                        `<a href="index.html#login" class="btn btn-primary" style="margin-top: 1rem;">
-                            <i class="fas fa-sign-in-alt"></i> Faça login
-                        </a>`
-                    }
-                </div>
-            `;
-        }
-
-        // Atualizar estatísticas de videoaulas
-        function updateVideoStats(videos) {
-            const totalVideos = videos.length;
-            const totalDuration = videos.reduce((sum, video) => sum + (parseDuration(video.duracao) || 0), 0);
-            const uniqueInstructors = [...new Set(videos.map(v => v.usuario_id))].length;
-            
-            document.getElementById('totalVideos').textContent = totalVideos;
-            document.getElementById('totalDuration').textContent = formatDuration(totalDuration);
-            document.getElementById('totalInstructors').textContent = uniqueInstructors;
-        }
-
-        // Converter duração de string para minutos
+        // Converter duração para minutos
         function parseDuration(duration) {
             if (!duration) return 0;
             const parts = duration.split(':');
@@ -1028,10 +1224,23 @@
             return 0;
         }
 
-        // Formatar duração
+        // Atualizar estatísticas
+        function updateStats(videos) {
+            const totalVideos = videos.length;
+            const totalDuration = videos.reduce((sum, video) => sum + parseDuration(video.duracao), 0);
+            const totalViews = videos.reduce((sum, video) => sum + (video.visualizacoes || 0), 0);
+            const uniqueInstructors = [...new Set(videos.map(v => v.usuario_id))].length;
+            
+            document.getElementById('totalVideos').textContent = totalVideos;
+            document.getElementById('totalDuration').textContent = formatDuration(totalDuration);
+            document.getElementById('totalViews').textContent = totalViews;
+            document.getElementById('totalInstructors').textContent = uniqueInstructors;
+        }
+
+        // Formatar duração para exibição
         function formatDuration(minutes) {
             if (minutes < 60) {
-                return `${Math.round(minutes)} min`;
+                return `${Math.round(minutes)}min`;
             } else {
                 const hours = Math.floor(minutes / 60);
                 const mins = Math.round(minutes % 60);
@@ -1039,66 +1248,24 @@
             }
         }
 
-        // Formatar data compacta
-        function formatDateCompact(dateString) {
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('pt-BR');
-            } catch (e) {
-                return '--/--/----';
-            }
-        }
-
-        // Dados de exemplo para videoaulas
-        function getExampleVideos() {
-            return [
-                {
-                    id: '1',
-                    titulo: 'LPIC-1 - Comandos Linux Essenciais',
-                    descricao: 'Aprenda os comandos mais importantes para o exame LPIC-1. Cobertura completa dos tópicos exigidos.',
-                    video_url: '#',
-                    duracao: '45:30',
-                    visualizacoes: 1250,
-                    data_upload: new Date().toISOString(),
-                    categoria: 'linux',
-                    nivel: 'iniciante',
-                    usuario_id: 'user1',
-                    publico: true
-                },
-                {
-                    id: '2',
-                    titulo: 'ITIL 4 Foundation - Conceitos Básicos',
-                    descricao: 'Introdução ao framework ITIL 4 e seus principais conceitos. Prepare-se para a certificação.',
-                    video_url: '#',
-                    duracao: '38:15',
-                    visualizacoes: 890,
-                    data_upload: new Date(Date.now() - 86400000).toISOString(),
-                    categoria: 'itil',
-                    nivel: 'iniciante',
-                    usuario_id: 'user2',
-                    publico: true
-                },
-                {
-                    id: '3',
-                    titulo: 'AWS Cloud Practitioner - Fundamentos',
-                    descricao: 'Conceitos essenciais da AWS para iniciantes. Prepare-se para o exame de certificação.',
-                    video_url: '#',
-                    duracao: '52:10',
-                    visualizacoes: 2100,
-                    data_upload: new Date(Date.now() - 172800000).toISOString(),
-                    categoria: 'aws',
-                    nivel: 'iniciante',
-                    usuario_id: 'user3',
-                    publico: true
-                }
-            ];
+        // Mostrar mensagem quando não há videoaulas
+        function showNoVideos(message) {
+            const container = document.getElementById('videosContainer');
+            container.innerHTML = `
+                <div class="no-materials-message-compact">
+                    <i class="fas fa-video-slash"></i>
+                    <div>
+                        <h4>${message}</h4>
+                    </div>
+                </div>
+            `;
         }
 
         // ============================================
-        // FUNÇÕES DE UPLOAD DE VIDEOAULAS
+        // FUNÇÕES DE UPLOAD
         // ============================================
 
-        function checkAuthAndUploadVideo() {
+        function checkAuthAndUpload() {
             if (!window.authManager || !window.authManager.isAuthenticated()) {
                 showNotification('Faça login para compartilhar videoaulas.', 'warning');
                 setTimeout(() => {
@@ -1107,10 +1274,10 @@
                 return;
             }
             
-            document.getElementById('videoFileInput').click();
+            document.getElementById('fileInputPage').click();
         }
 
-        function handleVideoSelect(e) {
+        function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
             
@@ -1128,14 +1295,30 @@
                 return;
             }
             
-            showVideoUploadForm(file);
+            showUploadForm(file);
         }
 
-        function showVideoUploadForm(file) {
-            currentUploadFile = file;
+        function handleFileDrop(files) {
+            if (!files || files.length === 0) return;
             
-            // Atualizar informações do arquivo no modal
-            document.getElementById('selectedVideoInfo').innerHTML = `
+            const file = files[0];
+            if (!file) return;
+            
+            // Validar tamanho do arquivo
+            const maxSize = 500 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('Arquivo muito grande! O tamanho máximo permitido é 500MB.');
+                return;
+            }
+            
+            showUploadForm(file);
+        }
+
+        function showUploadForm(file) {
+            currentUploadFile = file;
+            const fileType = 'video';
+            
+            document.getElementById('selectedFileInfo').innerHTML = `
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <div style="width: 60px; height: 60px; background: #3498db; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-video" style="color: white; font-size: 1.5rem;"></i>
@@ -1143,7 +1326,7 @@
                     <div>
                         <div style="font-weight: bold; margin-bottom: 0.3rem;">${file.name}</div>
                         <div style="font-size: 0.9rem; color: #666;">
-                            ${formatFileSize(file.size)} • ${file.type || 'Vídeo'}
+                            ${formatFileSize(file.size)} • Vídeo
                         </div>
                     </div>
                 </div>
@@ -1151,54 +1334,30 @@
             
             // Preencher título automaticamente
             const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
-            document.getElementById('videoTitleInput').value = fileNameWithoutExt;
+            document.getElementById('videoTitle').value = fileNameWithoutExt;
             
-            // Resetar campos
-            document.getElementById('videoDescriptionInput').value = '';
-            document.getElementById('videoCategorySelect').value = '';
-            document.getElementById('videoLevelSelect').value = '';
+            // Resetar outros campos
+            document.getElementById('videoDescription').value = '';
+            document.getElementById('videoLevel').value = 'iniciante';
+            document.getElementById('videoDuration').value = '';
+            document.getElementById('uploadFormContainer').style.display = 'block';
+            document.getElementById('uploadProgressContainer').style.display = 'none';
             
             // Mostrar modal
-            document.getElementById('uploadFormModal').style.display = 'flex';
+            document.getElementById('uploadModal').style.display = 'flex';
         }
 
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-        }
-
-        function closeUploadFormModal() {
-            document.getElementById('uploadFormModal').style.display = 'none';
-            document.getElementById('videoFileInput').value = '';
-            currentUploadFile = null;
-        }
-
-        async function submitVideoForm() {
-            const title = document.getElementById('videoTitleInput').value.trim();
-            const description = document.getElementById('videoDescriptionInput').value.trim();
-            const category = document.getElementById('videoCategorySelect').value;
-            const level = document.getElementById('videoLevelSelect').value;
+        async function processUpload() {
+            const title = document.getElementById('videoTitle').value.trim();
+            const description = document.getElementById('videoDescription').value.trim();
+            const level = document.getElementById('videoLevel').value;
+            const duration = document.getElementById('videoDuration').value.trim();
             const file = currentUploadFile;
             
             // Validações
             if (!title) {
                 alert('Por favor, insira um título para a videoaula.');
-                document.getElementById('videoTitleInput').focus();
-                return;
-            }
-            
-            if (!category) {
-                alert('Por favor, selecione uma categoria.');
-                document.getElementById('videoCategorySelect').focus();
-                return;
-            }
-            
-            if (!level) {
-                alert('Por favor, selecione um nível.');
-                document.getElementById('videoLevelSelect').focus();
+                document.getElementById('videoTitle').focus();
                 return;
             }
             
@@ -1214,13 +1373,12 @@
                 return;
             }
             
-            // Desabilitar botão
-            const submitBtn = document.getElementById('submitVideoBtn');
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            submitBtn.disabled = true;
+            // Mostrar progresso
+            document.getElementById('uploadFormContainer').style.display = 'none';
+            document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
-                console.log('🚀 Iniciando upload de videoaula...');
+                console.log('🚀 Iniciando upload de videoaula para usuário:', user.email);
                 
                 // Limpar nome do arquivo
                 const cleanFileName = file.name
@@ -1232,18 +1390,30 @@
                     .replace(/^_+|_+$/g, '');
                 
                 const fileName = `video_${Date.now()}_${cleanFileName}`;
-                const filePath = `videoaulas/${user.id}/${fileName}`;
+                const filePath = `videoaulas/${currentCertId}/${user.id}/${fileName}`;
                 
                 console.log('📤 Upload para:', filePath);
                 
-                // Fazer upload para o storage
+                // Simular progresso
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 3;
+                    if (progress > 70) {
+                        clearInterval(progressInterval);
+                    }
+                    updateProgressBar(progress, 'modal');
+                }, 100);
+                
+                // Fazer upload real para o storage
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('materiais')
                     .upload(filePath, file, {
                         cacheControl: '3600',
                         upsert: false,
-                        contentType: file.type
+                        contentType: file.type || 'video/mp4'
                     });
+                
+                clearInterval(progressInterval);
                 
                 if (uploadError) {
                     console.error('❌ Erro no upload:', uploadError);
@@ -1251,6 +1421,7 @@
                 }
                 
                 console.log('✅ Upload bem-sucedido:', uploadData);
+                updateProgressBar(80, 'modal');
                 
                 // Obter URL pública
                 const { data: urlData } = supabaseClient.storage
@@ -1263,55 +1434,93 @@
                 const videoData = {
                     titulo: title,
                     descricao: description || null,
-                    categoria: category,
+                    categoria: currentCertId,
                     nivel: level,
+                    duracao: duration || '00:00',
                     video_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
-                    duracao: '00:00', // Aqui você poderia extrair a duração do vídeo
                     usuario_id: user.id,
                     visualizacoes: 0,
-                    likes: 0,
                     publico: true,
                     data_upload: new Date().toISOString()
                 };
                 
-                // Salvar no banco de dados
-                // Nota: Você precisará criar a tabela 'videoaulas' no Supabase
-                const { data: dbData, error: dbError } = await supabaseClient
-                    .from('videoaulas')
-                    .insert([videoData])
-                    .select()
-                    .single();
+                console.log('💾 Salvando no banco...');
+                
+                // Tentar salvar na tabela 'video-aulas' (com hífen)
+                let dbData, dbError;
+                
+                try {
+                    const result = await supabaseClient
+                        .from('video-aulas')
+                        .insert([videoData])
+                        .select()
+                        .single();
+                    
+                    dbData = result.data;
+                    dbError = result.error;
+                } catch (tableError) {
+                    console.log('⚠️ Tabela video-aulas não encontrada, tentando videoaulas...');
+                    
+                    // Tentar na tabela 'videoaulas' (sem hífen)
+                    const result = await supabaseClient
+                        .from('videoaulas')
+                        .insert([videoData])
+                        .select()
+                        .single();
+                    
+                    dbData = result.data;
+                    dbError = result.error;
+                }
                 
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
-                    
-                    // Se a tabela não existir, mostrar mensagem
-                    if (dbError.message.includes('relation "videoaulas" does not exist')) {
-                        showNotification('Tabela de videoaulas não configurada no banco.', 'warning');
-                    } else {
-                        throw new Error(`Erro ao salvar informações: ${dbError.message}`);
-                    }
-                } else {
-                    console.log('✅ Videoaula salva no banco:', dbData);
+                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
                 }
                 
-                // Concluir
-                closeUploadFormModal();
-                showNotification('🎉 Videoaula compartilhada com sucesso!', 'success');
+                console.log('✅ Videoaula salva no banco:', dbData);
                 
-                // Recarregar videoaulas
-                loadVideosFromSupabase();
+                // Concluir
+                updateProgressBar(100, 'modal');
+                
+                setTimeout(() => {
+                    closeUploadModal();
+                    showNotification('🎉 Videoaula compartilhada com sucesso!', 'success');
+                    
+                    // Recarregar videoaulas
+                    loadAllVideos();
+                }, 800);
                 
             } catch (error) {
                 console.error('❌ Erro no processo de upload:', error);
                 showNotification(`❌ Erro: ${error.message}`, 'error');
-            } finally {
-                // Reativar botão
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Videoaula';
-                submitBtn.disabled = false;
+                closeUploadModal();
             }
+        }
+
+        function updateProgressBar(percent, type = 'page') {
+            const progressBar = type === 'modal' ? 
+                document.getElementById('modalProgressBar') : 
+                document.getElementById('progressBar');
+                
+            const progressPercent = type === 'modal' ? 
+                document.getElementById('modalProgressPercent') : 
+                document.getElementById('progressPercent');
+            
+            if (progressBar) {
+                progressBar.style.width = percent + '%';
+            }
+            
+            if (progressPercent) {
+                progressPercent.textContent = percent + '%';
+            }
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+            document.getElementById('fileInputPage').value = '';
+            currentUploadFile = null;
         }
 
         // ============================================
@@ -1325,7 +1534,7 @@
             document.getElementById('videoDate').textContent = date;
             document.getElementById('videoDescription').textContent = description;
             document.getElementById('videoCategory').textContent = category;
-            document.getElementById('videoInstructor').textContent = 'Instrutor Certificado';
+            document.getElementById('videoInstructor').textContent = 'Instrutor';
             
             const videoPlayer = document.getElementById('videoPlayer');
             videoPlayer.src = url;
@@ -1335,6 +1544,11 @@
             
             // Mostrar modal
             document.getElementById('videoModal').style.display = 'flex';
+            
+            // Iniciar reprodução
+            setTimeout(() => {
+                videoPlayer.play().catch(e => console.log('Auto-play não permitido:', e));
+            }, 500);
         }
 
         function closeVideoModal() {
@@ -1346,30 +1560,52 @@
 
         async function recordVideoView(videoId) {
             try {
+                // Atualizar contador local
+                const video = allVideos.find(v => v.id === videoId);
+                if (video) {
+                    video.visualizacoes = (video.visualizacoes || 0) + 1;
+                    updateStats(allVideos);
+                }
+                
+                // Atualizar no banco de dados
                 if (supabaseClient) {
-                    await supabaseClient
-                        .from('videoaulas')
+                    // Tentar atualizar na tabela 'video-aulas'
+                    let { error } = await supabaseClient
+                        .from('video-aulas')
                         .update({ visualizacoes: supabaseClient.raw('visualizacoes + 1') })
                         .eq('id', videoId);
+                    
+                    if (error) {
+                        // Tentar na tabela 'videoaulas'
+                        await supabaseClient
+                            .from('videoaulas')
+                            .update({ visualizacoes: supabaseClient.raw('visualizacoes + 1') })
+                            .eq('id', videoId);
+                    }
                 }
             } catch (error) {
                 console.error('Erro ao registrar visualização:', error);
             }
         }
 
-        function likeVideo() {
-            // Implementar like
-            showNotification('Funcionalidade de like em desenvolvimento.', 'info');
-        }
-
-        function toggleWatchLater() {
-            // Implementar watch later
-            showNotification('Funcionalidade "Assistir Depois" em desenvolvimento.', 'info');
-        }
-
         function downloadVideo() {
-            // Implementar download
-            showNotification('Download de videoaulas em breve.', 'info');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const videoUrl = videoPlayer.src;
+            const videoTitle = document.getElementById('videoTitle').textContent;
+            
+            if (videoUrl && videoUrl !== '') {
+                const link = document.createElement('a');
+                link.href = videoUrl;
+                link.download = sanitizeFileName(videoTitle) + '.mp4';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('Download iniciado!', 'success');
+            } else {
+                showNotification('Não foi possível baixar o vídeo.', 'error');
+            }
         }
 
         // ============================================
@@ -1382,7 +1618,7 @@
                 title: videoTitle
             };
             
-            document.getElementById('deleteVideoTitle').textContent = videoTitle;
+            document.getElementById('deleteVideoName').textContent = videoTitle;
             document.getElementById('deleteConfirmModal').style.display = 'flex';
         }
 
@@ -1416,13 +1652,30 @@
                 console.log('🗑️ Iniciando exclusão da videoaula:', videoToDelete.id);
                 
                 // 1. Buscar a videoaula
-                const { data: video, error: fetchError } = await supabaseClient
-                    .from('videoaulas')
-                    .select('*')
-                    .eq('id', videoToDelete.id)
-                    .single();
+                let video, fetchError;
                 
-                if (fetchError) {
+                try {
+                    const result = await supabaseClient
+                        .from('video-aulas')
+                        .select('*')
+                        .eq('id', videoToDelete.id)
+                        .single();
+                    
+                    video = result.data;
+                    fetchError = result.error;
+                } catch (error) {
+                    // Tentar na tabela alternativa
+                    const result = await supabaseClient
+                        .from('videoaulas')
+                        .select('*')
+                        .eq('id', videoToDelete.id)
+                        .single();
+                    
+                    video = result.data;
+                    fetchError = result.error;
+                }
+                
+                if (fetchError || !video) {
                     console.error('❌ Erro ao buscar videoaula:', fetchError);
                     throw new Error('Videoaula não encontrada.');
                 }
@@ -1434,11 +1687,50 @@
                     return;
                 }
                 
-                // 3. Excluir do banco de dados
-                const { error: deleteError } = await supabaseClient
-                    .from('videoaulas')
-                    .delete()
-                    .eq('id', videoToDelete.id);
+                // 3. Extrair caminho do arquivo da URL para excluir do Storage
+                const fileUrl = video.video_url || video.arquivo_url;
+                console.log('🔗 URL do arquivo:', fileUrl);
+                
+                if (fileUrl) {
+                    // Extrair o caminho do arquivo do bucket
+                    const urlParts = fileUrl.split('/materiais/');
+                    if (urlParts.length > 1) {
+                        const filePath = urlParts[1];
+                        console.log('📁 Caminho do arquivo no storage:', filePath);
+                        
+                        // Excluir do Storage
+                        const { error: storageError } = await supabaseClient.storage
+                            .from('materiais')
+                            .remove([filePath]);
+                        
+                        if (storageError) {
+                            console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                        } else {
+                            console.log('✅ Arquivo excluído do storage');
+                        }
+                    }
+                }
+                
+                // 4. Excluir do banco de dados
+                let deleteError;
+                
+                try {
+                    // Tentar excluir da tabela 'video-aulas'
+                    const result = await supabaseClient
+                        .from('video-aulas')
+                        .delete()
+                        .eq('id', videoToDelete.id);
+                    
+                    deleteError = result.error;
+                } catch (error) {
+                    // Tentar excluir da tabela 'videoaulas'
+                    const result = await supabaseClient
+                        .from('videoaulas')
+                        .delete()
+                        .eq('id', videoToDelete.id);
+                    
+                    deleteError = result.error;
+                }
                 
                 if (deleteError) {
                     console.error('❌ Erro ao excluir do banco:', deleteError);
@@ -1452,7 +1744,7 @@
                 showNotification('✅ Videoaula excluída com sucesso!', 'success');
                 
                 // Recarregar a lista de videoaulas
-                loadVideosFromSupabase();
+                loadAllVideos();
                 
             } catch (error) {
                 console.error('❌ Erro na exclusão:', error);
@@ -1462,16 +1754,50 @@
         }
 
         // ============================================
-        // FUNÇÕES DE BUSCA E FILTRO
-        // ============================================
-
-        function searchVideos() {
-            filterVideos();
-        }
-
-        // ============================================
         // FUNÇÕES AUXILIARES
         // ============================================
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function formatDateCompact(dateString) {
+            try {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) {
+                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                    if (diffHours < 1) {
+                        return 'Agora';
+                    }
+                    return `${diffHours}h`;
+                } else if (diffDays === 1) {
+                    return 'Ontem';
+                } else if (diffDays < 7) {
+                    return `${diffDays}d`;
+                } else {
+                    return date.getDate().toString().padStart(2, '0') + '/' + 
+                           (date.getMonth() + 1).toString().padStart(2, '0');
+                }
+            } catch (e) {
+                return '--/--';
+            }
+        }
+
+        function sanitizeFileName(name) {
+            return name.replace(/[^\w\s.-]/gi, '_');
+        }
+
+        function escapeString(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
 
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
@@ -1518,18 +1844,15 @@
         // EXPORTAR FUNÇÕES PARA USO GLOBAL
         // ============================================
 
-        window.checkAuthAndUploadVideo = checkAuthAndUploadVideo;
-        window.closeUploadFormModal = closeUploadFormModal;
-        window.submitVideoForm = submitVideoForm;
+        window.checkAuthAndUpload = checkAuthAndUpload;
+        window.closeUploadModal = closeUploadModal;
         window.closeDeleteModal = closeDeleteModal;
-        window.confirmDeleteVideo = confirmDeleteVideo;
+        window.processUpload = processUpload;
         window.showDeleteVideoModal = showDeleteVideoModal;
+        window.confirmDeleteVideo = confirmDeleteVideo;
         window.playVideo = playVideo;
         window.closeVideoModal = closeVideoModal;
-        window.likeVideo = likeVideo;
-        window.toggleWatchLater = toggleWatchLater;
         window.downloadVideo = downloadVideo;
-        window.searchVideos = searchVideos;
         window.logoutFromPage = logoutFromPage;
         window.filterVideos = filterVideos;
     </script>
