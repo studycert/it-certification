@@ -250,6 +250,12 @@
             border-color: #4ECDC4;
         }
         
+        .pmg-action-btn.delete:hover {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        
         .pmg-stats {
             display: flex;
             gap: 2rem;
@@ -325,6 +331,76 @@
             color: white !important;
         }
         
+        /* Modal de visualização de arquivo */
+        .file-viewer-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .file-viewer-header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-viewer-title {
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .file-viewer-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        .file-viewer-content {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+        }
+        
+        .file-viewer-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        
+        .file-viewer-unsupported {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .file-viewer-unsupported i {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+        
         /* Animação de loading */
         .loading-spinner {
             display: inline-block;
@@ -363,6 +439,10 @@
             .pmg-stat {
                 flex: 1;
                 min-width: 80px;
+            }
+            
+            .file-viewer-title {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -653,6 +733,34 @@
         </div>
     </div>
 
+    <!-- Modal de Visualização de Arquivo -->
+    <div id="fileViewerModal" class="file-viewer-modal">
+        <div class="file-viewer-header">
+            <h3 class="file-viewer-title">
+                <i class="fas fa-file"></i>
+                <span id="fileViewerFileName">Carregando...</span>
+            </h3>
+            <button class="file-viewer-close" onclick="closeFileViewer()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="file-viewer-content">
+            <iframe id="fileViewerIframe" class="file-viewer-iframe" 
+                    title="Visualizador de Arquivo"></iframe>
+            <div id="fileViewerUnsupported" class="file-viewer-unsupported" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Arquivo não suportado para visualização</h3>
+                <p>Este tipo de arquivo não pode ser visualizado diretamente no navegador.</p>
+                <button onclick="downloadCurrentFile()" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-download"></i> Baixar Arquivo
+                </button>
+                <button onclick="closeFileViewer()" class="btn btn-outline" style="margin-top: 0.5rem;">
+                    <i class="fas fa-times"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script>
         // ============================================
@@ -721,6 +829,17 @@
             }
         };
 
+        // Tipos de arquivo que podem ser visualizados no navegador
+        const VIEWABLE_FILE_TYPES = ['pdf', 'txt', 'doc', 'docx', 'ppt', 'pptx'];
+        const viewableExtensions = {
+            'pdf': '.pdf',
+            'txt': '.txt',
+            'doc': '.doc',
+            'docx': '.docx',
+            'ppt': '.ppt',
+            'pptx': '.pptx'
+        };
+
         // Variáveis globais
         let supabaseClient = null;
         let currentUploadFile = null;
@@ -728,6 +847,7 @@
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
+        let currentViewingFile = null;
 
         // ============================================
         // INICIALIZAÇÃO
@@ -789,6 +909,13 @@
             
             // Fechar modais ao clicar fora
             setupModalClickOutside();
+            
+            // Fechar visualizador com ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeFileViewer();
+                }
+            });
         }
 
         function handleDragOver(e) {
@@ -841,6 +968,13 @@
             document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeDeleteModal();
+                }
+            });
+            
+            // Modal de visualização
+            document.getElementById('fileViewerModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeFileViewer();
                 }
             });
         }
@@ -1160,7 +1294,7 @@
             return html;
         }
 
-        // Renderizar card individual de arquivo PMG
+        // Renderizar card individual de arquivo PMG - APENAS VISUALIZAR E EXCLUIR
         function renderPMGFileCard(file) {
             const fileId = file.id;
             const fileName = file.titulo || file.arquivo_nome || 'Arquivo';
@@ -1180,6 +1314,9 @@
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && file.usuario_id === currentUserId;
             
+            // Verificar se o arquivo pode ser visualizado
+            const canView = canViewFile(fileType);
+            
             return `
                 <div class="pmg-file-card">
                     <div class="pmg-file-icon">
@@ -1196,24 +1333,18 @@
                     </div>
                     <div class="pmg-file-actions">
                         ${hasValidUrl ? `
-                            <a href="${fileUrl}" target="_blank" class="pmg-action-btn" 
-                               onclick="recordView('${fileId}')" title="Visualizar">
+                            <button class="pmg-action-btn" 
+                               onclick="viewFile('${fileId}', '${fileName}', '${fileUrl}', '${fileType}')" 
+                               title="${canView ? 'Visualizar' : 'Não pode ser visualizado'}">
                                 <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="${fileUrl}" download="${sanitizeFileName(fileName)}" 
-                               class="pmg-action-btn" onclick="recordDownload('${fileId}')" title="Baixar">
-                                <i class="fas fa-download"></i>
-                            </a>
+                            </button>
                         ` : `
                             <span class="pmg-action-btn disabled" title="Link não disponível">
                                 <i class="fas fa-eye"></i>
                             </span>
-                            <span class="pmg-action-btn disabled" title="Download não disponível">
-                                <i class="fas fa-download"></i>
-                            </span>
                         `}
                         ${isOwner ? `
-                            <button class="pmg-action-btn btn-delete" 
+                            <button class="pmg-action-btn delete" 
                                     onclick="showDeleteModal('${fileId}', '${fileName}')" 
                                     title="Excluir">
                                 <i class="fas fa-trash"></i>
@@ -1252,7 +1383,7 @@
             container.innerHTML = materialsHTML;
         }
 
-        // Renderizar item de material (para não-ITIL)
+        // Renderizar item de material (para não-ITIL) - APENAS VISUALIZAR E EXCLUIR
         function renderMaterialItem(material) {
             const fileType = material.tipo || detectFileType(material.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
@@ -1260,6 +1391,7 @@
             const isOwner = currentUserId && material.usuario_id === currentUserId;
             const uploadDate = formatDateCompact(material.data_upload);
             const fileSize = formatFileSize((material.arquivo_tamanho_kb || 0) * 1024);
+            const canView = canViewFile(fileType);
             
             return `
                 <div class="material-item-compact" data-id="${material.id}">
@@ -1269,8 +1401,9 @@
                     
                     <div class="material-content-compact">
                         <div class="material-header-compact">
-                            <a href="${material.arquivo_url}" target="_blank" class="material-title-compact" 
-                               onclick="recordView('${material.id}')" title="${material.titulo}">
+                            <a href="javascript:void(0)" onclick="viewFile('${material.id}', '${material.titulo}', '${material.arquivo_url}', '${fileType}')" 
+                               class="material-title-compact" 
+                               title="${material.titulo}">
                                 ${material.titulo}
                             </a>
                             <div class="material-meta-compact">
@@ -1297,25 +1430,15 @@
                             <span title="Visualizações">
                                 <i class="far fa-eye"></i> ${material.visualizacoes || 0}
                             </span>
-                            <span title="Downloads">
-                                <i class="fas fa-download"></i> ${material.downloads || 0}
-                            </span>
                         </div>
                     </div>
                     
                     <div class="material-actions-compact">
-                        <a href="${material.arquivo_url}" target="_blank" 
-                           class="btn btn-primary btn-sm" 
-                           onclick="recordView('${material.id}')" 
-                           title="Visualizar">
+                        <button class="btn btn-primary btn-sm" 
+                                onclick="viewFile('${material.id}', '${material.titulo}', '${material.arquivo_url}', '${fileType}')" 
+                                title="${canView ? 'Visualizar' : 'Não pode ser visualizado'}">
                             <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="${material.arquivo_url}" download="${sanitizeFileName(material.titulo)}" 
-                           class="btn btn-success btn-sm" 
-                           onclick="recordDownload('${material.id}')" 
-                           title="Baixar">
-                            <i class="fas fa-download"></i>
-                        </a>
+                        </button>
                         ${isOwner ? `
                             <button class="btn btn-outline btn-sm btn-delete" 
                                     onclick="showDeleteModal('${material.id}', '${material.titulo}')" 
@@ -1391,6 +1514,114 @@
                     </div>
                 </div>
             `;
+        }
+
+        // ============================================
+        // VISUALIZAÇÃO DE ARQUIVOS
+        // ============================================
+
+        // Verificar se o arquivo pode ser visualizado
+        function canViewFile(fileType) {
+            return VIEWABLE_FILE_TYPES.includes(fileType);
+        }
+
+        // Visualizar arquivo
+        function viewFile(fileId, fileName, fileUrl, fileType) {
+            if (!fileUrl || fileUrl === '#' || fileUrl === 'undefined') {
+                showNotification('Link do arquivo não disponível.', 'error');
+                return;
+            }
+            
+            // Registrar visualização
+            recordView(fileId);
+            
+            // Verificar se o arquivo pode ser visualizado
+            if (!canViewFile(fileType)) {
+                showNotification('Este tipo de arquivo não pode ser visualizado diretamente.', 'warning');
+                
+                // Para arquivos não visualizáveis, oferecer download
+                const shouldDownload = confirm(`${fileName}\n\nEste tipo de arquivo não pode ser visualizado no navegador.\nDeseja baixar o arquivo?`);
+                if (shouldDownload) {
+                    const link = document.createElement('a');
+                    link.href = fileUrl;
+                    link.download = sanitizeFileName(fileName);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    recordDownload(fileId);
+                }
+                return;
+            }
+            
+            currentViewingFile = {
+                id: fileId,
+                name: fileName,
+                url: fileUrl,
+                type: fileType
+            };
+            
+            // Configurar modal
+            document.getElementById('fileViewerFileName').textContent = fileName;
+            
+            // Mostrar visualizador ou mensagem de não suportado
+            const iframe = document.getElementById('fileViewerIframe');
+            const unsupportedDiv = document.getElementById('fileViewerUnsupported');
+            
+            if (canViewFile(fileType)) {
+                // Para arquivos visualizáveis
+                iframe.style.display = 'block';
+                unsupportedDiv.style.display = 'none';
+                
+                // Configurar iframe baseado no tipo de arquivo
+                if (fileType === 'pdf') {
+                    // Para PDFs usar visualizador do Google
+                    iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+                } else if (fileType === 'txt') {
+                    // Para textos simples
+                    iframe.src = fileUrl;
+                } else {
+                    // Para outros tipos, tentar abrir diretamente
+                    iframe.src = fileUrl;
+                }
+            } else {
+                // Para arquivos não visualizáveis
+                iframe.style.display = 'none';
+                unsupportedDiv.style.display = 'block';
+            }
+            
+            // Mostrar modal
+            document.getElementById('fileViewerModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Fechar visualizador
+        function closeFileViewer() {
+            document.getElementById('fileViewerModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // Limpar iframe
+            const iframe = document.getElementById('fileViewerIframe');
+            iframe.src = '';
+            
+            currentViewingFile = null;
+        }
+
+        // Download do arquivo atual
+        function downloadCurrentFile() {
+            if (!currentViewingFile) return;
+            
+            const link = document.createElement('a');
+            link.href = currentViewingFile.url;
+            link.download = sanitizeFileName(currentViewingFile.name);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Registrar download
+            recordDownload(currentViewingFile.id);
+            
+            // Fechar modal
+            closeFileViewer();
         }
 
         // ============================================
@@ -1826,11 +2057,23 @@
         function recordView(materialId) {
             console.log(`Registrando visualização: ${materialId}`);
             // Implementar registro de visualização no Supabase
+            // Atualizar contador local
+            const material = allMaterials.find(m => m.id === materialId);
+            if (material) {
+                material.visualizacoes = (material.visualizacoes || 0) + 1;
+                updateStats(allMaterials);
+            }
         }
 
         function recordDownload(materialId) {
             console.log(`Registrando download: ${materialId}`);
             // Implementar registro de download no Supabase
+            // Atualizar contador local
+            const material = allMaterials.find(m => m.id === materialId);
+            if (material) {
+                material.downloads = (material.downloads || 0) + 1;
+                updateStats(allMaterials);
+            }
         }
 
         function showNotification(message, type = 'info') {
@@ -1912,6 +2155,9 @@
         window.processUpload = processUpload;
         window.showDeleteModal = showDeleteModal;
         window.confirmDeleteMaterial = confirmDeleteMaterial;
+        window.viewFile = viewFile;
+        window.closeFileViewer = closeFileViewer;
+        window.downloadCurrentFile = downloadCurrentFile;
         window.recordView = recordView;
         window.recordDownload = recordDownload;
         window.logoutFromPage = logoutFromPage;
