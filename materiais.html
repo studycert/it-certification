@@ -60,8 +60,9 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,50 Q50,20 70,50 Q50,80 30,50 Z" fill="white"/></svg>');
         }
         
+        /* LINUX - AMARELO */
         .linux-banner {
-            background: linear-gradient(135deg, #E95420 0%, #C34113 25%, #A42E0A 50%, #852006 75%, #661A03 100%) !important;
+            background: linear-gradient(135deg, #FFD700 0%, #FFC300 25%, #FFB300 50%, #FFA000 75%, #FF8C00 100%) !important;
             position: relative;
             overflow: hidden;
         }
@@ -76,8 +77,9 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><ellipse cx="50" cy="40" rx="35" ry="20" fill="white"/><ellipse cx="50" cy="70" rx="40" ry="25" fill="white"/></svg>');
         }
         
+        /* SECURITY+ - VERMELHO */
         .security-banner {
-            background: linear-gradient(135deg, #27ae60 0%, #1e8449 25%, #145a32 50%, #0c351d 75%, #041509 100%) !important;
+            background: linear-gradient(135deg, #FF0000 0%, #D32F2F 25%, #B71C1C 50%, #880E0E 75%, #660000 100%) !important;
             position: relative;
             overflow: hidden;
         }
@@ -108,7 +110,7 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
 
-        /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
+        /* Card especial para PMG Academy */
         .pmg-academy-container {
             margin-bottom: 2rem;
             display: block !important;
@@ -298,26 +300,6 @@
             transform: translateY(-2px);
         }
         
-        /* Ícones coloridos por tipo de arquivo */
-        .file-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-        }
-        
-        .file-icon.pdf { background: #e74c3c; }
-        .file-icon.doc { background: #3498db; }
-        .file-icon.ppt { background: #e67e22; }
-        .file-icon.txt { background: #7f8c8d; }
-        .file-icon.zip { background: #9b59b6; }
-        .file-icon.video { background: #e74c3c; }
-        .file-icon.other { background: #95a5a6; }
-        
         /* Botão de exclusão */
         .btn-delete {
             background: rgba(231, 76, 60, 0.1) !important;
@@ -367,68 +349,16 @@
         .category-chip[data-category="itil"]:hover { background: #1a237e; color: white; }
         .category-chip[data-category="azure"]:hover { background: #0078D4; color: white; }
         .category-chip[data-category="aws"]:hover { background: #FF9900; color: white; }
-        .category-chip[data-category="linux"]:hover { background: #E95420; color: white; }
-        .category-chip[data-category="security"]:hover { background: #27ae60; color: white; }
+        .category-chip[data-category="linux"]:hover { background: #FFD700; color: white; }
+        .category-chip[data-category="security"]:hover { background: #FF0000; color: white; }
         .category-chip[data-category="ccna"]:hover { background: #00a0d2; color: white; }
         
         .category-chip.active[data-category="itil"] { background: #1a237e; }
         .category-chip.active[data-category="azure"] { background: #0078D4; }
         .category-chip.active[data-category="aws"] { background: #FF9900; }
-        .category-chip.active[data-category="linux"] { background: #E95420; }
-        .category-chip.active[data-category="security"] { background: #27ae60; }
+        .category-chip.active[data-category="linux"] { background: #FFD700; color: #333; }
+        .category-chip.active[data-category="security"] { background: #FF0000; }
         .category-chip.active[data-category="ccna"] { background: #00a0d2; }
-        
-        /* Notificações */
-        .notification {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            z-index: 10000;
-            animation: slideInRight 0.3s ease-out;
-            border-left: 4px solid #3498db;
-            max-width: 400px;
-        }
-        
-        .notification-success {
-            border-left-color: #27ae60;
-        }
-        
-        .notification-error {
-            border-left-color: #e74c3c;
-        }
-        
-        .notification-warning {
-            border-left-color: #f39c12;
-        }
-        
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
         
         /* Responsividade */
         @media (max-width: 768px) {
@@ -681,7 +611,6 @@
                         <li><a href="index.html">Home</a></li>
                         <li><a href="index.html#certificacoes">Certificações</a></li>
                         <li><a href="index.html#materiais">Material de Estudo</a></li>
-                        <li><a href="video-aulas.html">Videoaulas</a></li>
                     </ul>
                 </div>
             </div>
@@ -746,7 +675,7 @@
                     <button onclick="closeUploadModal()" class="btn btn-outline">
                         <i class="fas fa-times"></i> Cancelar
                     </button>
-                    <button onclick="processMaterialUpload()" class="btn btn-primary">
+                    <button onclick="processUpload()" class="btn btn-primary">
                         <i class="fas fa-paper-plane"></i> Enviar Material
                     </button>
                 </div>
@@ -780,17 +709,17 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- JavaScript SIMPLIFICADO -->
     <script>
         // ============================================
-        // JAVASCRIPT PARA PÁGINA DE MATERIAIS
+        // JAVASCRIPT SIMPLES E FUNCIONAL
         // ============================================
 
         // Configurações
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-        // Mapeamento de certificações com banners e ícones
+        // Mapeamento de certificações
         const certifications = {
             'itil': { 
                 title: 'ITIL 4 Foundation', 
@@ -836,14 +765,10 @@
             }
         };
 
-        // Tipos de arquivo que podem ser visualizados no navegador (apenas PDF e TXT)
-        const VIEWABLE_FILE_TYPES = ['pdf', 'txt'];
-        const DOWNLOADABLE_FILE_TYPES = ['doc', 'ppt', 'zip', 'video', 'other'];
-
         // Variáveis globais
         let supabaseClient = null;
         let currentUploadFile = null;
-        let currentCategory = 'itil'; // Inicia com ITIL
+        let currentCategory = 'itil';
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
@@ -855,48 +780,46 @@
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Inicializando página de materiais...');
             
-            // Configurar eventos
-            setupEventListeners();
+            // Configurar eventos básicos
+            setupBasicEventListeners();
             
             // Aguardar carregamento do authManager
             setTimeout(async () => {
-                // Inicializar Supabase
-                await initSupabase();
-                
-                // Atualizar interface de autenticação
-                updateAuthUI();
-                
-                // Mostrar barra de autenticação
-                document.getElementById('authBar').style.display = 'block';
-                
-                // Configurar categoria inicial
-                selectCategory('itil');
-                
-                // Carregar todos os materiais
-                await loadAllMaterials();
-                
-                console.log('✅ Página de materiais inicializada com sucesso');
-            }, 300);
+                try {
+                    // Inicializar Supabase de forma simples
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                        auth: { persistSession: true }
+                    });
+                    
+                    console.log('✅ Supabase inicializado');
+                    
+                    // Atualizar interface de autenticação
+                    updateAuthUI();
+                    
+                    // Mostrar barra de autenticação
+                    document.getElementById('authBar').style.display = 'block';
+                    
+                    // Configurar categoria inicial
+                    selectCategory('itil');
+                    
+                    // Carregar todos os materiais
+                    await loadAllMaterials();
+                    
+                    console.log('✅ Página inicializada com sucesso');
+                } catch (error) {
+                    console.error('❌ Erro na inicialização:', error);
+                    alert('Erro ao carregar página. Tente recarregar.');
+                }
+            }, 500);
         });
 
         // ============================================
-        // CONFIGURAÇÃO DE EVENTOS
+        // CONFIGURAÇÃO DE EVENTOS BÁSICOS
         // ============================================
 
-        function setupEventListeners() {
+        function setupBasicEventListeners() {
             // Input de arquivo
-            const fileInput = document.getElementById('fileInputPage');
-            if (fileInput) {
-                fileInput.addEventListener('change', handleFileSelect);
-            }
-            
-            // Drag and drop
-            const uploadArea = document.querySelector('.upload-area-compact');
-            if (uploadArea) {
-                uploadArea.addEventListener('dragover', handleDragOver);
-                uploadArea.addEventListener('dragleave', handleDragLeave);
-                uploadArea.addEventListener('drop', handleDrop);
-            }
+            document.getElementById('fileInputPage')?.addEventListener('change', handleFileSelect);
             
             // Filtros
             document.getElementById('filterType')?.addEventListener('change', filterMaterials);
@@ -910,86 +833,6 @@
                     selectCategory(category);
                 });
             });
-            
-            // Fechar modais ao clicar fora
-            setupModalClickOutside();
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const uploadArea = document.querySelector('.upload-area-compact');
-            if (uploadArea) {
-                uploadArea.style.background = '#e8f4fc';
-                uploadArea.style.borderColor = '#2980b9';
-                uploadArea.style.transform = 'translateY(-3px)';
-            }
-        }
-
-        function handleDragLeave(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const uploadArea = document.querySelector('.upload-area-compact');
-            if (uploadArea) {
-                uploadArea.style.background = '#f8fafc';
-                uploadArea.style.borderColor = '#ddd';
-                uploadArea.style.transform = 'translateY(0)';
-            }
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const uploadArea = document.querySelector('.upload-area-compact');
-            if (uploadArea) {
-                uploadArea.style.background = '#f8fafc';
-                uploadArea.style.borderColor = '#ddd';
-                uploadArea.style.transform = 'translateY(0)';
-            }
-            
-            const files = e.dataTransfer.files;
-            if (files && files.length > 0) {
-                handleFileDrop(files);
-            }
-        }
-
-        function setupModalClickOutside() {
-            // Modal de upload
-            document.getElementById('uploadModal')?.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeUploadModal();
-                }
-            });
-            
-            // Modal de exclusão
-            document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeDeleteModal();
-                }
-            });
-        }
-
-        // ============================================
-        // INICIALIZAÇÃO DO SUPABASE
-        // ============================================
-
-        async function initSupabase() {
-            try {
-                // Usar authManager se disponível
-                if (window.authManager && window.authManager.getSupabase()) {
-                    supabaseClient = window.authManager.getSupabase();
-                    console.log('✅ Usando Supabase do authManager');
-                } else {
-                    // Criar novo cliente
-                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                        auth: { persistSession: true }
-                    });
-                    console.log('✅ Criado novo cliente Supabase');
-                }
-                
-            } catch (error) {
-                console.error('❌ Erro ao inicializar Supabase:', error);
-            }
         }
 
         // ============================================
@@ -1007,7 +850,6 @@
             
             if (window.authManager.isAuthenticated()) {
                 currentUser = window.authManager.getUser();
-                console.log('👤 Usuário logado:', currentUser);
                 
                 const userName = currentUser.user_metadata?.full_name || 
                                 currentUser.email?.split('@')[0] || 
@@ -1026,7 +868,6 @@
                     </div>
                 `;
                 
-                // Mostrar seção de upload
                 document.getElementById('uploadSection').style.display = 'block';
             } else {
                 currentUser = null;
@@ -1046,7 +887,6 @@
                     </div>
                 `;
                 
-                // Ocultar seção de upload
                 document.getElementById('uploadSection').style.display = 'none';
             }
         }
@@ -1067,16 +907,14 @@
         // FUNÇÕES PRINCIPAIS
         // ============================================
 
-        // Selecionar categoria
         function selectCategory(category) {
             currentCategory = category;
             
             // Atualizar chips ativos
             document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.classList.remove('active');
                 if (chip.getAttribute('data-category') === category) {
                     chip.classList.add('active');
-                } else {
-                    chip.classList.remove('active');
                 }
             });
             
@@ -1087,7 +925,6 @@
             filterMaterials();
         }
 
-        // Atualizar banner da página
         function updatePageBanner(category) {
             const cert = certifications[category] || certifications['itil'];
             
@@ -1099,7 +936,7 @@
             const breadcrumb = document.getElementById('currentCertification');
             
             // Remover todas as classes de banner
-            hero.classList.remove('itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'security-banner', 'ccna-banner');
+            hero.className = 'certification-hero';
             
             // Adicionar a classe correta
             hero.classList.add(cert.bannerClass);
@@ -1118,17 +955,8 @@
 
         async function loadAllMaterials() {
             try {
-                console.log('📥 Carregando todos os materiais...');
+                console.log('📥 Carregando materiais...');
                 
-                if (!supabaseClient) {
-                    console.error('❌ Supabase não inicializado');
-                    showNoMaterials('Erro de conexão com o banco de dados.');
-                    return;
-                }
-                
-                console.log('🔍 Buscando materiais na tabela materiais...');
-                
-                // Buscar TODOS os materiais da tabela
                 const { data, error } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -1137,15 +965,15 @@
                 
                 if (error) {
                     console.error('❌ Erro ao carregar materiais:', error);
-                    showNoMaterials('Nenhum material encontrado. Seja o primeiro a compartilhar!');
+                    showNoMaterials('Nenhum material encontrado.');
                     return;
                 }
                 
                 allMaterials = data || [];
-                console.log(`✅ ${allMaterials.length} materiais carregados da tabela materiais`);
+                console.log(`✅ ${allMaterials.length} materiais carregados`);
                 
                 // Filtrar materiais por categoria
-                filterMaterialsByCategory();
+                filterMaterials();
                 
                 // Atualizar estatísticas
                 updateStats(allMaterials);
@@ -1156,313 +984,6 @@
             }
         }
 
-        // Filtrar materiais por categoria
-        function filterMaterialsByCategory() {
-            // Filtrar materiais pela categoria atual
-            const categoryMaterials = allMaterials.filter(m => {
-                // Mapear categoria da interface para o campo da tabela
-                const cert = m.certificacao || '';
-                const cat = m.categoria || '';
-                
-                // Mapeamento de categorias
-                const categoryMapping = {
-                    'itil': ['itil4', 'itil'],
-                    'azure': ['azure'],
-                    'aws': ['aws'],
-                    'linux': ['lpic', 'linux'],
-                    'security': ['security'],
-                    'ccna': ['ccna']
-                };
-                
-                const validCerts = categoryMapping[currentCategory] || [currentCategory];
-                return validCerts.some(validCert => 
-                    cert.includes(validCert) || cat === validCert
-                );
-            });
-            
-            // Para ITIL, mostrar no card PMG
-            if (currentCategory === 'itil' && categoryMaterials.length > 0) {
-                loadPMGAcademyCard(categoryMaterials);
-                updateOtherMaterials([]);
-            } else {
-                document.getElementById('pmg-academy-container').innerHTML = '';
-                updateOtherMaterials(categoryMaterials);
-            }
-        }
-
-        // Carregar card PMG Academy
-        function loadPMGAcademyCard(files = []) {
-            const container = document.getElementById('pmg-academy-container');
-            
-            if (!container) return;
-            
-            // Estatísticas
-            const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
-            const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
-            const totalSizeMB = files.length > 0 ? 
-                (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
-            
-            // Agrupar arquivos por tipo
-            const groupedFiles = groupFilesByType(files);
-            
-            const pmgCardHTML = `
-                <div class="pmg-academy-card">
-                    <div class="pmg-academy-header">
-                        <div class="pmg-academy-icon">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <div class="pmg-academy-title">
-                            <h3>ITIL® 4 Foundation | PMG Academy</h3>
-                            <span class="pmg-badge">
-                                <i class="fas fa-crown"></i> 
-                                Pacote Completo - ${files.length} arquivos
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="pmg-academy-content">
-                        <p style="margin-bottom: 1.5rem; color: #666;">
-                            Pacote completo da PMG Academy para certificação ITIL 4 Foundation. 
-                            Inclui apresentações, apostilas, exercícios e materiais complementares.
-                        </p>
-                        
-                        <div class="pmg-stats">
-                            <div class="pmg-stat">
-                                <div class="pmg-stat-value">${files.length}</div>
-                                <div class="pmg-stat-label">Arquivos</div>
-                            </div>
-                            <div class="pmg-stat">
-                                <div class="pmg-stat-value">${totalViews}</div>
-                                <div class="pmg-stat-label">Visualizações</div>
-                            </div>
-                            <div class="pmg-stat">
-                                <div class="pmg-stat-value">${totalDownloads}</div>
-                                <div class="pmg-stat-label">Downloads</div>
-                            </div>
-                            <div class="pmg-stat">
-                                <div class="pmg-stat-value">${totalSizeMB} MB</div>
-                                <div class="pmg-stat-label">Tamanho Total</div>
-                            </div>
-                        </div>
-                        
-                        <button class="pmg-toggle-btn" onclick="togglePmgFiles()" id="pmgToggleBtn">
-                            <i class="fas fa-folder-open"></i>
-                            <span>Mostrar ${files.length} Arquivos</span>
-                        </button>
-                        
-                        <div id="pmg-files-container" style="display: none; margin-top: 1.5rem;">
-                            ${renderPMGFileGroups(groupedFiles)}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            container.innerHTML = pmgCardHTML;
-        }
-
-        // Função para agrupar arquivos por tipo
-        function groupFilesByType(files) {
-            const groups = {};
-            
-            files.forEach(file => {
-                const type = file.tipo || detectFileType(file.arquivo_nome || '');
-                if (!groups[type]) {
-                    groups[type] = [];
-                }
-                groups[type].push(file);
-            });
-            
-            return groups;
-        }
-
-        // Renderizar grupos de arquivos PMG
-        function renderPMGFileGroups(groups) {
-            let html = '';
-            
-            // Ordenar grupos por tipo
-            const typeOrder = ['pdf', 'doc', 'ppt', 'video', 'txt', 'zip', 'other'];
-            const sortedGroups = Object.entries(groups).sort((a, b) => {
-                return typeOrder.indexOf(a[0]) - typeOrder.indexOf(b[0]);
-            });
-            
-            sortedGroups.forEach(([type, files]) => {
-                const typeName = getTypeName(type);
-                const typeIcon = getFileIcon(type);
-                
-                html += `
-                    <div style="margin-bottom: 2rem;">
-                        <h4 style="color: #4ECDC4; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-${typeIcon}"></i>
-                            ${typeName} (${files.length})
-                        </h4>
-                        <div class="pmg-files-grid">
-                            ${files.map(file => renderPMGFileCard(file)).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            return html;
-        }
-
-        // Renderizar card individual de arquivo PMG
-        function renderPMGFileCard(file) {
-            const fileId = file.id;
-            const fileName = file.titulo || file.arquivo_nome || 'Arquivo';
-            const fileDesc = file.descricao || 'Sem descrição';
-            const fileUrl = file.arquivo_url || '#';
-            const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
-            const fileType = file.tipo || detectFileType(file.arquivo_nome || '');
-            const fileIcon = getFileIcon(fileType);
-            const uploadDate = formatDateCompact(file.data_upload);
-            
-            // Verificar se URL é válida
-            const hasValidUrl = fileUrl && fileUrl !== '#' && 
-                              fileUrl !== 'undefined' && 
-                              (fileUrl.startsWith('http') || fileUrl.startsWith('https'));
-            
-            // Verificar se usuário é o dono
-            const currentUserId = currentUser?.id;
-            const isOwner = currentUserId && file.usuario_id === currentUserId;
-            
-            // Verificar se o arquivo pode ser visualizado
-            const canView = canViewFile(fileType);
-            
-            return `
-                <div class="pmg-file-card">
-                    <div class="pmg-file-icon">
-                        <i class="fas fa-${fileIcon}"></i>
-                    </div>
-                    <div class="pmg-file-info">
-                        <h5 title="${fileName}">${fileName}</h5>
-                        <div class="pmg-file-meta">
-                            <span><i class="fas fa-file"></i> ${fileType.toUpperCase()}</span>
-                            <span><i class="fas fa-hdd"></i> ${fileSize}</span>
-                            <span><i class="fas fa-calendar"></i> ${uploadDate}</span>
-                        </div>
-                        ${fileDesc ? `<p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">${fileDesc}</p>` : ''}
-                    </div>
-                    <div class="pmg-file-actions">
-                        ${hasValidUrl ? `
-                            <button class="pmg-action-btn" 
-                               onclick="handleFileAction('${fileId}', '${escapeString(fileName)}', '${escapeString(fileUrl)}', '${fileType}')" 
-                               title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
-                                <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
-                            </button>
-                        ` : `
-                            <span class="pmg-action-btn disabled" title="Link não disponível">
-                                <i class="fas fa-eye"></i>
-                            </span>
-                        `}
-                        ${isOwner ? `
-                            <button class="pmg-action-btn delete" 
-                                    onclick="showDeleteModal('${fileId}', '${escapeString(fileName)}')" 
-                                    title="Excluir">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Atualizar outros materiais (não-ITIL)
-        function updateOtherMaterials(materials) {
-            const container = document.getElementById('materialsContainer');
-            const countElement = document.getElementById('materialsCount');
-            
-            if (!materials || materials.length === 0) {
-                container.innerHTML = `
-                    <div class="no-materials-message-compact">
-                        <i class="fas fa-folder-open"></i>
-                        <div>
-                            <h4>Nenhum material disponível</h4>
-                            <p>Seja o primeiro a compartilhar um material!</p>
-                        </div>
-                    </div>
-                `;
-                countElement.textContent = '0 materiais';
-                return;
-            }
-            
-            countElement.textContent = `${materials.length} material${materials.length !== 1 ? 's' : ''}`;
-            
-            const materialsHTML = materials.map(material => 
-                renderMaterialItem(material)
-            ).join('');
-            
-            container.innerHTML = materialsHTML;
-        }
-
-        // Renderizar item de material (para não-ITIL)
-        function renderMaterialItem(material) {
-            const fileType = material.tipo || detectFileType(material.arquivo_nome || '');
-            const fileIcon = getFileIcon(fileType);
-            const currentUserId = currentUser?.id;
-            const isOwner = currentUserId && material.usuario_id === currentUserId;
-            const uploadDate = formatDateCompact(material.data_upload);
-            const fileSize = formatFileSize((material.arquivo_tamanho_kb || 0) * 1024);
-            const canView = canViewFile(fileType);
-            
-            return `
-                <div class="material-item-compact" data-id="${material.id}">
-                    <div class="material-icon-compact ${fileType}">
-                        <i class="fas fa-${fileIcon}"></i>
-                    </div>
-                    
-                    <div class="material-content-compact">
-                        <div class="material-header-compact">
-                            <a href="javascript:void(0)" onclick="handleFileAction('${material.id}', '${escapeString(material.titulo)}', '${escapeString(material.arquivo_url)}', '${fileType}')" 
-                               class="material-title-compact" 
-                               title="${material.titulo}">
-                                ${material.titulo}
-                            </a>
-                            <div class="material-meta-compact">
-                                <span title="Tipo de arquivo">
-                                    <i class="fas fa-file"></i> ${fileType.toUpperCase()}
-                                </span>
-                                <span title="Tamanho">
-                                    • ${fileSize}
-                                </span>
-                                <span title="Data de upload">
-                                    • ${uploadDate}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        ${material.descricao ? 
-                            `<div class="material-description-compact" title="${material.descricao}">
-                                ${material.descricao}
-                            </div>` 
-                            : ''
-                        }
-                        
-                        <div class="material-stats-compact">
-                            <span title="Visualizações">
-                                <i class="far fa-eye"></i> ${material.visualizacoes || 0}
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="material-actions-compact">
-                        <button class="btn btn-primary btn-sm" 
-                                onclick="handleFileAction('${material.id}', '${escapeString(material.titulo)}', '${escapeString(material.arquivo_url)}', '${fileType}')" 
-                                title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
-                            <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
-                        </button>
-                        ${isOwner ? `
-                            <button class="btn btn-outline btn-sm btn-delete" 
-                                    onclick="showDeleteModal('${material.id}', '${escapeString(material.titulo)}')" 
-                                    title="Excluir material">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Filtrar materiais
         function filterMaterials() {
             const typeFilter = document.getElementById('filterType').value;
             const sortFilter = document.getElementById('filterSort').value;
@@ -1470,11 +991,9 @@
             
             // Filtrar por categoria principal
             let filteredMaterials = allMaterials.filter(m => {
-                // Mapear categoria da interface para o campo da tabela
                 const cert = m.certificacao || '';
                 const cat = m.categoria || '';
                 
-                // Mapeamento de categorias
                 const categoryMapping = {
                     'itil': ['itil4', 'itil'],
                     'azure': ['azure'],
@@ -1493,7 +1012,7 @@
             // Aplicar filtro de tipo
             if (typeFilter !== 'all') {
                 filteredMaterials = filteredMaterials.filter(m => {
-                    const fileType = m.tipo || detectFileType(m.arquivo_nome || '');
+                    const fileType = detectFileType(m.arquivo_nome || '');
                     return fileType === typeFilter;
                 });
             }
@@ -1518,11 +1037,10 @@
                 updateOtherMaterials(filteredMaterials);
             }
             
-            // Atualizar estatísticas com os materiais filtrados
+            // Atualizar estatísticas
             updateStats(filteredMaterials);
         }
 
-        // Ordenar materiais
         function sortMaterials(materials, sortType) {
             const sorted = [...materials];
             
@@ -1539,7 +1057,6 @@
             }
         }
 
-        // Atualizar estatísticas
         function updateStats(materials) {
             const totalMaterials = materials.length;
             const totalSize = materials.reduce((sum, material) => sum + (material.arquivo_tamanho_kb || 0), 0) / 1024;
@@ -1552,7 +1069,6 @@
             document.getElementById('totalDownloads').textContent = totalDownloads;
         }
 
-        // Mostrar mensagem quando não há materiais
         function showNoMaterials(message) {
             const container = document.getElementById('materialsContainer');
             container.innerHTML = `
@@ -1566,64 +1082,13 @@
         }
 
         // ============================================
-        // FUNÇÕES PARA MANIPULAÇÃO DE ARQUIVOS
-        // ============================================
-
-        // Verificar se o arquivo pode ser visualizado no navegador
-        function canViewFile(fileType) {
-            return VIEWABLE_FILE_TYPES.includes(fileType);
-        }
-
-        // Manipular ação do arquivo (visualizar ou baixar)
-        function handleFileAction(fileId, fileName, fileUrl, fileType) {
-            if (!fileUrl || fileUrl === '#' || fileUrl === 'undefined') {
-                showNotification('Link do arquivo não disponível.', 'error');
-                return;
-            }
-            
-            // Registrar visualização
-            recordView(fileId);
-            
-            if (canViewFile(fileType)) {
-                // PDF e TXT - abrir em nova aba
-                openFileInNewTab(fileUrl);
-            } else {
-                // DOC, PPT, ZIP, vídeos, etc. - download automático
-                downloadFile(fileId, fileName, fileUrl);
-            }
-        }
-
-        // Abrir arquivo em nova aba (para PDF e TXT)
-        function openFileInNewTab(fileUrl) {
-            window.open(fileUrl, '_blank');
-        }
-
-        // Download automático de arquivo
-        function downloadFile(fileId, fileName, fileUrl) {
-            const link = document.createElement('a');
-            link.href = fileUrl;
-            link.download = sanitizeFileName(fileName);
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Registrar download
-            recordDownload(fileId);
-            
-            showNotification(`Download de "${fileName}" iniciado.`, 'success');
-        }
-
-        // ============================================
-        // FUNÇÕES DE UPLOAD - CORRIGIDAS
+        // FUNÇÕES DE UPLOAD SIMPLIFICADAS
         // ============================================
 
         function checkAuthAndUpload() {
             if (!window.authManager || !window.authManager.isAuthenticated()) {
-                showNotification('Faça login para compartilhar materiais.', 'warning');
-                setTimeout(() => {
-                    window.location.href = 'index.html#login';
-                }, 1500);
+                alert('Faça login para compartilhar materiais.');
+                window.location.href = 'index.html#login';
                 return;
             }
             
@@ -1631,29 +1096,13 @@
         }
 
         function handleFileSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            // Validar tamanho do arquivo (100MB máximo)
-            const maxSize = 100 * 1024 * 1024;
-            if (file.size > maxSize) {
-                alert('Arquivo muito grande! O tamanho máximo permitido é 100MB.');
-                return;
-            }
-            
-            showUploadForm(file);
-        }
-
-        function handleFileDrop(files) {
-            if (!files || files.length === 0) return;
-            
-            const file = files[0];
+            const file = e.target.files?.[0];
             if (!file) return;
             
             // Validar tamanho do arquivo
             const maxSize = 100 * 1024 * 1024;
             if (file.size > maxSize) {
-                alert('Arquivo muito grande! O tamanho máximo permitido é 100MB.');
+                alert('Arquivo muito grande! Máximo 100MB.');
                 return;
             }
             
@@ -1695,7 +1144,7 @@
             document.getElementById('uploadModal').style.display = 'flex';
         }
 
-        async function processMaterialUpload() {
+        async function processUpload() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
             const category = document.getElementById('materialCategory').value;
@@ -1723,36 +1172,22 @@
             // Mostrar progresso
             document.getElementById('uploadFormContainer').style.display = 'none';
             document.getElementById('uploadProgressContainer').style.display = 'block';
+            updateProgressBar(10, 'modal');
             
             try {
-                console.log('🚀 Iniciando upload de material para usuário:', user.email);
+                console.log('🚀 Iniciando upload...');
                 
                 // Limpar nome do arquivo
-                const cleanFileName = file.name
-                    .toLowerCase()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                    .replace(/\s+/g, '_')
-                    .replace(/[^\w\.\-]/g, '')
-                    .replace(/_{2,}/g, '_')
-                    .replace(/^_+|_+$/g, '');
-                
+                const cleanFileName = sanitizeFileName(file.name);
                 const fileName = `material_${Date.now()}_${cleanFileName}`;
                 const filePath = `${category}/${user.id}/${fileName}`;
                 const fileType = detectFileType(file.name);
                 
                 console.log('📤 Upload para:', filePath);
                 
-                // Simular progresso
-                let progress = 0;
-                const progressInterval = setInterval(() => {
-                    progress += 3;
-                    if (progress > 70) {
-                        clearInterval(progressInterval);
-                    }
-                    updateProgressBar(progress, 'modal');
-                }, 100);
+                // 1. Fazer upload para o storage
+                updateProgressBar(30, 'modal');
                 
-                // Fazer upload real para o storage
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('materiais')
                     .upload(filePath, file, {
@@ -1760,24 +1195,29 @@
                         upsert: false
                     });
                 
-                clearInterval(progressInterval);
-                
                 if (uploadError) {
                     console.error('❌ Erro no upload:', uploadError);
+                    
+                    // Se o erro for de RLS, informar para configurar políticas
+                    if (uploadError.message.includes('row-level security') || 
+                        uploadError.message.includes('violates row-level security')) {
+                        throw new Error('Erro de segurança: Configure as políticas RLS no Supabase. Veja instruções no código.');
+                    }
+                    
                     throw new Error(`Falha no upload: ${uploadError.message}`);
                 }
                 
                 console.log('✅ Upload bem-sucedido:', uploadData);
-                updateProgressBar(80, 'modal');
+                updateProgressBar(70, 'modal');
                 
-                // Obter URL pública
+                // 2. Obter URL pública
                 const { data: urlData } = supabaseClient.storage
                     .from('materiais')
                     .getPublicUrl(filePath);
                 
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
-                // Mapear categoria da interface para o campo da tabela
+                // 3. Mapear categoria
                 const certMapping = {
                     'itil': 'itil4',
                     'azure': 'azure',
@@ -1789,7 +1229,7 @@
                 
                 const certificacao = certMapping[category] || category;
                 
-                // Preparar dados para salvar no banco
+                // 4. Preparar dados para salvar
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
@@ -1806,8 +1246,10 @@
                     categoria: category === 'itil' ? 'PMG Academy' : null
                 };
                 
-                console.log('💾 Salvando no banco...', materialData);
+                console.log('💾 Salvando no banco...');
+                updateProgressBar(85, 'modal');
                 
+                // 5. Salvar no banco
                 const { data: dbData, error: dbError } = await supabaseClient
                     .from('materiais')
                     .insert([materialData])
@@ -1816,17 +1258,30 @@
                 
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
-                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                    
+                    // Tentar excluir o arquivo do storage
+                    try {
+                        await supabaseClient.storage
+                            .from('materiais')
+                            .remove([filePath]);
+                    } catch (cleanupError) {
+                        console.warn('⚠️ Não foi possível limpar arquivo:', cleanupError);
+                    }
+                    
+                    // Se erro for RLS, dar instruções
+                    if (dbError.message.includes('row-level security')) {
+                        throw new Error('Erro RLS: Configure políticas no Supabase Dashboard > Table Editor > materiais > Policies');
+                    }
+                    
+                    throw new Error(`Erro ao salvar: ${dbError.message}`);
                 }
                 
                 console.log('✅ Material salvo no banco:', dbData);
-                
-                // Concluir
                 updateProgressBar(100, 'modal');
                 
                 setTimeout(() => {
                     closeUploadModal();
-                    showNotification('🎉 Material compartilhado com sucesso!', 'success');
+                    alert('🎉 Material compartilhado com sucesso!');
                     
                     // Recarregar materiais
                     loadAllMaterials();
@@ -1834,7 +1289,7 @@
                 
             } catch (error) {
                 console.error('❌ Erro no processo de upload:', error);
-                showNotification(`❌ Erro: ${error.message}`, 'error');
+                alert(`❌ ${error.message}`);
                 closeUploadModal();
             }
         }
@@ -1859,7 +1314,8 @@
 
         function closeUploadModal() {
             document.getElementById('uploadModal').style.display = 'none';
-            document.getElementById('fileInputPage').value = '';
+            const fileInput = document.getElementById('fileInputPage');
+            if (fileInput) fileInput.value = '';
             currentUploadFile = null;
         }
 
@@ -1884,13 +1340,13 @@
 
         async function confirmDeleteMaterial() {
             if (!materialToDelete) {
-                showNotification('Erro: Nenhum material selecionado para exclusão.', 'error');
+                alert('Erro: Nenhum material selecionado.');
                 closeDeleteModal();
                 return;
             }
             
             if (!window.authManager || !window.authManager.isAuthenticated()) {
-                showNotification('Sessão expirada. Faça login novamente.', 'error');
+                alert('Sessão expirada. Faça login novamente.');
                 closeDeleteModal();
                 window.location.href = 'index.html#login';
                 return;
@@ -1898,78 +1354,64 @@
             
             const currentUser = window.authManager.getUser();
             if (!currentUser || !currentUser.id) {
-                showNotification('Erro: usuário não identificado.', 'error');
+                alert('Erro: usuário não identificado.');
                 closeDeleteModal();
                 return;
             }
             
             try {
-                console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
+                console.log('🗑️ Excluindo material:', materialToDelete.id);
                 
-                // 1. Primeiro buscar o material para obter informações
+                // 1. Buscar o material
                 const { data: material, error: fetchError } = await supabaseClient
                     .from('materiais')
                     .select('*')
                     .eq('id', materialToDelete.id)
                     .single();
                 
-                if (fetchError) {
-                    console.error('❌ Erro ao buscar material:', fetchError);
-                    throw new Error('Material não encontrado.');
-                }
+                if (fetchError) throw new Error('Material não encontrado.');
                 
                 // 2. Verificar se o usuário é o dono
                 if (material.usuario_id !== currentUser.id) {
-                    showNotification('Você só pode excluir seus próprios materiais.', 'error');
+                    alert('Você só pode excluir seus próprios materiais.');
                     closeDeleteModal();
                     return;
                 }
                 
-                // 3. Extrair caminho do arquivo da URL para excluir do Storage
+                // 3. Extrair caminho do arquivo
                 const fileUrl = material.arquivo_url;
-                console.log('🔗 URL do arquivo:', fileUrl);
                 
-                // Extrair o caminho do arquivo do bucket
-                const urlParts = fileUrl.split('/materiais/');
-                if (urlParts.length > 1) {
-                    const filePath = urlParts[1];
-                    console.log('📁 Caminho do arquivo no storage:', filePath);
+                // 4. Excluir do Storage (se houver URL)
+                if (fileUrl && fileUrl.includes('/materiais/')) {
+                    const filePath = fileUrl.split('/materiais/')[1];
                     
-                    // Excluir do Storage
                     const { error: storageError } = await supabaseClient.storage
                         .from('materiais')
                         .remove([filePath]);
                     
                     if (storageError) {
                         console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
-                    } else {
-                        console.log('✅ Arquivo excluído do storage');
                     }
                 }
                 
-                // 4. Excluir do banco de dados
+                // 5. Excluir do banco
                 const { error: deleteError } = await supabaseClient
                     .from('materiais')
                     .delete()
                     .eq('id', materialToDelete.id);
                 
-                if (deleteError) {
-                    console.error('❌ Erro ao excluir do banco:', deleteError);
-                    throw new Error(`Erro ao excluir material: ${deleteError.message}`);
-                }
+                if (deleteError) throw new Error(`Erro ao excluir: ${deleteError.message}`);
                 
-                console.log('✅ Material excluído com sucesso');
-                
-                // Fechar modal e mostrar mensagem
+                console.log('✅ Material excluído');
                 closeDeleteModal();
-                showNotification('✅ Material excluído com sucesso!', 'success');
+                alert('✅ Material excluído com sucesso!');
                 
-                // Recarregar a lista de materiais
+                // Recarregar
                 loadAllMaterials();
                 
             } catch (error) {
                 console.error('❌ Erro na exclusão:', error);
-                showNotification(`❌ Erro: ${error.message}`, 'error');
+                alert(`❌ Erro: ${error.message}`);
                 closeDeleteModal();
             }
         }
@@ -1981,17 +1423,13 @@
         function detectFileType(fileName) {
             const ext = fileName.split('.').pop().toLowerCase();
             
-            const typeMap = {
-                'pdf': 'pdf',
-                'doc': 'doc', 'docx': 'doc', 'odt': 'doc',
-                'ppt': 'ppt', 'pptx': 'ppt', 'odp': 'ppt',
-                'txt': 'txt', 'rtf': 'txt', 'md': 'txt',
-                'zip': 'zip', 'rar': 'zip', '7z': 'zip',
-                'mp4': 'video', 'avi': 'video', 'mov': 'video',
-                'jpg': 'other', 'jpeg': 'other', 'png': 'other'
-            };
-            
-            return typeMap[ext] || 'other';
+            if (ext === 'pdf') return 'pdf';
+            if (['doc', 'docx', 'odt'].includes(ext)) return 'doc';
+            if (['ppt', 'pptx', 'odp'].includes(ext)) return 'ppt';
+            if (['txt', 'rtf', 'md'].includes(ext)) return 'txt';
+            if (['zip', 'rar', '7z'].includes(ext)) return 'zip';
+            if (['mp4', 'avi', 'mov', 'wmv'].includes(ext)) return 'video';
+            return 'other';
         }
 
         function getFileIcon(fileType) {
@@ -2004,22 +1442,7 @@
                 'video': 'file-video',
                 'other': 'file'
             };
-            
             return iconMap[fileType] || 'file';
-        }
-
-        function getTypeName(fileType) {
-            const nameMap = {
-                'pdf': 'PDFs',
-                'doc': 'Documentos',
-                'ppt': 'Apresentações',
-                'txt': 'Textos',
-                'zip': 'Arquivos Compactados',
-                'video': 'Videoaulas',
-                'other': 'Outros'
-            };
-            
-            return nameMap[fileType] || 'Arquivos';
         }
 
         function formatFileSize(bytes) {
@@ -2028,31 +1451,6 @@
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-        }
-
-        function formatDateCompact(dateString) {
-            try {
-                const date = new Date(dateString);
-                const now = new Date();
-                const diffMs = now - date;
-                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                
-                if (diffDays === 0) {
-                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                    if (diffHours < 1) {
-                        return 'Hoje';
-                    }
-                    return `${diffHours}h atrás`;
-                } else if (diffDays === 1) {
-                    return 'Ontem';
-                } else if (diffDays < 7) {
-                    return `${diffDays}d atrás`;
-                } else {
-                    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-                }
-            } catch (e) {
-                return '--/--';
-            }
         }
 
         function sanitizeFileName(name) {
@@ -2065,65 +1463,245 @@
                 .replace(/^_+|_+$/g, '');
         }
 
-        function escapeString(str) {
-            if (!str) return '';
-            return str
-                .replace(/'/g, "\\'")
-                .replace(/"/g, '\\"')
-                .replace(/\n/g, ' ')
-                .replace(/\r/g, ' ');
+        // ============================================
+        // FUNÇÕES PARA RENDERIZAR MATERIAIS
+        // ============================================
+
+        function loadPMGAcademyCard(files = []) {
+            const container = document.getElementById('pmg-academy-container');
+            if (!container) return;
+            
+            const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+            const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+            const totalSizeMB = files.length > 0 ? 
+                (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+            
+            const pmgCardHTML = `
+                <div class="pmg-academy-card">
+                    <div class="pmg-academy-header">
+                        <div class="pmg-academy-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="pmg-academy-title">
+                            <h3>ITIL® 4 Foundation | PMG Academy</h3>
+                            <span class="pmg-badge">
+                                <i class="fas fa-crown"></i> 
+                                Pacote Completo - ${files.length} arquivos
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="pmg-academy-content">
+                        <p style="margin-bottom: 1.5rem; color: #666;">
+                            Pacote completo da PMG Academy para certificação ITIL 4 Foundation. 
+                            Inclui apresentações, apostilas, exercícios e materiais complementares.
+                        </p>
+                        
+                        <div class="pmg-stats">
+                            <div class="pmg-stat">
+                                <div class="pmg-stat-value">${files.length}</div>
+                                <div class="pmg-stat-label">Arquivos</div>
+                            </div>
+                            <div class="pmg-stat">
+                                <div class="pmg-stat-value">${totalViews}</div>
+                                <div class="pmg-stat-label">Visualizações</div>
+                            </div>
+                            <div class="pmg-stat">
+                                <div class="pmg-stat-value">${totalDownloads}</div>
+                                <div class="pmg-stat-label">Downloads</div>
+                            </div>
+                            <div class="pmg-stat">
+                                <div class="pmg-stat-value">${totalSizeMB} MB</div>
+                                <div class="pmg-stat-label">Tamanho Total</div>
+                            </div>
+                        </div>
+                        
+                        ${files.length > 0 ? `
+                            <button class="pmg-toggle-btn" onclick="togglePmgFiles()" id="pmgToggleBtn">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Mostrar ${files.length} Arquivos</span>
+                            </button>
+                            
+                            <div id="pmg-files-container" style="display: none; margin-top: 1.5rem;">
+                                <div class="pmg-files-grid">
+                                    ${files.map(file => renderFileCard(file)).join('')}
+                                </div>
+                            </div>
+                        ` : '<p style="color: #666; text-align: center;">Nenhum arquivo disponível.</p>'}
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = pmgCardHTML;
         }
 
-        function recordView(materialId) {
-            console.log(`Registrando visualização: ${materialId}`);
-            // Atualizar contador local
-            const material = allMaterials.find(m => m.id === materialId);
+        function renderFileCard(file) {
+            const fileType = detectFileType(file.arquivo_nome || '');
+            const fileIcon = getFileIcon(fileType);
+            const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
+            const uploadDate = new Date(file.data_upload).toLocaleDateString('pt-BR');
+            const currentUserId = currentUser?.id;
+            const isOwner = currentUserId && file.usuario_id === currentUserId;
+            
+            // Escapar aspas simples para JavaScript
+            const safeTitle = file.titulo.replace(/'/g, "\\'");
+            const safeUrl = file.arquivo_url || '#';
+            
+            return `
+                <div class="pmg-file-card">
+                    <div class="pmg-file-icon">
+                        <i class="fas fa-${fileIcon}"></i>
+                    </div>
+                    <div class="pmg-file-info">
+                        <h5 title="${file.titulo}">${file.titulo}</h5>
+                        <div class="pmg-file-meta">
+                            <span><i class="fas fa-file"></i> ${fileType.toUpperCase()}</span>
+                            <span><i class="fas fa-hdd"></i> ${fileSize}</span>
+                            <span><i class="fas fa-calendar"></i> ${uploadDate}</span>
+                        </div>
+                        ${file.descricao ? `<p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">${file.descricao}</p>` : ''}
+                    </div>
+                    <div class="pmg-file-actions">
+                        <button class="pmg-action-btn" 
+                            onclick="downloadFile('${file.id}', '${safeTitle}', '${safeUrl}', '${fileType}')" 
+                            title="Baixar arquivo">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        ${isOwner ? `
+                            <button class="pmg-action-btn delete" 
+                                onclick="showDeleteModal('${file.id}', '${safeTitle}')" 
+                                title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateOtherMaterials(materials) {
+            const container = document.getElementById('materialsContainer');
+            const countElement = document.getElementById('materialsCount');
+            
+            if (!materials || materials.length === 0) {
+                container.innerHTML = `
+                    <div class="no-materials-message-compact">
+                        <i class="fas fa-folder-open"></i>
+                        <div>
+                            <h4>Nenhum material disponível</h4>
+                            <p>Seja o primeiro a compartilhar um material!</p>
+                        </div>
+                    </div>
+                `;
+                countElement.textContent = '0 materiais';
+                return;
+            }
+            
+            countElement.textContent = `${materials.length} material${materials.length !== 1 ? 's' : ''}`;
+            
+            const materialsHTML = materials.map(material => 
+                renderMaterialItem(material)
+            ).join('');
+            
+            container.innerHTML = materialsHTML;
+        }
+
+        function renderMaterialItem(material) {
+            const fileType = detectFileType(material.arquivo_nome || '');
+            const fileIcon = getFileIcon(fileType);
+            const fileSize = formatFileSize((material.arquivo_tamanho_kb || 0) * 1024);
+            const uploadDate = new Date(material.data_upload).toLocaleDateString('pt-BR');
+            const currentUserId = currentUser?.id;
+            const isOwner = currentUserId && material.usuario_id === currentUserId;
+            
+            // Escapar aspas simples
+            const safeTitle = material.titulo.replace(/'/g, "\\'");
+            const safeUrl = material.arquivo_url || '#';
+            
+            return `
+                <div class="material-item-compact" data-id="${material.id}">
+                    <div class="material-icon-compact ${fileType}">
+                        <i class="fas fa-${fileIcon}"></i>
+                    </div>
+                    
+                    <div class="material-content-compact">
+                        <div class="material-header-compact">
+                            <a href="javascript:void(0)" onclick="downloadFile('${material.id}', '${safeTitle}', '${safeUrl}', '${fileType}')" 
+                               class="material-title-compact" 
+                               title="${material.titulo}">
+                                ${material.titulo}
+                            </a>
+                            <div class="material-meta-compact">
+                                <span title="Tipo de arquivo">
+                                    <i class="fas fa-file"></i> ${fileType.toUpperCase()}
+                                </span>
+                                <span title="Tamanho">
+                                    • ${fileSize}
+                                </span>
+                                <span title="Data de upload">
+                                    • ${uploadDate}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        ${material.descricao ? 
+                            `<div class="material-description-compact" title="${material.descricao}">
+                                ${material.descricao}
+                            </div>` 
+                            : ''
+                        }
+                        
+                        <div class="material-stats-compact">
+                            <span title="Visualizações">
+                                <i class="far fa-eye"></i> ${material.visualizacoes || 0}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="material-actions-compact">
+                        <button class="btn btn-primary btn-sm" 
+                            onclick="downloadFile('${material.id}', '${safeTitle}', '${safeUrl}', '${fileType}')" 
+                            title="Baixar arquivo">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        ${isOwner ? `
+                            <button class="btn btn-outline btn-sm btn-delete" 
+                                onclick="showDeleteModal('${material.id}', '${safeTitle}')" 
+                                title="Excluir material">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadFile(fileId, fileName, fileUrl, fileType) {
+            if (!fileUrl || fileUrl === '#') {
+                alert('Link do arquivo não disponível.');
+                return;
+            }
+            
+            // Registrar visualização
+            const material = allMaterials.find(m => m.id === fileId);
             if (material) {
                 material.visualizacoes = (material.visualizacoes || 0) + 1;
                 updateStats(allMaterials);
             }
-        }
-
-        function recordDownload(materialId) {
-            console.log(`Registrando download: ${materialId}`);
-            // Atualizar contador local
-            const material = allMaterials.find(m => m.id === materialId);
-            if (material) {
-                material.downloads = (material.downloads || 0) + 1;
-                updateStats(allMaterials);
+            
+            if (['pdf', 'txt'].includes(fileType)) {
+                window.open(fileUrl, '_blank');
+            } else {
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.download = fileName;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                alert(`Download de "${fileName}" iniciado.`);
             }
         }
-
-        function showNotification(message, type = 'info') {
-            // Remover notificações anteriores
-            const oldNotifications = document.querySelectorAll('.notification');
-            oldNotifications.forEach(n => n.remove());
-            
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 
-                                  type === 'error' ? 'exclamation-circle' : 
-                                  type === 'warning' ? 'exclamation-triangle' : 
-                                  'info-circle'}"></i>
-                <span>${message}</span>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideOutRight 0.3s ease-out';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        // ============================================
-        // FUNÇÕES PARA CARD PMG ACADEMY
-        // ============================================
 
         function togglePmgFiles() {
             const container = document.getElementById('pmg-files-container');
@@ -2132,14 +1710,12 @@
             if (!container || !toggleBtn) return;
             
             if (container.style.display === 'none' || container.style.display === '') {
-                // Abrir
                 container.style.display = 'block';
                 toggleBtn.innerHTML = `
                     <i class="fas fa-folder-minus"></i>
                     <span>Ocultar Arquivos</span>
                 `;
             } else {
-                // Fechar
                 container.style.display = 'none';
                 toggleBtn.innerHTML = `
                     <i class="fas fa-folder-open"></i>
@@ -2156,12 +1732,10 @@
         window.checkAuthAndUpload = checkAuthAndUpload;
         window.closeUploadModal = closeUploadModal;
         window.closeDeleteModal = closeDeleteModal;
-        window.processMaterialUpload = processMaterialUpload;
+        window.processUpload = processUpload;
         window.showDeleteModal = showDeleteModal;
         window.confirmDeleteMaterial = confirmDeleteMaterial;
-        window.handleFileAction = handleFileAction;
-        window.recordView = recordView;
-        window.recordDownload = recordDownload;
+        window.downloadFile = downloadFile;
         window.logoutFromPage = logoutFromPage;
         window.filterMaterials = filterMaterials;
         window.selectCategory = selectCategory;
