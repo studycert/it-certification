@@ -518,12 +518,12 @@
             <section class="certification-hero" id="certificationHero">
                 <div class="certification-hero-content">
                     <div class="certification-icon-large" id="certIcon">
-                        <i class="fas fa-server"></i>
+                        <i class="fas fa-cube"></i>
                     </div>
-                    <h1 id="certTitle">LPIC-1: Comandos Essenciais</h1>
-                    <div class="certification-level-badge" id="certLevel">Todas as Videoaulas</div>
+                    <h1 id="certTitle">Certificação</h1>
+                    <div class="certification-level-badge" id="certLevel">Carregando...</div>
                     <p id="certDescription" style="max-width: 600px; margin: 0 auto; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                        Videoaulas especializadas para sua preparação em Linux
+                        Videoaulas especializadas para sua preparação
                     </p>
                 </div>
             </section>
@@ -838,15 +838,13 @@
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-        // Mapeamento de certificações CORRIGIDO
+        // Mapeamento de certificações
         const certifications = {
             'itil': { 
                 title: 'ITIL 4 Foundation', 
                 level: 'Foundation', 
                 icon: 'fas fa-cube', 
                 bannerClass: 'itil-banner',
-                iconClass: '',
-                color: '#154360',
                 description: 'Videoaulas especializadas para certificação ITIL 4 Foundation'
             },
             'azure': { 
@@ -854,8 +852,6 @@
                 level: 'Cloud', 
                 icon: 'fab fa-microsoft', 
                 bannerClass: 'azure-banner',
-                iconClass: 'azure-icon',
-                color: '#0078D4',
                 description: 'Videoaulas para certificações Azure (AZ-900, AZ-104, etc.)'
             },
             'aws': { 
@@ -863,8 +859,6 @@
                 level: 'Cloud', 
                 icon: 'fab fa-aws', 
                 bannerClass: 'aws-banner',
-                iconClass: 'aws-icon',
-                color: '#FF9900',
                 description: 'Videoaulas para Cloud Practitioner, Solutions Architect e outras certificações AWS'
             },
             'lpic': { 
@@ -872,8 +866,6 @@
                 level: 'Linux', 
                 icon: 'fas fa-server', 
                 bannerClass: 'linux-banner',
-                iconClass: 'linux-icon',
-                color: '#E95420',
                 description: 'Videoaulas para certificações Linux Professional Institute'
             },
             'security': { 
@@ -881,8 +873,6 @@
                 level: 'Segurança', 
                 icon: 'fas fa-shield-alt', 
                 bannerClass: 'security-banner',
-                iconClass: 'security-icon',
-                color: '#27ae60',
                 description: 'Videoaulas para preparação da certificação CompTIA Security+'
             },
             'ccna': { 
@@ -890,8 +880,6 @@
                 level: 'Rede', 
                 icon: 'fas fa-network-wired', 
                 bannerClass: 'ccna-banner',
-                iconClass: 'ccna-icon',
-                color: '#00a0d2',
                 description: 'Videoaulas para Cisco Certified Network Associate'
             }
         };
@@ -899,7 +887,7 @@
         // Variáveis globais
         let supabaseClient = null;
         let currentUploadFile = null;
-        let currentCertId = 'lpic'; // CORRIGIDO: para LPIC por padrão
+        let currentCertId = 'itil'; // Padrão para ITIL (como na página de materiais)
         let videoToDelete = null;
         let currentUser = null;
         let allVideos = [];
@@ -920,9 +908,9 @@
                 // Inicializar Supabase
                 await initSupabase();
                 
-                // Obter certificação da URL
+                // Obter certificação da URL - padrão 'itil'
                 const urlCert = getUrlParameter('cert');
-                currentCertId = urlCert || 'lpic'; // LPIC como padrão
+                currentCertId = urlCert || 'itil';
                 
                 console.log('📌 Certificação atual:', currentCertId);
                 
@@ -1134,14 +1122,14 @@
             return urlParams.get(name);
         }
 
-        // Carregar informações da certificação - CORRIGIDO para LPIC
+        // Carregar informações da certificação - CORRIGIDO
         function loadCertification(certId) {
             console.log('🎨 Carregando certificação:', certId);
             
             // Verificar se a certificação existe
             if (!certifications[certId]) {
                 console.warn(`⚠️ Certificação "${certId}" não encontrada!`);
-                certId = 'lpic'; // Fallback para LPIC
+                certId = 'itil'; // Fallback para ITIL
             }
             
             const cert = certifications[certId];
@@ -1155,17 +1143,19 @@
             document.getElementById('certLevel').textContent = `Todas as Videoaulas`;
             document.getElementById('certDescription').textContent = cert.description;
             
-            // Aplicar banner personalizado
+            // Aplicar banner personalizado CORRETO
             const hero = document.getElementById('certificationHero');
-            // Remover todas as classes de banner
-            const bannerClasses = ['itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'security-banner', 'ccna-banner'];
-            bannerClasses.forEach(cls => hero.classList.remove(cls));
+            
+            // Remover todas as classes de banner existentes
+            const allBannerClasses = ['itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'security-banner', 'ccna-banner'];
+            allBannerClasses.forEach(cls => hero.classList.remove(cls));
+            
             // Adicionar a classe correta
             hero.classList.add(cert.bannerClass);
             
             document.title = `StudyCert Videoaulas - ${cert.title}`;
             
-            console.log('✅ Certificação carregada:', cert.title);
+            console.log('✅ Certificação carregada:', cert.title, 'Banner:', cert.bannerClass);
         }
 
         // ============================================
@@ -1182,20 +1172,36 @@
                     return;
                 }
                 
-                // Buscar videoaulas do Supabase
+                // Primeiro, vamos verificar a estrutura da tabela video_aulas
+                console.log('🔍 Verificando estrutura da tabela video_aulas...');
+                
+                // Buscar videoaulas do Supabase com estrutura mais flexível
                 const { data, error } = await supabaseClient
                     .from('video_aulas')
                     .select('*')
-                    .eq('categoria', currentCertId)
-                    .eq('publico', true)
-                    .order('data_upload', { ascending: false });
+                    .eq('certificacao', currentCertId)
+                    .order('created_at', { ascending: false });
                 
                 if (error) {
                     console.error('❌ Erro ao carregar videoaulas:', error);
-                    throw error;
+                    
+                    // Tentar buscar com categoria ao invés de certificacao
+                    const { data: data2, error: error2 } = await supabaseClient
+                        .from('video_aulas')
+                        .select('*')
+                        .eq('categoria', currentCertId)
+                        .order('created_at', { ascending: false });
+                    
+                    if (error2) {
+                        console.error('❌ Erro ao carregar com categoria:', error2);
+                        throw error2;
+                    }
+                    
+                    allVideos = data2 || [];
+                } else {
+                    allVideos = data || [];
                 }
                 
-                allVideos = data || [];
                 console.log(`✅ ${allVideos.length} videoaulas carregadas`);
                 
                 // Atualizar interface
@@ -1241,22 +1247,21 @@
             container.innerHTML = videosHTML;
         }
 
-        // Renderizar card de videoaula
+        // Renderizar card de videoaula - CORRIGIDO para estrutura da tabela
         function renderVideoCard(video) {
             const videoId = video.id;
-            const videoTitle = video.titulo || 'Videoaula sem título';
-            const videoDesc = video.descricao || 'Sem descrição';
-            const videoUrl = video.video_url || video.arquivo_url || '';
-            const videoDuration = video.duracao || '00:00';
-            const videoViews = video.visualizacoes || 0;
+            const videoTitle = video.titulo || video.title || 'Videoaula sem título';
+            const videoDesc = video.descricao || video.description || 'Sem descrição';
+            const videoUrl = video.video_url || video.url || video.arquivo_url || '';
+            const videoDuration = video.duracao || video.duration || '00:00';
+            const videoViews = video.visualizacoes || video.views || 0;
             const videoDownloads = video.downloads || 0;
-            const videoDate = formatDateCompact(video.data_upload);
-            const videoLevel = video.nivel || 'iniciante';
-            const videoSize = video.arquivo_tamanho_kb ? formatFileSize(video.arquivo_tamanho_kb * 1024) : '';
+            const videoDate = formatDateCompact(video.created_at || video.data_upload);
+            const videoLevel = video.nivel || video.level || 'iniciante';
             
             // Verificar se o usuário atual é o dono
             const currentUserId = currentUser?.id;
-            const isOwner = currentUserId && video.usuario_id === currentUserId;
+            const isOwner = currentUserId && (video.usuario_id === currentUserId || video.user_id === currentUserId);
             
             // Verificar se é vídeo real (tem URL)
             const hasValidUrl = videoUrl && videoUrl !== '' && 
@@ -1321,7 +1326,7 @@
                 
                 // Aplicar filtros
                 const levelMatch = levelFilter === 'all' || level === levelFilter;
-                const searchMatch = title.includes(searchFilter) || description.includes(searchFilter);
+                const searchMatch = title.includes(searchFilter) || description.includes(searchMatch);
                 
                 if (levelMatch && searchMatch) {
                     card.style.display = 'block';
@@ -1341,9 +1346,9 @@
                     .filter(card => card.style.display !== 'none')
                     .sort((a, b) => {
                         if (sortFilter === 'date_asc') {
-                            const dateA = new Date(a.querySelector('.fa-calendar').parentNode.textContent.replace('•', '').trim());
-                            const dateB = new Date(b.querySelector('.fa-calendar').parentNode.textContent.replace('•', '').trim());
-                            return dateA - dateB;
+                            const dateTextA = a.querySelector('.fa-calendar').parentNode.textContent;
+                            const dateTextB = b.querySelector('.fa-calendar').parentNode.textContent;
+                            return dateTextA.localeCompare(dateTextB);
                         } else if (sortFilter === 'views_desc') {
                             const viewsA = parseInt(a.querySelector('.fa-eye').parentNode.textContent) || 0;
                             const viewsB = parseInt(b.querySelector('.fa-eye').parentNode.textContent) || 0;
@@ -1365,8 +1370,8 @@
         // Atualizar estatísticas
         function updateStats(videos) {
             const totalVideos = videos.length;
-            const totalDuration = videos.reduce((sum, video) => sum + parseDuration(video.duracao), 0);
-            const totalViews = videos.reduce((sum, video) => sum + (video.visualizacoes || 0), 0);
+            const totalDuration = videos.reduce((sum, video) => sum + parseDuration(video.duracao || video.duration), 0);
+            const totalViews = videos.reduce((sum, video) => sum + (video.visualizacoes || video.views || 0), 0);
             const totalDownloads = videos.reduce((sum, video) => sum + (video.downloads || 0), 0);
             
             document.getElementById('totalVideos').textContent = totalVideos;
@@ -1434,7 +1439,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE UPLOAD - CORRIGIDO
+        // FUNÇÕES DE UPLOAD - CORRIGIDO para estrutura da tabela
         // ============================================
 
         function checkAuthAndUpload() {
@@ -1602,11 +1607,11 @@
                 
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
-                // Preparar dados para salvar no banco
+                // Preparar dados para salvar no banco - estrutura flexível
+                // Primeiro tentar com a estrutura padrão
                 const videoData = {
                     titulo: title,
                     descricao: description || null,
-                    categoria: currentCertId,
                     nivel: level,
                     duracao: duration || '00:00',
                     video_url: urlData.publicUrl,
@@ -1616,10 +1621,15 @@
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
-                    data_upload: new Date().toISOString()
+                    created_at: new Date().toISOString()
                 };
                 
-                console.log('💾 Salvando no banco...');
+                // Adicionar campo de categoria/certificação baseado na estrutura da tabela
+                // Primeiro tentar 'certificacao', depois 'categoria'
+                videoData.certificacao = currentCertId;
+                videoData.categoria = currentCertId;
+                
+                console.log('💾 Salvando no banco com dados:', videoData);
                 
                 // Salvar na tabela video_aulas
                 const { data: dbData, error: dbError } = await supabaseClient
@@ -1630,10 +1640,25 @@
                 
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
-                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                    
+                    // Tentar remover arquivo_tamanho_kb se for o problema
+                    delete videoData.arquivo_tamanho_kb;
+                    
+                    const { data: dbData2, error: dbError2 } = await supabaseClient
+                        .from('video_aulas')
+                        .insert([videoData])
+                        .select()
+                        .single();
+                    
+                    if (dbError2) {
+                        console.error('❌ Erro ao salvar no banco (tentativa 2):', dbError2);
+                        throw new Error(`Erro ao salvar informações: ${dbError2.message}`);
+                    }
+                    
+                    console.log('✅ Videoaula salva no banco (sem tamanho):', dbData2);
+                } else {
+                    console.log('✅ Videoaula salva no banco:', dbData);
                 }
-                
-                console.log('✅ Videoaula salva no banco:', dbData);
                 
                 // Concluir
                 updateProgressBar(100, 'modal');
@@ -1763,7 +1788,7 @@
                 // Atualizar contador local
                 const videoIndex = allVideos.findIndex(v => v.id === videoId);
                 if (videoIndex !== -1) {
-                    allVideos[videoIndex].visualizacoes = (allVideos[videoIndex].visualizacoes || 0) + 1;
+                    allVideos[videoIndex].visualizacoes = (allVideos[videoIndex].visualizacoes || allVideos[videoIndex].views || 0) + 1;
                     
                     // Atualizar estatísticas
                     updateStats(allVideos);
@@ -1794,7 +1819,7 @@
 
         function downloadVideo() {
             if (!currentVideoPlaying) {
-                showNotification('Nenhum vídeo selecionado para download.', 'error');
+                showNotification('Nenhum vídeo seleconado para download.', 'error');
                 return;
             }
             
@@ -1804,8 +1829,8 @@
                 return;
             }
             
-            const videoUrl = video.video_url;
-            const videoTitle = video.titulo;
+            const videoUrl = video.video_url || video.url;
+            const videoTitle = video.titulo || video.title;
             
             // Verificar se é vídeo real
             const hasValidUrl = videoUrl && videoUrl !== '' && 
@@ -1899,31 +1924,33 @@
                 }
                 
                 // 2. Verificar se o usuário é o dono
-                if (video.usuario_id !== currentUser.id) {
+                if (video.usuario_id !== currentUser.id && video.user_id !== currentUser.id) {
                     showNotification('Você só pode excluir suas próprias videoaulas.', 'error');
                     closeDeleteModal();
                     return;
                 }
                 
-                // 3. Extrair caminho do arquivo da URL para excluir do Storage
-                const fileUrl = video.video_url;
-                console.log('🔗 URL do arquivo:', fileUrl);
-                
-                // Extrair o caminho do arquivo do bucket
-                const urlParts = fileUrl.split('/materiais/');
-                if (urlParts.length > 1) {
-                    const filePath = urlParts[1];
-                    console.log('📁 Caminho do arquivo no storage:', filePath);
+                // 3. Extrair caminho do arquivo da URL para excluir do Storage (se houver URL)
+                const fileUrl = video.video_url || video.url;
+                if (fileUrl) {
+                    console.log('🔗 URL do arquivo:', fileUrl);
                     
-                    // Excluir do Storage
-                    const { error: storageError } = await supabaseClient.storage
-                        .from('materiais')
-                        .remove([filePath]);
-                    
-                    if (storageError) {
-                        console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
-                    } else {
-                        console.log('✅ Arquivo excluído do storage');
+                    // Extrair o caminho do arquivo do bucket
+                    const urlParts = fileUrl.split('/materiais/');
+                    if (urlParts.length > 1) {
+                        const filePath = urlParts[1];
+                        console.log('📁 Caminho do arquivo no storage:', filePath);
+                        
+                        // Excluir do Storage
+                        const { error: storageError } = await supabaseClient.storage
+                            .from('materiais')
+                            .remove([filePath]);
+                        
+                        if (storageError) {
+                            console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                        } else {
+                            console.log('✅ Arquivo excluído do storage');
+                        }
                     }
                 }
                 
