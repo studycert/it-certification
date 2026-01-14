@@ -107,22 +107,6 @@
             bottom: 0;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
-        
-        .geral-banner {
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 25%, #7d3c98 50%, #6c3483 75%, #5b2c6f 100%) !important;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .geral-banner::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M50,20 L60,45 L80,50 L65,70 L70,90 L50,80 L30,90 L35,70 L20,50 L40,45 Z" fill="white"/></svg>');
-        }
 
         /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
         .pmg-academy-container {
@@ -380,7 +364,6 @@
         }
         
         /* Cores específicas para cada categoria */
-        .category-chip[data-category="geral"]:hover { background: #9b59b6; color: white; }
         .category-chip[data-category="itil"]:hover { background: #1a237e; color: white; }
         .category-chip[data-category="azure"]:hover { background: #0078D4; color: white; }
         .category-chip[data-category="aws"]:hover { background: #FF9900; color: white; }
@@ -388,7 +371,6 @@
         .category-chip[data-category="security"]:hover { background: #27ae60; color: white; }
         .category-chip[data-category="ccna"]:hover { background: #00a0d2; color: white; }
         
-        .category-chip.active[data-category="geral"] { background: #9b59b6; }
         .category-chip.active[data-category="itil"] { background: #1a237e; }
         .category-chip.active[data-category="azure"] { background: #0078D4; }
         .category-chip.active[data-category="aws"] { background: #FF9900; }
@@ -519,7 +501,7 @@
         <div class="container">
             <a href="index.html"><i class="fas fa-home"></i> Home</a> > 
             <a href="index.html#materiais">Material de Estudo</a> > 
-            <span id="currentCertification">Materiais Gerais</span>
+            <span id="currentCertification">ITIL 4 Foundation</span>
         </div>
     </section>
 
@@ -530,12 +512,12 @@
             <section class="certification-hero" id="certificationHero">
                 <div class="certification-hero-content">
                     <div class="certification-icon-large" id="certIcon">
-                        <i class="fas fa-graduation-cap"></i>
+                        <i class="fas fa-cube"></i>
                     </div>
-                    <h1 id="certTitle">Materiais Gerais</h1>
-                    <div class="certification-level-badge" id="certLevel">Conteúdo Diverso</div>
+                    <h1 id="certTitle">ITIL 4 Foundation</h1>
+                    <div class="certification-level-badge" id="certLevel">Gerenciamento de Serviços</div>
                     <p id="certDescription" style="max-width: 600px; margin: 0 auto; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                        Materiais de estudo para todas as certificações de TI
+                        Guias de estudo, resumos e recursos para certificação ITIL 4 Foundation
                     </p>
                 </div>
             </section>
@@ -544,8 +526,7 @@
             <div class="filters-card-compact" style="margin-top: 2rem;">
                 <h4><i class="fas fa-filter"></i> Filtrar por Certificação</h4>
                 <div class="category-filter" id="categoryFilter">
-                    <div class="category-chip active" data-category="geral">Geral</div>
-                    <div class="category-chip" data-category="itil">ITIL 4</div>
+                    <div class="category-chip active" data-category="itil">ITIL 4</div>
                     <div class="category-chip" data-category="azure">Azure</div>
                     <div class="category-chip" data-category="aws">AWS</div>
                     <div class="category-chip" data-category="linux">Linux</div>
@@ -752,7 +733,6 @@
                         <i class="fas fa-certificate"></i> Categoria *
                     </label>
                     <select id="materialCategory" class="filter-input" required>
-                        <option value="geral">Geral</option>
                         <option value="itil">ITIL 4</option>
                         <option value="azure">Azure</option>
                         <option value="aws">AWS</option>
@@ -766,7 +746,7 @@
                     <button onclick="closeUploadModal()" class="btn btn-outline">
                         <i class="fas fa-times"></i> Cancelar
                     </button>
-                    <button onclick="processUpload()" class="btn btn-primary">
+                    <button onclick="processMaterialUpload()" class="btn btn-primary">
                         <i class="fas fa-paper-plane"></i> Enviar Material
                     </button>
                 </div>
@@ -812,13 +792,6 @@
 
         // Mapeamento de certificações com banners e ícones
         const certifications = {
-            'geral': { 
-                title: 'Materiais Gerais', 
-                level: 'Conteúdo Diverso', 
-                icon: 'fas fa-graduation-cap',
-                bannerClass: 'geral-banner',
-                description: 'Materiais de estudo para todas as certificações de TI'
-            },
             'itil': { 
                 title: 'ITIL 4 Foundation', 
                 level: 'Gerenciamento de Serviços', 
@@ -870,7 +843,7 @@
         // Variáveis globais
         let supabaseClient = null;
         let currentUploadFile = null;
-        let currentCategory = 'geral'; // Inicia com "Geral"
+        let currentCategory = 'itil'; // Inicia com ITIL
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
@@ -897,7 +870,7 @@
                 document.getElementById('authBar').style.display = 'block';
                 
                 // Configurar categoria inicial
-                selectCategory('geral');
+                selectCategory('itil');
                 
                 // Carregar todos os materiais
                 await loadAllMaterials();
@@ -1116,7 +1089,7 @@
 
         // Atualizar banner da página
         function updatePageBanner(category) {
-            const cert = certifications[category] || certifications['geral'];
+            const cert = certifications[category] || certifications['itil'];
             
             const hero = document.getElementById('certificationHero');
             const icon = document.getElementById('certIcon');
@@ -1126,7 +1099,7 @@
             const breadcrumb = document.getElementById('currentCertification');
             
             // Remover todas as classes de banner
-            hero.classList.remove('geral-banner', 'itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'security-banner', 'ccna-banner');
+            hero.classList.remove('itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'security-banner', 'ccna-banner');
             
             // Adicionar a classe correta
             hero.classList.add(cert.bannerClass);
@@ -1171,7 +1144,7 @@
                 allMaterials = data || [];
                 console.log(`✅ ${allMaterials.length} materiais carregados da tabela materiais`);
                 
-                // Separar materiais para ITIL (PMG Academy) e outros
+                // Filtrar materiais por categoria
                 filterMaterialsByCategory();
                 
                 // Atualizar estatísticas
@@ -1185,39 +1158,35 @@
 
         // Filtrar materiais por categoria
         function filterMaterialsByCategory() {
-            if (currentCategory === 'geral') {
-                // Mostrar todos os materiais, mas separar ITIL no card PMG
-                const itilMaterials = allMaterials.filter(m => 
-                    m.certificacao === 'itil4' || m.categoria === 'itil'
-                );
-                const otherMaterials = allMaterials.filter(m => 
-                    m.certificacao !== 'itil4' && m.categoria !== 'itil'
-                );
+            // Filtrar materiais pela categoria atual
+            const categoryMaterials = allMaterials.filter(m => {
+                // Mapear categoria da interface para o campo da tabela
+                const cert = m.certificacao || '';
+                const cat = m.categoria || '';
                 
-                // Carregar card PMG Academy se houver materiais ITIL
-                if (itilMaterials.length > 0) {
-                    loadPMGAcademyCard(itilMaterials);
-                } else {
-                    document.getElementById('pmg-academy-container').innerHTML = '';
-                }
+                // Mapeamento de categorias
+                const categoryMapping = {
+                    'itil': ['itil4', 'itil'],
+                    'azure': ['azure'],
+                    'aws': ['aws'],
+                    'linux': ['lpic', 'linux'],
+                    'security': ['security'],
+                    'ccna': ['ccna']
+                };
                 
-                updateOtherMaterials(otherMaterials);
+                const validCerts = categoryMapping[currentCategory] || [currentCategory];
+                return validCerts.some(validCert => 
+                    cert.includes(validCert) || cat === validCert
+                );
+            });
+            
+            // Para ITIL, mostrar no card PMG
+            if (currentCategory === 'itil' && categoryMaterials.length > 0) {
+                loadPMGAcademyCard(categoryMaterials);
+                updateOtherMaterials([]);
             } else {
-                // Filtrar por categoria específica
-                const categoryMaterials = allMaterials.filter(m => {
-                    const cert = m.certificacao || '';
-                    const cat = m.categoria || '';
-                    return cert.includes(currentCategory) || cat === currentCategory;
-                });
-                
-                // Para ITIL, mostrar no card PMG
-                if (currentCategory === 'itil' && categoryMaterials.length > 0) {
-                    loadPMGAcademyCard(categoryMaterials);
-                    updateOtherMaterials([]);
-                } else {
-                    document.getElementById('pmg-academy-container').innerHTML = '';
-                    updateOtherMaterials(categoryMaterials);
-                }
+                document.getElementById('pmg-academy-container').innerHTML = '';
+                updateOtherMaterials(categoryMaterials);
             }
         }
 
@@ -1500,15 +1469,26 @@
             const searchFilter = document.getElementById('searchMaterial').value.toLowerCase();
             
             // Filtrar por categoria principal
-            let filteredMaterials = allMaterials;
-            
-            if (currentCategory !== 'geral') {
-                filteredMaterials = allMaterials.filter(m => {
-                    const cert = m.certificacao || '';
-                    const cat = m.categoria || '';
-                    return cert.includes(currentCategory) || cat === currentCategory;
-                });
-            }
+            let filteredMaterials = allMaterials.filter(m => {
+                // Mapear categoria da interface para o campo da tabela
+                const cert = m.certificacao || '';
+                const cat = m.categoria || '';
+                
+                // Mapeamento de categorias
+                const categoryMapping = {
+                    'itil': ['itil4', 'itil'],
+                    'azure': ['azure'],
+                    'aws': ['aws'],
+                    'linux': ['lpic', 'linux'],
+                    'security': ['security'],
+                    'ccna': ['ccna']
+                };
+                
+                const validCerts = categoryMapping[currentCategory] || [currentCategory];
+                return validCerts.some(validCert => 
+                    cert.includes(validCert) || cat === validCert
+                );
+            });
             
             // Aplicar filtro de tipo
             if (typeFilter !== 'all') {
@@ -1530,21 +1510,9 @@
             filteredMaterials = sortMaterials(filteredMaterials, sortFilter);
             
             // Separar ITIL dos outros materiais
-            const itilMaterials = filteredMaterials.filter(m => 
-                m.certificacao === 'itil4' || m.categoria === 'itil'
-            );
-            const otherMaterials = filteredMaterials.filter(m => 
-                m.certificacao !== 'itil4' && m.categoria !== 'itil'
-            );
-            
-            // Atualizar interfaces
-            if (currentCategory === 'geral' || currentCategory === 'itil') {
-                if (itilMaterials.length > 0) {
-                    loadPMGAcademyCard(itilMaterials);
-                } else {
-                    document.getElementById('pmg-academy-container').innerHTML = '';
-                }
-                updateOtherMaterials(otherMaterials);
+            if (currentCategory === 'itil') {
+                loadPMGAcademyCard(filteredMaterials);
+                updateOtherMaterials([]);
             } else {
                 document.getElementById('pmg-academy-container').innerHTML = '';
                 updateOtherMaterials(filteredMaterials);
@@ -1647,7 +1615,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE UPLOAD
+        // FUNÇÕES DE UPLOAD - CORRIGIDAS
         // ============================================
 
         function checkAuthAndUpload() {
@@ -1666,7 +1634,14 @@
             const file = e.target.files[0];
             if (!file) return;
             
-            handleFileDrop([file]);
+            // Validar tamanho do arquivo (100MB máximo)
+            const maxSize = 100 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('Arquivo muito grande! O tamanho máximo permitido é 100MB.');
+                return;
+            }
+            
+            showUploadForm(file);
         }
 
         function handleFileDrop(files) {
@@ -1675,10 +1650,10 @@
             const file = files[0];
             if (!file) return;
             
-            // Validar tamanho do arquivo (100MB máximo)
+            // Validar tamanho do arquivo
             const maxSize = 100 * 1024 * 1024;
             if (file.size > maxSize) {
-                showNotification('Arquivo muito grande! O tamanho máximo permitido é 100MB.', 'error');
+                alert('Arquivo muito grande! O tamanho máximo permitido é 100MB.');
                 return;
             }
             
@@ -1720,7 +1695,7 @@
             document.getElementById('uploadModal').style.display = 'flex';
         }
 
-        async function processUpload() {
+        async function processMaterialUpload() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
             const category = document.getElementById('materialCategory').value;
@@ -1728,26 +1703,20 @@
             
             // Validações
             if (!title) {
-                showNotification('Por favor, insira um título para o material.', 'error');
+                alert('Por favor, insira um título para o material.');
                 document.getElementById('materialTitle').focus();
                 return;
             }
             
-            if (!category) {
-                showNotification('Por favor, selecione uma categoria.', 'error');
-                document.getElementById('materialCategory').focus();
-                return;
-            }
-            
             if (!window.authManager || !window.authManager.isAuthenticated()) {
-                showNotification('Sessão expirada. Faça login novamente.', 'error');
+                alert('Sessão expirada. Faça login novamente.');
                 window.location.href = 'index.html#login';
                 return;
             }
             
             const user = window.authManager.getUser();
             if (!user || !user.id) {
-                showNotification('Erro: usuário não identificado.', 'error');
+                alert('Erro: usuário não identificado.');
                 return;
             }
             
@@ -1756,7 +1725,7 @@
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
-                console.log('🚀 Iniciando upload para usuário:', user.email);
+                console.log('🚀 Iniciando upload de material para usuário:', user.email);
                 
                 // Limpar nome do arquivo
                 const cleanFileName = file.name
@@ -1808,24 +1777,24 @@
                 
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
-                // Preparar dados para salvar no banco
-                // Nota: A tabela 'materiais' usa 'certificacao' como campo, não 'categoria'
-                // Vou usar um mapeamento para compatibilidade
+                // Mapear categoria da interface para o campo da tabela
                 const certMapping = {
                     'itil': 'itil4',
                     'azure': 'azure',
                     'aws': 'aws',
                     'linux': 'lpic',
                     'security': 'security',
-                    'ccna': 'ccna',
-                    'geral': 'geral'
+                    'ccna': 'ccna'
                 };
                 
+                const certificacao = certMapping[category] || category;
+                
+                // Preparar dados para salvar no banco
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
                     tipo: fileType,
-                    certificacao: certMapping[category] || category,
+                    certificacao: certificacao,
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
@@ -2187,7 +2156,7 @@
         window.checkAuthAndUpload = checkAuthAndUpload;
         window.closeUploadModal = closeUploadModal;
         window.closeDeleteModal = closeDeleteModal;
-        window.processUpload = processUpload;
+        window.processMaterialUpload = processMaterialUpload;
         window.showDeleteModal = showDeleteModal;
         window.confirmDeleteMaterial = confirmDeleteMaterial;
         window.handleFileAction = handleFileAction;
