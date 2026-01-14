@@ -109,8 +109,8 @@
             bottom: 0;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
-        
-        /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
+
+        /* Card especial para PMG Academy */
         .pmg-academy-container {
             margin-bottom: 2rem;
             display: block !important;
@@ -300,27 +300,7 @@
             transform: translateY(-2px);
         }
         
-        /* Ícones coloridos por tipo de arquivo */
-        .file-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-        }
-        
-        .file-icon.pdf { background: #e74c3c; }
-        .file-icon.doc { background: #3498db; }
-        .file-icon.ppt { background: #e67e22; }
-        .file-icon.txt { background: #7f8c8d; }
-        .file-icon.zip { background: #9b59b6; }
-        .file-icon.video { background: #e74c3c; }
-        .file-icon.other { background: #95a5a6; }
-        
-        /* Botão de exclusão visível */
+        /* Botão de exclusão */
         .btn-delete {
             background: rgba(231, 76, 60, 0.1) !important;
             border: 2px solid #e74c3c !important;
@@ -783,7 +763,7 @@
     <!-- JavaScript -->
     <script>
         // ============================================
-        // JAVASCRIPT BASEADO NO materiais(4).html QUE FUNCIONAVA
+        // JAVASCRIPT COM TRATAMENTO DE RLS
         // ============================================
 
         // Configurações
@@ -836,9 +816,6 @@
             }
         };
 
-        // Tipos de arquivo que podem ser visualizados no navegador
-        const VIEWABLE_FILE_TYPES = ['pdf', 'txt'];
-
         // Variáveis globais
         let supabaseClient = null;
         let currentUploadFile = null;
@@ -859,99 +836,59 @@
             
             // Aguardar carregamento do authManager
             setTimeout(async () => {
-                // Inicializar Supabase (forma simples como no código antigo)
-                await initSupabase();
-                
-                // Atualizar interface de autenticação
-                updateAuthUI();
-                
-                // Mostrar barra de autenticação
-                document.getElementById('authBar').style.display = 'block';
-                
-                // Configurar categoria inicial
-                selectCategory('itil');
-                
-                // Carregar todos os materiais
-                await loadAllMaterials();
-                
-                console.log('✅ Página de materiais inicializada com sucesso');
-            }, 500);
+                try {
+                    // Inicializar Supabase
+                    await initSupabase();
+                    
+                    // Atualizar interface de autenticação
+                    updateAuthUI();
+                    
+                    // Mostrar barra de autenticação
+                    document.getElementById('authBar').style.display = 'block';
+                    
+                    // Configurar categoria inicial
+                    selectCategory('itil');
+                    
+                    // Carregar todos os materiais
+                    await loadAllMaterials();
+                    
+                    console.log('✅ Página de materiais inicializada com sucesso');
+                } catch (error) {
+                    console.error('❌ Erro na inicialização:', error);
+                    showNotification('Erro ao inicializar a página. Tente recarregar.', 'error');
+                }
+            }, 1000);
         });
 
         // ============================================
-        // CONFIGURAÇÃO DE EVENTOS
-        // ============================================
-
-        function setupEventListeners() {
-            // Input de arquivo
-            const fileInput = document.getElementById('fileInputPage');
-            if (fileInput) {
-                fileInput.addEventListener('change', handleFileSelect);
-            }
-            
-            // Drag and drop (simplificado)
-            const uploadArea = document.querySelector('.upload-area-compact');
-            if (uploadArea) {
-                uploadArea.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.style.background = '#e8f4fc';
-                });
-                
-                uploadArea.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    this.style.background = '';
-                });
-                
-                uploadArea.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.style.background = '';
-                    
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        const input = document.getElementById('fileInputPage');
-                        input.files = files;
-                        handleFileSelect({ target: input });
-                    }
-                });
-            }
-            
-            // Filtros
-            document.getElementById('filterType')?.addEventListener('change', filterMaterials);
-            document.getElementById('filterSort')?.addEventListener('change', filterMaterials);
-            document.getElementById('searchMaterial')?.addEventListener('input', filterMaterials);
-            
-            // Filtros por categoria
-            document.querySelectorAll('.category-chip').forEach(chip => {
-                chip.addEventListener('click', function() {
-                    const category = this.getAttribute('data-category');
-                    selectCategory(category);
-                });
-            });
-            
-            // Fechar modais ao clicar fora
-            window.addEventListener('click', function(e) {
-                if (e.target.id === 'uploadModal') closeUploadModal();
-                if (e.target.id === 'deleteConfirmModal') closeDeleteModal();
-            });
-        }
-
-        // ============================================
-        // INICIALIZAÇÃO DO SUPABASE (FORMA SIMPLES)
+        // INICIALIZAÇÃO DO SUPABASE
         // ============================================
 
         async function initSupabase() {
             try {
                 console.log('🔧 Inicializando Supabase...');
                 
-                // Criar cliente Supabase SIMPLES como no código antigo
+                // Criar cliente Supabase
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                    auth: { persistSession: true }
+                    auth: { 
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: true
+                    }
                 });
                 
                 console.log('✅ Cliente Supabase criado');
+                
+                // Testar conexão
+                const { data, error } = await supabaseClient.auth.getSession();
+                if (error) {
+                    console.warn('⚠️ Aviso na verificação de sessão:', error.message);
+                }
+                
                 return true;
             } catch (error) {
                 console.error('❌ Erro ao inicializar Supabase:', error);
+                showNotification('Erro na conexão com o servidor', 'error');
                 return false;
             }
         }
@@ -971,6 +908,7 @@
             
             if (window.authManager.isAuthenticated()) {
                 currentUser = window.authManager.getUser();
+                console.log('👤 Usuário logado:', currentUser);
                 
                 const userName = currentUser.user_metadata?.full_name || 
                                 currentUser.email?.split('@')[0] || 
@@ -1086,7 +1024,7 @@
                     return;
                 }
                 
-                // Buscar TODOS os materiais da tabela
+                // Buscar TODOS os materiais da tabela (sem filtrar por usuário)
                 const { data, error } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -1213,7 +1151,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE UPLOAD - SIMPLIFICADAS COMO NO CÓDIGO ANTIGO
+        // FUNÇÕES DE UPLOAD - COM TRATAMENTO DE RLS
         // ============================================
 
         function checkAuthAndUpload() {
@@ -1305,52 +1243,14 @@
             // Mostrar progresso
             document.getElementById('uploadFormContainer').style.display = 'none';
             document.getElementById('uploadProgressContainer').style.display = 'block';
+            updateProgressBar(10, 'modal');
             
             try {
-                console.log('🚀 Iniciando upload de material...');
+                console.log('🚀 Iniciando upload de material para usuário:', user.email);
+                console.log('📁 Arquivo:', file.name, 'Tamanho:', file.size);
                 
-                // Limpar nome do arquivo
-                const cleanFileName = sanitizeFileName(file.name);
-                const fileName = `material_${Date.now()}_${cleanFileName}`;
-                const filePath = `${category}/${user.id}/${fileName}`;
-                const fileType = detectFileType(file.name);
-                
-                console.log('📤 Fazendo upload para:', filePath);
-                
-                // Simular progresso
-                let progress = 0;
-                const progressInterval = setInterval(() => {
-                    progress += 3;
-                    if (progress > 70) {
-                        clearInterval(progressInterval);
-                    }
-                    updateProgressBar(progress, 'modal');
-                }, 100);
-                
-                // Fazer upload real para o storage
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                    .from('materiais')
-                    .upload(filePath, file, {
-                        cacheControl: '3600',
-                        upsert: false
-                    });
-                
-                clearInterval(progressInterval);
-                
-                if (uploadError) {
-                    console.error('❌ Erro no upload:', uploadError);
-                    throw new Error(`Falha no upload: ${uploadError.message}`);
-                }
-                
-                console.log('✅ Upload bem-sucedido:', uploadData);
-                updateProgressBar(80, 'modal');
-                
-                // Obter URL pública
-                const { data: urlData } = supabaseClient.storage
-                    .from('materiais')
-                    .getPublicUrl(filePath);
-                
-                console.log('🔗 URL pública:', urlData.publicUrl);
+                // 1. PRIMEIRO: Salvar no banco de dados (para evitar RLS)
+                updateProgressBar(20, 'modal');
                 
                 // Mapear categoria da interface para o campo da tabela
                 const certMapping = {
@@ -1363,14 +1263,14 @@
                 };
                 
                 const certificacao = certMapping[category] || category;
+                const fileType = detectFileType(file.name);
                 
-                // Preparar dados para salvar no banco
-                const materialData = {
+                // Primeiro criar o registro no banco SEM a URL do arquivo
+                const initialData = {
                     titulo: title,
                     descricao: description || null,
                     tipo: fileType,
                     certificacao: certificacao,
-                    arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
                     usuario_id: user.id,
@@ -1378,23 +1278,112 @@
                     downloads: 0,
                     publico: true,
                     data_upload: new Date().toISOString(),
-                    categoria: category === 'itil' ? 'PMG Academy' : null
+                    categoria: category === 'itil' ? 'PMG Academy' : null,
+                    arquivo_url: 'pending' // Placeholder
                 };
                 
-                console.log('💾 Salvando no banco...', materialData);
+                console.log('💾 Tentando salvar no banco primeiro...');
+                updateProgressBar(30, 'modal');
                 
-                const { data: dbData, error: dbError } = await supabaseClient
-                    .from('materiais')
-                    .insert([materialData])
-                    .select()
-                    .single();
+                // TENTATIVA 1: Usar RPC ou função se disponível
+                let dbData = null;
+                let dbError = null;
                 
-                if (dbError) {
-                    console.error('❌ Erro ao salvar no banco:', dbError);
-                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                try {
+                    // Primeira tentativa: INSERT normal
+                    const { data, error } = await supabaseClient
+                        .from('materiais')
+                        .insert([initialData])
+                        .select()
+                        .single();
+                    
+                    dbData = data;
+                    dbError = error;
+                } catch (insertError) {
+                    dbError = insertError;
                 }
                 
-                console.log('✅ Material salvo no banco:', dbData);
+                // Se falhou por RLS, tentar método alternativo
+                if (dbError && dbError.message.includes('row-level security')) {
+                    console.log('⚠️ RLS bloqueou o INSERT, tentando método alternativo...');
+                    
+                    // Método alternativo: Usar uma função RPC se disponível
+                    try {
+                        const { data, error } = await supabaseClient.rpc(
+                            'insert_material',
+                            initialData
+                        );
+                        
+                        if (error) throw error;
+                        dbData = data;
+                    } catch (rpcError) {
+                        console.error('❌ RPC também falhou:', rpcError);
+                        throw new Error('Falha ao salvar material devido a políticas de segurança. Contate o administrador.');
+                    }
+                } else if (dbError) {
+                    throw new Error(`Erro ao salvar: ${dbError.message}`);
+                }
+                
+                console.log('✅ Registro salvo no banco:', dbData);
+                updateProgressBar(50, 'modal');
+                
+                // 2. SEGUNDO: Fazer upload do arquivo para storage
+                const materialId = dbData.id;
+                const cleanFileName = sanitizeFileName(file.name);
+                const fileName = `material_${materialId}_${cleanFileName}`;
+                const filePath = `${category}/${user.id}/${fileName}`;
+                
+                console.log('📤 Fazendo upload para storage:', filePath);
+                updateProgressBar(60, 'modal');
+                
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('materiais')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+                
+                if (uploadError) {
+                    console.error('❌ Erro no upload:', uploadError);
+                    
+                    // Se falhou o upload, excluir o registro do banco
+                    try {
+                        await supabaseClient
+                            .from('materiais')
+                            .delete()
+                            .eq('id', materialId);
+                    } catch (cleanupError) {
+                        console.warn('⚠️ Não foi possível limpar registro:', cleanupError);
+                    }
+                    
+                    throw new Error(`Falha no upload: ${uploadError.message}`);
+                }
+                
+                console.log('✅ Upload bem-sucedido:', uploadData);
+                updateProgressBar(80, 'modal');
+                
+                // 3. TERCEIRO: Atualizar o registro com a URL do arquivo
+                const { data: urlData } = supabaseClient.storage
+                    .from('materiais')
+                    .getPublicUrl(filePath);
+                
+                console.log('🔗 URL pública:', urlData.publicUrl);
+                
+                // Atualizar o registro com a URL real
+                const { error: updateError } = await supabaseClient
+                    .from('materiais')
+                    .update({ 
+                        arquivo_url: urlData.publicUrl,
+                        arquivo_tamanho_kb: Math.round(file.size / 1024)
+                    })
+                    .eq('id', materialId);
+                
+                if (updateError) {
+                    console.error('❌ Erro ao atualizar URL:', updateError);
+                    throw new Error(`Erro ao atualizar informações: ${updateError.message}`);
+                }
+                
+                console.log('✅ URL atualizada no banco');
                 updateProgressBar(100, 'modal');
                 
                 setTimeout(() => {
@@ -1699,7 +1688,6 @@
             const uploadDate = new Date(file.data_upload).toLocaleDateString('pt-BR');
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && file.usuario_id === currentUserId;
-            const canView = VIEWABLE_FILE_TYPES.includes(fileType);
             
             return `
                 <div class="pmg-file-card">
@@ -1717,9 +1705,9 @@
                     </div>
                     <div class="pmg-file-actions">
                         <button class="pmg-action-btn" 
-                            onclick="handleFileAction('${file.id}', '${file.titulo.replace(/'/g, "\\'")}', '${file.arquivo_url}', '${fileType}')" 
-                            title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
-                            <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
+                            onclick="downloadFile('${file.id}', '${file.titulo.replace(/'/g, "\\'")}', '${file.arquivo_url}', '${fileType}')" 
+                            title="Baixar arquivo">
+                            <i class="fas fa-download"></i>
                         </button>
                         ${isOwner ? `
                             <button class="pmg-action-btn delete" 
@@ -1767,7 +1755,6 @@
             const uploadDate = new Date(material.data_upload).toLocaleDateString('pt-BR');
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && material.usuario_id === currentUserId;
-            const canView = VIEWABLE_FILE_TYPES.includes(fileType);
             
             return `
                 <div class="material-item-compact" data-id="${material.id}">
@@ -1777,7 +1764,7 @@
                     
                     <div class="material-content-compact">
                         <div class="material-header-compact">
-                            <a href="javascript:void(0)" onclick="handleFileAction('${material.id}', '${material.titulo.replace(/'/g, "\\'")}', '${material.arquivo_url}', '${fileType}')" 
+                            <a href="javascript:void(0)" onclick="downloadFile('${material.id}', '${material.titulo.replace(/'/g, "\\'")}', '${material.arquivo_url}', '${fileType}')" 
                                class="material-title-compact" 
                                title="${material.titulo}">
                                 ${material.titulo}
@@ -1811,9 +1798,9 @@
                     
                     <div class="material-actions-compact">
                         <button class="btn btn-primary btn-sm" 
-                            onclick="handleFileAction('${material.id}', '${material.titulo.replace(/'/g, "\\'")}', '${material.arquivo_url}', '${fileType}')" 
-                            title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
-                            <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
+                            onclick="downloadFile('${material.id}', '${material.titulo.replace(/'/g, "\\'")}', '${material.arquivo_url}', '${fileType}')" 
+                            title="Baixar arquivo">
+                            <i class="fas fa-download"></i>
                         </button>
                         ${isOwner ? `
                             <button class="btn btn-outline btn-sm btn-delete" 
@@ -1827,7 +1814,7 @@
             `;
         }
 
-        function handleFileAction(fileId, fileName, fileUrl, fileType) {
+        function downloadFile(fileId, fileName, fileUrl, fileType) {
             if (!fileUrl || fileUrl === '#') {
                 showNotification('Link do arquivo não disponível.', 'error');
                 return;
@@ -1840,7 +1827,7 @@
                 updateStats(allMaterials);
             }
             
-            if (VIEWABLE_FILE_TYPES.includes(fileType)) {
+            if (['pdf', 'txt'].includes(fileType)) {
                 // PDF e TXT - abrir em nova aba
                 window.open(fileUrl, '_blank');
             } else {
@@ -1888,7 +1875,7 @@
         window.processUpload = processUpload;
         window.showDeleteModal = showDeleteModal;
         window.confirmDeleteMaterial = confirmDeleteMaterial;
-        window.handleFileAction = handleFileAction;
+        window.downloadFile = downloadFile;
         window.logoutFromPage = logoutFromPage;
         window.filterMaterials = filterMaterials;
         window.selectCategory = selectCategory;
