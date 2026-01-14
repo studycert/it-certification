@@ -60,10 +60,12 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,50 Q50,20 70,50 Q50,80 30,50 Z" fill="white"/></svg>');
         }
         
+        /* BANNER LINUX AMARELO COM FONTE BRANCA */
         .linux-banner {
-            background: linear-gradient(135deg, #E95420 0%, #C34113 25%, #A42E0A 50%, #852006 75%, #661A03 100%) !important;
+            background: linear-gradient(135deg, #FFD700 0%, #FFC300 25%, #FFB300 50%, #FFA000 75%, #FF8C00 100%) !important;
             position: relative;
             overflow: hidden;
+            color: white !important;
         }
         
         .linux-banner::before {
@@ -76,10 +78,12 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><ellipse cx="50" cy="40" rx="35" ry="20" fill="white"/><ellipse cx="50" cy="70" rx="40" ry="25" fill="white"/></svg>');
         }
         
+        /* BANNER SECURITY+ VERMELHO COM FONTE BRANCA */
         .security-banner {
-            background: linear-gradient(135deg, #27ae60 0%, #1e8449 25%, #145a32 50%, #0c351d 75%, #041509 100%) !important;
+            background: linear-gradient(135deg, #FF0000 0%, #D32F2F 25%, #B71C1C 50%, #880E0E 75%, #660000 100%) !important;
             position: relative;
             overflow: hidden;
+            color: white !important;
         }
         
         .security-banner::before {
@@ -367,15 +371,15 @@
         .category-chip[data-category="itil"]:hover { background: #1a237e; color: white; }
         .category-chip[data-category="azure"]:hover { background: #0078D4; color: white; }
         .category-chip[data-category="aws"]:hover { background: #FF9900; color: white; }
-        .category-chip[data-category="linux"]:hover { background: #E95420; color: white; }
-        .category-chip[data-category="security"]:hover { background: #27ae60; color: white; }
+        .category-chip[data-category="linux"]:hover { background: #FFD700; color: white; }
+        .category-chip[data-category="security"]:hover { background: #FF0000; color: white; }
         .category-chip[data-category="ccna"]:hover { background: #00a0d2; color: white; }
         
         .category-chip.active[data-category="itil"] { background: #1a237e; }
         .category-chip.active[data-category="azure"] { background: #0078D4; }
         .category-chip.active[data-category="aws"] { background: #FF9900; }
-        .category-chip.active[data-category="linux"] { background: #E95420; }
-        .category-chip.active[data-category="security"] { background: #27ae60; }
+        .category-chip.active[data-category="linux"] { background: #FFD700; color: #333; }
+        .category-chip.active[data-category="security"] { background: #FF0000; }
         .category-chip.active[data-category="ccna"] { background: #00a0d2; }
         
         /* Notificações */
@@ -428,6 +432,24 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+        }
+        
+        /* Estilos para garantir fonte branca nos banners */
+        .certification-hero h1,
+        .certification-hero .certification-level-badge,
+        .certification-hero p {
+            color: white !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+        }
+        
+        .linux-banner h1,
+        .linux-banner .certification-level-badge,
+        .linux-banner p,
+        .security-banner h1,
+        .security-banner .certification-level-badge,
+        .security-banner p {
+            color: white !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
         }
         
         /* Responsividade */
@@ -783,10 +805,10 @@
     <!-- JavaScript -->
     <script>
         // ============================================
-        // JAVASCRIPT PARA PÁGINA DE MATERIAIS
+        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - CORRIGIDO
         // ============================================
 
-        // Configurações
+        // Configurações SUPABASE - VERIFICAR SE ESTÃO CORRETAS
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
@@ -836,14 +858,14 @@
             }
         };
 
-        // Tipos de arquivo que podem ser visualizados no navegador (apenas PDF e TXT)
+        // Tipos de arquivo que podem ser visualizados no navegador
         const VIEWABLE_FILE_TYPES = ['pdf', 'txt'];
         const DOWNLOADABLE_FILE_TYPES = ['doc', 'ppt', 'zip', 'video', 'other'];
 
         // Variáveis globais
         let supabaseClient = null;
         let currentUploadFile = null;
-        let currentCategory = 'itil'; // Inicia com ITIL
+        let currentCategory = 'itil';
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
@@ -876,7 +898,7 @@
                 await loadAllMaterials();
                 
                 console.log('✅ Página de materiais inicializada com sucesso');
-            }, 300);
+            }, 500);
         });
 
         // ============================================
@@ -949,7 +971,7 @@
             
             const files = e.dataTransfer.files;
             if (files && files.length > 0) {
-                handleFileDrop(files);
+                handleFileSelect({ target: { files } });
             }
         }
 
@@ -970,25 +992,59 @@
         }
 
         // ============================================
-        // INICIALIZAÇÃO DO SUPABASE
+        // INICIALIZAÇÃO DO SUPABASE - CORRIGIDA
         // ============================================
 
         async function initSupabase() {
             try {
-                // Usar authManager se disponível
-                if (window.authManager && window.authManager.getSupabase()) {
-                    supabaseClient = window.authManager.getSupabase();
-                    console.log('✅ Usando Supabase do authManager');
+                // Verificar se supabase está disponível globalmente
+                if (typeof supabase === 'undefined') {
+                    console.error('❌ Supabase não está disponível globalmente');
+                    // Tentar carregar dinamicamente
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/@supabase/supabase-js@2';
+                    script.onload = function() {
+                        console.log('✅ Supabase carregado dinamicamente');
+                        createSupabaseClient();
+                    };
+                    document.head.appendChild(script);
                 } else {
-                    // Criar novo cliente
-                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                        auth: { persistSession: true }
-                    });
-                    console.log('✅ Criado novo cliente Supabase');
+                    await createSupabaseClient();
+                }
+            } catch (error) {
+                console.error('❌ Erro ao inicializar Supabase:', error);
+            }
+        }
+
+        async function createSupabaseClient() {
+            try {
+                // Criar cliente Supabase
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: true
+                    },
+                    global: {
+                        headers: {
+                            'apikey': SUPABASE_KEY
+                        }
+                    }
+                });
+                
+                console.log('✅ Cliente Supabase criado com sucesso');
+                
+                // Testar conexão
+                const { data, error } = await supabaseClient.auth.getSession();
+                if (error) {
+                    console.warn('⚠️ Aviso na verificação de sessão:', error.message);
+                } else {
+                    console.log('✅ Conexão Supabase estabelecida');
                 }
                 
             } catch (error) {
-                console.error('❌ Erro ao inicializar Supabase:', error);
+                console.error('❌ Erro ao criar cliente Supabase:', error);
+                showNotification('Erro na conexão com o servidor. Tente recarregar a página.', 'error');
             }
         }
 
@@ -1099,7 +1155,7 @@
             const breadcrumb = document.getElementById('currentCertification');
             
             // Remover todas as classes de banner
-            hero.classList.remove('itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'security-banner', 'ccna-banner');
+            hero.className = 'certification-hero';
             
             // Adicionar a classe correta
             hero.classList.add(cert.bannerClass);
@@ -1110,6 +1166,13 @@
             level.textContent = cert.level;
             description.textContent = cert.description;
             breadcrumb.textContent = cert.title;
+            
+            // Garantir cor branca para textos nos banners especiais
+            if (category === 'linux' || category === 'security') {
+                title.style.color = 'white';
+                level.style.color = 'white';
+                description.style.color = 'white';
+            }
         }
 
         // ============================================
@@ -1245,14 +1308,16 @@
                             </div>
                         </div>
                         
-                        <button class="pmg-toggle-btn" onclick="togglePmgFiles()" id="pmgToggleBtn">
-                            <i class="fas fa-folder-open"></i>
-                            <span>Mostrar ${files.length} Arquivos</span>
-                        </button>
-                        
-                        <div id="pmg-files-container" style="display: none; margin-top: 1.5rem;">
-                            ${renderPMGFileGroups(groupedFiles)}
-                        </div>
+                        ${files.length > 0 ? `
+                            <button class="pmg-toggle-btn" onclick="togglePmgFiles()" id="pmgToggleBtn">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Mostrar ${files.length} Arquivos</span>
+                            </button>
+                            
+                            <div id="pmg-files-container" style="display: none; margin-top: 1.5rem;">
+                                ${renderPMGFileGroups(groupedFiles)}
+                            </div>
+                        ` : '<p style="color: #666; text-align: center;">Nenhum arquivo disponível no momento.</p>'}
                     </div>
                 </div>
             `;
@@ -1631,26 +1696,18 @@
         }
 
         function handleFileSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            // Validar tamanho do arquivo (100MB máximo)
-            const maxSize = 100 * 1024 * 1024;
-            if (file.size > maxSize) {
-                alert('Arquivo muito grande! O tamanho máximo permitido é 100MB.');
+            let file;
+            if (e.target.files) {
+                file = e.target.files[0];
+            } else if (e.target.files) {
+                file = e.target.files[0];
+            } else {
                 return;
             }
             
-            showUploadForm(file);
-        }
-
-        function handleFileDrop(files) {
-            if (!files || files.length === 0) return;
-            
-            const file = files[0];
             if (!file) return;
             
-            // Validar tamanho do arquivo
+            // Validar tamanho do arquivo (100MB máximo)
             const maxSize = 100 * 1024 * 1024;
             if (file.size > maxSize) {
                 alert('Arquivo muito grande! O tamanho máximo permitido é 100MB.');
@@ -1720,12 +1777,18 @@
                 return;
             }
             
+            if (!supabaseClient) {
+                alert('Erro: conexão com o servidor não estabelecida.');
+                return;
+            }
+            
             // Mostrar progresso
             document.getElementById('uploadFormContainer').style.display = 'none';
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
                 console.log('🚀 Iniciando upload de material para usuário:', user.email);
+                console.log('📁 Arquivo:', file.name, 'Tamanho:', file.size);
                 
                 // Limpar nome do arquivo
                 const cleanFileName = file.name
@@ -1859,7 +1922,10 @@
 
         function closeUploadModal() {
             document.getElementById('uploadModal').style.display = 'none';
-            document.getElementById('fileInputPage').value = '';
+            const fileInput = document.getElementById('fileInputPage');
+            if (fileInput) {
+                fileInput.value = '';
+            }
             currentUploadFile = null;
         }
 
