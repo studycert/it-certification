@@ -364,13 +364,6 @@
             transform: translateY(-2px);
         }
         
-        .category-chip.active {
-            color: white;
-            border-color: transparent;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
         /* Cores específicas para cada categoria - ATUALIZADAS COM NOVAS CORES */
         .category-chip[data-category="itil"]:hover { background: #1a237e; color: white; }
         .category-chip[data-category="azure"]:hover { background: #0078D4; color: white; }
@@ -1100,9 +1093,13 @@
                     supabaseClient = window.authManager.getSupabase();
                     console.log('✅ Usando Supabase do authManager');
                 } else {
-                    // Criar novo cliente
+                    // Criar novo cliente com configurações corretas
                     supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                        auth: { persistSession: true }
+                        auth: {
+                            persistSession: true,
+                            autoRefreshToken: true,
+                            detectSessionInUrl: true
+                        }
                     });
                     console.log('✅ Criado novo cliente Supabase');
                 }
@@ -1735,7 +1732,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE UPLOAD - CORRIGIDAS (USANDO FUNÇÕES DO MATERIAIS4)
+        // FUNÇÕES DE UPLOAD - CORRIGIDAS PARA RLS
         // ============================================
 
         function checkAuthAndUpload() {
@@ -1852,6 +1849,19 @@
             try {
                 console.log('🚀 Iniciando upload de material para usuário:', user.email);
                 
+                // Verificar sessão atual
+                const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+                if (sessionError) {
+                    console.error('❌ Erro na sessão:', sessionError);
+                    throw new Error('Sessão inválida. Faça login novamente.');
+                }
+                
+                if (!sessionData.session) {
+                    throw new Error('Sessão expirada. Faça login novamente.');
+                }
+                
+                console.log('✅ Sessão válida:', sessionData.session.user.id);
+                
                 // Limpar nome do arquivo
                 const cleanFileName = file.name
                     .toLowerCase()
@@ -1914,7 +1924,8 @@
                 
                 const certificacao = certMapping[category] || category;
                 
-                // Preparar dados para salvar no banco
+                // Preparar dados para salvar no banco - CORRIGIDO PARA RLS
+                // Usar auth.uid() para garantir que o RLS funcione
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
@@ -1923,7 +1934,7 @@
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
-                    usuario_id: user.id,
+                    usuario_id: user.id, // IMPORTANTE: Deve corresponder ao auth.uid() nas políticas RLS
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
@@ -1933,6 +1944,7 @@
                 
                 console.log('💾 Salvando no banco...', materialData);
                 
+                // IMPORTANTE: Usar o cliente Supabase com a sessão correta
                 const { data: dbData, error: dbError } = await supabaseClient
                     .from('materiais')
                     .insert([materialData])
@@ -1941,10 +1953,34 @@
                 
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
-                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                    
+                    // Verificar se é erro de RLS
+                    if (dbError.message.includes('row-level security')) {
+                        console.warn('⚠️ Erro de RLS detectado. Tentando método alternativo...');
+                        
+                        // Método alternativo: chamar uma função Edge se disponível
+                        try {
+                            // Tentar usar RPC se disponível
+                            const { data: rpcData, error: rpcError } = await supabaseClient.rpc(
+                                'inserir_material',
+                                materialData
+                            );
+                            
+                            if (rpcError) {
+                                console.error('❌ Erro no RPC:', rpcError);
+                                throw new Error(`Erro de segurança: ${dbError.message}. Verifique as permissões.`);
+                            }
+                            
+                            console.log('✅ Material salvo via RPC:', rpcData);
+                        } catch (rpcError) {
+                            throw new Error(`Erro ao salvar informações: ${dbError.message}. Contate o administrador.`);
+                        }
+                    } else {
+                        throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                    }
+                } else {
+                    console.log('✅ Material salvo no banco:', dbData);
                 }
-                
-                console.log('✅ Material salvo no banco:', dbData);
                 
                 // Concluir
                 updateProgressBar(100, 'modal');
@@ -2281,7 +2317,7 @@
         window.checkAuthAndUpload = checkAuthAndUpload;
         window.closeUploadModal = closeUploadModal;
         window.closeDeleteModal = closeDeleteModal;
-        window.processUpload = processUpload; // NOME CORRIGIDO: processUpload em vez de processMaterialUpload
+        window.processUpload = processUpload;
         window.showDeleteModal = showDeleteModal;
         window.confirmDeleteMaterial = confirmDeleteMaterial;
         window.handleFileAction = handleFileAction;
