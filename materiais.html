@@ -60,8 +60,9 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,50 Q50,20 70,50 Q50,80 30,50 Z" fill="white"/></svg>');
         }
         
+        /* LINUX ALTERADO PARA AMARELO */
         .linux-banner {
-            background: linear-gradient(135deg, #E95420 0%, #C34113 25%, #A42E0A 50%, #852006 75%, #661A03 100%) !important;
+            background: linear-gradient(135deg, #FFD700 0%, #FFC107 25%, #FF9800 50%, #FF5722 75%, #FF3D00 100%) !important;
             position: relative;
             overflow: hidden;
         }
@@ -76,10 +77,17 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><ellipse cx="50" cy="40" rx="35" ry="20" fill="white"/><ellipse cx="50" cy="70" rx="40" ry="25" fill="white"/></svg>');
         }
         
+        /* SECURITY+ ALTERADO PARA VERMELHO COM FONTE BRANCA */
         .security-banner {
-            background: linear-gradient(135deg, #27ae60 0%, #1e8449 25%, #145a32 50%, #0c351d 75%, #041509 100%) !important;
+            background: linear-gradient(135deg, #d32f2f 0%, #c62828 25%, #b71c1c 50%, #8b0000 75%, #660000 100%) !important;
+            color: white !important;
             position: relative;
             overflow: hidden;
+        }
+        
+        .security-banner * {
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
         }
         
         .security-banner::before {
@@ -363,19 +371,19 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
-        /* Cores específicas para cada categoria */
+        /* Cores específicas para cada categoria - ATUALIZADAS COM NOVAS CORES */
         .category-chip[data-category="itil"]:hover { background: #1a237e; color: white; }
         .category-chip[data-category="azure"]:hover { background: #0078D4; color: white; }
         .category-chip[data-category="aws"]:hover { background: #FF9900; color: white; }
-        .category-chip[data-category="linux"]:hover { background: #E95420; color: white; }
-        .category-chip[data-category="security"]:hover { background: #27ae60; color: white; }
+        .category-chip[data-category="linux"]:hover { background: #FFD700; color: #333; } /* AMARELO */
+        .category-chip[data-category="security"]:hover { background: #d32f2f; color: white; } /* VERMELHO */
         .category-chip[data-category="ccna"]:hover { background: #00a0d2; color: white; }
         
         .category-chip.active[data-category="itil"] { background: #1a237e; }
         .category-chip.active[data-category="azure"] { background: #0078D4; }
         .category-chip.active[data-category="aws"] { background: #FF9900; }
-        .category-chip.active[data-category="linux"] { background: #E95420; }
-        .category-chip.active[data-category="security"] { background: #27ae60; }
+        .category-chip.active[data-category="linux"] { background: #FFD700; color: #333; } /* AMARELO */
+        .category-chip.active[data-category="security"] { background: #d32f2f; } /* VERMELHO */
         .category-chip.active[data-category="ccna"] { background: #00a0d2; }
         
         /* Notificações */
@@ -746,7 +754,7 @@
                     <button onclick="closeUploadModal()" class="btn btn-outline">
                         <i class="fas fa-times"></i> Cancelar
                     </button>
-                    <button onclick="processMaterialUpload()" class="btn btn-primary">
+                    <button onclick="processUpload()" class="btn btn-primary">
                         <i class="fas fa-paper-plane"></i> Enviar Material
                     </button>
                 </div>
@@ -783,14 +791,14 @@
     <!-- JavaScript -->
     <script>
         // ============================================
-        // JAVASCRIPT PARA PÁGINA DE MATERIAIS
+        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - CORRIGIDO
         // ============================================
 
         // Configurações
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-        // Mapeamento de certificações com banners e ícones
+        // Mapeamento de certificações com banners e ícones - ATUALIZADO COM NOVAS CORES
         const certifications = {
             'itil': { 
                 title: 'ITIL 4 Foundation', 
@@ -836,9 +844,8 @@
             }
         };
 
-        // Tipos de arquivo que podem ser visualizados no navegador (apenas PDF e TXT)
+        // Tipos de arquivo que podem ser visualizados no navegador
         const VIEWABLE_FILE_TYPES = ['pdf', 'txt'];
-        const DOWNLOADABLE_FILE_TYPES = ['doc', 'ppt', 'zip', 'video', 'other'];
 
         // Variáveis globais
         let supabaseClient = null;
@@ -1615,7 +1622,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE UPLOAD - CORRIGIDAS
+        // FUNÇÕES DE UPLOAD - CORRIGIDAS (USANDO FUNÇÕES DO MATERIAIS4)
         // ============================================
 
         function checkAuthAndUpload() {
@@ -1695,7 +1702,7 @@
             document.getElementById('uploadModal').style.display = 'flex';
         }
 
-        async function processMaterialUpload() {
+        async function processUpload() {
             const title = document.getElementById('materialTitle').value.trim();
             const description = document.getElementById('materialDescription').value.trim();
             const category = document.getElementById('materialCategory').value;
@@ -2156,7 +2163,7 @@
         window.checkAuthAndUpload = checkAuthAndUpload;
         window.closeUploadModal = closeUploadModal;
         window.closeDeleteModal = closeDeleteModal;
-        window.processMaterialUpload = processMaterialUpload;
+        window.processUpload = processUpload; // NOME CORRIGIDO: processUpload em vez de processMaterialUpload
         window.showDeleteModal = showDeleteModal;
         window.confirmDeleteMaterial = confirmDeleteMaterial;
         window.handleFileAction = handleFileAction;
