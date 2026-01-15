@@ -386,7 +386,7 @@
         .category-chip.active[data-category="security"] { background: #d32f2f; } /* VERMELHO */
         .category-chip.active[data-category="ccna"] { background: #00a0d2; }
         
-        /* Notificações */
+        /* NOTIFICAÇÕES CORRIGIDAS - FONTE ESCURA SOBRE FUNDO CLARO */
         .notification {
             position: fixed;
             top: 80px;
@@ -402,18 +402,40 @@
             animation: slideInRight 0.3s ease-out;
             border-left: 4px solid #3498db;
             max-width: 400px;
+            color: #333 !important; /* FONTE ESCURA */
+            font-weight: 500;
+        }
+        
+        .notification i {
+            color: inherit !important;
+        }
+        
+        .notification span {
+            color: inherit !important;
         }
         
         .notification-success {
             border-left-color: #27ae60;
+            background: #e8f6ef !important;
+            color: #155724 !important;
         }
         
         .notification-error {
             border-left-color: #e74c3c;
+            background: #fde8e8 !important;
+            color: #721c24 !important;
         }
         
         .notification-warning {
             border-left-color: #f39c12;
+            background: #fff3cd !important;
+            color: #856404 !important;
+        }
+        
+        .notification-info {
+            border-left-color: #3498db;
+            background: #e3f2fd !important;
+            color: #0c5460 !important;
         }
         
         @keyframes slideInRight {
@@ -436,6 +458,84 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+        }
+        
+        /* Melhorias no modal de upload */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-modal:hover {
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        /* Melhorias no progresso de upload */
+        .upload-progress {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-container {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4ECDC4, #44A08D);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
         }
         
         /* Responsividade */
@@ -470,6 +570,19 @@
             .category-chip {
                 font-size: 0.75rem;
                 padding: 0.3rem 0.8rem;
+            }
+            
+            .notification {
+                top: 60px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+                width: calc(100% - 2rem);
             }
         }
     </style>
@@ -1644,7 +1757,7 @@
             // Validar tamanho do arquivo (100MB máximo)
             const maxSize = 100 * 1024 * 1024;
             if (file.size > maxSize) {
-                alert('Arquivo muito grande! O tamanho máximo permitido é 100MB.');
+                showNotification('Arquivo muito grande! O tamanho máximo permitido é 100MB.', 'error');
                 return;
             }
             
@@ -1660,7 +1773,7 @@
             // Validar tamanho do arquivo
             const maxSize = 100 * 1024 * 1024;
             if (file.size > maxSize) {
-                alert('Arquivo muito grande! O tamanho máximo permitido é 100MB.');
+                showNotification('Arquivo muito grande! O tamanho máximo permitido é 100MB.', 'error');
                 return;
             }
             
@@ -1700,6 +1813,11 @@
             
             // Mostrar modal
             document.getElementById('uploadModal').style.display = 'flex';
+            
+            // Focar no título
+            setTimeout(() => {
+                document.getElementById('materialTitle').focus();
+            }, 100);
         }
 
         async function processUpload() {
@@ -1710,20 +1828,20 @@
             
             // Validações
             if (!title) {
-                alert('Por favor, insira um título para o material.');
+                showNotification('Por favor, insira um título para o material.', 'warning');
                 document.getElementById('materialTitle').focus();
                 return;
             }
             
             if (!window.authManager || !window.authManager.isAuthenticated()) {
-                alert('Sessão expirada. Faça login novamente.');
+                showNotification('Sessão expirada. Faça login novamente.', 'error');
                 window.location.href = 'index.html#login';
                 return;
             }
             
             const user = window.authManager.getUser();
             if (!user || !user.id) {
-                alert('Erro: usuário não identificado.');
+                showNotification('Erro: usuário não identificado.', 'error');
                 return;
             }
             
@@ -1749,7 +1867,7 @@
                 
                 console.log('📤 Upload para:', filePath);
                 
-                // Simular progresso
+                // Simular progresso inicial
                 let progress = 0;
                 const progressInterval = setInterval(() => {
                     progress += 3;
