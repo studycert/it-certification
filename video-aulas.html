@@ -945,7 +945,7 @@
     <script>
         // ============================================
         // JAVASCRIPT PARA PÁGINA DE VIDEOAULAS - CORRIGIDO
-        // Baseado no padrão da página materiais que funciona
+        // Com bucket 'videos' criado no Supabase
         // ============================================
 
         // Configurações
@@ -1568,7 +1568,7 @@
 
         // ============================================
         // FUNÇÕES DE UPLOAD - CORRIGIDAS
-        // Baseado no padrão da página materiais
+        // Agora usando bucket 'videos' (criado no Supabase)
         // ============================================
 
         function checkAuthAndUpload() {
@@ -1726,10 +1726,10 @@
                 
                 const fileName = `video_${Date.now()}_${cleanFileName}`;
                 
-                // Caminho para o storage
+                // Caminho para o storage (agora no bucket 'videos')
                 const filePath = `${user.id}/${fileName}`;
                 
-                console.log('📤 Upload para:', filePath);
+                console.log('📤 Upload para bucket "videos":', filePath);
                 
                 // Simular progresso inicial
                 let progress = 0;
@@ -1741,9 +1741,11 @@
                     updateProgressBar(progress, 'modal');
                 }, 100);
                 
-                // Fazer upload real para o storage (bucket correto)
+                // ============================================
+                // CORREÇÃO: Usar bucket 'videos' (criado no Supabase)
+                // ============================================
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                    .from('videos') // Bucket correto para vídeos
+                    .from('videos') // BUCKET CORRETO: 'videos'
                     .upload(filePath, file, {
                         cacheControl: '3600',
                         upsert: false
@@ -1752,22 +1754,28 @@
                 clearInterval(progressInterval);
                 
                 if (uploadError) {
-                    console.error('❌ Erro no upload:', uploadError);
+                    console.error('❌ Erro no upload para bucket "videos":', uploadError);
+                    
+                    // Se ainda não criou o bucket, oferecer alternativa
+                    if (uploadError.message.includes('Bucket not found')) {
+                        showNotification('Bucket "videos" não encontrado. Crie o bucket no Supabase Storage primeiro.', 'error');
+                        throw new Error('Bucket "videos" não encontrado. Crie o bucket no Supabase Storage.');
+                    }
+                    
                     throw new Error(`Falha no upload: ${uploadError.message}`);
                 }
                 
-                console.log('✅ Upload bem-sucedido:', uploadData);
+                console.log('✅ Upload bem-sucedido para bucket "videos":', uploadData);
                 updateProgressBar(80, 'modal');
                 
-                // Obter URL pública
+                // Obter URL pública do bucket 'videos'
                 const { data: urlData } = supabaseClient.storage
-                    .from('videos')
+                    .from('videos') // BUCKET CORRETO: 'videos'
                     .getPublicUrl(filePath);
                 
-                console.log('🔗 URL pública:', urlData.publicUrl);
+                console.log('🔗 URL pública do vídeo:', urlData.publicUrl);
                 
-                // CORREÇÃO CRÍTICA: Preparar dados para salvar na tabela videos_studycert
-                // Incluindo usuario_id para passar pela RLS
+                // Preparar dados para salvar na tabela videos_studycert
                 const videoData = {
                     titulo: title,
                     descricao: description || null,
@@ -1795,6 +1803,13 @@
                 
                 if (dbError) {
                     console.error('❌ Erro ao salvar na tabela videos_studycert:', dbError);
+                    
+                    // Se der erro de RLS, tentar verificar as políticas
+                    if (dbError.message.includes('row-level security')) {
+                        console.warn('⚠️ Erro de RLS. Verifique as políticas da tabela videos_studycert.');
+                        console.warn('⚠️ Certifique-se de que usuários autenticados podem inserir registros.');
+                    }
+                    
                     throw new Error(`Não foi possível salvar a videoaula: ${dbError.message}`);
                 }
                 
@@ -2053,25 +2068,25 @@
                     return;
                 }
                 
-                // 3. Extrair caminho do arquivo da URL para excluir do Storage
+                // 3. Extrair caminho do arquivo da URL para excluir do Storage (bucket 'videos')
                 const videoUrl = video.video_url;
                 console.log('🔗 URL do vídeo:', videoUrl);
                 
-                // Extrair o caminho do arquivo do bucket
+                // Extrair o caminho do arquivo do bucket 'videos'
                 const urlParts = videoUrl.split('/videos/');
                 if (urlParts.length > 1) {
                     const filePath = urlParts[1];
-                    console.log('📁 Caminho do vídeo no storage:', filePath);
+                    console.log('📁 Caminho do vídeo no bucket "videos":', filePath);
                     
-                    // Excluir do Storage
+                    // Excluir do Storage (bucket 'videos')
                     const { error: storageError } = await supabaseClient.storage
-                        .from('videos')
+                        .from('videos') // BUCKET CORRETO: 'videos'
                         .remove([filePath]);
                     
                     if (storageError) {
-                        console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                        console.warn('⚠️ Não foi possível excluir do bucket "videos":', storageError.message);
                     } else {
-                        console.log('✅ Vídeo excluído do storage');
+                        console.log('✅ Vídeo excluído do bucket "videos"');
                     }
                 }
                 
