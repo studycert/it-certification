@@ -339,7 +339,7 @@
             color: white !important;
         }
         
-        /* Categorias de certificação */
+        /* Categorias de certificação - FONTE BRANCA EM TODOS OS ESTADOS */
         .category-filter {
             display: flex;
             flex-wrap: wrap;
@@ -362,22 +362,66 @@
         .category-chip:hover {
             background: #e9ecef;
             transform: translateY(-2px);
+            color: white !important; /* FONTE BRANCA AO PASSAR MOUSE */
         }
         
-        /* Cores específicas para cada categoria - ATUALIZADAS COM NOVAS CORES */
-        .category-chip[data-category="itil"]:hover { background: #1a237e; color: white; }
-        .category-chip[data-category="azure"]:hover { background: #0078D4; color: white; }
-        .category-chip[data-category="aws"]:hover { background: #FF9900; color: white; }
-        .category-chip[data-category="linux"]:hover { background: #FFD700; color: #333; } /* AMARELO */
-        .category-chip[data-category="security"]:hover { background: #d32f2f; color: white; } /* VERMELHO */
-        .category-chip[data-category="ccna"]:hover { background: #00a0d2; color: white; }
+        .category-chip.active {
+            color: white !important; /* FONTE BRANCA AO CLICAR */
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
         
-        .category-chip.active[data-category="itil"] { background: #1a237e; }
-        .category-chip.active[data-category="azure"] { background: #0078D4; }
-        .category-chip.active[data-category="aws"] { background: #FF9900; }
-        .category-chip.active[data-category="linux"] { background: #FFD700; color: #333; } /* AMARELO */
-        .category-chip.active[data-category="security"] { background: #d32f2f; } /* VERMELHO */
-        .category-chip.active[data-category="ccna"] { background: #00a0d2; }
+        /* Cores específicas para cada categoria - FONTE SEMPRE BRANCA */
+        .category-chip[data-category="itil"]:hover { 
+            background: #1a237e; 
+            color: white !important; 
+        }
+        .category-chip[data-category="azure"]:hover { 
+            background: #0078D4; 
+            color: white !important; 
+        }
+        .category-chip[data-category="aws"]:hover { 
+            background: #FF9900; 
+            color: white !important; 
+        }
+        .category-chip[data-category="linux"]:hover { 
+            background: #FFD700; 
+            color: white !important; /* AMARELO COM FONTE BRANCA */
+        }
+        .category-chip[data-category="security"]:hover { 
+            background: #d32f2f; 
+            color: white !important; /* VERMELHO COM FONTE BRANCA */
+        }
+        .category-chip[data-category="ccna"]:hover { 
+            background: #00a0d2; 
+            color: white !important; 
+        }
+        
+        .category-chip.active[data-category="itil"] { 
+            background: #1a237e; 
+            color: white !important; 
+        }
+        .category-chip.active[data-category="azure"] { 
+            background: #0078D4; 
+            color: white !important; 
+        }
+        .category-chip.active[data-category="aws"] { 
+            background: #FF9900; 
+            color: white !important; 
+        }
+        .category-chip.active[data-category="linux"] { 
+            background: #FFD700; 
+            color: white !important; /* AMARELO COM FONTE BRANCA */
+        }
+        .category-chip.active[data-category="security"] { 
+            background: #d32f2f; 
+            color: white !important; /* VERMELHO COM FONTE BRANCA */
+        }
+        .category-chip.active[data-category="ccna"] { 
+            background: #00a0d2; 
+            color: white !important; 
+        }
         
         /* NOTIFICAÇÕES CORRIGIDAS - FONTE ESCURA SOBRE FUNDO CLARO */
         .notification {
@@ -617,7 +661,7 @@
             <a href="index.html#materiais">Material de Estudo</a> > 
             <span id="currentCertification">ITIL 4 Foundation</span>
         </div>
-    </section>
+</section>
 
     <!-- Conteúdo Principal -->
     <main class="materials-page-container">
@@ -898,6 +942,7 @@
     <script>
         // ============================================
         // JAVASCRIPT PARA PÁGINA DE MATERIAIS - CORRIGIDO
+        // Baseado no materiais(4).html que funciona
         // ============================================
 
         // Configurações
@@ -1279,7 +1324,6 @@
             const categoryMaterials = allMaterials.filter(m => {
                 // Mapear categoria da interface para o campo da tabela
                 const cert = m.certificacao || '';
-                const cat = m.categoria || '';
                 
                 // Mapeamento de categorias
                 const categoryMapping = {
@@ -1293,7 +1337,7 @@
                 
                 const validCerts = categoryMapping[currentCategory] || [currentCategory];
                 return validCerts.some(validCert => 
-                    cert.includes(validCert) || cat === validCert
+                    cert.includes(validCert)
                 );
             });
             
@@ -1589,7 +1633,6 @@
             let filteredMaterials = allMaterials.filter(m => {
                 // Mapear categoria da interface para o campo da tabela
                 const cert = m.certificacao || '';
-                const cat = m.categoria || '';
                 
                 // Mapeamento de categorias
                 const categoryMapping = {
@@ -1603,7 +1646,7 @@
                 
                 const validCerts = categoryMapping[currentCategory] || [currentCategory];
                 return validCerts.some(validCert => 
-                    cert.includes(validCert) || cat === validCert
+                    cert.includes(validCert)
                 );
             });
             
@@ -1732,7 +1775,8 @@
         }
 
         // ============================================
-        // FUNÇÕES DE UPLOAD - CORRIGIDAS PARA RLS
+        // FUNÇÕES DE UPLOAD - CORRIGIDAS
+        // Baseado no materiais(4).html que funciona
         // ============================================
 
         function checkAuthAndUpload() {
@@ -1872,7 +1916,11 @@
                     .replace(/^_+|_+$/g, '');
                 
                 const fileName = `material_${Date.now()}_${cleanFileName}`;
-                const filePath = `${category}/${user.id}/${fileName}`;
+                
+                // CORREÇÃO: No materiais(4).html que funciona, o filePath é diferente
+                // Não usa categoria no caminho do arquivo
+                const filePath = `${user.id}/${fileName}`;
+                
                 const fileType = detectFileType(file.name);
                 
                 console.log('📤 Upload para:', filePath);
@@ -1913,6 +1961,7 @@
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
                 // Mapear categoria da interface para o campo da tabela
+                // CORREÇÃO: Verificar como é feito no materiais(4).html
                 const certMapping = {
                     'itil': 'itil4',
                     'azure': 'azure',
@@ -1924,8 +1973,8 @@
                 
                 const certificacao = certMapping[category] || category;
                 
-                // Preparar dados para salvar no banco - CORRIGIDO PARA RLS
-                // Usar auth.uid() para garantir que o RLS funcione
+                // CORREÇÃO: Preparar dados para salvar no banco - SEM COLUNA CATEGORIA
+                // No materiais(4).html, só usa 'categoria' se for 'itil4'
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
@@ -1934,13 +1983,17 @@
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
-                    usuario_id: user.id, // IMPORTANTE: Deve corresponder ao auth.uid() nas políticas RLS
+                    usuario_id: user.id,
                     visualizacoes: 0,
                     downloads: 0,
                     publico: true,
-                    data_upload: new Date().toISOString(),
-                    categoria: category === 'itil' ? 'PMG Academy' : null
+                    data_upload: new Date().toISOString()
                 };
+                
+                // CORREÇÃO: Apenas para ITIL adicionar categoria 'PMG Academy'
+                if (category === 'itil') {
+                    materialData.categoria = 'PMG Academy';
+                }
                 
                 console.log('💾 Salvando no banco...', materialData);
                 
@@ -1954,27 +2007,25 @@
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
                     
-                    // Verificar se é erro de RLS
-                    if (dbError.message.includes('row-level security')) {
-                        console.warn('⚠️ Erro de RLS detectado. Tentando método alternativo...');
+                    // CORREÇÃO: Se for erro de coluna inexistente, tentar sem a coluna categoria
+                    if (dbError.message.includes("Could not find the 'categoria' column")) {
+                        console.warn('⚠️ Coluna "categoria" não encontrada. Tentando sem ela...');
                         
-                        // Método alternativo: chamar uma função Edge se disponível
-                        try {
-                            // Tentar usar RPC se disponível
-                            const { data: rpcData, error: rpcError } = await supabaseClient.rpc(
-                                'inserir_material',
-                                materialData
-                            );
+                        // Remover a coluna categoria e tentar novamente
+                        delete materialData.categoria;
+                        
+                        const { data: dbData2, error: dbError2 } = await supabaseClient
+                            .from('materiais')
+                            .insert([materialData])
+                            .select()
+                            .single();
                             
-                            if (rpcError) {
-                                console.error('❌ Erro no RPC:', rpcError);
-                                throw new Error(`Erro de segurança: ${dbError.message}. Verifique as permissões.`);
-                            }
-                            
-                            console.log('✅ Material salvo via RPC:', rpcData);
-                        } catch (rpcError) {
-                            throw new Error(`Erro ao salvar informações: ${dbError.message}. Contate o administrador.`);
+                        if (dbError2) {
+                            console.error('❌ Erro ao salvar sem categoria:', dbError2);
+                            throw new Error(`Erro ao salvar informações: ${dbError2.message}`);
                         }
+                        
+                        console.log('✅ Material salvo sem categoria:', dbData2);
                     } else {
                         throw new Error(`Erro ao salvar informações: ${dbError.message}`);
                     }
