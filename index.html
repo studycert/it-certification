@@ -7,267 +7,131 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <style>
-        /* Estilos para o menu do usuário */
-        .user-profile-menu {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .user-info:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .user-avatar-small {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .user-name-small {
-            color: white;
-            font-weight: 500;
-            font-size: 14px;
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .user-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: white;
-            min-width: 180px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            z-index: 1000;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-        
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            color: #333;
-            text-decoration: none;
-            border-bottom: 1px solid #eee;
-            transition: all 0.3s;
-        }
-        
-        .dropdown-item:hover {
-            background: #f5f7fa;
-            color: #3498db;
-        }
-        
-        .dropdown-item i {
-            width: 18px;
-            text-align: center;
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-        
-        @media (max-width: 768px) {
-            .user-name-small {
-                display: none;
-            }
-            
-            .user-info {
-                padding: 6px 10px;
-            }
-        }
-        
-        /* Estilos para mensagens */
-        .message {
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            display: none;
-        }
-        
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            display: block;
-        }
-        
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block;
-        }
-        
-        .message.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-            display: block;
-        }
-    </style>
+    <script src="js/config.js"></script>
+    <script src="js/app.js" defer></script>
+    <script src="js/auth.js" defer></script>    
 </head>
 <body>
     <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h1>Study<span>Cert</span></h1>
-                </div>
-                
-                <!-- Botão hambúrguer NO FINAL -->
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                
-                <nav id="mainNav">
-                    <ul>
-                        <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
-                        <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
-                        <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
-                        <li><a href="#" class="nav-link" data-target="materiais">Material</a></li>
-                        <li><a href="#" class="nav-link" data-target="videoaulas">Videoaulas</a></li>
-                        <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
-                    </ul>
-                </nav>
-                <div class="auth-buttons" id="authButtons">
-                    <!-- Será preenchido dinamicamente via JavaScript -->
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Modal de Login/Cadastro -->
-    <div id="modalAuth" class="modal-auth" style="display: none;">
-        <div class="auth-container">
-            <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
-            <div class="auth-header">
-                <h2>Study<span style="color: #3498db;">Cert</span></h2>
-                <p>Sua jornada começa aqui</p>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>Study<span>Cert</span></h1>
             </div>
             
-            <!-- Login Social -->
-            <div class="social-login-container" style="margin-bottom: 20px;">
-                <div class="social-login-title" style="text-align: center; margin-bottom: 15px; position: relative;">
-                    <span style="background: white; padding: 0 10px; color: #666; font-size: 0.9rem;">
-                        Entrar com
-                    </span>
-                    <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #eee; z-index: -1;"></div>
-                </div>
-                
-                <div class="social-buttons" style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="social-btn google" onclick="signInWithGoogle()" 
-                            style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 2px solid #DB4437; border-radius: 8px; background: white; color: #DB4437; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-                        <i class="fab fa-google"></i>
-                        <span>Google</span>
-                    </button>
-                    
-                    <button class="social-btn microsoft" onclick="signInWithMicrosoft()" 
-                            style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 2px solid #0078D4; border-radius: 8px; background: white; color: #0078D4; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-                        <i class="fab fa-microsoft"></i>
-                        <span>Microsoft</span>
-                    </button>
-                </div>
-                
-                <div class="divider" style="text-align: center; margin: 20px 0; position: relative;">
-                    <span style="background: white; padding: 0 10px; color: #666; font-size: 0.9rem;">
-                        ou use e-mail
-                    </span>
-                    <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #eee; z-index: -1;"></div>
-                </div>
-            </div>
+            <!-- Botão hambúrguer NO FINAL -->
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
             
-            <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login" onclick="setAuthTab('login')">Entrar</div>
-                <div class="auth-tab" data-tab="register" onclick="setAuthTab('register')">Cadastrar</div>
-            </div>
-            
-            <div id="loginForm" class="auth-form active">
-                <div id="loginMessage" class="message"></div>
-                <div class="form-group">
-                    <label for="loginEmail">E-mail</label>
-                    <input type="email" id="loginEmail" placeholder="seu@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Senha</label>
-                    <div style="position: relative;">
-                        <input type="password" id="loginPassword" placeholder="Sua senha" style="width: 100%; padding-right: 40px;">
-                        <button type="button" onclick="togglePassword('loginPassword')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer;">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
-                <div class="auth-footer">
-                    <p>Esqueceu sua senha? <a href="#" onclick="showPasswordReset()">Redefinir senha</a></p>
-                </div>
-            </div>
-            
-            <div id="registerForm" class="auth-form">
-                <div id="registerMessage" class="message"></div>
-                <div class="form-group">
-                    <label for="registerName">Nome Completo</label>
-                    <input type="text" id="registerName" placeholder="Seu nome completo">
-                </div>
-                <div class="form-group">
-                    <label for="registerEmail">E-mail</label>
-                    <input type="email" id="registerEmail" placeholder="seu@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Senha</label>
-                    <div style="position: relative;">
-                        <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" style="width: 100%; padding-right: 40px;">
-                        <button type="button" onclick="togglePassword('registerPassword')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer;">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
-            </div>
-            
-            <!-- Formulário de recuperação de senha -->
-            <div id="resetPasswordForm" class="auth-form" style="display: none;">
-                <div id="resetMessage" class="message"></div>
-                <div class="form-group">
-                    <label for="resetEmail">E-mail</label>
-                    <input type="email" id="resetEmail" placeholder="seu@email.com">
-                </div>
-                <button class="btn btn-primary" onclick="resetPassword()" style="width: 100%;">Enviar Link de Redefinição</button>
-                <div class="auth-footer">
-                    <p><a href="#" onclick="setAuthTab('login')">Voltar para login</a></p>
-                </div>
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="#" class="nav-link active" data-target="home">Início</a></li>
+                    <li><a href="#" class="nav-link" data-target="certificacoes">Certificações</a></li>
+                    <li><a href="#" class="nav-link" data-target="forum">Fórum</a></li>
+                    <li><a href="#" class="nav-link" data-target="materiais">Material</a></li>
+                    <li><a href="#" class="nav-link" data-target="videoaulas">Videoaulas</a></li>
+                    <li><a href="#" class="nav-link" data-target="simulados">Simulados</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons" id="authButtons">
+                <!-- Será preenchido dinamicamente via JavaScript -->
             </div>
         </div>
     </div>
+</header>
+   <!-- Modal de Login/Cadastro -->
+<div id="modalAuth" class="modal-auth">
+    <div class="auth-container">
+        <button class="close-auth-modal" onclick="closeAuthModal()">&times;</button>
+        <div class="auth-header">
+            <h2>Study<span style="color: #3498db;">Cert</span></h2>
+            <p>Sua jornada começa aqui</p>
+        </div>
+        
+        <!-- Login Social -->
+        <div class="social-login-container" style="margin-bottom: 20px;">
+            <div class="social-login-title" style="text-align: center; margin-bottom: 15px; position: relative;">
+                <span style="background: white; padding: 0 10px; color: #666; font-size: 0.9rem;">
+                    Entrar com
+                </span>
+                <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #eee; z-index: -1;"></div>
+            </div>
+            
+            <div class="social-buttons" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button class="social-btn google" onclick="signInWithGoogle()" 
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 2px solid #DB4437; border-radius: 8px; background: white; color: #DB4437; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                    <i class="fab fa-google"></i>
+                    <span>Google</span>
+                </button>
+                
+                <button class="social-btn microsoft" onclick="signInWithMicrosoft()" 
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 2px solid #0078D4; border-radius: 8px; background: white; color: #0078D4; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                    <i class="fab fa-microsoft"></i>
+                    <span>Microsoft</span>
+                </button>
+            </div>
+            
+            <div class="divider" style="text-align: center; margin: 20px 0; position: relative;">
+                <span style="background: white; padding: 0 10px; color: #666; font-size: 0.9rem;">
+                    ou use e-mail
+                </span>
+                <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #eee; z-index: -1;"></div>
+            </div>
+        </div>
+        
+        <div class="auth-tabs">
+            <div class="auth-tab active" data-tab="login">Entrar</div>
+            <div class="auth-tab" data-tab="register">Cadastrar</div>
+        </div>
+        
+        <div id="loginForm" class="auth-form active">
+            <div id="loginMessage" class="message"></div>
+            <div class="form-group">
+                <label for="loginEmail">E-mail</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Senha</label>
+                <div style="position: relative;">
+                    <input type="password" id="loginPassword" placeholder="Sua senha" style="width: 100%; padding-right: 40px;">
+                    <button type="button" onclick="toggleLoginPassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer;">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="login()" style="width: 100%;">Entrar</button>
+            <div class="auth-footer">
+                <p>Esqueceu sua senha? <a href="reset-password.html">Redefinir senha</a></p>
+            </div>
+        </div>
+        
+        <div id="registerForm" class="auth-form">
+            <div id="registerMessage" class="message"></div>
+            <div class="form-group">
+                <label for="registerName">Nome Completo</label>
+                <input type="text" id="registerName" placeholder="Seu nome completo">
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">E-mail</label>
+                <input type="email" id="registerEmail" placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Senha</label>
+                <div style="position: relative;">
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" style="width: 100%; padding-right: 40px;">
+                    <button type="button" onclick="toggleRegisterPassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #666; cursor: pointer;">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <button class="btn btn-success" onclick="register()" style="width: 100%;">Criar Conta</button>
+        </div>
+    </div>
+</div>
 
-    <!-- Resto do conteúdo (Hero Section e outras seções) permanece igual... -->
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
@@ -294,7 +158,6 @@
                 <p id="progressText">Carregando progresso...</p>
             </div>
 
-            <!-- Resto do conteúdo permanece igual... -->
             <div class="cards-container">
                 <div class="card">
                     <div class="card-header">
@@ -322,7 +185,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-video"></i> Videoaulas</h3>
+                        <h3><i class="fas fa-video"></i> Videoaulas</h3> <!-- CARD DE VIDEOAULAS ADICIONADO -->
                     </div>
                     <div class="card-body">
                         <p>Aprenda com instrutores especializados através de videoaulas organizadas por certificação.</p>
@@ -345,9 +208,600 @@
                 </div>
             </div>
 
-            <!-- Resto das seções... -->
+            <div class="section-title">
+                <h2>Certificações em Destaque</h2>
+                <p>As certificações mais relevantes do mercado de TI</p>
+            </div>
+
+            <div class="certifications-grid">
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Cloud</span>
+                        <h3>Azure Fundamentals</h3>
+                        <p>AZ-900: Conceitos fundamentais de nuvem e serviços Azure.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Cloud</span>
+                        <h3>AWS Cloud Practitioner</h3>
+                        <p>Fundamentos da AWS e conceitos de computação em nuvem.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Segurança</span>
+                        <h3>Security+</h3>
+                        <p>CompTIA Security+: Fundamentos de cybersecurity.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Governança</span>
+                        <h3>ITIL 4 Foundation</h3>
+                        <p>Framework de gerenciamento de serviços de TI.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
+
+    <!-- Certificações Content -->
+    <section id="certificacoes" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nossas Certificações</h2>
+                <p>Prepare-se para as certificações mais demandadas do mercado</p>
+            </div>
+
+            <div class="certifications-grid" id="certificacoesContent">
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Cloud</span>
+                        <h3>Azure Administrator</h3>
+                        <p>AZ-104: Implementação, gerenciamento e monitoramento de ambientes Azure.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Cloud</span>
+                        <h3>AWS Solutions Architect</h3>
+                        <p>SAA-C03: Projeto e implantação de sistemas escaláveis na AWS.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Segurança</span>
+                        <h3>Cybersecurity Analyst</h3>
+                        <p>CySA+: Análise de ameaças e resposta a incidentes de segurança.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Governança</span>
+                        <h3>ITIL 4 Specialist</h3>
+                        <p>Práticas avançadas de gerenciamento de serviços de TI.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Linux</span>
+                        <h3>LPIC-1</h3>
+                        <p>Certificação Linux Professional Institute - Nível 1.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Linux</span>
+                        <h3>LPIC-2</h3>
+                        <p>Certificação Linux Professional Institute - Nível Avançado.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Rede</span>
+                        <h3>CCNA</h3>
+                        <p>Cisco Certified Network Associate: Fundamentos de redes.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="cert-content">
+                        <span class="cert-level">Dados</span>
+                        <h3>Data Fundamentals</h3>
+                        <p>DP-900: Conceitos fundamentais de dados e analytics.</p>
+                        <a href="#" class="btn btn-primary">Estudar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forum Content -->
+    <section id="forum" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Fórum de Discussão</h2>
+                <p>Tire dúvidas, compartilhe experiências e conecte-se com outros profissionais</p>
+            </div>
+
+            <div id="forumContent">
+                <div class="forum-container">
+                    <div class="forum-categories">
+                        <h3>Categorias</h3>
+                        <ul class="category-list" id="forumCategories">
+                            <li><a href="#">Certificações Microsoft <span class="category-count">24</span></a></li>
+                            <li><a href="#">Certificações AWS <span class="category-count">18</span></a></li>
+                            <li><a href="#">LPIC-1 e LPIC-2 <span class="category-count">15</span></a></li>
+                            <li><a href="#">ITIL e Governança <span class="category-count">12</span></a></li>
+                            <li><a href="#">Security & Cybersecurity <span class="category-count">9</span></a></li>
+                            <li><a href="#">Cloud Computing <span class="category-count">21</span></a></li>
+                            <li><a href="#">Dúvidas Gerais <span class="category-count">32</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div class="forum-posts" id="forumPosts">
+                        <div class="post">
+                            <div class="post-header">
+                                <a href="#" class="post-title">Dúvida sobre LPIC-1 - Comandos essenciais</a>
+                                <div class="post-meta">por João Silva • 2 horas atrás</div>
+                            </div>
+                            <div class="post-excerpt">
+                                <p>Estou estudando para a LPIC-1 e tenho dúvidas sobre os comandos mais importantes para o exame. Alguém tem uma lista dos comandos que mais caem?</p>
+                            </div>
+                            <div class="post-footer">
+                                <span><i class="far fa-comment"></i> 7 respostas</span>
+                                <span><i class="far fa-eye"></i> 42 visualizações</span>
+                            </div>
+                        </div>
+
+                        <div class="post">
+                            <div class="post-header">
+                                <a href="#" class="post-title">Material de estudo para ITIL 4 Foundation</a>
+                                <div class="post-meta">por Maria Santos • 1 dia atrás</div>
+                            </div>
+                            <div class="post-excerpt">
+                                <p>Alguém tem recomendações de materiais de estudo para a ITIL 4 Foundation? Estou procurando livros, videoaulas e simulados.</p>
+                            </div>
+                            <div class="post-footer">
+                                <span><i class="far fa-comment"></i> 12 respostas</span>
+                                <span><i class="far fa-eye"></i> 87 visualizações</span>
+                            </div>
+                        </div>
+
+                        <div class="post">
+                            <div class="post-header">
+                                <a href="#" class="post-title">Experiência com exame Security+</a>
+                                <div class="post-meta">por Carlos Oliveira • 3 dias atrás</div>
+                            </div>
+                            <div class="post-excerpt">
+                                <p>Acabei de fazer o exame Security+ e gostaria de compartilhar minha experiência e dar algumas dicas para quem vai fazer.</p>
+                            </div>
+                            <div class="post-footer">
+                                <span><i class="far fa-comment"></i> 23 respostas</span>
+                                <span><i class="far fa-eye"></i> 156 visualizações</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary new-post-btn" onclick="createNewPost()">Nova Discussão</button>
+        </div>
+    </section>
+
+    <!-- Study Materials Content - VERSÃO SIMPLIFICADA -->
+    <section id="materiais" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Material de Estudo</h2>
+                <p>Acesse todos os materiais organizados por certificação em uma única página</p>
+            </div>
+
+            <div id="materialsContent" class="materials-grid" style="justify-content: center;">
+                <!-- Card Único - Todas as Certificações -->
+                <div class="material-card single-card">
+                    <div class="material-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <div class="material-content">
+                        <h3>Todas as Certificações</h3>
+                        <p>Acesse materiais organizados para:</p>
+                        <ul class="certifications-list">
+                            <li><i class="fab fa-microsoft"></i> Microsoft Azure</li>
+                            <li><i class="fab fa-aws"></i> Amazon AWS</li>
+                            <li><i class="fas fa-server"></i> LPIC-1 e LPIC-2</li>
+                            <li><i class="fas fa-cube"></i> ITIL 4 Foundation</li>
+                            <li><i class="fas fa-shield-alt"></i> Security+</li>
+                            <li><i class="fas fa-network-wired"></i> CCNA</li>
+                        </ul>
+                        <a href="materiais.html" class="btn btn-primary btn-block">
+                            <i class="fas fa-external-link-alt"></i> Acessar Todos os Materiais
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Videoaulas Content - VERSÃO SIMPLIFICADA -->
+    <section id="videoaulas" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Videoaulas</h2>
+                <p>Aprenda com instrutores especializados</p>
+            </div>
+
+            <div id="videosContent" class="materials-grid" style="justify-content: center;">
+                <!-- Card Único - Todas as Videoaulas -->
+                <div class="material-card single-card">
+                    <div class="material-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="material-content">
+                        <h3>Todas as Videoaulas</h3>
+                        <p>Acesse nossa biblioteca completa de videoaulas organizadas por certificação:</p>
+                        <ul class="certifications-list">
+                            <li><i class="fab fa-microsoft"></i> Microsoft Azure</li>
+                            <li><i class="fab fa-aws"></i> Amazon AWS</li>
+                            <li><i class="fas fa-server"></i> LPIC-1 e LPIC-2</li>
+                            <li><i class="fas fa-cube"></i> ITIL 4 Foundation</li>
+                            <li><i class="fas fa-shield-alt"></i> Security+</li>
+                            <li><i class="fas fa-network-wired"></i> CCNA</li>
+                        </ul>
+                        <div class="video-stats">
+                            <span><i class="fas fa-film"></i> +50 videoaulas</span>
+                            <span><i class="fas fa-clock"></i> +40 horas de conteúdo</span>
+                            <span><i class="fas fa-chalkboard-teacher"></i> Instrutores especializados</span>
+                        </div>
+                        <a href="video-aulas.html" class="btn btn-primary btn-block">
+                            <i class="fas fa-play-circle"></i> Ver Todas as Videoaulas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulados Content -->
+    <section id="simulados" class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Simulados</h2>
+                <p>Teste seus conhecimentos e acompanhe seu progresso</p>
+            </div>
+
+            <div class="upload-area" id="uploadArea" style="display: none;">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Compartilhe Seu Simulado</h3>
+                <p>Faça upload de simulados HTML para compartilhar com a comunidade</p>
+                <input type="file" id="fileUpload" accept=".html" style="display: none;">
+                <button class="btn btn-primary" onclick="app.abrirModalUpload()">Upload de Arquivo</button>
+            </div>
+
+            <div id="simuladosContent" class="simulados-container">
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-alt"></i> ITIL 4 Foundation</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">13 Simulados Disponíveis</span>
+                        <p>Pacote completo de simulados para certificação ITIL 4 Foundation.</p>
+                        <button class="show-simulados-btn" onclick="abrirModalSimulados()">
+                            <i class="fas fa-list"></i> Ver 13 Simulados
+                        </button>
+                    </div>
+                    <div class="card-footer">
+                        <small><strong>Progresso:</strong> 13 de 13 disponíveis • 583 questões</small>
+                    </div>
+                </div>
+                
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-server"></i> LPIC-1</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">60 questões</span>
+                        <p>Simulado para Linux Professional Institute Certification Level 1.</p>
+                        <p><strong>Tempo estimado:</strong> 90 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-shield-alt"></i> Security+</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">45 questões</span>
+                        <p>Simulado para CompTIA Security+ (SY0-601).</p>
+                        <p><strong>Tempo estimado:</strong> 90 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fab fa-aws"></i> AWS Cloud Practitioner</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">50 questões</span>
+                        <p>Simulado para AWS Certified Cloud Practitioner.</p>
+                        <p><strong>Tempo estimado:</strong> 90 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fab fa-microsoft"></i> Azure Fundamentals</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">40 questões</span>
+                        <p>Simulado para AZ-900: Azure Fundamentals.</p>
+                        <p><strong>Tempo estimado:</strong> 60 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-network-wired"></i> CCNA</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">55 questões</span>
+                        <p>Simulado para Cisco Certified Network Associate.</p>
+                        <p><strong>Tempo estimado:</strong> 90 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-database"></i> Data Fundamentals</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">35 questões</span>
+                        <p>Simulado para DP-900: Data Fundamentals.</p>
+                        <p><strong>Tempo estimado:</strong> 45 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-server"></i> LPIC-2</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">70 questões</span>
+                        <p>Simulado para Linux Professional Institute Level 2.</p>
+                        <p><strong>Tempo estimado:</strong> 120 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fab fa-aws"></i> AWS Solutions Architect</h3>
+                    </div>
+                    <div class="card-body">
+                        <span class="simulado-badge">65 questões</span>
+                        <p>Simulado para SAA-C03: AWS Solutions Architect.</p>
+                        <p><strong>Tempo estimado:</strong> 130 minutos</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Iniciar Simulado</a>
+                    </div>
+                </div>
+
+                <div class="simulado-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-plus-circle"></i> Adicionar Simulado</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Compartilhe seu próprio simulado com a comunidade.</p>
+                    </div>
+                    <div class="card-footer">
+                       <button class="btn btn-primary" onclick="app.abrirModalUpload()">Upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal da Lista de Simulados -->
+    <div id="modalSimulados" class="modal-simulados">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> Simulados ITIL 4 Foundation</h3>
+                <button class="fechar-modal" onclick="fecharModalSimulados()">&times;</button>
+            </div>
+            
+            <div class="modal-body" id="simuladosList">
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 1 - Conceitos Básicos</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-01.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 2 - Dimensões do Serviço</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-02.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 3 - Cadeia de Valor</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-03.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 4 - Práticas Gerais</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-04.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 5 - Gerenciamento de Serviço</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-05.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 6 - Princípios Orientadores</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-06.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 7 - Melhoria Contínua</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-07.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 8 - Governança</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-08.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 9 - Modelos de Mudança</span>
+                    </div>
+                    <a href="simulados/simulado-itil4-09.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                         <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 10 - Práticas Técnicas</span>
+                    </div>
+                <a href="simulados/simulado-itil4-10.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>                        
+                        <span class="simulado-nome">Simulado 11 - Integração Intermediária</span>                        
+                    </div>
+                    <a href="simulados/simulado-itil4-11.html" class="btn btn-primary btn-sm">Iniciar</a>                    
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 12 - Revisão Geral</span>                     
+                    </div>
+                    <a href="simulados/simulado-itil4-12.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+                
+                <div class="simulado-item-modal">
+                    <div class="simulado-info">
+                        <i class="fas fa-check-circle status-icon status-disponivel"></i>
+                        <span class="simulado-nome">Simulado 13 - Exame Final Completo</span>                       
+                    </div>
+                    <a href="simulados/simulado-itil4-13.html" class="btn btn-primary btn-sm">Iniciar</a>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <div><strong>13</strong> simulados disponíveis</div>
+                <div><strong>583</strong> questões no total</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Upload (será criado dinamicamente pelo JS) -->
+    <div id="modalUpload"></div>
 
     <!-- Footer -->
     <footer>
@@ -362,8 +816,7 @@
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#"><i class="fab fa-youtube"></i></a>
                         <a href="https://www.instagram.com/study.cert?igsh=MXZmeHRwM255aXMwZg==" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-instagram"></i>
-                        </a>
+                                    <i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
 
@@ -406,56 +859,147 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="js/auth.js"></script>
-    <script src="js/ui.js"></script>
-    <script>
-        // Funções globais para chamadas rápidas
-        function openRegister() {
-            openAuthModal('register');
+    <style>
+        /* Estilos específicos para os cards únicos */
+        .material-card.single-card {
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e1e8ed;
+            transition: all 0.3s ease;
+            padding: 1.5rem;
         }
         
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const icon = field.nextElementSibling.querySelector('i');
+        .material-card.single-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-color: #3498db;
+        }
+        
+        .material-card.single-card .material-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            margin-bottom: 1rem;
+        }
+        
+        .material-card.single-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+        }
+        
+        .material-card.single-card > .material-content > p {
+            color: #666;
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .certifications-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .certifications-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.8rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #3498db;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .certifications-list li:hover {
+            background: #e3f2fd;
+        }
+        
+        .certifications-list li i {
+            color: #3498db;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .material-card.single-card .btn-block {
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            margin-top: 1.2rem;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            font-weight: 500;
+        }
+        
+        .material-card.single-card .btn-block:hover {
+            background: linear-gradient(135deg, #2980b9, #1c5a7a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        /* Estilos específicos para o card de videoaulas */
+        .video-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 1rem 0;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #f8f9ff, #eef1ff);
+            border-radius: 8px;
+            border: 1px solid #e1e8ed;
+            font-size: 0.85rem;
+        }
+        
+        .video-stats span {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.2rem;
+            color: #2c3e50;
+        }
+        
+        .video-stats i {
+            font-size: 1.2rem;
+            color: #3498db;
+            margin-bottom: 0.2rem;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .material-card.single-card {
+                max-width: 100%;
+                margin: 0 0.5rem;
+                padding: 1.2rem;
+            }
             
-            if (field.type === 'password') {
-                field.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                field.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+            .certifications-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .video-stats {
+                flex-direction: column;
+                gap: 0.8rem;
             }
         }
-        
-        function showMessage(elementId, message, type = 'info') {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.textContent = message;
-                element.className = `message ${type}`;
-                element.style.display = 'block';
-                
-                // Auto-esconder após 5 segundos
-                if (type === 'success') {
-                    setTimeout(() => {
-                        element.style.display = 'none';
-                    }, 5000);
-                }
-            }
-        }
-        
-        // Inicializar quando o DOM carregar
+    </style>
+
+    <script>
+        // JavaScript para busca em tempo real de videoaulas (removido pois não é mais necessário)
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar se há hash de verificação de e-mail
-            const hash = window.location.hash;
-            if (hash.includes('type=recovery')) {
-                showMessage('loginMessage', 'Link de recuperação detectado. Redirecionando...', 'info');
-                setTimeout(() => {
-                    window.location.href = 'reset-password.html' + hash;
-                }, 2000);
-            }
+            // Código removido pois agora temos apenas um card
         });
     </script>
 </body>
