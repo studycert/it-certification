@@ -3,611 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processando Autenticação - StudyCert</title>
+    <title>Autenticando - StudyCert</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js" defer></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 500px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
+        .callback-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .logo-icon {
-            font-size: 3rem;
-            color: #4ade80;
-        }
-        
-        .logo-text {
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-        
-        .logo-text span {
-            color: #4ade80;
-        }
-        
-        .loading-spinner {
-            margin: 40px auto;
+        .spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary);
             border-radius: 50%;
-            border-top-color: #4ade80;
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
         
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        .status-message {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            border-left: 4px solid #4ade80;
-        }
-        
-        .status-message h3 {
-            margin-bottom: 10px;
-            color: #4ade80;
-        }
-        
-        .status-message p {
-            margin-bottom: 15px;
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-        
-        .debug-info {
-            margin-top: 25px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-family: monospace;
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-        }
-        
-        .debug-toggle {
-            margin-top: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.3s;
-        }
-        
-        .debug-toggle:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #4ade80;
-            color: #1a1a1a;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn:hover {
-            background: #22c55e;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.4);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #4ade80;
-            color: #4ade80;
-        }
-        
-        .btn-outline:hover {
-            background: rgba(74, 222, 128, 0.1);
-        }
-        
-        .steps {
-            display: flex;
-            justify-content: space-between;
-            margin: 30px 0;
-            position: relative;
-        }
-        
-        .steps::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            right: 20px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.2);
-            z-index: 1;
-        }
-        
-        .step {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-        }
-        
-        .step-number {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .step.active .step-number {
-            background: #4ade80;
-            color: #1a1a1a;
-        }
-        
-        .step-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        .error-message {
-            background: rgba(239, 68, 68, 0.2);
-            border-left: 4px solid #ef4444;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            text-align: left;
-        }
-        
-        .error-message h3 {
-            color: #ef4444;
-            margin-bottom: 10px;
-        }
-        
-        .error-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .icon-large {
-            font-size: 4rem;
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success);
             margin-bottom: 20px;
         }
         
-        .success .icon-large {
-            color: #4ade80;
-        }
-        
-        .error .icon-large {
-            color: #ef4444;
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                padding: 30px 20px;
-            }
-            
-            .logo-text {
-                font-size: 2rem;
-            }
-            
-            .logo-icon {
-                font-size: 2.5rem;
-            }
-            
-            .error-actions {
-                flex-direction: column;
-            }
+        .error-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
         }
     </style>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <i class="fas fa-graduation-cap logo-icon"></i>
-            <div class="logo-text">Study<span>Cert</span></div>
-        </div>
+    <div class="callback-container">
+        <div class="spinner" id="spinner"></div>
+        <i class="fas fa-check-circle success-icon" id="successIcon" style="display: none;"></i>
+        <i class="fas fa-exclamation-circle error-icon" id="errorIcon" style="display: none;"></i>
         
-        <div class="steps">
-            <div class="step active" id="step1">
-                <div class="step-number">1</div>
-                <div class="step-label">Processando</div>
-            </div>
-            <div class="step" id="step2">
-                <div class="step-number">2</div>
-                <div class="step-label">Autenticando</div>
-            </div>
-            <div class="step" id="step3">
-                <div class="step-number">3</div>
-                <div class="step-label">Redirecionando</div>
-            </div>
-        </div>
+        <h2 id="statusTitle" style="color: var(--primary); margin-bottom: 10px;">Autenticando...</h2>
+        <p id="statusMessage" style="color: #666;">Por favor, aguarde enquanto processamos sua autenticação.</p>
         
-        <div class="loading-spinner" id="loadingSpinner"></div>
-        
-        <div id="statusMessage" class="status-message" style="display: none;">
-            <!-- Conteúdo dinâmico será inserido aqui -->
-        </div>
-        
-        <div id="errorMessage" class="error-message" style="display: none;">
-            <!-- Mensagens de erro serão inseridas aqui -->
-        </div>
-        
-        <div id="debugInfo" class="debug-info"></div>
-        
-        <button class="debug-toggle" onclick="toggleDebug()">
-            <i class="fas fa-bug"></i> Mostrar/Ocultar Debug
+        <button id="retryButton" class="btn btn-primary" style="margin-top: 20px; display: none;" onclick="retryAuth()">
+            <i class="fas fa-redo"></i> Tentar Novamente
         </button>
         
-        <div id="actionButtons" style="display: none; margin-top: 20px;">
-            <!-- Botões de ação serão inseridos aqui -->
-        </div>
+        <a id="homeButton" href="index.html" class="btn btn-outline" style="margin-top: 20px; display: none;">
+            <i class="fas fa-home"></i> Voltar para o Site
+        </a>
     </div>
     
     <script>
-        // ================= CONFIGURAÇÃO =================
-        const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
-        
+        // Inicializar Supabase
         let supabaseClient;
-        let isProcessing = false;
         
-        // ================= INICIALIZAÇÃO =================
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🔗 auth-callback.html carregado');
-            console.log('URL completa:', window.location.href);
-            
+        async function initSupabase() {
             try {
-                // Inicializar Supabase
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                    auth: {
-                        autoRefreshToken: true,
-                        persistSession: true,
-                        detectSessionInUrl: true,
-                        storage: window.localStorage,
-                        storageKey: 'studycert-auth'
-                    }
-                });
+                const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
+                const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
                 
-                console.log('✅ Supabase inicializado');
-                
-                // Iniciar processamento
-                await processAuthCallback();
-                
+                if (typeof supabase !== 'undefined') {
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                        auth: {
+                            autoRefreshToken: true,
+                            persistSession: true,
+                            detectSessionInUrl: true,
+                            storage: window.localStorage,
+                            storageKey: 'studycert-auth'
+                        }
+                    });
+                    
+                    console.log('✅ Supabase inicializado no callback');
+                    return true;
+                }
+                return false;
             } catch (error) {
-                console.error('❌ Erro na inicialização:', error);
-                showError('Erro ao inicializar autenticação', error);
+                console.error('❌ Erro ao inicializar Supabase:', error);
+                return false;
             }
-        });
+        }
         
-        // ================= FUNÇÃO PRINCIPAL =================
-        async function processAuthCallback() {
-            if (isProcessing) return;
-            isProcessing = true;
-            
-            updateStep(1);
-            showStatus('Processando URL de callback...');
-            
-            // Mostrar informações de debug
-            showDebugInfo();
-            
+        async function processOAuthCallback() {
             try {
-                // Verificar se é um callback de recuperação de senha
-                const hash = window.location.hash.substring(1);
-                const params = new URLSearchParams(hash);
-                const accessToken = params.get('access_token');
-                const refreshToken = params.get('refresh_token');
-                const type = params.get('type');
-                const error = params.get('error');
-                const errorDescription = params.get('error_description');
+                console.log('🔄 Processando callback OAuth...');
                 
-                console.log('🔍 Analisando parâmetros:');
-                console.log('• Type:', type);
-                console.log('• Access token presente:', !!accessToken);
-                console.log('• Error:', error);
-                console.log('• Error description:', errorDescription);
-                
-                // Se houver erro
-                if (error) {
-                    throw new Error(`${error}: ${errorDescription || 'Erro desconhecido'}`);
+                // Primeiro, inicializar o Supabase
+                const initialized = await initSupabase();
+                if (!initialized) {
+                    throw new Error('Não foi possível conectar ao servidor de autenticação');
                 }
                 
-                updateStep(2);
-                
-                // CASO 1: Recuperação de senha
-                if (type === 'recovery') {
-                    console.log('🔄 Processando recuperação de senha...');
-                    showStatus('Validando link de recuperação de senha...');
-                    
-                    if (!accessToken) {
-                        throw new Error('Token de acesso não encontrado no link');
-                    }
-                    
-                    // Armazenar token para reset de senha
-                    localStorage.setItem('recovery_token', accessToken);
-                    
-                    // Redirecionar para página de reset
-                    setTimeout(() => {
-                        updateStep(3);
-                        showSuccess('Link de recuperação validado! Redirecionando...');
-                        
-                        setTimeout(() => {
-                            window.location.href = 'https://studycert.github.io/it-certification/reset-password.html';
-                        }, 1500);
-                    }, 1000);
-                    
-                    return;
-                }
-                
-                // CASO 2: Autenticação normal (OAuth, login, etc.)
-                console.log('🔐 Processando autenticação normal...');
-                showStatus('Autenticando usuário...');
-                
-                // Tentar obter a sessão
+                // Obter a sessão atual (isso processa o token da URL)
                 const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
                 
                 if (sessionError) {
-                    console.error('Erro ao obter sessão:', sessionError);
-                    throw sessionError;
-                }
-                
-                if (!session) {
-                    // Se não houver sessão, tentar obter da URL
-                    console.log('🔄 Tentando obter sessão da URL...');
+                    console.error('❌ Erro ao obter sessão:', sessionError);
                     
-                    const { data, error: urlError } = await supabaseClient.auth.getSessionFromUrl({
-                        storeSession: true
-                    });
+                    // Tentar obter o usuário de outra forma
+                    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
                     
-                    if (urlError) {
-                        console.error('Erro ao obter sessão da URL:', urlError);
-                        throw urlError;
+                    if (userError || !user) {
+                        throw new Error(sessionError?.message || 'Falha na autenticação');
                     }
                     
-                    console.log('✅ Sessão obtida da URL:', data);
-                } else {
-                    console.log('✅ Sessão já existente:', session.user.email);
+                    // Se tem usuário mas não sessão, tentar refresh
+                    const { data: refreshedSession, error: refreshError } = await supabaseClient.auth.refreshSession();
+                    
+                    if (refreshError) {
+                        throw new Error('Sessão expirada ou inválida');
+                    }
+                    
+                    showSuccess('Autenticação concluída!');
+                    redirectToHome();
+                    return;
                 }
                 
-                updateStep(3);
-                showSuccess('Autenticação bem-sucedida! Redirecionando...');
-                
-                // Redirecionar para página principal
-                setTimeout(() => {
-                    window.location.href = 'https://studycert.github.io/it-certification/index.html';
-                }, 1500);
+                if (session && session.user) {
+                    console.log('✅ Usuário autenticado:', session.user.email);
+                    
+                    // Salvar informações do usuário no localStorage
+                    localStorage.setItem('studycert_user', JSON.stringify({
+                        id: session.user.id,
+                        email: session.user.email,
+                        name: session.user.user_metadata?.full_name || session.user.email.split('@')[0]
+                    }));
+                    localStorage.setItem('studycert_auth', 'true');
+                    
+                    showSuccess('Login realizado com sucesso!');
+                    
+                    // Redirecionar após 2 segundos
+                    setTimeout(() => {
+                        redirectToHome();
+                    }, 2000);
+                    
+                } else {
+                    console.log('⚠️ Nenhuma sessão encontrada');
+                    showError('Sessão não encontrada. Tente fazer login novamente.');
+                }
                 
             } catch (error) {
-                console.error('❌ Erro no processamento:', error);
-                showError('Erro na autenticação', error);
-            } finally {
-                isProcessing = false;
-            }
-        }
-        
-        // ================= FUNÇÕES DE UI =================
-        function updateStep(stepNumber) {
-            // Resetar todos os steps
-            document.querySelectorAll('.step').forEach(step => {
-                step.classList.remove('active');
-            });
-            
-            // Ativar step atual
-            for (let i = 1; i <= stepNumber; i++) {
-                const stepElement = document.getElementById(`step${i}`);
-                if (stepElement) {
-                    stepElement.classList.add('active');
+                console.error('❌ Erro no processamento OAuth:', error);
+                
+                let errorMessage = 'Erro na autenticação. ';
+                
+                if (error.message.includes('invalid_grant') || error.message.includes('code expired')) {
+                    errorMessage = 'O código de autenticação expirou. Tente novamente.';
+                } else if (error.message.includes('network') || error.message.includes('fetch')) {
+                    errorMessage = 'Problema de conexão. Verifique sua internet e tente novamente.';
+                } else {
+                    errorMessage += error.message;
                 }
+                
+                showError(errorMessage, true);
             }
-            
-            // Esconder spinner no último step
-            if (stepNumber >= 3) {
-                document.getElementById('loadingSpinner').style.display = 'none';
-            }
-        }
-        
-        function showStatus(message) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.innerHTML = `
-                <h3><i class="fas fa-sync-alt fa-spin"></i> Processando</h3>
-                <p>${message}</p>
-            `;
-            statusElement.style.display = 'block';
-            statusElement.className = 'status-message';
-            
-            document.getElementById('errorMessage').style.display = 'none';
         }
         
         function showSuccess(message) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.innerHTML = `
-                <div class="success">
-                    <i class="fas fa-check-circle icon-large"></i>
-                    <h3>Sucesso!</h3>
-                    <p>${message}</p>
-                </div>
-            `;
-            statusElement.style.display = 'block';
-            statusElement.className = 'status-message';
-            
-            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('successIcon').style.display = 'block';
+            document.getElementById('statusTitle').textContent = 'Sucesso!';
+            document.getElementById('statusMessage').textContent = message;
+            document.getElementById('statusTitle').style.color = 'var(--success)';
+            document.getElementById('homeButton').style.display = 'inline-block';
         }
         
-        function showError(title, error) {
-            console.error('❌ Mostrando erro:', error);
+        function showError(message, showRetry = false) {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('errorIcon').style.display = 'block';
+            document.getElementById('statusTitle').textContent = 'Erro na Autenticação';
+            document.getElementById('statusMessage').textContent = message;
+            document.getElementById('statusTitle').style.color = 'var(--accent)';
+            document.getElementById('homeButton').style.display = 'inline-block';
             
-            // Esconder elementos de sucesso
-            document.getElementById('statusMessage').style.display = 'none';
-            document.getElementById('loadingSpinner').style.display = 'none';
-            
-            // Mostrar mensagem de erro
-            const errorElement = document.getElementById('errorMessage');
-            const errorMessage = error.message || error.toString();
-            
-            errorElement.innerHTML = `
-                <div class="error">
-                    <i class="fas fa-exclamation-triangle icon-large"></i>
-                    <h3>${title}</h3>
-                    <p>${errorMessage}</p>
-                    <div class="error-actions">
-                        <button class="btn" onclick="retryProcess()">
-                            <i class="fas fa-redo"></i> Tentar Novamente
-                        </button>
-                        <button class="btn btn-outline" onclick="goToHome()">
-                            <i class="fas fa-home"></i> Voltar ao Início
-                        </button>
-                        <button class="btn btn-outline" onclick="goToLogin()">
-                            <i class="fas fa-sign-in-alt"></i> Ir para Login
-                        </button>
-                    </div>
-                </div>
-            `;
-            errorElement.style.display = 'block';
-            
-            // Atualizar steps
-            updateStep(1);
-        }
-        
-        function showDebugInfo() {
-            const debugElement = document.getElementById('debugInfo');
-            const hash = window.location.hash.substring(1);
-            const params = new URLSearchParams(hash);
-            
-            let debugContent = `
-                <strong>URL Atual:</strong><br>
-                ${window.location.href}<br><br>
-                
-                <strong>Hash (#):</strong><br>
-                ${hash || '(vazio)'}<br><br>
-                
-                <strong>Parâmetros do Hash:</strong><br>
-            `;
-            
-            for (const [key, value] of params.entries()) {
-                debugContent += `• ${key}: ${value.substring(0, 50)}${value.length > 50 ? '...' : ''}<br>`;
+            if (showRetry) {
+                document.getElementById('retryButton').style.display = 'inline-block';
             }
-            
-            debugContent += `<br><strong>LocalStorage:</strong><br>`;
-            debugContent += `• recovery_token: ${localStorage.getItem('recovery_token') ? '✔ Presente' : '✖ Ausente'}<br>`;
-            debugContent += `• studycert-auth: ${localStorage.getItem('studycert-auth') ? '✔ Presente' : '✖ Ausente'}<br>`;
-            
-            debugElement.innerHTML = debugContent;
         }
         
-        // ================= FUNÇÕES AUXILIARES =================
-        function toggleDebug() {
-            const debugElement = document.getElementById('debugInfo');
-            debugElement.style.display = debugElement.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        function retryProcess() {
-            window.location.reload();
-        }
-        
-        function goToHome() {
+        function redirectToHome() {
+            // Redirecionar para a página principal
             window.location.href = 'https://studycert.github.io/it-certification/index.html';
         }
         
-        function goToLogin() {
+        function retryAuth() {
+            // Voltar para a página de login
             window.location.href = 'https://studycert.github.io/it-certification/index.html#login';
         }
         
-        function goToResetPassword() {
-            window.location.href = 'https://studycert.github.io/it-certification/reset-password.html';
-        }
-        
-        // ================= PROCESSAMENTO MANUAL =================
-        function processManualRecovery() {
-            const url = prompt('Cole aqui a URL completa de recuperação de senha:');
-            if (!url) return;
+        // Iniciar o processamento quando a página carregar
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('📱 Página de callback carregada');
             
-            try {
-                const urlObj = new URL(url);
-                const hash = urlObj.hash.substring(1);
-                const params = new URLSearchParams(hash);
-                const token = params.get('access_token');
-                const type = params.get('type');
-                
-                if (type === 'recovery' && token) {
-                    localStorage.setItem('recovery_token', token);
-                    showSuccess('Token processado! Redirecionando...');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'https://studycert.github.io/it-certification/reset-password.html';
-                    }, 1500);
-                } else {
-                    alert('URL inválida. Certifique-se de que é um link de recuperação de senha.');
-                }
-            } catch (error) {
-                alert('Erro ao processar URL. Certifique-se de copiar a URL completa.');
-            }
-        }
+            // Pequeno delay para garantir que tudo está carregado
+            setTimeout(async () => {
+                await processOAuthCallback();
+            }, 500);
+        });
         
-        // ================= VERIFICAÇÃO DE TIMEOUT =================
-        // Timeout após 30 segundos
-        setTimeout(() => {
-            if (isProcessing) {
-                showError('Tempo esgotado', new Error('O processo de autenticação está demorando muito. Tente novamente.'));
-            }
-        }, 30000);
-        
-        // ================= LISTENERS =================
-        // Permitir acesso manual via console
-        window.processAuthCallback = processAuthCallback;
-        window.processManualRecovery = processManualRecovery;
-        window.showDebugInfo = showDebugInfo;
+        // Também tentar processar quando a página terminar de carregar completamente
+        window.addEventListener('load', async () => {
+            console.log('🚀 Página totalmente carregada, processando auth...');
+        });
     </script>
 </body>
 </html>
