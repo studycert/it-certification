@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulado 13 – ITIL 4 Foundation – PMG Academy</title>
     <style>
-       * {
+      * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -328,10 +328,10 @@ body {
     order: 1;
 }
 
-/* GRID DAS QUESTÕES - CORRIGIDO */
+/* GRID FLEXÍVEL - CORREÇÃO DEFINITIVA */
 .question-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
     gap: 5px;
     margin-bottom: 15px;
 }
@@ -348,7 +348,7 @@ body {
     transition: all 0.2s ease;
     font-weight: 500;
     font-size: 0.8em;
-    min-height: 38px;
+    min-height: 40px;
 }
 
 .grid-item:hover {
@@ -590,9 +590,9 @@ body {
         order: 2;
     }
     
-    /* CORREÇÃO DO GRID PARA DESKTOP/TABLET - MUDADO PARA 7 COLUNAS */
+    /* GRID PARA DESKTOP/TABLET - TAMANHO MENOR */
     .question-grid {
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
         gap: 6px;
     }
     
@@ -616,9 +616,9 @@ body {
 }
 
 @media (max-width: 480px) {
-    /* GRID PARA CELULAR - MANTIDO 5 COLUNAS */
+    /* GRID PARA CELULAR - TAMANHO MAIOR */
     .question-grid {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
     }
     
     .grid-item {
@@ -651,14 +651,14 @@ body {
 }
 
 @media (max-width: 360px) {
-    /* GRID PARA CELULAR MUITO PEQUENO - 4 COLUNAS */
+    /* GRID PARA CELULAR MUITO PEQUENO */
     .question-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
     }
     
     .grid-item {
         font-size: 0.7em;
-        min-height: 30px;
+        min-height: 28px;
     }
     
     .btn {
