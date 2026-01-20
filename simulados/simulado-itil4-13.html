@@ -328,11 +328,11 @@ body {
     order: 1;
 }
 
-/* GRID FLEXÍVEL - CORREÇÃO DEFINITIVA */
+/* GRID CORRETO - NUNCA CORTA AS QUESTÕES */
 .question-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
-    gap: 5px;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
     margin-bottom: 15px;
 }
 
@@ -343,12 +343,12 @@ body {
     justify-content: center;
     background: white;
     border: 1px solid #e0e0e0;
-    border-radius: 4px;
+    border-radius: 3px;
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
-    font-size: 0.8em;
-    min-height: 40px;
+    font-size: 0.7em;
+    height: 30px;
 }
 
 .grid-item:hover {
@@ -590,15 +590,15 @@ body {
         order: 2;
     }
     
-    /* GRID PARA DESKTOP/TABLET - TAMANHO MENOR */
+    /* GRID PARA DESKTOP/TABLET - MAIS COLUNAS */
     .question-grid {
-        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-        gap: 6px;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 5px;
     }
     
     .grid-item {
-        font-size: 0.85em;
-        min-height: 35px;
+        font-size: 0.65em;
+        height: 28px;
     }
     
     .question-text {
@@ -616,14 +616,14 @@ body {
 }
 
 @media (max-width: 480px) {
-    /* GRID PARA CELULAR - TAMANHO MAIOR */
+    /* GRID PARA CELULAR */
     .question-grid {
-        grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+        grid-template-columns: repeat(8, 1fr);
     }
     
     .grid-item {
-        font-size: 0.75em;
-        min-height: 32px;
+        font-size: 0.65em;
+        height: 30px;
     }
     
     .btn-row {
@@ -653,12 +653,12 @@ body {
 @media (max-width: 360px) {
     /* GRID PARA CELULAR MUITO PEQUENO */
     .question-grid {
-        grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+        grid-template-columns: repeat(6, 1fr);
     }
     
     .grid-item {
-        font-size: 0.7em;
-        min-height: 28px;
+        font-size: 0.6em;
+        height: 26px;
     }
     
     .btn {
