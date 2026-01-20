@@ -591,181 +591,109 @@ body {
         order: 2;
     }
     
-    /* DESKTOP GRANDE - CÉLULAS MAIS PEQUENAS PARA MAIS COLUNAS */
-    .question-grid {
-        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
-        gap: 6px;
-    }
-    
-    .grid-item {
-        font-size: 0.7em;
-        min-height: 32px;
-        max-height: 32px;
-    }
-    
-    .question-text {
-        font-size: 1.1em;
-    }
-    
-    .btn {
-        font-size: 0.8em;
-        padding: 10px 12px;
-    }
-    
-    .btn-row {
-        gap: 8px;
-    }
+   /* GRID UNIVERSAL - VERSÃO COMPACTA (MAIS COLUNAS) */
+.question-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+    gap: 4px;
+    margin-bottom: 15px;
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
-    /* TABLET/NOTEBOOK */
-    body {
-        padding: 15px;
-    }
-    
-    .container {
-        margin: 0;
-    }
-    
-    .header {
-        padding: 20px;
-        min-height: auto;
-    }
-    
-    .header h1 {
-        font-size: 1.6em;
-    }
-    
-    .header .subtitle {
-        font-size: 0.9em;
-    }
-    
-    .academy-badge {
-        top: 10px;
-        right: 15px;
-        padding: 4px 10px;
-        font-size: 0.75em;
-    }
-    
-    .exam-info {
-        padding: 14px 20px;
-    }
-    
-    .timer {
-        font-size: 1.1em;
-        padding: 6px 10px;
-    }
-    
-    .progress {
-        font-size: 0.95em;
-    }
-    
-    .content {
-        grid-template-columns: 1fr 230px;
-        min-height: 550px;
-    }
-    
-    .question-section {
-        padding: 20px;
-        order: 1;
-    }
-    
-    .navigation-section {
-        border-left: 1px solid #e9ecef;
-        border-bottom: none;
-        order: 2;
-    }
-    
-    /* TABLET - TAMANHO INTERMEDIÁRIO */
+.grid-item {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.7em;
+    min-height: 32px;
+    max-height: 32px;
+}
+
+.grid-item:hover {
+    border-color: #3498db;
+    background: #f8fafc;
+}
+
+.grid-item.current {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.grid-item.answered {
+    background: #27ae60;
+    color: white;
+    border-color: #27ae60;
+}
+
+.grid-item.marked {
+    background: #f39c12;
+    color: white;
+    border-color: #f39c12;
+}
+
+.grid-item.locked {
+    background: #95a5a6;
+    color: white;
+    border-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+/* E AGORA OS MEDIA QUERIES PARA DIFERENTES TELAS */
+
+@media (min-width: 1024px) {
+    /* DESKTOP GRANDE - CÉLULAS AINDA MENORES PARA MAIS COLUNAS */
     .question-grid {
-        grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
         gap: 5px;
     }
     
     .grid-item {
-        font-size: 0.75em;
-        min-height: 36px;
-        max-height: 36px;
+        font-size: 0.65em;
+        min-height: 28px;
+        max-height: 28px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* TABLET - TAMANHO INTERMEDIÁRIO */
+    .question-grid {
+        grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+        gap: 5px;
     }
     
-    .question-text {
-        font-size: 1em;
-    }
-    
-    .btn {
-        font-size: 0.75em;
-        padding: 8px 10px;
-    }
-    
-    .btn-row {
-        gap: 6px;
+    .grid-item {
+        font-size: 0.68em;
+        min-height: 30px;
+        max-height: 30px;
     }
 }
 
 @media (max-width: 767px) {
     /* CELULAR/TABLET PEQUENO */
     .question-grid {
-        grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
         gap: 4px;
     }
     
     .grid-item {
-        font-size: 0.7em;
-        min-height: 34px;
-        max-height: 34px;
-    }
-    
-    .btn-row {
-        flex-wrap: wrap;
-    }
-    
-    .btn {
-        min-width: calc(25% - 5px);
-        font-size: 0.7em;
-        padding: 6px 8px;
-    }
-    
-    .header h1 {
-        font-size: 1.4em;
-    }
-    
-    .header .subtitle {
-        font-size: 0.85em;
+        font-size: 0.65em;
+        min-height: 30px;
+        max-height: 30px;
     }
 }
 
 @media (max-width: 480px) {
     /* CELULAR PEQUENO */
     .question-grid {
-        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
-        gap: 4px;
-    }
-    
-    .grid-item {
-        font-size: 0.65em;
-        min-height: 32px;
-        max-height: 32px;
-    }
-    
-    .header h1 {
-        font-size: 1.2em;
-    }
-    
-    .header .subtitle {
-        font-size: 0.8em;
-    }
-    
-    .academy-badge {
-        font-size: 0.65em;
-        padding: 2px 6px;
-    }
-}
-
-@media (max-width: 360px) {
-    /* CELULAR MUITO PEQUENO */
-    .question-grid {
         grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
-        gap: 3px;
+        gap: 4px;
     }
     
     .grid-item {
@@ -773,20 +701,19 @@ body {
         min-height: 28px;
         max-height: 28px;
     }
-    
-    .btn {
-        font-size: 0.65em;
-        padding: 5px 6px;
+}
+
+@media (max-width: 360px) {
+    /* CELULAR MUITO PEQUENO */
+    .question-grid {
+        grid-template-columns: repeat(auto-fill, minmax(26px, 1fr));
+        gap: 3px;
     }
     
-    .question-text {
-        font-size: 0.9em;
-        padding: 10px;
-    }
-    
-    .option {
-        padding: 10px;
-        font-size: 0.85em;
+    .grid-item {
+        font-size: 0.55em;
+        min-height: 26px;
+        max-height: 26px;
     }
 }
     </style>
