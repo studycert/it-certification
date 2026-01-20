@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulado 13 – ITIL 4 Foundation – PMG Academy</title>
     <style>
-      * {
+     * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -328,11 +328,11 @@ body {
     order: 1;
 }
 
-/* GRID CORRETO - NUNCA CORTA AS QUESTÕES */
+/* GRID UNIVERSAL - FUNCIONA PARA QUALQUER QUANTIDADE DE QUESTÕES */
 .question-grid {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 4px;
+    grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+    gap: 5px;
     margin-bottom: 15px;
 }
 
@@ -343,12 +343,13 @@ body {
     justify-content: center;
     background: white;
     border: 1px solid #e0e0e0;
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
-    font-size: 0.7em;
-    height: 30px;
+    font-size: 0.75em;
+    min-height: 38px;
+    max-height: 38px;
 }
 
 .grid-item:hover {
@@ -532,7 +533,7 @@ body {
     font-size: 0.9em;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     body {
         padding: 20px;
     }
@@ -590,15 +591,16 @@ body {
         order: 2;
     }
     
-    /* GRID PARA DESKTOP/TABLET - MAIS COLUNAS */
+    /* DESKTOP GRANDE - CÉLULAS MAIS PEQUENAS PARA MAIS COLUNAS */
     .question-grid {
-        grid-template-columns: repeat(12, 1fr);
-        gap: 5px;
+        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+        gap: 6px;
     }
     
     .grid-item {
-        font-size: 0.65em;
-        height: 28px;
+        font-size: 0.7em;
+        min-height: 32px;
+        max-height: 32px;
     }
     
     .question-text {
@@ -615,15 +617,102 @@ body {
     }
 }
 
-@media (max-width: 480px) {
-    /* GRID PARA CELULAR */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* TABLET/NOTEBOOK */
+    body {
+        padding: 15px;
+    }
+    
+    .container {
+        margin: 0;
+    }
+    
+    .header {
+        padding: 20px;
+        min-height: auto;
+    }
+    
+    .header h1 {
+        font-size: 1.6em;
+    }
+    
+    .header .subtitle {
+        font-size: 0.9em;
+    }
+    
+    .academy-badge {
+        top: 10px;
+        right: 15px;
+        padding: 4px 10px;
+        font-size: 0.75em;
+    }
+    
+    .exam-info {
+        padding: 14px 20px;
+    }
+    
+    .timer {
+        font-size: 1.1em;
+        padding: 6px 10px;
+    }
+    
+    .progress {
+        font-size: 0.95em;
+    }
+    
+    .content {
+        grid-template-columns: 1fr 230px;
+        min-height: 550px;
+    }
+    
+    .question-section {
+        padding: 20px;
+        order: 1;
+    }
+    
+    .navigation-section {
+        border-left: 1px solid #e9ecef;
+        border-bottom: none;
+        order: 2;
+    }
+    
+    /* TABLET - TAMANHO INTERMEDIÁRIO */
     .question-grid {
-        grid-template-columns: repeat(8, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+        gap: 5px;
     }
     
     .grid-item {
-        font-size: 0.65em;
-        height: 30px;
+        font-size: 0.75em;
+        min-height: 36px;
+        max-height: 36px;
+    }
+    
+    .question-text {
+        font-size: 1em;
+    }
+    
+    .btn {
+        font-size: 0.75em;
+        padding: 8px 10px;
+    }
+    
+    .btn-row {
+        gap: 6px;
+    }
+}
+
+@media (max-width: 767px) {
+    /* CELULAR/TABLET PEQUENO */
+    .question-grid {
+        grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+        gap: 4px;
+    }
+    
+    .grid-item {
+        font-size: 0.7em;
+        min-height: 34px;
+        max-height: 34px;
     }
     
     .btn-row {
@@ -634,6 +723,28 @@ body {
         min-width: calc(25% - 5px);
         font-size: 0.7em;
         padding: 6px 8px;
+    }
+    
+    .header h1 {
+        font-size: 1.4em;
+    }
+    
+    .header .subtitle {
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 480px) {
+    /* CELULAR PEQUENO */
+    .question-grid {
+        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+        gap: 4px;
+    }
+    
+    .grid-item {
+        font-size: 0.65em;
+        min-height: 32px;
+        max-height: 32px;
     }
     
     .header h1 {
@@ -651,14 +762,16 @@ body {
 }
 
 @media (max-width: 360px) {
-    /* GRID PARA CELULAR MUITO PEQUENO */
+    /* CELULAR MUITO PEQUENO */
     .question-grid {
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+        gap: 3px;
     }
     
     .grid-item {
         font-size: 0.6em;
-        height: 26px;
+        min-height: 28px;
+        max-height: 28px;
     }
     
     .btn {
