@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulado 13 – ITIL 4 Foundation – PMG Academy</title>
     <style>
-        * {
+       * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -328,10 +328,10 @@ body {
     order: 1;
 }
 
-/* CORREÇÃO AQUI - Grid das questões */
+/* GRID DAS QUESTÕES - CORRIGIDO */
 .question-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 5px;
     margin-bottom: 15px;
 }
@@ -590,9 +590,9 @@ body {
         order: 2;
     }
     
-    /* CORREÇÃO AQUI - Grid para telas maiores */
+    /* CORREÇÃO DO GRID PARA DESKTOP/TABLET - MUDADO PARA 7 COLUNAS */
     .question-grid {
-        grid-template-columns: repeat(8, 1fr);
+        grid-template-columns: repeat(7, 1fr);
         gap: 6px;
     }
     
@@ -616,7 +616,7 @@ body {
 }
 
 @media (max-width: 480px) {
-    /* CORREÇÃO AQUI - Grid para telas pequenas */
+    /* GRID PARA CELULAR - MANTIDO 5 COLUNAS */
     .question-grid {
         grid-template-columns: repeat(5, 1fr);
     }
@@ -651,7 +651,7 @@ body {
 }
 
 @media (max-width: 360px) {
-    /* CORREÇÃO AQUI - Grid para telas muito pequenas */
+    /* GRID PARA CELULAR MUITO PEQUENO - 4 COLUNAS */
     .question-grid {
         grid-template-columns: repeat(4, 1fr);
     }
