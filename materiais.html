@@ -116,13 +116,15 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
 
-        /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
-        .pmg-academy-container {
+        /* Card especial para PMG Academy */
+        .pmg-academy-container,
+        .monitoring-container {
             margin-bottom: 2rem;
             display: block !important;
         }
         
-        .pmg-academy-card {
+        .pmg-academy-card,
+        .monitoring-card {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border: none;
             border-radius: 12px;
@@ -130,19 +132,35 @@
             overflow: hidden;
             margin-bottom: 1.5rem;
             position: relative;
+        }
+        
+        .pmg-academy-card {
             border-left: 5px solid #4ECDC4;
         }
         
-        .pmg-academy-header {
+        .monitoring-card {
+            border-left: 5px solid #3498db;
+        }
+        
+        .pmg-academy-header,
+        .monitoring-header {
             padding: 1.5rem;
-            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
             color: white;
             display: flex;
             align-items: center;
             gap: 1rem;
         }
         
-        .pmg-academy-icon {
+        .pmg-academy-header {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+        }
+        
+        .monitoring-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .pmg-academy-icon,
+        .monitoring-icon {
             width: 60px;
             height: 60px;
             background: rgba(255, 255, 255, 0.2);
@@ -153,19 +171,20 @@
             font-size: 1.5rem;
         }
         
-        .pmg-academy-title {
+        .pmg-academy-title,
+        .monitoring-title {
             flex: 1;
         }
         
-        .pmg-academy-title h3 {
+        .pmg-academy-title h3,
+        .monitoring-title h3 {
             margin: 0 0 0.3rem 0;
             color: white;
             font-size: 1.3rem;
         }
         
-        .pmg-badge {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #8B4513;
+        .pmg-badge,
+        .monitoring-badge {
             padding: 0.3rem 1rem;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -175,18 +194,31 @@
             gap: 0.3rem;
         }
         
-        .pmg-academy-content {
+        .pmg-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+        }
+        
+        .monitoring-badge {
+            background: linear-gradient(135deg, #AED6F1, #85C1E9);
+            color: #21618C;
+        }
+        
+        .pmg-academy-content,
+        .monitoring-content {
             padding: 1.5rem;
         }
         
-        .pmg-files-grid {
+        .pmg-files-grid,
+        .monitoring-files-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1rem;
             margin-top: 1rem;
         }
         
-        .pmg-file-card {
+        .pmg-file-card,
+        .monitoring-file-card {
             background: white;
             border: 1px solid #e9ecef;
             border-radius: 8px;
@@ -204,6 +236,12 @@
             border-color: #4ECDC4;
         }
         
+        .monitoring-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #3498db;
+        }
+        
         .pmg-file-icon {
             width: 50px;
             height: 50px;
@@ -216,29 +254,46 @@
             font-size: 1.2rem;
         }
         
-        .pmg-file-info {
+        .monitoring-file-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .pmg-file-info,
+        .monitoring-file-info {
             flex: 1;
         }
         
-        .pmg-file-info h5 {
+        .pmg-file-info h5,
+        .monitoring-file-info h5 {
             margin: 0 0 0.3rem 0;
             color: #2c3e50;
             font-size: 0.95rem;
         }
         
-        .pmg-file-meta {
+        .pmg-file-meta,
+        .monitoring-file-meta {
             display: flex;
             gap: 0.8rem;
             font-size: 0.8rem;
             color: #7f8c8d;
         }
         
-        .pmg-file-actions {
+        .pmg-file-actions,
+        .monitoring-file-actions {
             display: flex;
             gap: 0.5rem;
         }
         
-        .pmg-action-btn {
+        .pmg-action-btn,
+        .monitoring-action-btn {
             width: 36px;
             height: 36px;
             border-radius: 6px;
@@ -258,13 +313,20 @@
             border-color: #4ECDC4;
         }
         
+        .monitoring-action-btn:hover {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
         .pmg-action-btn.delete:hover {
             background: #e74c3c;
             color: white;
             border-color: #e74c3c;
         }
         
-        .pmg-stats {
+        .pmg-stats,
+        .monitoring-stats {
             display: flex;
             gap: 2rem;
             margin-top: 1rem;
@@ -272,7 +334,8 @@
             border-top: 1px dashed #dee2e6;
         }
         
-        .pmg-stat {
+        .pmg-stat,
+        .monitoring-stat {
             text-align: center;
         }
         
@@ -282,13 +345,20 @@
             color: #4ECDC4;
         }
         
-        .pmg-stat-label {
+        .monitoring-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .pmg-stat-label,
+        .monitoring-stat-label {
             font-size: 0.8rem;
             color: #7f8c8d;
         }
         
-        .pmg-toggle-btn {
-            background: #4ECDC4;
+        .pmg-toggle-btn,
+        .monitoring-toggle-btn {
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -301,9 +371,49 @@
             transition: all 0.3s;
         }
         
+        .pmg-toggle-btn {
+            background: #4ECDC4;
+        }
+        
+        .monitoring-toggle-btn {
+            background: #3498db;
+        }
+        
         .pmg-toggle-btn:hover {
             background: #44A08D;
             transform: translateY(-2px);
+        }
+        
+        .monitoring-toggle-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        /* Botão de upload para Monitoring */
+        .monitoring-upload-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .monitoring-upload-btn:hover {
+            background: linear-gradient(135deg, #2980b9, #21618C);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .monitoring-action-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
         }
         
         /* Ícones coloridos por tipo de arquivo */
@@ -547,6 +657,32 @@
             color: #333;
         }
         
+        /* Modal específico para Monitoring */
+        .monitoring-upload-section {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 2px dashed #3498db;
+        }
+        
+        .monitoring-upload-area {
+            text-align: center;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .monitoring-upload-area:hover {
+            background: #e3f2fd;
+        }
+        
+        .monitoring-upload-area i {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+        
         /* Melhorias no progresso de upload */
         .upload-progress {
             margin: 1.5rem 0;
@@ -562,10 +698,17 @@
         
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #4ECDC4, #44A08D);
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 5px;
+        }
+        
+        .progress-bar.pmg {
+            background: linear-gradient(90deg, #4ECDC4, #44A08D);
+        }
+        
+        .progress-bar.monitoring {
+            background: linear-gradient(90deg, #3498db, #2980b9);
         }
         
         .progress-info {
@@ -577,25 +720,30 @@
         
         /* Responsividade */
         @media (max-width: 768px) {
-            .pmg-files-grid {
+            .pmg-files-grid,
+            .monitoring-files-grid {
                 grid-template-columns: 1fr;
             }
             
-            .pmg-academy-header {
+            .pmg-academy-header,
+            .monitoring-header {
                 flex-direction: column;
                 text-align: center;
             }
             
-            .pmg-academy-icon {
+            .pmg-academy-icon,
+            .monitoring-icon {
                 margin-bottom: 1rem;
             }
             
-            .pmg-stats {
+            .pmg-stats,
+            .monitoring-stats {
                 flex-wrap: wrap;
                 gap: 1rem;
             }
             
-            .pmg-stat {
+            .pmg-stat,
+            .monitoring-stat {
                 flex: 1;
                 min-width: 80px;
             }
@@ -620,6 +768,10 @@
                 padding: 1.5rem;
                 margin: 1rem;
                 width: calc(100% - 2rem);
+            }
+            
+            .monitoring-action-row {
+                flex-direction: column;
             }
         }
     </style>
@@ -776,10 +928,13 @@
             <!-- Card PMG Academy (apenas para ITIL) -->
             <div id="pmg-academy-container" class="pmg-academy-container"></div>
 
+            <!-- Card Monitoring and Event Management (apenas para ITIL) -->
+            <div id="monitoring-container" class="monitoring-container"></div>
+
             <!-- Lista de Materiais da Comunidade -->
             <div class="materials-list-card-compact">
                 <div class="materials-list-header-compact">
-                    <h3><i class="fas fa-list"></i> Materiais da Comunidade</h3>
+                    <h3><i class="fas fa-list"></i> Outros Materiais ITIL 4</h3>
                     <span class="materials-count" id="materialsCount">0 materiais</span>
                 </div>
                 <div id="materialsContainer">
@@ -900,12 +1055,64 @@
                     </select>
                 </div>
                 
+                <!-- Campo oculto para subtipo -->
+                <input type="hidden" id="materialSubtype" value="">
+                
                 <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
                     <button onclick="closeUploadModal()" class="btn btn-outline">
                         <i class="fas fa-times"></i> Cancelar
                     </button>
                     <button onclick="processUpload()" class="btn btn-primary">
                         <i class="fas fa-paper-plane"></i> Enviar Material
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para upload específico do Monitoring -->
+    <div id="monitoringUploadModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeMonitoringUploadModal()">&times;</button>
+            <h3 style="color: #3498db; margin-bottom: 1.5rem;">
+                <i class="fas fa-chart-line"></i> Upload para Monitoring and Event Management
+            </h3>
+            
+            <div id="monitoringUploadProgressContainer" class="upload-progress" style="display: none;">
+                <div class="progress-container">
+                    <div id="monitoringProgressBar" class="progress-bar monitoring"></div>
+                </div>
+                <div class="progress-info">
+                    <span>Enviando arquivo...</span>
+                    <span id="monitoringProgressPercent">0%</span>
+                </div>
+            </div>
+            
+            <div id="monitoringUploadFormContainer">
+                <div id="monitoringSelectedFileInfo" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;"></div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                        <i class="fas fa-heading"></i> Título *
+                    </label>
+                    <input type="text" id="monitoringMaterialTitle" class="filter-input" 
+                           placeholder="Ex: Guia de Monitoramento ITIL 4" required>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                        <i class="fas fa-align-left"></i> Descrição
+                    </label>
+                    <textarea id="monitoringMaterialDescription" class="filter-input" rows="3" 
+                              placeholder="Descreva brevemente o conteúdo deste material..."></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                    <button onclick="closeMonitoringUploadModal()" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button onclick="processMonitoringUpload()" class="btn" style="background: #3498db; color: white;">
+                        <i class="fas fa-paper-plane"></i> Enviar para Monitoring
                     </button>
                 </div>
             </div>
@@ -941,15 +1148,14 @@
     <!-- JavaScript -->
     <script>
         // ============================================
-        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - CORRIGIDO
-        // Baseado no materiais(4).html que funciona
+        // JAVASCRIPT PARA PÁGINA DE MATERIAIS
         // ============================================
 
         // Configurações
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-        // Mapeamento de certificações com banners e ícones - ATUALIZADO COM NOVAS CORES
+        // Mapeamento de certificações com banners e ícones
         const certifications = {
             'itil': { 
                 title: 'ITIL 4 Foundation', 
@@ -1005,6 +1211,7 @@
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
+        let currentMonitoringUploadFile = null;
 
         // ============================================
         // INICIALIZAÇÃO
@@ -1042,7 +1249,7 @@
         // ============================================
 
         function setupEventListeners() {
-            // Input de arquivo
+            // Input de arquivo principal
             const fileInput = document.getElementById('fileInputPage');
             if (fileInput) {
                 fileInput.addEventListener('change', handleFileSelect);
@@ -1112,10 +1319,17 @@
         }
 
         function setupModalClickOutside() {
-            // Modal de upload
+            // Modal de upload principal
             document.getElementById('uploadModal')?.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeUploadModal();
+                }
+            });
+            
+            // Modal de upload do Monitoring
+            document.getElementById('monitoringUploadModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeMonitoringUploadModal();
                 }
             });
             
@@ -1341,12 +1555,42 @@
                 );
             });
             
-            // Para ITIL, mostrar no card PMG
-            if (currentCategory === 'itil' && categoryMaterials.length > 0) {
-                loadPMGAcademyCard(categoryMaterials);
-                updateOtherMaterials([]);
+            // Para ITIL, separar por subtipos
+            if (currentCategory === 'itil') {
+                // Filtrar materiais do PMG Academy
+                const pmgMaterials = categoryMaterials.filter(m => 
+                    m.categoria === 'PMG Academy'
+                );
+                
+                // Filtrar materiais do Monitoring
+                const monitoringMaterials = categoryMaterials.filter(m => 
+                    m.categoria === 'Monitoring and Event Management'
+                );
+                
+                // Outros materiais ITIL (sem categoria específica)
+                const otherMaterials = categoryMaterials.filter(m => 
+                    !m.categoria || 
+                    (m.categoria !== 'PMG Academy' && m.categoria !== 'Monitoring and Event Management')
+                );
+                
+                // Carregar cards
+                if (pmgMaterials.length > 0) {
+                    loadPMGAcademyCard(pmgMaterials);
+                } else {
+                    document.getElementById('pmg-academy-container').innerHTML = '';
+                }
+                
+                if (monitoringMaterials.length > 0) {
+                    loadMonitoringCard(monitoringMaterials);
+                } else {
+                    loadEmptyMonitoringCard();
+                }
+                
+                updateOtherMaterials(otherMaterials);
             } else {
+                // Para outras categorias, apenas mostrar outros materiais
                 document.getElementById('pmg-academy-container').innerHTML = '';
+                document.getElementById('monitoring-container').innerHTML = '';
                 updateOtherMaterials(categoryMaterials);
             }
         }
@@ -1421,6 +1665,171 @@
             container.innerHTML = pmgCardHTML;
         }
 
+        // Carregar card Monitoring and Event Management
+        function loadMonitoringCard(files = []) {
+            const container = document.getElementById('monitoring-container');
+            
+            if (!container) return;
+            
+            // Estatísticas
+            const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+            const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+            const totalSizeMB = files.length > 0 ? 
+                (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+            
+            // Agrupar arquivos por tipo
+            const groupedFiles = groupFilesByType(files);
+            
+            const monitoringCardHTML = `
+                <div class="monitoring-card">
+                    <div class="monitoring-header">
+                        <div class="monitoring-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="monitoring-title">
+                            <h3>Monitoring and Event Management</h3>
+                            <span class="monitoring-badge">
+                                <i class="fas fa-bell"></i> 
+                                ITIL 4 - ${files.length} arquivos
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="monitoring-content">
+                        <p style="margin-bottom: 1.5rem; color: #666;">
+                            Materiais específicos sobre Monitoramento e Gerenciamento de Eventos no contexto do ITIL 4.
+                            Inclui guias, templates, melhores práticas e estudos de caso.
+                        </p>
+                        
+                        <div class="monitoring-stats">
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value">${files.length}</div>
+                                <div class="monitoring-stat-label">Arquivos</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value">${totalViews}</div>
+                                <div class="monitoring-stat-label">Visualizações</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value">${totalDownloads}</div>
+                                <div class="monitoring-stat-label">Downloads</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value">${totalSizeMB} MB</div>
+                                <div class="monitoring-stat-label">Tamanho Total</div>
+                            </div>
+                        </div>
+                        
+                        <div class="monitoring-action-row">
+                            <button class="monitoring-toggle-btn" onclick="toggleMonitoringFiles()" id="monitoringToggleBtn">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Mostrar ${files.length} Arquivos</span>
+                            </button>
+                            
+                            <button class="monitoring-upload-btn" onclick="checkAuthAndUploadMonitoring()">
+                                <i class="fas fa-plus"></i>
+                                <span>Adicionar Material</span>
+                            </button>
+                        </div>
+                        
+                        <div id="monitoring-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderMonitoringFileGroups(groupedFiles)}
+                        </div>
+                        
+                        <div id="monitoring-upload-section" class="monitoring-upload-section" style="display: none; margin-top: 1.5rem;">
+                            <div class="monitoring-upload-area" onclick="checkAuthAndUploadMonitoring()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h4>Clique para adicionar arquivo</h4>
+                                <p>Arraste ou clique para fazer upload</p>
+                                <span class="file-info">Máx. 100MB</span>
+                            </div>
+                            <input type="file" id="monitoringFileInput" 
+                                   accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.zip,.mp4,.rar,.7z" 
+                                   style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = monitoringCardHTML;
+        }
+
+        // Carregar card Monitoring vazio (para quando não há arquivos)
+        function loadEmptyMonitoringCard() {
+            const container = document.getElementById('monitoring-container');
+            
+            if (!container) return;
+            
+            const monitoringCardHTML = `
+                <div class="monitoring-card">
+                    <div class="monitoring-header">
+                        <div class="monitoring-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="monitoring-title">
+                            <h3>Monitoring and Event Management</h3>
+                            <span class="monitoring-badge">
+                                <i class="fas fa-bell"></i> 
+                                ITIL 4 - 0 arquivos
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="monitoring-content">
+                        <p style="margin-bottom: 1.5rem; color: #666;">
+                            Materiais específicos sobre Monitoramento e Gerenciamento de Eventos no contexto do ITIL 4.
+                            Inclui guias, templates, melhores práticas e estudos de caso.
+                        </p>
+                        
+                        <div class="monitoring-stats">
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value">0</div>
+                                <div class="monitoring-stat-label">Arquivos</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value">0</div>
+                                <div class="monitoring-stat-label">Visualizações</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value">0</div>
+                                <div class="monitoring-stat-label">Downloads</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value">0 MB</div>
+                                <div class="monitoring-stat-label">Tamanho Total</div>
+                            </div>
+                        </div>
+                        
+                        <div class="monitoring-action-row">
+                            <button class="monitoring-toggle-btn" onclick="toggleMonitoringFiles()" id="monitoringToggleBtn" disabled>
+                                <i class="fas fa-folder-open"></i>
+                                <span>Nenhum arquivo</span>
+                            </button>
+                            
+                            <button class="monitoring-upload-btn" onclick="checkAuthAndUploadMonitoring()">
+                                <i class="fas fa-plus"></i>
+                                <span>Adicionar Primeiro Material</span>
+                            </button>
+                        </div>
+                        
+                        <div id="monitoring-upload-section" class="monitoring-upload-section" style="margin-top: 1.5rem;">
+                            <div class="monitoring-upload-area" onclick="checkAuthAndUploadMonitoring()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h4>Clique para adicionar arquivo</h4>
+                                <p>Arraste ou clique para fazer upload</p>
+                                <span class="file-info">Máx. 100MB</span>
+                            </div>
+                            <input type="file" id="monitoringFileInput" 
+                                   accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.zip,.mp4,.rar,.7z" 
+                                   style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = monitoringCardHTML;
+        }
+
         // Função para agrupar arquivos por tipo
         function groupFilesByType(files) {
             const groups = {};
@@ -1458,6 +1867,36 @@
                         </h4>
                         <div class="pmg-files-grid">
                             ${files.map(file => renderPMGFileCard(file)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            return html;
+        }
+
+        // Renderizar grupos de arquivos Monitoring
+        function renderMonitoringFileGroups(groups) {
+            let html = '';
+            
+            // Ordenar grupos por tipo
+            const typeOrder = ['pdf', 'doc', 'ppt', 'video', 'txt', 'zip', 'other'];
+            const sortedGroups = Object.entries(groups).sort((a, b) => {
+                return typeOrder.indexOf(a[0]) - typeOrder.indexOf(b[0]);
+            });
+            
+            sortedGroups.forEach(([type, files]) => {
+                const typeName = getTypeName(type);
+                const typeIcon = getFileIcon(type);
+                
+                html += `
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: #3498db; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-${typeIcon}"></i>
+                            ${typeName} (${files.length})
+                        </h4>
+                        <div class="monitoring-files-grid">
+                            ${files.map(file => renderMonitoringFileCard(file)).join('')}
                         </div>
                     </div>
                 `;
@@ -1527,7 +1966,68 @@
             `;
         }
 
-        // Atualizar outros materiais (não-ITIL)
+        // Renderizar card individual de arquivo Monitoring
+        function renderMonitoringFileCard(file) {
+            const fileId = file.id;
+            const fileName = file.titulo || file.arquivo_nome || 'Arquivo';
+            const fileDesc = file.descricao || 'Sem descrição';
+            const fileUrl = file.arquivo_url || '#';
+            const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
+            const fileType = file.tipo || detectFileType(file.arquivo_nome || '');
+            const fileIcon = getFileIcon(fileType);
+            const uploadDate = formatDateCompact(file.data_upload);
+            
+            // Verificar se URL é válida
+            const hasValidUrl = fileUrl && fileUrl !== '#' && 
+                              fileUrl !== 'undefined' && 
+                              (fileUrl.startsWith('http') || fileUrl.startsWith('https'));
+            
+            // Verificar se usuário é o dono
+            const currentUserId = currentUser?.id;
+            const isOwner = currentUserId && file.usuario_id === currentUserId;
+            
+            // Verificar se o arquivo pode ser visualizado
+            const canView = canViewFile(fileType);
+            
+            return `
+                <div class="monitoring-file-card">
+                    <div class="monitoring-file-icon">
+                        <i class="fas fa-${fileIcon}"></i>
+                    </div>
+                    <div class="monitoring-file-info">
+                        <h5 title="${fileName}">${fileName}</h5>
+                        <div class="monitoring-file-meta">
+                            <span><i class="fas fa-file"></i> ${fileType.toUpperCase()}</span>
+                            <span><i class="fas fa-hdd"></i> ${fileSize}</span>
+                            <span><i class="fas fa-calendar"></i> ${uploadDate}</span>
+                        </div>
+                        ${fileDesc ? `<p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">${fileDesc}</p>` : ''}
+                    </div>
+                    <div class="monitoring-file-actions">
+                        ${hasValidUrl ? `
+                            <button class="monitoring-action-btn" 
+                               onclick="handleFileAction('${fileId}', '${escapeString(fileName)}', '${escapeString(fileUrl)}', '${fileType}')" 
+                               title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
+                                <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
+                            </button>
+                        ` : `
+                            <span class="monitoring-action-btn disabled" title="Link não disponível">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        `}
+                        ${isOwner ? `
+                            <button class="monitoring-action-btn delete" 
+                                    onclick="showDeleteModal('${fileId}', '${escapeString(fileName)}')" 
+                                    title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Atualizar outros materiais (não-PMG, não-Monitoring)
         function updateOtherMaterials(materials) {
             const container = document.getElementById('materialsContainer');
             const countElement = document.getElementById('materialsCount');
@@ -1555,7 +2055,7 @@
             container.innerHTML = materialsHTML;
         }
 
-        // Renderizar item de material (para não-ITIL)
+        // Renderizar item de material (para outros materiais)
         function renderMaterialItem(material) {
             const fileType = material.tipo || detectFileType(material.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
@@ -1669,12 +2169,42 @@
             // Ordenar
             filteredMaterials = sortMaterials(filteredMaterials, sortFilter);
             
-            // Separar ITIL dos outros materiais
+            // Separar por subtipos para ITIL
             if (currentCategory === 'itil') {
-                loadPMGAcademyCard(filteredMaterials);
-                updateOtherMaterials([]);
+                // Filtrar materiais do PMG Academy
+                const pmgMaterials = filteredMaterials.filter(m => 
+                    m.categoria === 'PMG Academy'
+                );
+                
+                // Filtrar materiais do Monitoring
+                const monitoringMaterials = filteredMaterials.filter(m => 
+                    m.categoria === 'Monitoring and Event Management'
+                );
+                
+                // Outros materiais ITIL (sem categoria específica)
+                const otherMaterials = filteredMaterials.filter(m => 
+                    !m.categoria || 
+                    (m.categoria !== 'PMG Academy' && m.categoria !== 'Monitoring and Event Management')
+                );
+                
+                // Carregar cards
+                if (pmgMaterials.length > 0) {
+                    loadPMGAcademyCard(pmgMaterials);
+                } else {
+                    document.getElementById('pmg-academy-container').innerHTML = '';
+                }
+                
+                if (monitoringMaterials.length > 0) {
+                    loadMonitoringCard(monitoringMaterials);
+                } else {
+                    loadEmptyMonitoringCard();
+                }
+                
+                updateOtherMaterials(otherMaterials);
             } else {
+                // Para outras categorias, apenas mostrar outros materiais
                 document.getElementById('pmg-academy-container').innerHTML = '';
+                document.getElementById('monitoring-container').innerHTML = '';
                 updateOtherMaterials(filteredMaterials);
             }
             
@@ -1775,8 +2305,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE UPLOAD - CORRIGIDAS
-        // Baseado no materiais(4).html que funciona
+        // FUNÇÕES DE UPLOAD PRINCIPAL
         // ============================================
 
         function checkAuthAndUpload() {
@@ -1917,8 +2446,6 @@
                 
                 const fileName = `material_${Date.now()}_${cleanFileName}`;
                 
-                // CORREÇÃO: No materiais(4).html que funciona, o filePath é diferente
-                // Não usa categoria no caminho do arquivo
                 const filePath = `${user.id}/${fileName}`;
                 
                 const fileType = detectFileType(file.name);
@@ -1961,7 +2488,6 @@
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
                 // Mapear categoria da interface para o campo da tabela
-                // CORREÇÃO: Verificar como é feito no materiais(4).html
                 const certMapping = {
                     'itil': 'itil4',
                     'azure': 'azure',
@@ -1973,8 +2499,7 @@
                 
                 const certificacao = certMapping[category] || category;
                 
-                // CORREÇÃO: Preparar dados para salvar no banco - SEM COLUNA CATEGORIA
-                // No materiais(4).html, só usa 'categoria' se for 'itil4'
+                // Preparar dados para salvar no banco
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
@@ -1990,9 +2515,10 @@
                     data_upload: new Date().toISOString()
                 };
                 
-                // CORREÇÃO: Apenas para ITIL adicionar categoria 'PMG Academy'
-                if (category === 'itil') {
-                    materialData.categoria = 'PMG Academy';
+                // Verificar se é para ITIL com subtipo
+                const subtype = document.getElementById('materialSubtype').value;
+                if (category === 'itil' && subtype) {
+                    materialData.categoria = subtype;
                 }
                 
                 console.log('💾 Salvando no banco...', materialData);
@@ -2007,7 +2533,7 @@
                 if (dbError) {
                     console.error('❌ Erro ao salvar no banco:', dbError);
                     
-                    // CORREÇÃO: Se for erro de coluna inexistente, tentar sem a coluna categoria
+                    // Se for erro de coluna inexistente, tentar sem a coluna categoria
                     if (dbError.message.includes("Could not find the 'categoria' column")) {
                         console.warn('⚠️ Coluna "categoria" não encontrada. Tentando sem ela...');
                         
@@ -2062,6 +2588,9 @@
             
             if (progressBar) {
                 progressBar.style.width = percent + '%';
+                if (type === 'modal') {
+                    progressBar.classList.add('pmg');
+                }
             }
             
             if (progressPercent) {
@@ -2072,7 +2601,270 @@
         function closeUploadModal() {
             document.getElementById('uploadModal').style.display = 'none';
             document.getElementById('fileInputPage').value = '';
+            document.getElementById('materialSubtype').value = '';
             currentUploadFile = null;
+        }
+
+        // ============================================
+        // FUNÇÕES DE UPLOAD PARA MONITORING
+        // ============================================
+
+        function checkAuthAndUploadMonitoring() {
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                showNotification('Faça login para compartilhar materiais no Monitoring.', 'warning');
+                setTimeout(() => {
+                    window.location.href = 'index.html#login';
+                }, 1500);
+                return;
+            }
+            
+            // Criar input de arquivo dinâmico
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.pdf,.ppt,.pptx,.doc,.docx,.txt,.zip,.mp4,.rar,.7z';
+            input.style.display = 'none';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                // Validar tamanho do arquivo (100MB máximo)
+                const maxSize = 100 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    showNotification('Arquivo muito grande! O tamanho máximo permitido é 100MB.', 'error');
+                    return;
+                }
+                
+                showMonitoringUploadForm(file);
+            };
+            
+            document.body.appendChild(input);
+            input.click();
+            document.body.removeChild(input);
+        }
+
+        function showMonitoringUploadForm(file) {
+            currentMonitoringUploadFile = file;
+            const fileType = detectFileType(file.name);
+            const fileIconName = getFileIcon(fileType);
+            
+            document.getElementById('monitoringSelectedFileInfo').innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 60px; height: 60px; background: #3498db; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-${fileIconName}" style="color: white; font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">${file.name}</div>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            ${formatFileSize(file.size)} • ${fileType.toUpperCase()}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Preencher título automaticamente
+            const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+            document.getElementById('monitoringMaterialTitle').value = fileNameWithoutExt;
+            
+            // Resetar outros campos
+            document.getElementById('monitoringMaterialDescription').value = '';
+            document.getElementById('monitoringUploadFormContainer').style.display = 'block';
+            document.getElementById('monitoringUploadProgressContainer').style.display = 'none';
+            
+            // Mostrar modal
+            document.getElementById('monitoringUploadModal').style.display = 'flex';
+            
+            // Focar no título
+            setTimeout(() => {
+                document.getElementById('monitoringMaterialTitle').focus();
+            }, 100);
+        }
+
+        async function processMonitoringUpload() {
+            const title = document.getElementById('monitoringMaterialTitle').value.trim();
+            const description = document.getElementById('monitoringMaterialDescription').value.trim();
+            const file = currentMonitoringUploadFile;
+            
+            // Validações
+            if (!title) {
+                showNotification('Por favor, insira um título para o material.', 'warning');
+                document.getElementById('monitoringMaterialTitle').focus();
+                return;
+            }
+            
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                showNotification('Sessão expirada. Faça login novamente.', 'error');
+                window.location.href = 'index.html#login';
+                return;
+            }
+            
+            const user = window.authManager.getUser();
+            if (!user || !user.id) {
+                showNotification('Erro: usuário não identificado.', 'error');
+                return;
+            }
+            
+            // Mostrar progresso
+            document.getElementById('monitoringUploadFormContainer').style.display = 'none';
+            document.getElementById('monitoringUploadProgressContainer').style.display = 'block';
+            
+            try {
+                console.log('🚀 Iniciando upload de material para Monitoring...');
+                
+                // Verificar sessão atual
+                const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+                if (sessionError) {
+                    console.error('❌ Erro na sessão:', sessionError);
+                    throw new Error('Sessão inválida. Faça login novamente.');
+                }
+                
+                if (!sessionData.session) {
+                    throw new Error('Sessão expirada. Faça login novamente.');
+                }
+                
+                console.log('✅ Sessão válida:', sessionData.session.user.id);
+                
+                // Limpar nome do arquivo
+                const cleanFileName = file.name
+                    .toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/\s+/g, '_')
+                    .replace(/[^\w\.\-]/g, '')
+                    .replace(/_{2,}/g, '_')
+                    .replace(/^_+|_+$/g, '');
+                
+                const fileName = `monitoring_${Date.now()}_${cleanFileName}`;
+                
+                const filePath = `${user.id}/${fileName}`;
+                
+                const fileType = detectFileType(file.name);
+                
+                console.log('📤 Upload para Monitoring:', filePath);
+                
+                // Simular progresso inicial
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 3;
+                    if (progress > 70) {
+                        clearInterval(progressInterval);
+                    }
+                    updateMonitoringProgressBar(progress);
+                }, 100);
+                
+                // Fazer upload real para o storage
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('materiais')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+                
+                clearInterval(progressInterval);
+                
+                if (uploadError) {
+                    console.error('❌ Erro no upload:', uploadError);
+                    throw new Error(`Falha no upload: ${uploadError.message}`);
+                }
+                
+                console.log('✅ Upload bem-sucedido:', uploadData);
+                updateMonitoringProgressBar(80);
+                
+                // Obter URL pública
+                const { data: urlData } = supabaseClient.storage
+                    .from('materiais')
+                    .getPublicUrl(filePath);
+                
+                console.log('🔗 URL pública:', urlData.publicUrl);
+                
+                // Preparar dados para salvar no banco - ESPECÍFICO PARA MONITORING
+                const materialData = {
+                    titulo: title,
+                    descricao: description || null,
+                    tipo: fileType,
+                    certificacao: 'itil4',
+                    categoria: 'Monitoring and Event Management', // MARCADOR ESPECIAL
+                    arquivo_url: urlData.publicUrl,
+                    arquivo_nome: file.name,
+                    arquivo_tamanho_kb: Math.round(file.size / 1024),
+                    usuario_id: user.id,
+                    visualizacoes: 0,
+                    downloads: 0,
+                    publico: true,
+                    data_upload: new Date().toISOString()
+                };
+                
+                console.log('💾 Salvando no banco...', materialData);
+                
+                // Salvar no banco de dados
+                const { data: dbData, error: dbError } = await supabaseClient
+                    .from('materiais')
+                    .insert([materialData])
+                    .select()
+                    .single();
+                
+                if (dbError) {
+                    console.error('❌ Erro ao salvar no banco:', dbError);
+                    
+                    // Se for erro de coluna inexistente, tentar sem a coluna categoria
+                    if (dbError.message.includes("Could not find the 'categoria' column")) {
+                        console.warn('⚠️ Coluna "categoria" não encontrada. Tentando sem ela...');
+                        
+                        // Remover a coluna categoria e tentar novamente
+                        delete materialData.categoria;
+                        
+                        const { data: dbData2, error: dbError2 } = await supabaseClient
+                            .from('materiais')
+                            .insert([materialData])
+                            .select()
+                            .single();
+                            
+                        if (dbError2) {
+                            console.error('❌ Erro ao salvar sem categoria:', dbError2);
+                            throw new Error(`Erro ao salvar informações: ${dbError2.message}`);
+                        }
+                        
+                        console.log('✅ Material salvo sem categoria:', dbData2);
+                    } else {
+                        throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                    }
+                } else {
+                    console.log('✅ Material salvo no banco:', dbData);
+                }
+                
+                // Concluir
+                updateMonitoringProgressBar(100);
+                
+                setTimeout(() => {
+                    closeMonitoringUploadModal();
+                    showNotification('🎉 Material adicionado ao Monitoring com sucesso!', 'success');
+                    
+                    // Recarregar materiais
+                    loadAllMaterials();
+                }, 800);
+                
+            } catch (error) {
+                console.error('❌ Erro no processo de upload:', error);
+                showNotification(`❌ Erro: ${error.message}`, 'error');
+                closeMonitoringUploadModal();
+            }
+        }
+
+        function updateMonitoringProgressBar(percent) {
+            const progressBar = document.getElementById('monitoringProgressBar');
+            const progressPercent = document.getElementById('monitoringProgressPercent');
+            
+            if (progressBar) {
+                progressBar.style.width = percent + '%';
+            }
+            
+            if (progressPercent) {
+                progressPercent.textContent = percent + '%';
+            }
+        }
+
+        function closeMonitoringUploadModal() {
+            document.getElementById('monitoringUploadModal').style.display = 'none';
+            currentMonitoringUploadFile = null;
         }
 
         // ============================================
@@ -2334,7 +3126,7 @@
         }
 
         // ============================================
-        // FUNÇÕES PARA CARD PMG ACADEMY
+        // FUNÇÕES PARA TOGGLE DE ARQUIVOS
         // ============================================
 
         function togglePmgFiles() {
@@ -2360,23 +3152,51 @@
             }
         }
 
+        function toggleMonitoringFiles() {
+            const container = document.getElementById('monitoring-files-container');
+            const toggleBtn = document.getElementById('monitoringToggleBtn');
+            
+            if (!container || !toggleBtn) return;
+            
+            if (container.style.display === 'none' || container.style.display === '') {
+                // Abrir
+                container.style.display = 'block';
+                toggleBtn.innerHTML = `
+                    <i class="fas fa-folder-minus"></i>
+                    <span>Ocultar Arquivos</span>
+                `;
+            } else {
+                // Fechar
+                container.style.display = 'none';
+                toggleBtn.innerHTML = `
+                    <i class="fas fa-folder-open"></i>
+                    <span>Mostrar Arquivos</span>
+                `;
+            }
+        }
+
         // ============================================
         // EXPORTAR FUNÇÕES PARA USO GLOBAL
         // ============================================
 
         window.togglePmgFiles = togglePmgFiles;
+        window.toggleMonitoringFiles = toggleMonitoringFiles;
         window.checkAuthAndUpload = checkAuthAndUpload;
+        window.checkAuthAndUploadMonitoring = checkAuthAndUploadMonitoring;
         window.closeUploadModal = closeUploadModal;
+        window.closeMonitoringUploadModal = closeMonitoringUploadModal;
         window.closeDeleteModal = closeDeleteModal;
         window.processUpload = processUpload;
+        window.processMonitoringUpload = processMonitoringUpload;
         window.showDeleteModal = showDeleteModal;
-        window.confirmDeleteMaterial = confirmDeleteMaterial;
+        window.confirmDeleteModal = confirmDeleteMaterial;
         window.handleFileAction = handleFileAction;
         window.recordView = recordView;
         window.recordDownload = recordDownload;
         window.logoutFromPage = logoutFromPage;
         window.filterMaterials = filterMaterials;
         window.selectCategory = selectCategory;
+        window.confirmDeleteMaterial = confirmDeleteMaterial;
     </script>
 </body>
 </html>
