@@ -1649,21 +1649,43 @@
             
             // Para ITIL, separar por subtipos e mostrar cards especiais
             if (currentCategory === 'itil') {
-                // Filtrar materiais do PMG Academy
-                const pmgMaterials = categoryMaterials.filter(m => 
-                    m.categoria === 'PMG Academy'
-                );
+                // Filtrar materiais do PMG Academy (com verificação mais flexível)
+                const pmgMaterials = categoryMaterials.filter(m => {
+                    const categoria = (m.categoria || '').toLowerCase();
+                    return categoria.includes('pmg') || 
+                           categoria.includes('pmg academy') ||
+                           (m.titulo && m.titulo.toLowerCase().includes('pmg'));
+                });
                 
-                // Filtrar materiais do Monitoring
-                const monitoringMaterials = categoryMaterials.filter(m => 
-                    m.categoria === 'Monitoring and Event Management'
-                );
+                // Filtrar materiais do Monitoring (com verificação mais flexível)
+                const monitoringMaterials = categoryMaterials.filter(m => {
+                    const categoria = (m.categoria || '').toLowerCase();
+                    return categoria.includes('monitoring') || 
+                           categoria.includes('event management') ||
+                           (m.titulo && m.titulo.toLowerCase().includes('monitoring'));
+                });
+                
+                console.log(`🔍 Materiais PMG encontrados: ${pmgMaterials.length}`);
+                console.log(`🔍 Materiais Monitoring encontrados: ${monitoringMaterials.length}`);
+                console.log(`🔍 Total materiais ITIL: ${categoryMaterials.length}`);
                 
                 // Outros materiais ITIL (sem categoria específica)
-                const otherMaterials = categoryMaterials.filter(m => 
-                    !m.categoria || 
-                    (m.categoria !== 'PMG Academy' && m.categoria !== 'Monitoring and Event Management')
-                );
+                const otherMaterials = categoryMaterials.filter(m => {
+                    const categoria = (m.categoria || '').toLowerCase();
+                    const titulo = (m.titulo || '').toLowerCase();
+                    
+                    const isPmg = categoria.includes('pmg') || 
+                                  categoria.includes('pmg academy') ||
+                                  titulo.includes('pmg');
+                    
+                    const isMonitoring = categoria.includes('monitoring') || 
+                                         categoria.includes('event management') ||
+                                         titulo.includes('monitoring');
+                    
+                    return !isPmg && !isMonitoring;
+                });
+                
+                console.log(`🔍 Outros materiais ITIL: ${otherMaterials.length}`);
                 
                 // Carregar cards especiais
                 loadSpecialCards(pmgMaterials, monitoringMaterials);
@@ -2211,21 +2233,41 @@
             
             // Separar por subtipos para ITIL
             if (currentCategory === 'itil') {
-                // Filtrar materiais do PMG Academy
-                const pmgMaterials = filteredMaterials.filter(m => 
-                    m.categoria === 'PMG Academy'
-                );
+                // Filtrar materiais do PMG Academy (com verificação mais flexível)
+                const pmgMaterials = filteredMaterials.filter(m => {
+                    const categoria = (m.categoria || '').toLowerCase();
+                    const titulo = (m.titulo || '').toLowerCase();
+                    return categoria.includes('pmg') || 
+                           categoria.includes('pmg academy') ||
+                           titulo.includes('pmg');
+                });
                 
-                // Filtrar materiais do Monitoring
-                const monitoringMaterials = filteredMaterials.filter(m => 
-                    m.categoria === 'Monitoring and Event Management'
-                );
+                // Filtrar materiais do Monitoring (com verificação mais flexível)
+                const monitoringMaterials = filteredMaterials.filter(m => {
+                    const categoria = (m.categoria || '').toLowerCase();
+                    const titulo = (m.titulo || '').toLowerCase();
+                    return categoria.includes('monitoring') || 
+                           categoria.includes('event management') ||
+                           titulo.includes('monitoring');
+                });
+                
+                console.log(`🔍 Após filtro - PMG: ${pmgMaterials.length}, Monitoring: ${monitoringMaterials.length}`);
                 
                 // Outros materiais ITIL (sem categoria específica)
-                const otherMaterials = filteredMaterials.filter(m => 
-                    !m.categoria || 
-                    (m.categoria !== 'PMG Academy' && m.categoria !== 'Monitoring and Event Management')
-                );
+                const otherMaterials = filteredMaterials.filter(m => {
+                    const categoria = (m.categoria || '').toLowerCase();
+                    const titulo = (m.titulo || '').toLowerCase();
+                    
+                    const isPmg = categoria.includes('pmg') || 
+                                  categoria.includes('pmg academy') ||
+                                  titulo.includes('pmg');
+                    
+                    const isMonitoring = categoria.includes('monitoring') || 
+                                         categoria.includes('event management') ||
+                                         titulo.includes('monitoring');
+                    
+                    return !isPmg && !isMonitoring;
+                });
                 
                 // Carregar cards especiais
                 loadSpecialCards(pmgMaterials, monitoringMaterials);
