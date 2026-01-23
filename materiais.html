@@ -1552,7 +1552,7 @@
             updatePageBanner(category);
             
             // Filtrar materiais
-            filterMaterials();
+            filterMaterialsByCategory();
         }
 
         // Atualizar banner da página
@@ -1628,60 +1628,81 @@
         function filterMaterialsByCategory() {
             // Filtrar materiais pela categoria atual
             const categoryMaterials = allMaterials.filter(m => {
-                // Mapear categoria da interface para o campo da tabela
+                // Verificar se o material pertence à categoria atual
                 const cert = m.certificacao || '';
+                const title = m.titulo || '';
+                const description = m.descricao || '';
+                const categoria = m.categoria || '';
                 
-                // Mapeamento de categorias
+                // Para ITIL, aceitar várias formas de escrita
+                if (currentCategory === 'itil') {
+                    return cert.toLowerCase().includes('itil') || 
+                           title.toLowerCase().includes('itil') ||
+                           description.toLowerCase().includes('itil') ||
+                           categoria.toLowerCase().includes('itil');
+                }
+                
+                // Para outras categorias, usar mapeamento direto
                 const categoryMapping = {
-                    'itil': ['itil4', 'itil'],
                     'azure': ['azure'],
-                    'aws': ['aws'],
-                    'linux': ['lpic', 'linux'],
-                    'security': ['security'],
-                    'ccna': ['ccna']
+                    'aws': ['aws', 'amazon'],
+                    'linux': ['linux', 'lpic'],
+                    'security': ['security', 'security+'],
+                    'ccna': ['ccna', 'cisco']
                 };
                 
-                const validCerts = categoryMapping[currentCategory] || [currentCategory];
-                return validCerts.some(validCert => 
-                    cert.includes(validCert)
+                const validTerms = categoryMapping[currentCategory] || [currentCategory];
+                return validTerms.some(term => 
+                    cert.toLowerCase().includes(term) ||
+                    title.toLowerCase().includes(term) ||
+                    description.toLowerCase().includes(term) ||
+                    categoria.toLowerCase().includes(term)
                 );
             });
             
             // Para ITIL, separar por subtipos e mostrar cards especiais
             if (currentCategory === 'itil') {
-                // Filtrar materiais do PMG Academy (com verificação mais flexível)
+                // Filtrar materiais do PMG Academy - CHAVE DA CORREÇÃO
                 const pmgMaterials = categoryMaterials.filter(m => {
                     const categoria = (m.categoria || '').toLowerCase();
+                    const titulo = (m.titulo || '').toLowerCase();
+                    const descricao = (m.descricao || '').toLowerCase();
+                    
+                    // Verificar se é material do PMG Academy
                     return categoria.includes('pmg') || 
                            categoria.includes('pmg academy') ||
-                           (m.titulo && m.titulo.toLowerCase().includes('pmg'));
+                           titulo.includes('pmg') ||
+                           titulo.includes('pmg academy') ||
+                           descricao.includes('pmg') ||
+                           descricao.includes('pmg academy');
                 });
                 
-                // Filtrar materiais do Monitoring (com verificação mais flexível)
+                // Filtrar materiais do Monitoring - CHAVE DA CORREÇÃO
                 const monitoringMaterials = categoryMaterials.filter(m => {
                     const categoria = (m.categoria || '').toLowerCase();
+                    const titulo = (m.titulo || '').toLowerCase();
+                    const descricao = (m.descricao || '').toLowerCase();
+                    
+                    // Verificar se é material do Monitoring
                     return categoria.includes('monitoring') || 
                            categoria.includes('event management') ||
-                           (m.titulo && m.titulo.toLowerCase().includes('monitoring'));
+                           categoria.includes('monitoramento') ||
+                           titulo.includes('monitoring') ||
+                           titulo.includes('event management') ||
+                           titulo.includes('monitoramento') ||
+                           descricao.includes('monitoring') ||
+                           descricao.includes('event management') ||
+                           descricao.includes('monitoramento');
                 });
                 
                 console.log(`🔍 Materiais PMG encontrados: ${pmgMaterials.length}`);
                 console.log(`🔍 Materiais Monitoring encontrados: ${monitoringMaterials.length}`);
                 console.log(`🔍 Total materiais ITIL: ${categoryMaterials.length}`);
                 
-                // Outros materiais ITIL (sem categoria específica)
+                // Outros materiais ITIL (não PMG, não Monitoring)
                 const otherMaterials = categoryMaterials.filter(m => {
-                    const categoria = (m.categoria || '').toLowerCase();
-                    const titulo = (m.titulo || '').toLowerCase();
-                    
-                    const isPmg = categoria.includes('pmg') || 
-                                  categoria.includes('pmg academy') ||
-                                  titulo.includes('pmg');
-                    
-                    const isMonitoring = categoria.includes('monitoring') || 
-                                         categoria.includes('event management') ||
-                                         titulo.includes('monitoring');
-                    
+                    const isPmg = pmgMaterials.some(pmg => pmg.id === m.id);
+                    const isMonitoring = monitoringMaterials.some(mon => mon.id === m.id);
                     return !isPmg && !isMonitoring;
                 });
                 
@@ -1789,15 +1810,6 @@
                                 ${renderPmgFileGroups(groupedFiles)}
                             </div>
                         ` : ''}
-                        
-                        <div id="pmg-upload-section" class="pmg-upload-section" style="display: none; margin-top: 1.5rem;">
-                            <div class="pmg-upload-area" onclick="checkAuthAndUploadPmg()">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <h4>Clique para adicionar arquivo</h4>
-                                <p>Arraste ou clique para fazer upload</p>
-                                <span class="file-info">Máx. 100MB</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             `;
@@ -1878,15 +1890,6 @@
                                 ${renderMonitoringFileGroups(groupedFiles)}
                             </div>
                         ` : ''}
-                        
-                        <div id="monitoring-upload-section" class="monitoring-upload-section" style="display: none; margin-top: 1.5rem;">
-                            <div class="monitoring-upload-area" onclick="checkAuthAndUploadMonitoring()">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <h4>Clique para adicionar arquivo</h4>
-                                <p>Arraste ou clique para fazer upload</p>
-                                <span class="file-info">Máx. 100MB</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             `;
@@ -2193,22 +2196,35 @@
             
             // Filtrar por categoria principal
             let filteredMaterials = allMaterials.filter(m => {
-                // Mapear categoria da interface para o campo da tabela
+                // Verificar se o material pertence à categoria atual
                 const cert = m.certificacao || '';
+                const title = m.titulo || '';
+                const description = m.descricao || '';
+                const categoria = m.categoria || '';
                 
-                // Mapeamento de categorias
+                // Para ITIL, aceitar várias formas de escrita
+                if (currentCategory === 'itil') {
+                    return cert.toLowerCase().includes('itil') || 
+                           title.toLowerCase().includes('itil') ||
+                           description.toLowerCase().includes('itil') ||
+                           categoria.toLowerCase().includes('itil');
+                }
+                
+                // Para outras categorias, usar mapeamento direto
                 const categoryMapping = {
-                    'itil': ['itil4', 'itil'],
                     'azure': ['azure'],
-                    'aws': ['aws'],
-                    'linux': ['lpic', 'linux'],
-                    'security': ['security'],
-                    'ccna': ['ccna']
+                    'aws': ['aws', 'amazon'],
+                    'linux': ['linux', 'lpic'],
+                    'security': ['security', 'security+'],
+                    'ccna': ['ccna', 'cisco']
                 };
                 
-                const validCerts = categoryMapping[currentCategory] || [currentCategory];
-                return validCerts.some(validCert => 
-                    cert.includes(validCert)
+                const validTerms = categoryMapping[currentCategory] || [currentCategory];
+                return validTerms.some(term => 
+                    cert.toLowerCase().includes(term) ||
+                    title.toLowerCase().includes(term) ||
+                    description.toLowerCase().includes(term) ||
+                    categoria.toLowerCase().includes(term)
                 );
             });
             
@@ -2233,39 +2249,43 @@
             
             // Separar por subtipos para ITIL
             if (currentCategory === 'itil') {
-                // Filtrar materiais do PMG Academy (com verificação mais flexível)
+                // Filtrar materiais do PMG Academy
                 const pmgMaterials = filteredMaterials.filter(m => {
                     const categoria = (m.categoria || '').toLowerCase();
                     const titulo = (m.titulo || '').toLowerCase();
+                    const descricao = (m.descricao || '').toLowerCase();
+                    
                     return categoria.includes('pmg') || 
                            categoria.includes('pmg academy') ||
-                           titulo.includes('pmg');
+                           titulo.includes('pmg') ||
+                           titulo.includes('pmg academy') ||
+                           descricao.includes('pmg') ||
+                           descricao.includes('pmg academy');
                 });
                 
-                // Filtrar materiais do Monitoring (com verificação mais flexível)
+                // Filtrar materiais do Monitoring
                 const monitoringMaterials = filteredMaterials.filter(m => {
                     const categoria = (m.categoria || '').toLowerCase();
                     const titulo = (m.titulo || '').toLowerCase();
+                    const descricao = (m.descricao || '').toLowerCase();
+                    
                     return categoria.includes('monitoring') || 
                            categoria.includes('event management') ||
-                           titulo.includes('monitoring');
+                           categoria.includes('monitoramento') ||
+                           titulo.includes('monitoring') ||
+                           titulo.includes('event management') ||
+                           titulo.includes('monitoramento') ||
+                           descricao.includes('monitoring') ||
+                           descricao.includes('event management') ||
+                           descricao.includes('monitoramento');
                 });
                 
                 console.log(`🔍 Após filtro - PMG: ${pmgMaterials.length}, Monitoring: ${monitoringMaterials.length}`);
                 
-                // Outros materiais ITIL (sem categoria específica)
+                // Outros materiais ITIL (não PMG, não Monitoring)
                 const otherMaterials = filteredMaterials.filter(m => {
-                    const categoria = (m.categoria || '').toLowerCase();
-                    const titulo = (m.titulo || '').toLowerCase();
-                    
-                    const isPmg = categoria.includes('pmg') || 
-                                  categoria.includes('pmg academy') ||
-                                  titulo.includes('pmg');
-                    
-                    const isMonitoring = categoria.includes('monitoring') || 
-                                         categoria.includes('event management') ||
-                                         titulo.includes('monitoring');
-                    
+                    const isPmg = pmgMaterials.some(pmg => pmg.id === m.id);
+                    const isMonitoring = monitoringMaterials.some(mon => mon.id === m.id);
                     return !isPmg && !isMonitoring;
                 });
                 
@@ -2844,7 +2864,7 @@
                     descricao: description || null,
                     tipo: fileType,
                     certificacao: 'itil4',
-                    categoria: 'PMG Academy', // MARCADOR ESPECIAL
+                    categoria: 'PMG Academy', // MARCADOR ESPECIAL PARA PMG
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
@@ -3106,7 +3126,7 @@
                     descricao: description || null,
                     tipo: fileType,
                     certificacao: 'itil4',
-                    categoria: 'Monitoring and Event Management', // MARCADOR ESPECIAL
+                    categoria: 'Monitoring and Event Management', // MARCADOR ESPECIAL PARA MONITORING
                     arquivo_url: urlData.publicUrl,
                     arquivo_nome: file.name,
                     arquivo_tamanho_kb: Math.round(file.size / 1024),
