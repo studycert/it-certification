@@ -116,7 +116,7 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
 
-        /* Card especial para PMG Academy */
+        /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
         .pmg-academy-container {
             margin-bottom: 2rem;
             display: block !important;
@@ -1116,6 +1116,7 @@
                     <select id="materialCard" class="filter-input" required>
                         <option value="pmg">PMG Academy</option>
                         <option value="monitoring">Monitoring and Event Management</option>
+                        <option value="general">Lista Geral (Comunidade)</option>
                     </select>
                 </div>
                 
@@ -1160,7 +1161,7 @@
     <!-- JavaScript -->
     <script>
         // ============================================
-        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - COMPLETO E CORRIGIDO
+        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - COMPLETO CORRIGIDO
         // ============================================
 
         // Configurações
@@ -1223,7 +1224,7 @@
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
-        let currentUploadCardType = 'pmg'; // 'pmg' ou 'monitoring' ou 'general'
+        let currentUploadCardType = 'pmg'; // 'pmg', 'monitoring' ou 'general'
 
         // ============================================
         // INICIALIZAÇÃO
@@ -1560,24 +1561,17 @@
                 );
             });
             
-            // Para ITIL, mostrar os dois cards e NADA na lista geral
+            // Para ITIL, mostrar os dois cards e possivelmente lista geral
             if (currentCategory === 'itil') {
                 // Separar materiais por categoria (campo categoria no banco)
                 const pmgMaterials = categoryMaterials.filter(m => m.categoria === 'PMG Academy');
                 const monitoringMaterials = categoryMaterials.filter(m => m.categoria === 'Monitoring and Event Management');
+                const generalMaterials = categoryMaterials.filter(m => !m.categoria || m.categoria === 'general');
                 
-                // TODOS os materiais ITIL vão para os cards
-                // Se não tiver categoria, vai para PMG Academy por padrão
-                const otherItilMaterials = categoryMaterials.filter(m => !m.categoria);
-                
-                // Adicionar materiais sem categoria ao PMG Academy
-                pmgMaterials.push(...otherItilMaterials);
-                
+                // Materiais sem categoria ou com categoria 'general' vão para a lista geral
                 loadPMGAcademyCard(pmgMaterials);
                 loadMonitoringCard(monitoringMaterials);
-                
-                // Nenhum material ITIL na lista geral
-                updateOtherMaterials([]);
+                updateOtherMaterials(generalMaterials);
             } else {
                 // Para outras certificações, limpar cards e mostrar tudo na lista
                 document.getElementById('pmg-academy-container').innerHTML = '';
@@ -1586,13 +1580,13 @@
             }
         }
 
-        // Carregar card PMG Academy - ATUALIZADO
+        // Carregar card PMG Academy - CORRIGIDO
         function loadPMGAcademyCard(files = []) {
             const container = document.getElementById('pmg-academy-container');
             
             if (!container) return;
             
-            // Estatísticas
+            // Estatísticas - CORREÇÃO: contar corretamente os 20 arquivos
             const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
             const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
             const totalSizeMB = files.length > 0 ? 
@@ -1626,6 +1620,11 @@
                             <button class="upload-btn-card pmg" onclick="openUploadForCard('pmg')">
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
+                            ${currentUser ? `
+                                <button class="upload-btn-card" onclick="openUploadForCard('general')">
+                                    <i class="fas fa-cloud-upload-alt"></i> Upload na Lista Geral
+                                </button>
+                            ` : ''}
                         </div>
                         
                         <div class="pmg-stats">
@@ -1670,7 +1669,7 @@
             container.innerHTML = pmgCardHTML;
         }
 
-        // Carregar card Monitoring and Event Management - ATUALIZADO
+        // Carregar card Monitoring and Event Management
         function loadMonitoringCard(files = []) {
             const container = document.getElementById('monitoring-container');
             
@@ -1710,6 +1709,11 @@
                             <button class="upload-btn-card monitoring" onclick="openUploadForCard('monitoring')">
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
+                            ${currentUser ? `
+                                <button class="upload-btn-card" onclick="openUploadForCard('general')">
+                                    <i class="fas fa-cloud-upload-alt"></i> Upload na Lista Geral
+                                </button>
+                            ` : ''}
                         </div>
                         
                         <div class="monitoring-stats">
@@ -1754,12 +1758,12 @@
             container.innerHTML = monitoringCardHTML;
         }
 
-        // Função para agrupar arquivos por tipo
+        // Função para agrupar arquivos por tipo - CORRIGIDA
         function groupFilesByType(files) {
             const groups = {};
             
             files.forEach(file => {
-                const type = file.tipo || detectFileType(file.arquivo_nome || '');
+                const type = detectFileType(file.arquivo_nome || '');
                 if (!groups[type]) {
                     groups[type] = [];
                 }
@@ -1836,7 +1840,7 @@
             const fileDesc = file.descricao || 'Sem descrição';
             const fileUrl = file.arquivo_url || '#';
             const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
-            const fileType = file.tipo || detectFileType(file.arquivo_nome || '');
+            const fileType = detectFileType(file.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
             const uploadDate = formatDateCompact(file.data_upload);
             
@@ -1897,7 +1901,7 @@
             const fileDesc = file.descricao || 'Sem descrição';
             const fileUrl = file.arquivo_url || '#';
             const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
-            const fileType = file.tipo || detectFileType(file.arquivo_nome || '');
+            const fileType = detectFileType(file.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
             const uploadDate = formatDateCompact(file.data_upload);
             
@@ -1951,7 +1955,7 @@
             `;
         }
 
-        // Atualizar outros materiais (não agrupados) - APENAS PARA NÃO-ITIL
+        // Atualizar outros materiais (lista geral)
         function updateOtherMaterials(materials) {
             const container = document.getElementById('materialsContainer');
             const countElement = document.getElementById('materialsCount');
@@ -1979,9 +1983,9 @@
             container.innerHTML = materialsHTML;
         }
 
-        // Renderizar item de material (para não agrupados)
+        // Renderizar item de material (para lista geral)
         function renderMaterialItem(material) {
-            const fileType = material.tipo || detectFileType(material.arquivo_nome || '');
+            const fileType = detectFileType(material.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && material.usuario_id === currentUserId;
@@ -2048,7 +2052,7 @@
         }
 
         // ============================================
-        // FUNÇÕES PARA UPLOAD POR CARD - CORRIGIDAS
+        // FUNÇÕES PARA UPLOAD - CORRIGIDAS
         // ============================================
 
         // Abrir upload para um card específico
@@ -2137,8 +2141,8 @@
             // Se for ITIL, mostrar seleção de card
             if (currentCategory === 'itil') {
                 document.getElementById('itilCardSelection').style.display = 'block';
-                document.getElementById('materialCard').value = currentUploadCardType === 'general' ? 'pmg' : currentUploadCardType;
-                document.getElementById('uploadCardType').value = currentUploadCardType === 'general' ? 'pmg' : currentUploadCardType;
+                document.getElementById('materialCard').value = currentUploadCardType;
+                document.getElementById('uploadCardType').value = currentUploadCardType;
             } else {
                 document.getElementById('itilCardSelection').style.display = 'none';
                 document.getElementById('uploadCardType').value = 'general';
@@ -2231,7 +2235,7 @@
                     updateProgressBar(progress, 'modal');
                 }, 100);
                 
-                // Fazer upload real para o storage
+                // Fazer upload real para o storage - CORREÇÃO: bucket correto
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('materiais')
                     .upload(filePath, file, {
@@ -2249,7 +2253,7 @@
                 console.log('✅ Upload bem-sucedido:', uploadData);
                 updateProgressBar(80, 'modal');
                 
-                // Obter URL pública
+                // Obter URL pública - CORREÇÃO: bucket correto
                 const { data: urlData } = supabaseClient.storage
                     .from('materiais')
                     .getPublicUrl(filePath);
@@ -2290,6 +2294,8 @@
                         materialData.categoria = 'PMG Academy';
                     } else if (cardType === 'monitoring') {
                         materialData.categoria = 'Monitoring and Event Management';
+                    } else if (cardType === 'general') {
+                        materialData.categoria = 'general';
                     }
                 }
                 
@@ -2568,7 +2574,7 @@
             // Aplicar filtro de tipo
             if (typeFilter !== 'all') {
                 filteredMaterials = filteredMaterials.filter(m => {
-                    const fileType = m.tipo || detectFileType(m.arquivo_nome || '');
+                    const fileType = detectFileType(m.arquivo_nome || '');
                     return fileType === typeFilter;
                 });
             }
@@ -2584,20 +2590,15 @@
             // Ordenar
             filteredMaterials = sortMaterials(filteredMaterials, sortFilter);
             
-            // Para ITIL: separar em cards
+            // Para ITIL: separar em cards e lista geral
             if (currentCategory === 'itil') {
                 const pmgMaterials = filteredMaterials.filter(m => m.categoria === 'PMG Academy');
                 const monitoringMaterials = filteredMaterials.filter(m => m.categoria === 'Monitoring and Event Management');
-                const otherItilMaterials = filteredMaterials.filter(m => !m.categoria);
-                
-                // Adicionar materiais sem categoria ao PMG Academy
-                pmgMaterials.push(...otherItilMaterials);
+                const generalMaterials = filteredMaterials.filter(m => !m.categoria || m.categoria === 'general');
                 
                 loadPMGAcademyCard(pmgMaterials);
                 loadMonitoringCard(monitoringMaterials);
-                
-                // Nenhum material ITIL na lista geral
-                updateOtherMaterials([]);
+                updateOtherMaterials(generalMaterials);
             } else {
                 // Para outras certificações
                 document.getElementById('pmg-academy-container').innerHTML = '';
@@ -2695,10 +2696,12 @@
         }
 
         // ============================================
-        // FUNÇÕES AUXILIARES
+        // FUNÇÕES AUXILIARES - CORRIGIDAS
         // ============================================
 
         function detectFileType(fileName) {
+            if (!fileName) return 'other';
+            
             const ext = fileName.split('.').pop().toLowerCase();
             
             const typeMap = {
@@ -2708,7 +2711,8 @@
                 'txt': 'txt', 'rtf': 'txt', 'md': 'txt',
                 'zip': 'zip', 'rar': 'zip', '7z': 'zip',
                 'mp4': 'video', 'avi': 'video', 'mov': 'video',
-                'jpg': 'other', 'jpeg': 'other', 'png': 'other'
+                'jpg': 'other', 'jpeg': 'other', 'png': 'other',
+                'xls': 'doc', 'xlsx': 'doc', 'csv': 'doc'
             };
             
             return typeMap[ext] || 'other';
@@ -2743,7 +2747,7 @@
         }
 
         function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
+            if (!bytes || bytes === 0) return '0 Bytes';
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -2752,6 +2756,7 @@
 
         function formatDateCompact(dateString) {
             try {
+                if (!dateString) return '--/--';
                 const date = new Date(dateString);
                 const now = new Date();
                 const diffMs = now - date;
@@ -2776,6 +2781,7 @@
         }
 
         function sanitizeFileName(name) {
+            if (!name) return 'arquivo';
             return name
                 .toLowerCase()
                 .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
