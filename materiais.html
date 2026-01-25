@@ -60,7 +60,6 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,50 Q50,20 70,50 Q50,80 30,50 Z" fill="white"/></svg>');
         }
         
-        /* LINUX ALTERADO PARA AMARELO */
         .linux-banner {
             background: linear-gradient(135deg, #FFD700 0%, #FFC107 25%, #FF9800 50%, #FF5722 75%, #FF3D00 100%) !important;
             position: relative;
@@ -77,7 +76,6 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><ellipse cx="50" cy="40" rx="35" ry="20" fill="white"/><ellipse cx="50" cy="70" rx="40" ry="25" fill="white"/></svg>');
         }
         
-        /* SECURITY+ ALTERADO PARA VERMELHO COM FONTE BRANCA */
         .security-banner {
             background: linear-gradient(135deg, #d32f2f 0%, #c62828 25%, #b71c1c 50%, #8b0000 75%, #660000 100%) !important;
             color: white !important;
@@ -116,7 +114,7 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
 
-        /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
+        /* Card especial para PMG Academy */
         .pmg-academy-container {
             margin-bottom: 2rem;
             display: block !important;
@@ -306,7 +304,7 @@
             transform: translateY(-2px);
         }
         
-        /* NOVO: Card Monitoring and Event Management */
+        /* Card Monitoring and Event Management */
         .monitoring-card {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border: 2px dashed #dee2e6;
@@ -538,7 +536,7 @@
             color: white !important;
         }
         
-        /* Categorias de certificação - FONTE BRANCA EM TODOS OS ESTADOS */
+        /* Categorias de certificação */
         .category-filter {
             display: flex;
             flex-wrap: wrap;
@@ -561,68 +559,49 @@
         .category-chip:hover {
             background: #e9ecef;
             transform: translateY(-2px);
-            color: white !important; /* FONTE BRANCA AO PASSAR MOUSE */
+            color: white !important;
         }
         
         .category-chip.active {
-            color: white !important; /* FONTE BRANCA AO CLICAR */
+            color: white !important;
             border-color: transparent;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
-        /* Cores específicas para cada categoria - FONTE SEMPRE BRANCA */
-        .category-chip[data-category="itil"]:hover { 
-            background: #1a237e; 
-            color: white !important; 
-        }
-        .category-chip[data-category="azure"]:hover { 
-            background: #0078D4; 
-            color: white !important; 
-        }
-        .category-chip[data-category="aws"]:hover { 
-            background: #FF9900; 
-            color: white !important; 
-        }
-        .category-chip[data-category="linux"]:hover { 
-            background: #FFD700; 
-            color: white !important; /* AMARELO COM FONTE BRANCA */
-        }
-        .category-chip[data-category="security"]:hover { 
-            background: #d32f2f; 
-            color: white !important; /* VERMELHO COM FONTE BRANCA */
-        }
-        .category-chip[data-category="ccna"]:hover { 
-            background: #00a0d2; 
-            color: white !important; 
-        }
-        
+        /* Cores específicas para cada categoria */
+        .category-chip[data-category="itil"]:hover,
         .category-chip.active[data-category="itil"] { 
             background: #1a237e; 
             color: white !important; 
         }
+        .category-chip[data-category="azure"]:hover,
         .category-chip.active[data-category="azure"] { 
             background: #0078D4; 
             color: white !important; 
         }
+        .category-chip[data-category="aws"]:hover,
         .category-chip.active[data-category="aws"] { 
             background: #FF9900; 
             color: white !important; 
         }
+        .category-chip[data-category="linux"]:hover,
         .category-chip.active[data-category="linux"] { 
             background: #FFD700; 
-            color: white !important; /* AMARELO COM FONTE BRANCA */
+            color: white !important;
         }
+        .category-chip[data-category="security"]:hover,
         .category-chip.active[data-category="security"] { 
             background: #d32f2f; 
-            color: white !important; /* VERMELHO COM FONTE BRANCA */
+            color: white !important;
         }
+        .category-chip[data-category="ccna"]:hover,
         .category-chip.active[data-category="ccna"] { 
             background: #00a0d2; 
             color: white !important; 
         }
         
-        /* NOTIFICAÇÕES CORRIGIDAS - FONTE ESCURA SOBRE FUNDO CLARO */
+        /* NOTIFICAÇÕES */
         .notification {
             position: fixed;
             top: 80px;
@@ -638,7 +617,7 @@
             animation: slideInRight 0.3s ease-out;
             border-left: 4px solid #3498db;
             max-width: 400px;
-            color: #333 !important; /* FONTE ESCURA */
+            color: #333 !important;
             font-weight: 500;
         }
         
@@ -992,7 +971,7 @@
             <!-- Card PMG Academy (apenas para ITIL) -->
             <div id="pmg-academy-container" class="pmg-academy-container"></div>
 
-            <!-- NOVO: Card Monitoring and Event Management (apenas para ITIL) -->
+            <!-- Card Monitoring and Event Management (apenas para ITIL) -->
             <div id="monitoring-container" class="pmg-academy-container"></div>
 
             <!-- Lista de Materiais da Comunidade -->
@@ -1108,12 +1087,26 @@
                               placeholder="Descreva brevemente o conteúdo deste material..."></textarea>
                 </div>
                 
-                <!-- NOVO: Seleção de Card para ITIL -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                        <i class="fas fa-certificate"></i> Categoria *
+                    </label>
+                    <select id="materialCategory" class="filter-input" required>
+                        <option value="itil">ITIL 4</option>
+                        <option value="azure">Azure</option>
+                        <option value="aws">AWS</option>
+                        <option value="linux">Linux</option>
+                        <option value="security">Security+</option>
+                        <option value="ccna">CCNA</option>
+                    </select>
+                </div>
+                
+                <!-- Seleção de Card para ITIL -->
                 <div id="itilCardSelection" style="margin-bottom: 1.5rem; display: none;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
-                        <i class="fas fa-folder"></i> Adicionar ao Card *
+                        <i class="fas fa-folder"></i> Adicionar ao Card
                     </label>
-                    <select id="materialCard" class="filter-input" required>
+                    <select id="materialCard" class="filter-input">
                         <option value="pmg">PMG Academy</option>
                         <option value="monitoring">Monitoring and Event Management</option>
                         <option value="general">Lista Geral (Comunidade)</option>
@@ -1161,14 +1154,14 @@
     <!-- JavaScript -->
     <script>
         // ============================================
-        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - COMPLETO CORRIGIDO
+        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - CORRIGIDO
         // ============================================
 
         // Configurações
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-        // Mapeamento de certificações com banners e ícones
+        // Mapeamento de certificações
         const certifications = {
             'itil': { 
                 title: 'ITIL 4 Foundation', 
@@ -1214,17 +1207,15 @@
             }
         };
 
-        // Tipos de arquivo que podem ser visualizados no navegador
-        const VIEWABLE_FILE_TYPES = ['pdf', 'txt'];
-
         // Variáveis globais
+        const VIEWABLE_FILE_TYPES = ['pdf', 'txt'];
         let supabaseClient = null;
         let currentUploadFile = null;
-        let currentCategory = 'itil'; // Inicia com ITIL
+        let currentCategory = 'itil';
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
-        let currentUploadCardType = 'pmg'; // 'pmg', 'monitoring' ou 'general'
+        let currentUploadCardType = 'pmg';
 
         // ============================================
         // INICIALIZAÇÃO
@@ -1233,42 +1224,24 @@
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Inicializando página de materiais...');
             
-            // Configurar eventos
             setupEventListeners();
             
-            // Aguardar carregamento do authManager
             setTimeout(async () => {
-                // Inicializar Supabase
                 await initSupabase();
-                
-                // Atualizar interface de autenticação
                 updateAuthUI();
-                
-                // Mostrar barra de autenticação
                 document.getElementById('authBar').style.display = 'block';
-                
-                // Configurar categoria inicial
                 selectCategory('itil');
-                
-                // Carregar todos os materiais
                 await loadAllMaterials();
-                
                 console.log('✅ Página de materiais inicializada com sucesso');
             }, 300);
         });
 
-        // ============================================
-        // CONFIGURAÇÃO DE EVENTOS
-        // ============================================
-
         function setupEventListeners() {
-            // Input de arquivo
             const fileInput = document.getElementById('fileInputPage');
             if (fileInput) {
                 fileInput.addEventListener('change', handleFileSelect);
             }
             
-            // Drag and drop
             const uploadArea = document.querySelector('.upload-area-compact');
             if (uploadArea) {
                 uploadArea.addEventListener('dragover', handleDragOver);
@@ -1276,12 +1249,10 @@
                 uploadArea.addEventListener('drop', handleDrop);
             }
             
-            // Filtros
             document.getElementById('filterType')?.addEventListener('change', filterMaterials);
             document.getElementById('filterSort')?.addEventListener('change', filterMaterials);
             document.getElementById('searchMaterial')?.addEventListener('input', filterMaterials);
             
-            // Filtros por categoria
             document.querySelectorAll('.category-chip').forEach(chip => {
                 chip.addEventListener('click', function() {
                     const category = this.getAttribute('data-category');
@@ -1289,7 +1260,6 @@
                 });
             });
             
-            // Fechar modais ao clicar fora
             setupModalClickOutside();
         }
 
@@ -1327,19 +1297,25 @@
             
             const files = e.dataTransfer.files;
             if (files && files.length > 0) {
-                handleFileDrop(files);
+                const file = files[0];
+                if (file) {
+                    const maxSize = 100 * 1024 * 1024;
+                    if (file.size > maxSize) {
+                        showNotification('Arquivo muito grande! O tamanho máximo permitido é 100MB.', 'error');
+                        return;
+                    }
+                    showUploadForm(file);
+                }
             }
         }
 
         function setupModalClickOutside() {
-            // Modal de upload
             document.getElementById('uploadModal')?.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeUploadModal();
                 }
             });
             
-            // Modal de exclusão
             document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeDeleteModal();
@@ -1353,12 +1329,10 @@
 
         async function initSupabase() {
             try {
-                // Usar authManager se disponível
                 if (window.authManager && window.authManager.getSupabase()) {
                     supabaseClient = window.authManager.getSupabase();
                     console.log('✅ Usando Supabase do authManager');
                 } else {
-                    // Criar novo cliente com configurações corretas
                     supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
                         auth: {
                             persistSession: true,
@@ -1408,7 +1382,6 @@
                     </div>
                 `;
                 
-                // Mostrar seção de upload
                 document.getElementById('uploadSection').style.display = 'block';
             } else {
                 currentUser = null;
@@ -1428,7 +1401,6 @@
                     </div>
                 `;
                 
-                // Ocultar seção de upload
                 document.getElementById('uploadSection').style.display = 'none';
             }
         }
@@ -1449,11 +1421,9 @@
         // FUNÇÕES PRINCIPAIS
         // ============================================
 
-        // Selecionar categoria
         function selectCategory(category) {
             currentCategory = category;
             
-            // Atualizar chips ativos
             document.querySelectorAll('.category-chip').forEach(chip => {
                 if (chip.getAttribute('data-category') === category) {
                     chip.classList.add('active');
@@ -1462,14 +1432,10 @@
                 }
             });
             
-            // Atualizar banner da página
             updatePageBanner(category);
-            
-            // Filtrar materiais
             filterMaterials();
         }
 
-        // Atualizar banner da página
         function updatePageBanner(category) {
             const cert = certifications[category] || certifications['itil'];
             
@@ -1480,13 +1446,9 @@
             const description = document.getElementById('certDescription');
             const breadcrumb = document.getElementById('currentCertification');
             
-            // Remover todas as classes de banner
             hero.classList.remove('itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'security-banner', 'ccna-banner');
-            
-            // Adicionar a classe correta
             hero.classList.add(cert.bannerClass);
             
-            // Atualizar conteúdo
             icon.innerHTML = `<i class="${cert.icon}"></i>`;
             title.textContent = cert.title;
             level.textContent = cert.level;
@@ -1495,7 +1457,7 @@
         }
 
         // ============================================
-        // CARREGAMENTO DE MATERIAIS - CORRIGIDO
+        // CARREGAMENTO DE MATERIAIS
         // ============================================
 
         async function loadAllMaterials() {
@@ -1508,9 +1470,6 @@
                     return;
                 }
                 
-                console.log('🔍 Buscando materiais na tabela materiais...');
-                
-                // Buscar TODOS os materiais da tabela
                 const { data, error } = await supabaseClient
                     .from('materiais')
                     .select('*')
@@ -1524,12 +1483,9 @@
                 }
                 
                 allMaterials = data || [];
-                console.log(`✅ ${allMaterials.length} materiais carregados da tabela materiais`);
+                console.log(`✅ ${allMaterials.length} materiais carregados`);
                 
-                // Filtrar materiais por categoria
                 filterMaterialsByCategory();
-                
-                // Atualizar estatísticas
                 updateStats(allMaterials);
                 
             } catch (error) {
@@ -1538,14 +1494,9 @@
             }
         }
 
-        // Filtrar materiais por categoria - CORRIGIDO
         function filterMaterialsByCategory() {
-            // Filtrar materiais pela categoria atual
             const categoryMaterials = allMaterials.filter(m => {
-                // Mapear categoria da interface para o campo da tabela
                 const cert = m.certificacao || '';
-                
-                // Mapeamento de categorias
                 const categoryMapping = {
                     'itil': ['itil4', 'itil'],
                     'azure': ['azure'],
@@ -1556,43 +1507,33 @@
                 };
                 
                 const validCerts = categoryMapping[currentCategory] || [currentCategory];
-                return validCerts.some(validCert => 
-                    cert.includes(validCert)
-                );
+                return validCerts.some(validCert => cert.includes(validCert));
             });
             
-            // Para ITIL, mostrar os dois cards e possivelmente lista geral
             if (currentCategory === 'itil') {
-                // Separar materiais por categoria (campo categoria no banco)
                 const pmgMaterials = categoryMaterials.filter(m => m.categoria === 'PMG Academy');
                 const monitoringMaterials = categoryMaterials.filter(m => m.categoria === 'Monitoring and Event Management');
                 const generalMaterials = categoryMaterials.filter(m => !m.categoria || m.categoria === 'general');
                 
-                // Materiais sem categoria ou com categoria 'general' vão para a lista geral
                 loadPMGAcademyCard(pmgMaterials);
                 loadMonitoringCard(monitoringMaterials);
                 updateOtherMaterials(generalMaterials);
             } else {
-                // Para outras certificações, limpar cards e mostrar tudo na lista
                 document.getElementById('pmg-academy-container').innerHTML = '';
                 document.getElementById('monitoring-container').innerHTML = '';
                 updateOtherMaterials(categoryMaterials);
             }
         }
 
-        // Carregar card PMG Academy - CORRIGIDO
         function loadPMGAcademyCard(files = []) {
             const container = document.getElementById('pmg-academy-container');
-            
             if (!container) return;
             
-            // Estatísticas - CORREÇÃO: contar corretamente os 20 arquivos
             const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
             const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
             const totalSizeMB = files.length > 0 ? 
                 (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
             
-            // Agrupar arquivos por tipo
             const groupedFiles = groupFilesByType(files);
             
             const pmgCardHTML = `
@@ -1621,6 +1562,9 @@
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
                             ${currentUser ? `
+                                <button class="upload-btn-card monitoring" onclick="openUploadForCard('monitoring')">
+                                    <i class="fas fa-plus-circle"></i> Adicionar ao Monitoring
+                                </button>
                                 <button class="upload-btn-card" onclick="openUploadForCard('general')">
                                     <i class="fas fa-cloud-upload-alt"></i> Upload na Lista Geral
                                 </button>
@@ -1669,19 +1613,15 @@
             container.innerHTML = pmgCardHTML;
         }
 
-        // Carregar card Monitoring and Event Management
         function loadMonitoringCard(files = []) {
             const container = document.getElementById('monitoring-container');
-            
             if (!container) return;
             
-            // Estatísticas
             const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
             const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
             const totalSizeMB = files.length > 0 ? 
                 (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
             
-            // Agrupar arquivos por tipo
             const groupedFiles = groupFilesByType(files);
             
             const monitoringCardHTML = `
@@ -1710,6 +1650,9 @@
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
                             ${currentUser ? `
+                                <button class="upload-btn-card pmg" onclick="openUploadForCard('pmg')">
+                                    <i class="fas fa-plus-circle"></i> Adicionar ao PMG
+                                </button>
                                 <button class="upload-btn-card" onclick="openUploadForCard('general')">
                                     <i class="fas fa-cloud-upload-alt"></i> Upload na Lista Geral
                                 </button>
@@ -1758,26 +1701,18 @@
             container.innerHTML = monitoringCardHTML;
         }
 
-        // Função para agrupar arquivos por tipo - CORRIGIDA
         function groupFilesByType(files) {
             const groups = {};
-            
             files.forEach(file => {
-                const type = detectFileType(file.arquivo_nome || '');
-                if (!groups[type]) {
-                    groups[type] = [];
-                }
+                const type = file.tipo || detectFileType(file.arquivo_nome || '');
+                if (!groups[type]) groups[type] = [];
                 groups[type].push(file);
             });
-            
             return groups;
         }
 
-        // Renderizar grupos de arquivos PMG
         function renderPMGFileGroups(groups) {
             let html = '';
-            
-            // Ordenar grupos por tipo
             const typeOrder = ['pdf', 'doc', 'ppt', 'video', 'txt', 'zip', 'other'];
             const sortedGroups = Object.entries(groups).sort((a, b) => {
                 return typeOrder.indexOf(a[0]) - typeOrder.indexOf(b[0]);
@@ -1803,11 +1738,8 @@
             return html;
         }
 
-        // Renderizar grupos de arquivos Monitoring
         function renderMonitoringFileGroups(groups) {
             let html = '';
-            
-            // Ordenar grupos por tipo
             const typeOrder = ['pdf', 'doc', 'ppt', 'video', 'txt', 'zip', 'other'];
             const sortedGroups = Object.entries(groups).sort((a, b) => {
                 return typeOrder.indexOf(a[0]) - typeOrder.indexOf(b[0]);
@@ -1833,27 +1765,18 @@
             return html;
         }
 
-        // Renderizar card individual de arquivo PMG
         function renderPMGFileCard(file) {
             const fileId = file.id;
             const fileName = file.titulo || file.arquivo_nome || 'Arquivo';
             const fileDesc = file.descricao || 'Sem descrição';
             const fileUrl = file.arquivo_url || '#';
             const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
-            const fileType = detectFileType(file.arquivo_nome || '');
+            const fileType = file.tipo || detectFileType(file.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
             const uploadDate = formatDateCompact(file.data_upload);
-            
-            // Verificar se URL é válida
-            const hasValidUrl = fileUrl && fileUrl !== '#' && 
-                              fileUrl !== 'undefined' && 
-                              (fileUrl.startsWith('http') || fileUrl.startsWith('https'));
-            
-            // Verificar se usuário é o dono
+            const hasValidUrl = fileUrl && fileUrl !== '#' && fileUrl !== 'undefined' && (fileUrl.startsWith('http') || fileUrl.startsWith('https'));
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && file.usuario_id === currentUserId;
-            
-            // Verificar se o arquivo pode ser visualizado
             const canView = canViewFile(fileType);
             
             return `
@@ -1894,27 +1817,18 @@
             `;
         }
 
-        // Renderizar card individual de arquivo Monitoring
         function renderMonitoringFileCard(file) {
             const fileId = file.id;
             const fileName = file.titulo || file.arquivo_nome || 'Arquivo';
             const fileDesc = file.descricao || 'Sem descrição';
             const fileUrl = file.arquivo_url || '#';
             const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
-            const fileType = detectFileType(file.arquivo_nome || '');
+            const fileType = file.tipo || detectFileType(file.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
             const uploadDate = formatDateCompact(file.data_upload);
-            
-            // Verificar se URL é válida
-            const hasValidUrl = fileUrl && fileUrl !== '#' && 
-                              fileUrl !== 'undefined' && 
-                              (fileUrl.startsWith('http') || fileUrl.startsWith('https'));
-            
-            // Verificar se usuário é o dono
+            const hasValidUrl = fileUrl && fileUrl !== '#' && fileUrl !== 'undefined' && (fileUrl.startsWith('http') || fileUrl.startsWith('https'));
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && file.usuario_id === currentUserId;
-            
-            // Verificar se o arquivo pode ser visualizado
             const canView = canViewFile(fileType);
             
             return `
@@ -1955,7 +1869,6 @@
             `;
         }
 
-        // Atualizar outros materiais (lista geral)
         function updateOtherMaterials(materials) {
             const container = document.getElementById('materialsContainer');
             const countElement = document.getElementById('materialsCount');
@@ -1983,9 +1896,8 @@
             container.innerHTML = materialsHTML;
         }
 
-        // Renderizar item de material (para lista geral)
         function renderMaterialItem(material) {
-            const fileType = detectFileType(material.arquivo_nome || '');
+            const fileType = material.tipo || detectFileType(material.arquivo_nome || '');
             const fileIcon = getFileIcon(fileType);
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && material.usuario_id === currentUserId;
@@ -2055,7 +1967,6 @@
         // FUNÇÕES PARA UPLOAD - CORRIGIDAS
         // ============================================
 
-        // Abrir upload para um card específico
         function openUploadForCard(cardType) {
             if (!window.authManager || !window.authManager.isAuthenticated()) {
                 showNotification('Faça login para compartilhar materiais.', 'warning');
@@ -2086,23 +1997,6 @@
             const file = e.target.files[0];
             if (!file) return;
             
-            // Validar tamanho do arquivo (100MB máximo)
-            const maxSize = 100 * 1024 * 1024;
-            if (file.size > maxSize) {
-                showNotification('Arquivo muito grande! O tamanho máximo permitido é 100MB.', 'error');
-                return;
-            }
-            
-            showUploadForm(file);
-        }
-
-        function handleFileDrop(files) {
-            if (!files || files.length === 0) return;
-            
-            const file = files[0];
-            if (!file) return;
-            
-            // Validar tamanho do arquivo
             const maxSize = 100 * 1024 * 1024;
             if (file.size > maxSize) {
                 showNotification('Arquivo muito grande! O tamanho máximo permitido é 100MB.', 'error');
@@ -2131,14 +2025,10 @@
                 </div>
             `;
             
-            // Preencher título automaticamente
             const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
             document.getElementById('materialTitle').value = fileNameWithoutExt;
-            
-            // Definir categoria atual como padrão
             document.getElementById('materialCategory').value = currentCategory;
             
-            // Se for ITIL, mostrar seleção de card
             if (currentCategory === 'itil') {
                 document.getElementById('itilCardSelection').style.display = 'block';
                 document.getElementById('materialCard').value = currentUploadCardType;
@@ -2148,15 +2038,11 @@
                 document.getElementById('uploadCardType').value = 'general';
             }
             
-            // Resetar outros campos
             document.getElementById('materialDescription').value = '';
             document.getElementById('uploadFormContainer').style.display = 'block';
             document.getElementById('uploadProgressContainer').style.display = 'none';
-            
-            // Mostrar modal
             document.getElementById('uploadModal').style.display = 'flex';
             
-            // Focar no título
             setTimeout(() => {
                 document.getElementById('materialTitle').focus();
             }, 100);
@@ -2169,7 +2055,6 @@
             const cardType = document.getElementById('uploadCardType').value;
             const file = currentUploadFile;
             
-            // Validações
             if (!title) {
                 showNotification('Por favor, insira um título para o material.', 'warning');
                 document.getElementById('materialTitle').focus();
@@ -2188,27 +2073,17 @@
                 return;
             }
             
-            // Mostrar progresso
             document.getElementById('uploadFormContainer').style.display = 'none';
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
                 console.log('🚀 Iniciando upload de material para usuário:', user.email);
                 
-                // Verificar sessão atual
                 const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
-                if (sessionError) {
-                    console.error('❌ Erro na sessão:', sessionError);
-                    throw new Error('Sessão inválida. Faça login novamente.');
-                }
-                
-                if (!sessionData.session) {
+                if (sessionError || !sessionData.session) {
                     throw new Error('Sessão expirada. Faça login novamente.');
                 }
                 
-                console.log('✅ Sessão válida:', sessionData.session.user.id);
-                
-                // Limpar nome do arquivo
                 const cleanFileName = file.name
                     .toLowerCase()
                     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -2218,24 +2093,18 @@
                     .replace(/^_+|_+$/g, '');
                 
                 const fileName = `material_${Date.now()}_${cleanFileName}`;
-                
                 const filePath = `${user.id}/${fileName}`;
-                
                 const fileType = detectFileType(file.name);
                 
                 console.log('📤 Upload para:', filePath);
                 
-                // Simular progresso inicial
                 let progress = 0;
                 const progressInterval = setInterval(() => {
                     progress += 3;
-                    if (progress > 70) {
-                        clearInterval(progressInterval);
-                    }
+                    if (progress > 70) clearInterval(progressInterval);
                     updateProgressBar(progress, 'modal');
                 }, 100);
                 
-                // Fazer upload real para o storage - CORREÇÃO: bucket correto
                 const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('materiais')
                     .upload(filePath, file, {
@@ -2246,21 +2115,18 @@
                 clearInterval(progressInterval);
                 
                 if (uploadError) {
-                    console.error('❌ Erro no upload:', uploadError);
                     throw new Error(`Falha no upload: ${uploadError.message}`);
                 }
                 
                 console.log('✅ Upload bem-sucedido:', uploadData);
                 updateProgressBar(80, 'modal');
                 
-                // Obter URL pública - CORREÇÃO: bucket correto
                 const { data: urlData } = supabaseClient.storage
                     .from('materiais')
                     .getPublicUrl(filePath);
                 
                 console.log('🔗 URL pública:', urlData.publicUrl);
                 
-                // Mapear categoria da interface para o campo da tabela
                 const certMapping = {
                     'itil': 'itil4',
                     'azure': 'azure',
@@ -2272,7 +2138,6 @@
                 
                 const certificacao = certMapping[category] || category;
                 
-                // Preparar dados para salvar no banco
                 const materialData = {
                     titulo: title,
                     descricao: description || null,
@@ -2288,7 +2153,6 @@
                     data_upload: new Date().toISOString()
                 };
                 
-                // Adicionar categoria apenas para ITIL
                 if (category === 'itil') {
                     if (cardType === 'pmg') {
                         materialData.categoria = 'PMG Academy';
@@ -2301,7 +2165,6 @@
                 
                 console.log('💾 Salvando no banco...', materialData);
                 
-                // Salvar no banco de dados
                 const { data: dbData, error: dbError } = await supabaseClient
                     .from('materiais')
                     .insert([materialData])
@@ -2309,13 +2172,8 @@
                     .single();
                 
                 if (dbError) {
-                    console.error('❌ Erro ao salvar no banco:', dbError);
-                    
-                    // Se for erro de coluna inexistente, tentar sem a coluna categoria
                     if (dbError.message.includes("Could not find the 'categoria' column")) {
                         console.warn('⚠️ Coluna "categoria" não encontrada. Tentando sem ela...');
-                        
-                        // Remover a coluna categoria e tentar novamente
                         delete materialData.categoria;
                         
                         const { data: dbData2, error: dbError2 } = await supabaseClient
@@ -2325,8 +2183,7 @@
                             .single();
                             
                         if (dbError2) {
-                            console.error('❌ Erro ao salvar sem categoria:', dbError2);
-                            throw new Error(`Erro ao salvar informações: ${dbError2.message}`);
+                            throw new Error(`Erro ao salvar sem categoria: ${dbError2.message}`);
                         }
                         
                         console.log('✅ Material salvo sem categoria:', dbData2);
@@ -2337,14 +2194,11 @@
                     console.log('✅ Material salvo no banco:', dbData);
                 }
                 
-                // Concluir
                 updateProgressBar(100, 'modal');
                 
                 setTimeout(() => {
                     closeUploadModal();
                     showNotification('🎉 Material compartilhado com sucesso!', 'success');
-                    
-                    // Recarregar materiais
                     loadAllMaterials();
                 }, 800);
                 
@@ -2364,20 +2218,15 @@
                 document.getElementById('modalProgressPercent') : 
                 document.getElementById('progressPercent');
             
-            if (progressBar) {
-                progressBar.style.width = percent + '%';
-            }
-            
-            if (progressPercent) {
-                progressPercent.textContent = percent + '%';
-            }
+            if (progressBar) progressBar.style.width = percent + '%';
+            if (progressPercent) progressPercent.textContent = percent + '%';
         }
 
         function closeUploadModal() {
             document.getElementById('uploadModal').style.display = 'none';
             document.getElementById('fileInputPage').value = '';
             currentUploadFile = null;
-            currentUploadCardType = 'pmg'; // Reset para padrão
+            currentUploadCardType = 'pmg';
         }
 
         // ============================================
@@ -2385,11 +2234,7 @@
         // ============================================
 
         function showDeleteModal(materialId, materialTitle) {
-            materialToDelete = {
-                id: materialId,
-                title: materialTitle
-            };
-            
+            materialToDelete = { id: materialId, title: materialTitle };
             document.getElementById('deleteMaterialName').textContent = materialTitle;
             document.getElementById('deleteConfirmModal').style.display = 'flex';
         }
@@ -2423,65 +2268,42 @@
             try {
                 console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
                 
-                // 1. Primeiro buscar o material para obter informações
                 const { data: material, error: fetchError } = await supabaseClient
                     .from('materiais')
                     .select('*')
                     .eq('id', materialToDelete.id)
                     .single();
                 
-                if (fetchError) {
-                    console.error('❌ Erro ao buscar material:', fetchError);
-                    throw new Error('Material não encontrado.');
-                }
+                if (fetchError) throw new Error('Material não encontrado.');
                 
-                // 2. Verificar se o usuário é o dono
                 if (material.usuario_id !== currentUser.id) {
                     showNotification('Você só pode excluir seus próprios materiais.', 'error');
                     closeDeleteModal();
                     return;
                 }
                 
-                // 3. Extrair caminho do arquivo da URL para excluir do Storage
                 const fileUrl = material.arquivo_url;
-                console.log('🔗 URL do arquivo:', fileUrl);
-                
-                // Extrair o caminho do arquivo do bucket
                 const urlParts = fileUrl.split('/materiais/');
                 if (urlParts.length > 1) {
                     const filePath = urlParts[1];
-                    console.log('📁 Caminho do arquivo no storage:', filePath);
-                    
-                    // Excluir do Storage
                     const { error: storageError } = await supabaseClient.storage
                         .from('materiais')
                         .remove([filePath]);
                     
                     if (storageError) {
                         console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
-                    } else {
-                        console.log('✅ Arquivo excluído do storage');
                     }
                 }
                 
-                // 4. Excluir do banco de dados
                 const { error: deleteError } = await supabaseClient
                     .from('materiais')
                     .delete()
                     .eq('id', materialToDelete.id);
                 
-                if (deleteError) {
-                    console.error('❌ Erro ao excluir do banco:', deleteError);
-                    throw new Error(`Erro ao excluir material: ${deleteError.message}`);
-                }
+                if (deleteError) throw new Error(`Erro ao excluir material: ${deleteError.message}`);
                 
-                console.log('✅ Material excluído com sucesso');
-                
-                // Fechar modal e mostrar mensagem
                 closeDeleteModal();
                 showNotification('✅ Material excluído com sucesso!', 'success');
-                
-                // Recarregar a lista de materiais
                 loadAllMaterials();
                 
             } catch (error) {
@@ -2492,57 +2314,7 @@
         }
 
         // ============================================
-        // FUNÇÕES ADICIONAIS PARA OS NOVOS CARDS
-        // ============================================
-
-        function togglePmgFiles() {
-            const container = document.getElementById('pmg-files-container');
-            const toggleBtn = document.getElementById('pmgToggleBtn');
-            
-            if (!container || !toggleBtn) return;
-            
-            if (container.style.display === 'none' || container.style.display === '') {
-                // Abrir
-                container.style.display = 'block';
-                toggleBtn.innerHTML = `
-                    <i class="fas fa-folder-minus"></i>
-                    <span>Ocultar Arquivos</span>
-                `;
-            } else {
-                // Fechar
-                container.style.display = 'none';
-                toggleBtn.innerHTML = `
-                    <i class="fas fa-folder-open"></i>
-                    <span>Mostrar Arquivos</span>
-                `;
-            }
-        }
-
-        function toggleMonitoringFiles() {
-            const container = document.getElementById('monitoring-files-container');
-            const toggleBtn = document.getElementById('monitoringToggleBtn');
-            
-            if (!container || !toggleBtn) return;
-            
-            if (container.style.display === 'none' || container.style.display === '') {
-                // Abrir
-                container.style.display = 'block';
-                toggleBtn.innerHTML = `
-                    <i class="fas fa-folder-minus"></i>
-                    <span>Ocultar Arquivos</span>
-                `;
-            } else {
-                // Fechar
-                container.style.display = 'none';
-                toggleBtn.innerHTML = `
-                    <i class="fas fa-folder-open"></i>
-                    <span>Mostrar Arquivos</span>
-                `;
-            }
-        }
-
-        // ============================================
-        // FUNÇÕES DE FILTRO E ORDENAÇÃO - CORRIGIDAS
+        // FUNÇÕES DE FILTRO E ORDENAÇÃO
         // ============================================
 
         function filterMaterials() {
@@ -2550,12 +2322,8 @@
             const sortFilter = document.getElementById('filterSort').value;
             const searchFilter = document.getElementById('searchMaterial').value.toLowerCase();
             
-            // Filtrar por categoria principal
             let filteredMaterials = allMaterials.filter(m => {
-                // Mapear categoria da interface para o campo da tabela
                 const cert = m.certificacao || '';
-                
-                // Mapeamento de categorias
                 const categoryMapping = {
                     'itil': ['itil4', 'itil'],
                     'azure': ['azure'],
@@ -2566,20 +2334,16 @@
                 };
                 
                 const validCerts = categoryMapping[currentCategory] || [currentCategory];
-                return validCerts.some(validCert => 
-                    cert.includes(validCert)
-                );
+                return validCerts.some(validCert => cert.includes(validCert));
             });
             
-            // Aplicar filtro de tipo
             if (typeFilter !== 'all') {
                 filteredMaterials = filteredMaterials.filter(m => {
-                    const fileType = detectFileType(m.arquivo_nome || '');
+                    const fileType = m.tipo || detectFileType(m.arquivo_nome || '');
                     return fileType === typeFilter;
                 });
             }
             
-            // Aplicar filtro de busca
             if (searchFilter) {
                 filteredMaterials = filteredMaterials.filter(m => 
                     (m.titulo || '').toLowerCase().includes(searchFilter) ||
@@ -2587,10 +2351,8 @@
                 );
             }
             
-            // Ordenar
             filteredMaterials = sortMaterials(filteredMaterials, sortFilter);
             
-            // Para ITIL: separar em cards e lista geral
             if (currentCategory === 'itil') {
                 const pmgMaterials = filteredMaterials.filter(m => m.categoria === 'PMG Academy');
                 const monitoringMaterials = filteredMaterials.filter(m => m.categoria === 'Monitoring and Event Management');
@@ -2600,13 +2362,11 @@
                 loadMonitoringCard(monitoringMaterials);
                 updateOtherMaterials(generalMaterials);
             } else {
-                // Para outras certificações
                 document.getElementById('pmg-academy-container').innerHTML = '';
                 document.getElementById('monitoring-container').innerHTML = '';
                 updateOtherMaterials(filteredMaterials);
             }
             
-            // Atualizar estatísticas com os materiais filtrados
             updateStats(filteredMaterials);
         }
 
@@ -2664,20 +2424,13 @@
                 return;
             }
             
-            // Registrar visualização
             recordView(fileId);
             
             if (canViewFile(fileType)) {
-                // PDF e TXT - abrir em nova aba
-                openFileInNewTab(fileUrl);
+                window.open(fileUrl, '_blank');
             } else {
-                // DOC, PPT, ZIP, vídeos, etc. - download automático
                 downloadFile(fileId, fileName, fileUrl);
             }
-        }
-
-        function openFileInNewTab(fileUrl) {
-            window.open(fileUrl, '_blank');
         }
 
         function downloadFile(fileId, fileName, fileUrl) {
@@ -2689,21 +2442,16 @@
             link.click();
             document.body.removeChild(link);
             
-            // Registrar download
             recordDownload(fileId);
-            
             showNotification(`Download de "${fileName}" iniciado.`, 'success');
         }
 
         // ============================================
-        // FUNÇÕES AUXILIARES - CORRIGIDAS
+        // FUNÇÕES AUXILIARES
         // ============================================
 
         function detectFileType(fileName) {
-            if (!fileName) return 'other';
-            
             const ext = fileName.split('.').pop().toLowerCase();
-            
             const typeMap = {
                 'pdf': 'pdf',
                 'doc': 'doc', 'docx': 'doc', 'odt': 'doc',
@@ -2764,9 +2512,7 @@
                 
                 if (diffDays === 0) {
                     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                    if (diffHours < 1) {
-                        return 'Hoje';
-                    }
+                    if (diffHours < 1) return 'Hoje';
                     return `${diffHours}h atrás`;
                 } else if (diffDays === 1) {
                     return 'Ontem';
@@ -2802,7 +2548,6 @@
 
         function recordView(materialId) {
             console.log(`Registrando visualização: ${materialId}`);
-            // Atualizar contador local
             const material = allMaterials.find(m => m.id === materialId);
             if (material) {
                 material.visualizacoes = (material.visualizacoes || 0) + 1;
@@ -2812,7 +2557,6 @@
 
         function recordDownload(materialId) {
             console.log(`Registrando download: ${materialId}`);
-            // Atualizar contador local
             const material = allMaterials.find(m => m.id === materialId);
             if (material) {
                 material.downloads = (material.downloads || 0) + 1;
@@ -2821,7 +2565,6 @@
         }
 
         function showNotification(message, type = 'info') {
-            // Remover notificações anteriores
             const oldNotifications = document.querySelectorAll('.notification');
             oldNotifications.forEach(n => n.remove());
             
@@ -2845,6 +2588,52 @@
                     }
                 }, 300);
             }, 3000);
+        }
+
+        // ============================================
+        // FUNÇÕES PARA OS NOVOS CARDS
+        // ============================================
+
+        function togglePmgFiles() {
+            const container = document.getElementById('pmg-files-container');
+            const toggleBtn = document.getElementById('pmgToggleBtn');
+            
+            if (!container || !toggleBtn) return;
+            
+            if (container.style.display === 'none' || container.style.display === '') {
+                container.style.display = 'block';
+                toggleBtn.innerHTML = `
+                    <i class="fas fa-folder-minus"></i>
+                    <span>Ocultar Arquivos</span>
+                `;
+            } else {
+                container.style.display = 'none';
+                toggleBtn.innerHTML = `
+                    <i class="fas fa-folder-open"></i>
+                    <span>Mostrar Arquivos</span>
+                `;
+            }
+        }
+
+        function toggleMonitoringFiles() {
+            const container = document.getElementById('monitoring-files-container');
+            const toggleBtn = document.getElementById('monitoringToggleBtn');
+            
+            if (!container || !toggleBtn) return;
+            
+            if (container.style.display === 'none' || container.style.display === '') {
+                container.style.display = 'block';
+                toggleBtn.innerHTML = `
+                    <i class="fas fa-folder-minus"></i>
+                    <span>Ocultar Arquivos</span>
+                `;
+            } else {
+                container.style.display = 'none';
+                toggleBtn.innerHTML = `
+                    <i class="fas fa-folder-open"></i>
+                    <span>Mostrar Arquivos</span>
+                `;
+            }
         }
 
         // ============================================
