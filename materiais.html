@@ -115,12 +115,14 @@
         }
 
         /* Card especial para PMG Academy */
-        .pmg-academy-container {
+        .pmg-academy-container,
+        .monitoring-container {
             margin-bottom: 2rem;
             display: block !important;
         }
         
-        .pmg-academy-card {
+        .pmg-academy-card,
+        .monitoring-card {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border: none;
             border-radius: 12px;
@@ -131,7 +133,12 @@
             border-left: 5px solid #4ECDC4;
         }
         
-        .pmg-academy-header {
+        .monitoring-card {
+            border-left: 5px solid #6f42c1;
+        }
+        
+        .pmg-academy-header,
+        .monitoring-header {
             padding: 1.5rem;
             background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
             color: white;
@@ -140,7 +147,12 @@
             gap: 1rem;
         }
         
-        .pmg-academy-icon {
+        .monitoring-header {
+            background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
+        }
+        
+        .pmg-academy-icon,
+        .monitoring-icon {
             width: 60px;
             height: 60px;
             background: rgba(255, 255, 255, 0.2);
@@ -151,11 +163,13 @@
             font-size: 1.5rem;
         }
         
-        .pmg-academy-title {
+        .pmg-academy-title,
+        .monitoring-title {
             flex: 1;
         }
         
-        .pmg-academy-title h3 {
+        .pmg-academy-title h3,
+        .monitoring-title h3 {
             margin: 0 0 0.3rem 0;
             color: white;
             font-size: 1.3rem;
@@ -173,18 +187,32 @@
             gap: 0.3rem;
         }
         
-        .pmg-academy-content {
+        .monitoring-badge {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .pmg-academy-content,
+        .monitoring-content {
             padding: 1.5rem;
         }
         
-        .pmg-files-grid {
+        .files-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1rem;
             margin-top: 1rem;
         }
         
-        .pmg-file-card {
+        .pmg-file-card,
+        .monitoring-file-card {
             background: white;
             border: 1px solid #e9ecef;
             border-radius: 8px;
@@ -202,10 +230,16 @@
             border-color: #4ECDC4;
         }
         
-        .pmg-file-icon {
+        .monitoring-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #6f42c1;
+        }
+        
+        .pmg-file-icon,
+        .monitoring-file-icon {
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #4ECDC4, #44A08D);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -214,29 +248,42 @@
             font-size: 1.2rem;
         }
         
-        .pmg-file-info {
+        .pmg-file-icon {
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+        }
+        
+        .monitoring-file-icon {
+            background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        }
+        
+        .pmg-file-info,
+        .monitoring-file-info {
             flex: 1;
         }
         
-        .pmg-file-info h5 {
+        .pmg-file-info h5,
+        .monitoring-file-info h5 {
             margin: 0 0 0.3rem 0;
             color: #2c3e50;
             font-size: 0.95rem;
         }
         
-        .pmg-file-meta {
+        .pmg-file-meta,
+        .monitoring-file-meta {
             display: flex;
             gap: 0.8rem;
             font-size: 0.8rem;
             color: #7f8c8d;
         }
         
-        .pmg-file-actions {
+        .pmg-file-actions,
+        .monitoring-file-actions {
             display: flex;
             gap: 0.5rem;
         }
         
-        .pmg-action-btn {
+        .pmg-action-btn,
+        .monitoring-action-btn {
             width: 36px;
             height: 36px;
             border-radius: 6px;
@@ -256,13 +303,21 @@
             border-color: #4ECDC4;
         }
         
-        .pmg-action-btn.delete:hover {
+        .monitoring-action-btn:hover {
+            background: #6f42c1;
+            color: white;
+            border-color: #6f42c1;
+        }
+        
+        .pmg-action-btn.delete:hover,
+        .monitoring-action-btn.delete:hover {
             background: #e74c3c;
             color: white;
             border-color: #e74c3c;
         }
         
-        .pmg-stats {
+        .pmg-stats,
+        .monitoring-stats {
             display: flex;
             gap: 2rem;
             margin-top: 1rem;
@@ -270,7 +325,8 @@
             border-top: 1px dashed #dee2e6;
         }
         
-        .pmg-stat {
+        .pmg-stat,
+        .monitoring-stat {
             text-align: center;
         }
         
@@ -280,12 +336,20 @@
             color: #4ECDC4;
         }
         
-        .pmg-stat-label {
+        .monitoring-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #6f42c1;
+        }
+        
+        .pmg-stat-label,
+        .monitoring-stat-label {
             font-size: 0.8rem;
             color: #7f8c8d;
         }
         
-        .pmg-toggle-btn {
+        .pmg-toggle-btn,
+        .monitoring-toggle-btn {
             background: #4ECDC4;
             color: white;
             border: none;
@@ -299,141 +363,13 @@
             transition: all 0.3s;
         }
         
+        .monitoring-toggle-btn {
+            background: #6f42c1;
+        }
+        
         .pmg-toggle-btn:hover {
             background: #44A08D;
             transform: translateY(-2px);
-        }
-        
-        /* Card Monitoring and Event Management */
-        .monitoring-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border: 2px dashed #dee2e6;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            position: relative;
-            border-left: 5px solid #6f42c1;
-        }
-        
-        .monitoring-header {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .monitoring-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        .monitoring-title {
-            flex: 1;
-        }
-        
-        .monitoring-title h3 {
-            margin: 0 0 0.3rem 0;
-            color: white;
-            font-size: 1.3rem;
-        }
-        
-        .monitoring-badge {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
-        .monitoring-content {
-            padding: 1.5rem;
-        }
-        
-        .monitoring-files-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .monitoring-file-card {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .monitoring-file-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #6f42c1;
-        }
-        
-        .monitoring-file-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #6f42c1, #5a32a3);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-        
-        .monitoring-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px dashed #dee2e6;
-        }
-        
-        .monitoring-stat {
-            text-align: center;
-        }
-        
-        .monitoring-stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #6f42c1;
-        }
-        
-        .monitoring-stat-label {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .monitoring-toggle-btn {
-            background: #6f42c1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            transition: all 0.3s;
         }
         
         .monitoring-toggle-btn:hover {
@@ -755,8 +691,7 @@
         
         /* Responsividade */
         @media (max-width: 768px) {
-            .pmg-files-grid,
-            .monitoring-files-grid {
+            .files-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -816,6 +751,50 @@
                 margin-right: 0;
                 margin-bottom: 0.5rem;
             }
+        }
+        
+        /* Estilos para outros cards de certificação */
+        .other-cert-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border-left: 5px solid #3498db;
+        }
+        
+        .other-cert-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .other-cert-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .other-cert-title {
+            flex: 1;
+        }
+        
+        .other-cert-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .other-cert-content {
+            padding: 1.5rem;
         }
     </style>
 </head>
@@ -968,27 +947,10 @@
                 </div>
             </div>
 
-            <!-- Card PMG Academy (apenas para ITIL) -->
-            <div id="pmg-academy-container" class="pmg-academy-container"></div>
+            <!-- Container para cards dinâmicos -->
+            <div id="dynamicCardsContainer"></div>
 
-            <!-- Card Monitoring and Event Management (apenas para ITIL) -->
-            <div id="monitoring-container" class="pmg-academy-container"></div>
-
-            <!-- Lista de Materiais da Comunidade -->
-            <div class="materials-list-card-compact">
-                <div class="materials-list-header-compact">
-                    <h3><i class="fas fa-list"></i> Materiais da Comunidade</h3>
-                    <span class="materials-count" id="materialsCount">0 materiais</span>
-                </div>
-                <div id="materialsContainer">
-                    <div class="loading-message-compact">
-                        <div class="loading-spinner"></div>
-                        <p>Carregando materiais...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Seção de Upload -->
+            <!-- Seção de Upload Geral (apenas se não estiver na categoria ITIL) -->
             <section class="upload-section-card-compact" id="uploadSection" style="display: none;">
                 <div class="upload-header-compact">
                     <div class="upload-icon-small">
@@ -1056,7 +1018,7 @@
             </h3>
             
             <!-- Campo oculto para armazenar o tipo de card -->
-            <input type="hidden" id="uploadCardType" value="pmg">
+            <input type="hidden" id="uploadCardType" value="">
             
             <div id="uploadProgressContainer" class="upload-progress" style="display: none;">
                 <div class="progress-container">
@@ -1101,7 +1063,7 @@
                     </select>
                 </div>
                 
-                <!-- Seleção de Card para ITIL -->
+                <!-- Seleção de Card específico para ITIL -->
                 <div id="itilCardSelection" style="margin-bottom: 1.5rem; display: none;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
                         <i class="fas fa-folder"></i> Adicionar ao Card
@@ -1109,7 +1071,6 @@
                     <select id="materialCard" class="filter-input">
                         <option value="pmg">PMG Academy</option>
                         <option value="monitoring">Monitoring and Event Management</option>
-                        <option value="general">Lista Geral (Comunidade)</option>
                     </select>
                 </div>
                 
@@ -1168,43 +1129,56 @@
                 level: 'Gerenciamento de Serviços', 
                 icon: 'fas fa-cube',
                 bannerClass: 'itil-banner',
-                description: 'Guias de estudo, resumos e recursos para certificação ITIL 4 Foundation'
+                description: 'Guias de estudo, resumos e recursos para certificação ITIL 4 Foundation',
+                cards: ['pmg', 'monitoring']
             },
             'azure': { 
                 title: 'Microsoft Azure', 
                 level: 'Cloud Computing', 
                 icon: 'fab fa-microsoft',
                 bannerClass: 'azure-banner',
-                description: 'Guias de estudo, resumos e recursos para certificações Azure (AZ-900, AZ-104, etc.)'
+                description: 'Guias de estudo, resumos e recursos para certificações Azure (AZ-900, AZ-104, etc.)',
+                cards: []
             },
             'aws': { 
                 title: 'Amazon AWS', 
                 level: 'Cloud Computing', 
                 icon: 'fab fa-aws',
                 bannerClass: 'aws-banner',
-                description: 'Material para Cloud Practitioner, Solutions Architect e outras certificações AWS'
+                description: 'Material para Cloud Practitioner, Solutions Architect e outras certificações AWS',
+                cards: []
             },
             'linux': { 
                 title: 'LPIC-1 e LPIC-2', 
                 level: 'Linux Professional', 
                 icon: 'fas fa-server',
                 bannerClass: 'linux-banner',
-                description: 'Recursos para certificações Linux Professional Institute'
+                description: 'Recursos para certificações Linux Professional Institute',
+                cards: []
             },
             'security': { 
                 title: 'Security+', 
                 level: 'Segurança da Informação', 
                 icon: 'fas fa-shield-alt',
                 bannerClass: 'security-banner',
-                description: 'Material para preparação da certificação CompTIA Security+'
+                description: 'Material para preparação da certificação CompTIA Security+',
+                cards: []
             },
             'ccna': { 
                 title: 'CCNA', 
                 level: 'Redes Cisco', 
                 icon: 'fas fa-network-wired',
                 bannerClass: 'ccna-banner',
-                description: 'Recursos para Cisco Certified Network Associate'
+                description: 'Recursos para Cisco Certified Network Associate',
+                cards: []
             }
+        };
+
+        // Mapeamento de nomes de cards
+        const cardNames = {
+            'pmg': 'PMG Academy',
+            'monitoring': 'Monitoring and Event Management',
+            'general': 'Material Geral'
         };
 
         // Variáveis globais
@@ -1215,7 +1189,7 @@
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
-        let currentUploadCardType = 'pmg';
+        let currentUploadCardType = '';
 
         // ============================================
         // INICIALIZAÇÃO
@@ -1485,7 +1459,7 @@
                 allMaterials = data || [];
                 console.log(`✅ ${allMaterials.length} materiais carregados`);
                 
-                filterMaterialsByCategory();
+                filterMaterials();
                 updateStats(allMaterials);
                 
             } catch (error) {
@@ -1494,8 +1468,12 @@
             }
         }
 
-        function filterMaterialsByCategory() {
-            const categoryMaterials = allMaterials.filter(m => {
+        function filterMaterials() {
+            const typeFilter = document.getElementById('filterType').value;
+            const sortFilter = document.getElementById('filterSort').value;
+            const searchFilter = document.getElementById('searchMaterial').value.toLowerCase();
+            
+            let filteredMaterials = allMaterials.filter(m => {
                 const cert = m.certificacao || '';
                 const categoryMapping = {
                     'itil': ['itil4', 'itil'],
@@ -1510,25 +1488,83 @@
                 return validCerts.some(validCert => cert.includes(validCert));
             });
             
+            if (typeFilter !== 'all') {
+                filteredMaterials = filteredMaterials.filter(m => {
+                    const fileType = m.tipo || detectFileType(m.arquivo_nome || '');
+                    return fileType === typeFilter;
+                });
+            }
+            
+            if (searchFilter) {
+                filteredMaterials = filteredMaterials.filter(m => 
+                    (m.titulo || '').toLowerCase().includes(searchFilter) ||
+                    (m.descricao || '').toLowerCase().includes(searchFilter)
+                );
+            }
+            
+            filteredMaterials = sortMaterials(filteredMaterials, sortFilter);
+            renderCategoryCards(filteredMaterials);
+            updateStats(filteredMaterials);
+        }
+
+        function renderCategoryCards(materials) {
+            const container = document.getElementById('dynamicCardsContainer');
+            
             if (currentCategory === 'itil') {
-                const pmgMaterials = categoryMaterials.filter(m => m.categoria === 'PMG Academy');
-                const monitoringMaterials = categoryMaterials.filter(m => m.categoria === 'Monitoring and Event Management');
-                const generalMaterials = categoryMaterials.filter(m => !m.categoria || m.categoria === 'general');
+                // Para ITIL, renderizar os cards específicos
+                const pmgMaterials = materials.filter(m => m.categoria === 'PMG Academy');
+                const monitoringMaterials = materials.filter(m => m.categoria === 'Monitoring and Event Management');
+                const generalMaterials = materials.filter(m => !m.categoria || m.categoria === 'general');
                 
-                loadPMGAcademyCard(pmgMaterials);
-                loadMonitoringCard(monitoringMaterials);
-                updateOtherMaterials(generalMaterials);
+                let html = '';
+                
+                // Card PMG Academy
+                html += renderPMGAcademyCard(pmgMaterials);
+                
+                // Card Monitoring and Event Management
+                html += renderMonitoringCard(monitoringMaterials);
+                
+                // Card para materiais gerais (apenas se houver)
+                if (generalMaterials.length > 0) {
+                    html += renderGeneralCard(generalMaterials, 'Materiais Gerais - ITIL 4', 'fas fa-file-alt', '#3498db');
+                }
+                
+                container.innerHTML = html;
+                document.getElementById('uploadSection').style.display = 'none';
             } else {
-                document.getElementById('pmg-academy-container').innerHTML = '';
-                document.getElementById('monitoring-container').innerHTML = '';
-                updateOtherMaterials(categoryMaterials);
+                // Para outras categorias, renderizar um card único
+                if (materials.length > 0) {
+                    container.innerHTML = renderGeneralCard(materials, certifications[currentCategory].title, certifications[currentCategory].icon, getCategoryColor(currentCategory));
+                } else {
+                    container.innerHTML = `
+                        <div class="other-cert-card">
+                            <div class="other-cert-header" style="background: linear-gradient(135deg, ${getCategoryColor(currentCategory)} 0%, ${getCategoryColor(currentCategory, true)} 100%);">
+                                <div class="other-cert-icon">
+                                    <i class="${certifications[currentCategory].icon}"></i>
+                                </div>
+                                <div class="other-cert-title">
+                                    <h3>${certifications[currentCategory].title}</h3>
+                                    <span class="monitoring-badge">
+                                        <i class="fas fa-certificate"></i> 
+                                        ${certifications[currentCategory].level}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="other-cert-content">
+                                <div class="empty-state">
+                                    <i class="fas fa-folder-open"></i>
+                                    <h4>Nenhum material disponível</h4>
+                                    <p>Seja o primeiro a compartilhar um material para ${certifications[currentCategory].title}!</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                document.getElementById('uploadSection').style.display = 'block';
             }
         }
 
-        function loadPMGAcademyCard(files = []) {
-            const container = document.getElementById('pmg-academy-container');
-            if (!container) return;
-            
+        function renderPMGAcademyCard(files = []) {
             const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
             const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
             const totalSizeMB = files.length > 0 ? 
@@ -1536,7 +1572,7 @@
             
             const groupedFiles = groupFilesByType(files);
             
-            const pmgCardHTML = `
+            return `
                 <div class="pmg-academy-card">
                     <div class="pmg-academy-header">
                         <div class="pmg-academy-icon">
@@ -1561,14 +1597,6 @@
                             <button class="upload-btn-card pmg" onclick="openUploadForCard('pmg')">
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
-                            ${currentUser ? `
-                                <button class="upload-btn-card monitoring" onclick="openUploadForCard('monitoring')">
-                                    <i class="fas fa-plus-circle"></i> Adicionar ao Monitoring
-                                </button>
-                                <button class="upload-btn-card" onclick="openUploadForCard('general')">
-                                    <i class="fas fa-cloud-upload-alt"></i> Upload na Lista Geral
-                                </button>
-                            ` : ''}
                         </div>
                         
                         <div class="pmg-stats">
@@ -1591,13 +1619,13 @@
                         </div>
                         
                         ${files.length > 0 ? `
-                            <button class="pmg-toggle-btn" onclick="togglePmgFiles()" id="pmgToggleBtn">
+                            <button class="pmg-toggle-btn" onclick="toggleFiles('pmg')" id="pmgToggleBtn">
                                 <i class="fas fa-folder-open"></i>
                                 <span>Mostrar ${files.length} Arquivos</span>
                             </button>
                             
                             <div id="pmg-files-container" style="display: none; margin-top: 1.5rem;">
-                                ${renderPMGFileGroups(groupedFiles)}
+                                ${renderFileGroups(groupedFiles, 'pmg')}
                             </div>
                         ` : `
                             <div class="empty-state">
@@ -1609,14 +1637,9 @@
                     </div>
                 </div>
             `;
-            
-            container.innerHTML = pmgCardHTML;
         }
 
-        function loadMonitoringCard(files = []) {
-            const container = document.getElementById('monitoring-container');
-            if (!container) return;
-            
+        function renderMonitoringCard(files = []) {
             const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
             const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
             const totalSizeMB = files.length > 0 ? 
@@ -1624,7 +1647,7 @@
             
             const groupedFiles = groupFilesByType(files);
             
-            const monitoringCardHTML = `
+            return `
                 <div class="monitoring-card">
                     <div class="monitoring-header">
                         <div class="monitoring-icon">
@@ -1649,14 +1672,6 @@
                             <button class="upload-btn-card monitoring" onclick="openUploadForCard('monitoring')">
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
-                            ${currentUser ? `
-                                <button class="upload-btn-card pmg" onclick="openUploadForCard('pmg')">
-                                    <i class="fas fa-plus-circle"></i> Adicionar ao PMG
-                                </button>
-                                <button class="upload-btn-card" onclick="openUploadForCard('general')">
-                                    <i class="fas fa-cloud-upload-alt"></i> Upload na Lista Geral
-                                </button>
-                            ` : ''}
                         </div>
                         
                         <div class="monitoring-stats">
@@ -1679,13 +1694,13 @@
                         </div>
                         
                         ${files.length > 0 ? `
-                            <button class="monitoring-toggle-btn" onclick="toggleMonitoringFiles()" id="monitoringToggleBtn">
+                            <button class="monitoring-toggle-btn" onclick="toggleFiles('monitoring')" id="monitoringToggleBtn">
                                 <i class="fas fa-folder-open"></i>
                                 <span>Mostrar ${files.length} Arquivos</span>
                             </button>
                             
                             <div id="monitoring-files-container" style="display: none; margin-top: 1.5rem;">
-                                ${renderMonitoringFileGroups(groupedFiles)}
+                                ${renderFileGroups(groupedFiles, 'monitoring')}
                             </div>
                         ` : `
                             <div class="empty-state">
@@ -1697,8 +1712,77 @@
                     </div>
                 </div>
             `;
+        }
+
+        function renderGeneralCard(files = [], title, icon, color) {
+            const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+            const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+            const totalSizeMB = files.length > 0 ? 
+                (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
             
-            container.innerHTML = monitoringCardHTML;
+            const groupedFiles = groupFilesByType(files);
+            const darkerColor = getDarkerColor(color);
+            
+            return `
+                <div class="other-cert-card">
+                    <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%);">
+                        <div class="other-cert-icon">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="other-cert-title">
+                            <h3>${title}</h3>
+                            <span class="monitoring-badge">
+                                <i class="fas fa-certificate"></i> 
+                                ${files.length} arquivos
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="other-cert-content">
+                        <div class="upload-btn-wrapper">
+                            <button class="upload-btn-card" onclick="openUploadForCard('general')" style="background: linear-gradient(135deg, ${color}, ${darkerColor});">
+                                <i class="fas fa-plus-circle"></i> Adicionar Material
+                            </button>
+                        </div>
+                        
+                        <div class="monitoring-stats">
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                                <div class="monitoring-stat-label">Arquivos</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                                <div class="monitoring-stat-label">Visualizações</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                                <div class="monitoring-stat-label">Downloads</div>
+                            </div>
+                            <div class="monitoring-stat">
+                                <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                                <div class="monitoring-stat-label">Tamanho Total</div>
+                            </div>
+                        </div>
+                        
+                        ${files.length > 0 ? `
+                            <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn" style="background: ${color};">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Mostrar ${files.length} Arquivos</span>
+                            </button>
+                            
+                            <div id="general-files-container" style="display: none; margin-top: 1.5rem;">
+                                ${renderFileGroups(groupedFiles, 'general')}
+                            </div>
+                        ` : `
+                            <div class="empty-state">
+                                <i class="fas fa-folder-open"></i>
+                                <h4>Nenhum material ainda</h4>
+                                <p>Seja o primeiro a compartilhar um material!</p>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
         }
 
         function groupFilesByType(files) {
@@ -1711,7 +1795,7 @@
             return groups;
         }
 
-        function renderPMGFileGroups(groups) {
+        function renderFileGroups(groups, cardType) {
             let html = '';
             const typeOrder = ['pdf', 'doc', 'ppt', 'video', 'txt', 'zip', 'other'];
             const sortedGroups = Object.entries(groups).sort((a, b) => {
@@ -1724,12 +1808,12 @@
                 
                 html += `
                     <div style="margin-bottom: 2rem;">
-                        <h4 style="color: #4ECDC4; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <h4 style="color: ${getCardColor(cardType)}; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
                             <i class="fas fa-${typeIcon}"></i>
                             ${typeName} (${files.length})
                         </h4>
-                        <div class="pmg-files-grid">
-                            ${files.map(file => renderPMGFileCard(file)).join('')}
+                        <div class="files-grid">
+                            ${files.map(file => renderFileCard(file, cardType)).join('')}
                         </div>
                     </div>
                 `;
@@ -1738,34 +1822,7 @@
             return html;
         }
 
-        function renderMonitoringFileGroups(groups) {
-            let html = '';
-            const typeOrder = ['pdf', 'doc', 'ppt', 'video', 'txt', 'zip', 'other'];
-            const sortedGroups = Object.entries(groups).sort((a, b) => {
-                return typeOrder.indexOf(a[0]) - typeOrder.indexOf(b[0]);
-            });
-            
-            sortedGroups.forEach(([type, files]) => {
-                const typeName = getTypeName(type);
-                const typeIcon = getFileIcon(type);
-                
-                html += `
-                    <div style="margin-bottom: 2rem;">
-                        <h4 style="color: #6f42c1; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-${typeIcon}"></i>
-                            ${typeName} (${files.length})
-                        </h4>
-                        <div class="monitoring-files-grid">
-                            ${files.map(file => renderMonitoringFileCard(file)).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            return html;
-        }
-
-        function renderPMGFileCard(file) {
+        function renderFileCard(file, cardType) {
             const fileId = file.id;
             const fileName = file.titulo || file.arquivo_nome || 'Arquivo';
             const fileDesc = file.descricao || 'Sem descrição';
@@ -1778,10 +1835,11 @@
             const currentUserId = currentUser?.id;
             const isOwner = currentUserId && file.usuario_id === currentUserId;
             const canView = canViewFile(fileType);
+            const cardColor = getCardColor(cardType);
             
             return `
-                <div class="pmg-file-card">
-                    <div class="pmg-file-icon">
+                <div class="${cardType === 'pmg' ? 'pmg-file-card' : cardType === 'monitoring' ? 'monitoring-file-card' : 'pmg-file-card'}">
+                    <div class="${cardType === 'pmg' ? 'pmg-file-icon' : cardType === 'monitoring' ? 'monitoring-file-icon' : 'pmg-file-icon'}" style="${cardType === 'general' ? `background: linear-gradient(135deg, ${getCategoryColor(currentCategory)}, ${getDarkerColor(getCategoryColor(currentCategory))});` : ''}">
                         <i class="fas fa-${fileIcon}"></i>
                     </div>
                     <div class="pmg-file-info">
@@ -1795,166 +1853,21 @@
                     </div>
                     <div class="pmg-file-actions">
                         ${hasValidUrl ? `
-                            <button class="pmg-action-btn" 
+                            <button class="${cardType === 'pmg' ? 'pmg-action-btn' : cardType === 'monitoring' ? 'monitoring-action-btn' : 'pmg-action-btn'}" 
                                onclick="handleFileAction('${fileId}', '${escapeString(fileName)}', '${escapeString(fileUrl)}', '${fileType}')" 
-                               title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
+                               title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}"
+                               style="${cardType === 'general' ? `border-color: ${getCategoryColor(currentCategory)};` : ''}">
                                 <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
                             </button>
                         ` : `
-                            <span class="pmg-action-btn disabled" title="Link não disponível">
+                            <span class="${cardType === 'pmg' ? 'pmg-action-btn disabled' : cardType === 'monitoring' ? 'monitoring-action-btn disabled' : 'pmg-action-btn disabled'}" title="Link não disponível">
                                 <i class="fas fa-eye"></i>
                             </span>
                         `}
                         ${isOwner ? `
-                            <button class="pmg-action-btn delete" 
+                            <button class="${cardType === 'pmg' ? 'pmg-action-btn delete' : cardType === 'monitoring' ? 'monitoring-action-btn delete' : 'pmg-action-btn delete'}" 
                                     onclick="showDeleteModal('${fileId}', '${escapeString(fileName)}')" 
                                     title="Excluir">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderMonitoringFileCard(file) {
-            const fileId = file.id;
-            const fileName = file.titulo || file.arquivo_nome || 'Arquivo';
-            const fileDesc = file.descricao || 'Sem descrição';
-            const fileUrl = file.arquivo_url || '#';
-            const fileSize = formatFileSize((file.arquivo_tamanho_kb || 0) * 1024);
-            const fileType = file.tipo || detectFileType(file.arquivo_nome || '');
-            const fileIcon = getFileIcon(fileType);
-            const uploadDate = formatDateCompact(file.data_upload);
-            const hasValidUrl = fileUrl && fileUrl !== '#' && fileUrl !== 'undefined' && (fileUrl.startsWith('http') || fileUrl.startsWith('https'));
-            const currentUserId = currentUser?.id;
-            const isOwner = currentUserId && file.usuario_id === currentUserId;
-            const canView = canViewFile(fileType);
-            
-            return `
-                <div class="monitoring-file-card">
-                    <div class="monitoring-file-icon">
-                        <i class="fas fa-${fileIcon}"></i>
-                    </div>
-                    <div class="pmg-file-info">
-                        <h5 title="${fileName}">${fileName}</h5>
-                        <div class="pmg-file-meta">
-                            <span><i class="fas fa-file"></i> ${fileType.toUpperCase()}</span>
-                            <span><i class="fas fa-hdd"></i> ${fileSize}</span>
-                            <span><i class="fas fa-calendar"></i> ${uploadDate}</span>
-                        </div>
-                        ${fileDesc ? `<p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">${fileDesc}</p>` : ''}
-                    </div>
-                    <div class="pmg-file-actions">
-                        ${hasValidUrl ? `
-                            <button class="pmg-action-btn" 
-                               onclick="handleFileAction('${fileId}', '${escapeString(fileName)}', '${escapeString(fileUrl)}', '${fileType}')" 
-                               title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
-                                <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
-                            </button>
-                        ` : `
-                            <span class="pmg-action-btn disabled" title="Link não disponível">
-                                <i class="fas fa-eye"></i>
-                            </span>
-                        `}
-                        ${isOwner ? `
-                            <button class="pmg-action-btn delete" 
-                                    onclick="showDeleteModal('${fileId}', '${escapeString(fileName)}')" 
-                                    title="Excluir">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-        }
-
-        function updateOtherMaterials(materials) {
-            const container = document.getElementById('materialsContainer');
-            const countElement = document.getElementById('materialsCount');
-            
-            if (!materials || materials.length === 0) {
-                container.innerHTML = `
-                    <div class="no-materials-message-compact">
-                        <i class="fas fa-folder-open"></i>
-                        <div>
-                            <h4>Nenhum material disponível</h4>
-                            <p>Seja o primeiro a compartilhar um material!</p>
-                        </div>
-                    </div>
-                `;
-                countElement.textContent = '0 materiais';
-                return;
-            }
-            
-            countElement.textContent = `${materials.length} material${materials.length !== 1 ? 's' : ''}`;
-            
-            const materialsHTML = materials.map(material => 
-                renderMaterialItem(material)
-            ).join('');
-            
-            container.innerHTML = materialsHTML;
-        }
-
-        function renderMaterialItem(material) {
-            const fileType = material.tipo || detectFileType(material.arquivo_nome || '');
-            const fileIcon = getFileIcon(fileType);
-            const currentUserId = currentUser?.id;
-            const isOwner = currentUserId && material.usuario_id === currentUserId;
-            const uploadDate = formatDateCompact(material.data_upload);
-            const fileSize = formatFileSize((material.arquivo_tamanho_kb || 0) * 1024);
-            const canView = canViewFile(fileType);
-            
-            return `
-                <div class="material-item-compact" data-id="${material.id}">
-                    <div class="material-icon-compact ${fileType}">
-                        <i class="fas fa-${fileIcon}"></i>
-                    </div>
-                    
-                    <div class="material-content-compact">
-                        <div class="material-header-compact">
-                            <a href="javascript:void(0)" onclick="handleFileAction('${material.id}', '${escapeString(material.titulo)}', '${escapeString(material.arquivo_url)}', '${fileType}')" 
-                               class="material-title-compact" 
-                               title="${material.titulo}">
-                                ${material.titulo}
-                            </a>
-                            <div class="material-meta-compact">
-                                <span title="Tipo de arquivo">
-                                    <i class="fas fa-file"></i> ${fileType.toUpperCase()}
-                                </span>
-                                <span title="Tamanho">
-                                    • ${fileSize}
-                                </span>
-                                <span title="Data de upload">
-                                    • ${uploadDate}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        ${material.descricao ? 
-                            `<div class="material-description-compact" title="${material.descricao}">
-                                ${material.descricao}
-                            </div>` 
-                            : ''
-                        }
-                        
-                        <div class="material-stats-compact">
-                            <span title="Visualizações">
-                                <i class="far fa-eye"></i> ${material.visualizacoes || 0}
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="material-actions-compact">
-                        <button class="btn btn-primary btn-sm" 
-                                onclick="handleFileAction('${material.id}', '${escapeString(material.titulo)}', '${escapeString(material.arquivo_url)}', '${fileType}')" 
-                                title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
-                            <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
-                        </button>
-                        ${isOwner ? `
-                            <button class="btn btn-outline btn-sm btn-delete" 
-                                    onclick="showDeleteModal('${material.id}', '${escapeString(material.titulo)}')" 
-                                    title="Excluir material">
                                 <i class="fas fa-trash"></i>
                             </button>
                         ` : ''}
@@ -1964,7 +1877,7 @@
         }
 
         // ============================================
-        // FUNÇÕES PARA UPLOAD - CORRIGIDAS
+        // FUNÇÕES PARA UPLOAD
         // ============================================
 
         function openUploadForCard(cardType) {
@@ -2013,13 +1926,13 @@
             
             document.getElementById('selectedFileInfo').innerHTML = `
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div style="width: 60px; height: 60px; background: #3498db; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 60px; height: 60px; background: ${currentUploadCardType === 'pmg' ? '#4ECDC4' : currentUploadCardType === 'monitoring' ? '#6f42c1' : getCategoryColor(currentCategory)}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-${fileIconName}" style="color: white; font-size: 1.5rem;"></i>
                     </div>
                     <div>
                         <div style="font-weight: bold; margin-bottom: 0.3rem;">${file.name}</div>
                         <div style="font-size: 0.9rem; color: #666;">
-                            ${formatFileSize(file.size)} • ${fileType.toUpperCase()}
+                            ${formatFileSize(file.size)} • ${fileType.toUpperCase()} • ${cardNames[currentUploadCardType] || 'Material Geral'}
                         </div>
                     </div>
                 </div>
@@ -2035,7 +1948,7 @@
                 document.getElementById('uploadCardType').value = currentUploadCardType;
             } else {
                 document.getElementById('itilCardSelection').style.display = 'none';
-                document.getElementById('uploadCardType').value = 'general';
+                document.getElementById('uploadCardType').value = currentUploadCardType;
             }
             
             document.getElementById('materialDescription').value = '';
@@ -2077,7 +1990,7 @@
             document.getElementById('uploadProgressContainer').style.display = 'block';
             
             try {
-                console.log('🚀 Iniciando upload de material para usuário:', user.email);
+                console.log('🚀 Iniciando upload de material para card:', cardType);
                 
                 const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
                 if (sessionError || !sessionData.session) {
@@ -2092,8 +2005,8 @@
                     .replace(/_{2,}/g, '_')
                     .replace(/^_+|_+$/g, '');
                 
-                const fileName = `material_${Date.now()}_${cleanFileName}`;
-                const filePath = `${user.id}/${fileName}`;
+                const fileName = `${cardType}_${Date.now()}_${cleanFileName}`;
+                const filePath = `${user.id}/${category}/${fileName}`;
                 const fileType = detectFileType(file.name);
                 
                 console.log('📤 Upload para:', filePath);
@@ -2153,14 +2066,13 @@
                     data_upload: new Date().toISOString()
                 };
                 
-                if (category === 'itil') {
-                    if (cardType === 'pmg') {
-                        materialData.categoria = 'PMG Academy';
-                    } else if (cardType === 'monitoring') {
-                        materialData.categoria = 'Monitoring and Event Management';
-                    } else if (cardType === 'general') {
-                        materialData.categoria = 'general';
-                    }
+                // Adicionar categoria baseada no card type
+                if (cardType === 'pmg') {
+                    materialData.categoria = 'PMG Academy';
+                } else if (cardType === 'monitoring') {
+                    materialData.categoria = 'Monitoring and Event Management';
+                } else if (cardType === 'general') {
+                    materialData.categoria = 'general';
                 }
                 
                 console.log('💾 Salvando no banco...', materialData);
@@ -2172,6 +2084,7 @@
                     .single();
                 
                 if (dbError) {
+                    console.error('❌ Erro ao salvar material:', dbError);
                     if (dbError.message.includes("Could not find the 'categoria' column")) {
                         console.warn('⚠️ Coluna "categoria" não encontrada. Tentando sem ela...');
                         delete materialData.categoria;
@@ -2226,7 +2139,7 @@
             document.getElementById('uploadModal').style.display = 'none';
             document.getElementById('fileInputPage').value = '';
             currentUploadFile = null;
-            currentUploadCardType = 'pmg';
+            currentUploadCardType = '';
         }
 
         // ============================================
@@ -2317,59 +2230,6 @@
         // FUNÇÕES DE FILTRO E ORDENAÇÃO
         // ============================================
 
-        function filterMaterials() {
-            const typeFilter = document.getElementById('filterType').value;
-            const sortFilter = document.getElementById('filterSort').value;
-            const searchFilter = document.getElementById('searchMaterial').value.toLowerCase();
-            
-            let filteredMaterials = allMaterials.filter(m => {
-                const cert = m.certificacao || '';
-                const categoryMapping = {
-                    'itil': ['itil4', 'itil'],
-                    'azure': ['azure'],
-                    'aws': ['aws'],
-                    'linux': ['lpic', 'linux'],
-                    'security': ['security'],
-                    'ccna': ['ccna']
-                };
-                
-                const validCerts = categoryMapping[currentCategory] || [currentCategory];
-                return validCerts.some(validCert => cert.includes(validCert));
-            });
-            
-            if (typeFilter !== 'all') {
-                filteredMaterials = filteredMaterials.filter(m => {
-                    const fileType = m.tipo || detectFileType(m.arquivo_nome || '');
-                    return fileType === typeFilter;
-                });
-            }
-            
-            if (searchFilter) {
-                filteredMaterials = filteredMaterials.filter(m => 
-                    (m.titulo || '').toLowerCase().includes(searchFilter) ||
-                    (m.descricao || '').toLowerCase().includes(searchFilter)
-                );
-            }
-            
-            filteredMaterials = sortMaterials(filteredMaterials, sortFilter);
-            
-            if (currentCategory === 'itil') {
-                const pmgMaterials = filteredMaterials.filter(m => m.categoria === 'PMG Academy');
-                const monitoringMaterials = filteredMaterials.filter(m => m.categoria === 'Monitoring and Event Management');
-                const generalMaterials = filteredMaterials.filter(m => !m.categoria || m.categoria === 'general');
-                
-                loadPMGAcademyCard(pmgMaterials);
-                loadMonitoringCard(monitoringMaterials);
-                updateOtherMaterials(generalMaterials);
-            } else {
-                document.getElementById('pmg-academy-container').innerHTML = '';
-                document.getElementById('monitoring-container').innerHTML = '';
-                updateOtherMaterials(filteredMaterials);
-            }
-            
-            updateStats(filteredMaterials);
-        }
-
         function sortMaterials(materials, sortType) {
             const sorted = [...materials];
             
@@ -2399,7 +2259,7 @@
         }
 
         function showNoMaterials(message) {
-            const container = document.getElementById('materialsContainer');
+            const container = document.getElementById('dynamicCardsContainer');
             container.innerHTML = `
                 <div class="no-materials-message-compact">
                     <i class="fas fa-folder-open"></i>
@@ -2492,6 +2352,57 @@
             };
             
             return nameMap[fileType] || 'Arquivos';
+        }
+
+        function getCardColor(cardType) {
+            switch(cardType) {
+                case 'pmg': return '#4ECDC4';
+                case 'monitoring': return '#6f42c1';
+                case 'general': return getCategoryColor(currentCategory);
+                default: return '#3498db';
+            }
+        }
+
+        function getCategoryColor(category, darker = false) {
+            const colors = {
+                'itil': '#1a237e',
+                'azure': '#0078D4',
+                'aws': '#FF9900',
+                'linux': '#FFD700',
+                'security': '#d32f2f',
+                'ccna': '#00a0d2'
+            };
+            
+            let color = colors[category] || '#3498db';
+            
+            if (darker) {
+                // Escurecer a cor
+                const hex = color.replace('#', '');
+                const r = parseInt(hex.substr(0, 2), 16);
+                const g = parseInt(hex.substr(2, 2), 16);
+                const b = parseInt(hex.substr(4, 2), 16);
+                
+                const darkerR = Math.max(0, r - 40);
+                const darkerG = Math.max(0, g - 40);
+                const darkerB = Math.max(0, b - 40);
+                
+                color = `#${darkerR.toString(16).padStart(2, '0')}${darkerG.toString(16).padStart(2, '0')}${darkerB.toString(16).padStart(2, '0')}`;
+            }
+            
+            return color;
+        }
+
+        function getDarkerColor(color) {
+            const hex = color.replace('#', '');
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+            
+            const darkerR = Math.max(0, r - 40);
+            const darkerG = Math.max(0, g - 40);
+            const darkerB = Math.max(0, b - 40);
+            
+            return `#${darkerR.toString(16).padStart(2, '0')}${darkerG.toString(16).padStart(2, '0')}${darkerB.toString(16).padStart(2, '0')}`;
         }
 
         function formatFileSize(bytes) {
@@ -2591,33 +2502,12 @@
         }
 
         // ============================================
-        // FUNÇÕES PARA OS NOVOS CARDS
+        // FUNÇÕES PARA OS CARDS
         // ============================================
 
-        function togglePmgFiles() {
-            const container = document.getElementById('pmg-files-container');
-            const toggleBtn = document.getElementById('pmgToggleBtn');
-            
-            if (!container || !toggleBtn) return;
-            
-            if (container.style.display === 'none' || container.style.display === '') {
-                container.style.display = 'block';
-                toggleBtn.innerHTML = `
-                    <i class="fas fa-folder-minus"></i>
-                    <span>Ocultar Arquivos</span>
-                `;
-            } else {
-                container.style.display = 'none';
-                toggleBtn.innerHTML = `
-                    <i class="fas fa-folder-open"></i>
-                    <span>Mostrar Arquivos</span>
-                `;
-            }
-        }
-
-        function toggleMonitoringFiles() {
-            const container = document.getElementById('monitoring-files-container');
-            const toggleBtn = document.getElementById('monitoringToggleBtn');
+        function toggleFiles(cardType) {
+            const container = document.getElementById(`${cardType}-files-container`);
+            const toggleBtn = document.getElementById(`${cardType}ToggleBtn`);
             
             if (!container || !toggleBtn) return;
             
@@ -2640,8 +2530,7 @@
         // EXPORTAR FUNÇÕES PARA USO GLOBAL
         // ============================================
 
-        window.togglePmgFiles = togglePmgFiles;
-        window.toggleMonitoringFiles = toggleMonitoringFiles;
+        window.toggleFiles = toggleFiles;
         window.openUploadForCard = openUploadForCard;
         window.checkAuthAndUpload = checkAuthAndUpload;
         window.closeUploadModal = closeUploadModal;
