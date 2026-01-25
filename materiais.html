@@ -116,7 +116,7 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
 
-        /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
+        /* Card especial para PMG Academy */
         .pmg-academy-container {
             margin-bottom: 2rem;
             display: block !important;
@@ -1160,14 +1160,14 @@
     <!-- JavaScript -->
     <script>
         // ============================================
-        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - COMPLETO
+        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - COMPLETO E CORRIGIDO
         // ============================================
 
         // Configurações
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-        // Mapeamento de certificações com banners e ícones - ATUALIZADO COM NOVAS CORES
+        // Mapeamento de certificações com banners e ícones
         const certifications = {
             'itil': { 
                 title: 'ITIL 4 Foundation', 
@@ -1223,7 +1223,7 @@
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
-        let currentUploadCardType = 'pmg'; // 'pmg' ou 'monitoring'
+        let currentUploadCardType = 'pmg'; // 'pmg' ou 'monitoring' ou 'general'
 
         // ============================================
         // INICIALIZAÇÃO
@@ -1494,7 +1494,7 @@
         }
 
         // ============================================
-        // CARREGAMENTO DE MATERIAIS
+        // CARREGAMENTO DE MATERIAIS - CORRIGIDO
         // ============================================
 
         async function loadAllMaterials() {
@@ -1537,7 +1537,7 @@
             }
         }
 
-        // Filtrar materiais por categoria
+        // Filtrar materiais por categoria - CORRIGIDO
         function filterMaterialsByCategory() {
             // Filtrar materiais pela categoria atual
             const categoryMaterials = allMaterials.filter(m => {
@@ -1560,24 +1560,33 @@
                 );
             });
             
-            // Para ITIL, mostrar os dois cards
-            if (currentCategory === 'itil' && categoryMaterials.length > 0) {
+            // Para ITIL, mostrar os dois cards e NADA na lista geral
+            if (currentCategory === 'itil') {
                 // Separar materiais por categoria (campo categoria no banco)
                 const pmgMaterials = categoryMaterials.filter(m => m.categoria === 'PMG Academy');
                 const monitoringMaterials = categoryMaterials.filter(m => m.categoria === 'Monitoring and Event Management');
-                const otherMaterials = categoryMaterials.filter(m => !m.categoria);
+                
+                // TODOS os materiais ITIL vão para os cards
+                // Se não tiver categoria, vai para PMG Academy por padrão
+                const otherItilMaterials = categoryMaterials.filter(m => !m.categoria);
+                
+                // Adicionar materiais sem categoria ao PMG Academy
+                pmgMaterials.push(...otherItilMaterials);
                 
                 loadPMGAcademyCard(pmgMaterials);
                 loadMonitoringCard(monitoringMaterials);
-                updateOtherMaterials(otherMaterials);
+                
+                // Nenhum material ITIL na lista geral
+                updateOtherMaterials([]);
             } else {
+                // Para outras certificações, limpar cards e mostrar tudo na lista
                 document.getElementById('pmg-academy-container').innerHTML = '';
                 document.getElementById('monitoring-container').innerHTML = '';
                 updateOtherMaterials(categoryMaterials);
             }
         }
 
-        // Carregar card PMG Academy
+        // Carregar card PMG Academy - ATUALIZADO
         function loadPMGAcademyCard(files = []) {
             const container = document.getElementById('pmg-academy-container');
             
@@ -1617,11 +1626,6 @@
                             <button class="upload-btn-card pmg" onclick="openUploadForCard('pmg')">
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
-                            ${currentUser ? `
-                                <button class="upload-btn-card" onclick="checkAuthAndUpload()">
-                                    <i class="fas fa-cloud-upload-alt"></i> Upload Geral
-                                </button>
-                            ` : ''}
                         </div>
                         
                         <div class="pmg-stats">
@@ -1666,7 +1670,7 @@
             container.innerHTML = pmgCardHTML;
         }
 
-        // NOVA FUNÇÃO: Carregar card Monitoring and Event Management
+        // Carregar card Monitoring and Event Management - ATUALIZADO
         function loadMonitoringCard(files = []) {
             const container = document.getElementById('monitoring-container');
             
@@ -1706,11 +1710,6 @@
                             <button class="upload-btn-card monitoring" onclick="openUploadForCard('monitoring')">
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
-                            ${currentUser ? `
-                                <button class="upload-btn-card" onclick="checkAuthAndUpload()">
-                                    <i class="fas fa-cloud-upload-alt"></i> Upload Geral
-                                </button>
-                            ` : ''}
                         </div>
                         
                         <div class="monitoring-stats">
@@ -1952,7 +1951,7 @@
             `;
         }
 
-        // Atualizar outros materiais (não agrupados)
+        // Atualizar outros materiais (não agrupados) - APENAS PARA NÃO-ITIL
         function updateOtherMaterials(materials) {
             const container = document.getElementById('materialsContainer');
             const countElement = document.getElementById('materialsCount');
@@ -2049,10 +2048,10 @@
         }
 
         // ============================================
-        // FUNÇÕES PARA UPLOAD POR CARD
+        // FUNÇÕES PARA UPLOAD POR CARD - CORRIGIDAS
         // ============================================
 
-        // NOVA FUNÇÃO: Abrir upload para um card específico
+        // Abrir upload para um card específico
         function openUploadForCard(cardType) {
             if (!window.authManager || !window.authManager.isAuthenticated()) {
                 showNotification('Faça login para compartilhar materiais.', 'warning');
@@ -2142,6 +2141,7 @@
                 document.getElementById('uploadCardType').value = currentUploadCardType === 'general' ? 'pmg' : currentUploadCardType;
             } else {
                 document.getElementById('itilCardSelection').style.display = 'none';
+                document.getElementById('uploadCardType').value = 'general';
             }
             
             // Resetar outros campos
@@ -2536,7 +2536,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE FILTRO E ORDENAÇÃO
+        // FUNÇÕES DE FILTRO E ORDENAÇÃO - CORRIGIDAS
         // ============================================
 
         function filterMaterials() {
@@ -2584,16 +2584,22 @@
             // Ordenar
             filteredMaterials = sortMaterials(filteredMaterials, sortFilter);
             
-            // Separar ITIL em cards específicos
+            // Para ITIL: separar em cards
             if (currentCategory === 'itil') {
                 const pmgMaterials = filteredMaterials.filter(m => m.categoria === 'PMG Academy');
                 const monitoringMaterials = filteredMaterials.filter(m => m.categoria === 'Monitoring and Event Management');
-                const otherMaterials = filteredMaterials.filter(m => !m.categoria);
+                const otherItilMaterials = filteredMaterials.filter(m => !m.categoria);
+                
+                // Adicionar materiais sem categoria ao PMG Academy
+                pmgMaterials.push(...otherItilMaterials);
                 
                 loadPMGAcademyCard(pmgMaterials);
                 loadMonitoringCard(monitoringMaterials);
-                updateOtherMaterials(otherMaterials);
+                
+                // Nenhum material ITIL na lista geral
+                updateOtherMaterials([]);
             } else {
+                // Para outras certificações
                 document.getElementById('pmg-academy-container').innerHTML = '';
                 document.getElementById('monitoring-container').innerHTML = '';
                 updateOtherMaterials(filteredMaterials);
