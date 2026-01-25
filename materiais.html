@@ -11,12 +11,305 @@
     <script src="js/config.js"></script>
     <script src="js/auth.js" defer></script>
     <style>
-        /* ... (seus estilos existentes) ... */
+        /* Banners personalizados por certificação */
+        .itil-banner {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 25%, #3949ab 50%, #5c6bc0 75%, #7986cb 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .itil-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M50,20 L60,40 L80,45 L65,60 L70,80 L50,70 L30,80 L35,60 L20,45 L40,40 Z" fill="white"/></svg>');
+        }
+        
+        .azure-banner {
+            background: linear-gradient(135deg, #0078D4 0%, #005A9E 25%, #004578 50%, #002050 75%, #001135 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .azure-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><rect x="30" y="30" width="40" height="40" rx="5" fill="white"/><polygon points="50,20 70,35 70,65 50,80 30,65 30,35" fill="white"/></svg>');
+        }
+        
+        .aws-banner {
+            background: linear-gradient(135deg, #FF9900 0%, #FF6B00 25%, #FF4500 50%, #FF3300 75%, #FF2200 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .aws-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,50 Q50,20 70,50 Q50,80 30,50 Z" fill="white"/></svg>');
+        }
+        
+        /* LINUX ALTERADO PARA AMARELO */
+        .linux-banner {
+            background: linear-gradient(135deg, #FFD700 0%, #FFC107 25%, #FF9800 50%, #FF5722 75%, #FF3D00 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .linux-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><ellipse cx="50" cy="40" rx="35" ry="20" fill="white"/><ellipse cx="50" cy="70" rx="40" ry="25" fill="white"/></svg>');
+        }
+        
+        /* SECURITY+ ALTERADO PARA VERMELHO COM FONTE BRANCA */
+        .security-banner {
+            background: linear-gradient(135deg, #d32f2f 0%, #c62828 25%, #b71c1c 50%, #8b0000 75%, #660000 100%) !important;
+            color: white !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .security-banner * {
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+        }
+        
+        .security-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M50,20 L70,30 L70,60 Q70,80 50,90 Q30,80 30,60 L30,30 Z" fill="white"/></svg>');
+        }
+        
+        .ccna-banner {
+            background: linear-gradient(135deg, #00a0d2 0%, #00749E 25%, #005577 50%, #003955 75%, #001f33 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ccna-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
+        }
 
-        /* NOVO: Estilo para o card Monitoring and Event Management */
+        /* Card especial para PMG Academy - TODOS OS 20 ARQUIVOS AQUI */
+        .pmg-academy-container {
+            margin-bottom: 2rem;
+            display: block !important;
+        }
+        
+        .pmg-academy-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #4ECDC4;
+        }
+        
+        .pmg-academy-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pmg-academy-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .pmg-academy-title {
+            flex: 1;
+        }
+        
+        .pmg-academy-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .pmg-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .pmg-academy-content {
+            padding: 1.5rem;
+        }
+        
+        .pmg-files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .pmg-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .pmg-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #4ECDC4;
+        }
+        
+        .pmg-file-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .pmg-file-info {
+            flex: 1;
+        }
+        
+        .pmg-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .pmg-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .pmg-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .pmg-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .pmg-action-btn:hover {
+            background: #4ECDC4;
+            color: white;
+            border-color: #4ECDC4;
+        }
+        
+        .pmg-action-btn.delete:hover {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        
+        .pmg-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .pmg-stat {
+            text-align: center;
+        }
+        
+        .pmg-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4ECDC4;
+        }
+        
+        .pmg-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .pmg-toggle-btn {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .pmg-toggle-btn:hover {
+            background: #44A08D;
+            transform: translateY(-2px);
+        }
+        
+        /* NOVO: Card Monitoring and Event Management */
         .monitoring-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border: 2px dashed #6c757d;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px dashed #dee2e6;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             overflow: hidden;
@@ -150,6 +443,7 @@
             transform: translateY(-2px);
         }
         
+        /* Botões de upload nos cards */
         .upload-btn-card {
             background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
@@ -162,12 +456,37 @@
             gap: 0.5rem;
             font-weight: 500;
             transition: all 0.3s;
+            margin-right: 0.5rem;
         }
         
         .upload-btn-card:hover {
             background: #218838;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .upload-btn-card.pmg {
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+        }
+        
+        .upload-btn-card.pmg:hover {
+            background: #3db7ae;
+        }
+        
+        .upload-btn-card.monitoring {
+            background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        }
+        
+        .upload-btn-card.monitoring:hover {
+            background: #5e35b1;
+        }
+        
+        .upload-btn-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
         }
         
         .empty-state {
@@ -186,14 +505,339 @@
             margin-top: 0.5rem;
         }
         
-        .upload-btn-wrapper {
+        /* Ícones coloridos por tipo de arquivo */
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
             display: flex;
-            gap: 1rem;
             align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+        
+        .file-icon.pdf { background: #e74c3c; }
+        .file-icon.doc { background: #3498db; }
+        .file-icon.ppt { background: #e67e22; }
+        .file-icon.txt { background: #7f8c8d; }
+        .file-icon.zip { background: #9b59b6; }
+        .file-icon.video { background: #e74c3c; }
+        .file-icon.other { background: #95a5a6; }
+        
+        /* Botão de exclusão */
+        .btn-delete {
+            background: rgba(231, 76, 60, 0.1) !important;
+            border: 2px solid #e74c3c !important;
+            color: #e74c3c !important;
+            transition: all 0.3s;
+        }
+        
+        .btn-delete:hover {
+            background: #e74c3c !important;
+            color: white !important;
+        }
+        
+        /* Categorias de certificação - FONTE BRANCA EM TODOS OS ESTADOS */
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
             margin-top: 1rem;
         }
         
-        /* ... (seus estilos existentes continuam) ... */
+        .category-chip {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .category-chip:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            color: white !important; /* FONTE BRANCA AO PASSAR MOUSE */
+        }
+        
+        .category-chip.active {
+            color: white !important; /* FONTE BRANCA AO CLICAR */
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Cores específicas para cada categoria - FONTE SEMPRE BRANCA */
+        .category-chip[data-category="itil"]:hover { 
+            background: #1a237e; 
+            color: white !important; 
+        }
+        .category-chip[data-category="azure"]:hover { 
+            background: #0078D4; 
+            color: white !important; 
+        }
+        .category-chip[data-category="aws"]:hover { 
+            background: #FF9900; 
+            color: white !important; 
+        }
+        .category-chip[data-category="linux"]:hover { 
+            background: #FFD700; 
+            color: white !important; /* AMARELO COM FONTE BRANCA */
+        }
+        .category-chip[data-category="security"]:hover { 
+            background: #d32f2f; 
+            color: white !important; /* VERMELHO COM FONTE BRANCA */
+        }
+        .category-chip[data-category="ccna"]:hover { 
+            background: #00a0d2; 
+            color: white !important; 
+        }
+        
+        .category-chip.active[data-category="itil"] { 
+            background: #1a237e; 
+            color: white !important; 
+        }
+        .category-chip.active[data-category="azure"] { 
+            background: #0078D4; 
+            color: white !important; 
+        }
+        .category-chip.active[data-category="aws"] { 
+            background: #FF9900; 
+            color: white !important; 
+        }
+        .category-chip.active[data-category="linux"] { 
+            background: #FFD700; 
+            color: white !important; /* AMARELO COM FONTE BRANCA */
+        }
+        .category-chip.active[data-category="security"] { 
+            background: #d32f2f; 
+            color: white !important; /* VERMELHO COM FONTE BRANCA */
+        }
+        .category-chip.active[data-category="ccna"] { 
+            background: #00a0d2; 
+            color: white !important; 
+        }
+        
+        /* NOTIFICAÇÕES CORRIGIDAS - FONTE ESCURA SOBRE FUNDO CLARO */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease-out;
+            border-left: 4px solid #3498db;
+            max-width: 400px;
+            color: #333 !important; /* FONTE ESCURA */
+            font-weight: 500;
+        }
+        
+        .notification i {
+            color: inherit !important;
+        }
+        
+        .notification span {
+            color: inherit !important;
+        }
+        
+        .notification-success {
+            border-left-color: #27ae60;
+            background: #e8f6ef !important;
+            color: #155724 !important;
+        }
+        
+        .notification-error {
+            border-left-color: #e74c3c;
+            background: #fde8e8 !important;
+            color: #721c24 !important;
+        }
+        
+        .notification-warning {
+            border-left-color: #f39c12;
+            background: #fff3cd !important;
+            color: #856404 !important;
+        }
+        
+        .notification-info {
+            border-left-color: #3498db;
+            background: #e3f2fd !important;
+            color: #0c5460 !important;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        /* Melhorias no modal de upload */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-modal:hover {
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        /* Melhorias no progresso de upload */
+        .upload-progress {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-container {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4ECDC4, #44A08D);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .pmg-files-grid,
+            .monitoring-files-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pmg-academy-header,
+            .monitoring-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .pmg-academy-icon,
+            .monitoring-icon {
+                margin-bottom: 1rem;
+            }
+            
+            .pmg-stats,
+            .monitoring-stats {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .pmg-stat,
+            .monitoring-stat {
+                flex: 1;
+                min-width: 80px;
+            }
+            
+            .category-filter {
+                justify-content: center;
+            }
+            
+            .category-chip {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.8rem;
+            }
+            
+            .notification {
+                top: 60px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+                width: calc(100% - 2rem);
+            }
+            
+            .upload-btn-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .upload-btn-card {
+                width: 100%;
+                justify-content: center;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -516,14 +1160,14 @@
     <!-- JavaScript -->
     <script>
         // ============================================
-        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - ATUALIZADO
+        // JAVASCRIPT PARA PÁGINA DE MATERIAIS - COMPLETO
         // ============================================
 
         // Configurações
         const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-        // Mapeamento de certificações com banners e ícones
+        // Mapeamento de certificações com banners e ícones - ATUALIZADO COM NOVAS CORES
         const certifications = {
             'itil': { 
                 title: 'ITIL 4 Foundation', 
@@ -575,7 +1219,7 @@
         // Variáveis globais
         let supabaseClient = null;
         let currentUploadFile = null;
-        let currentCategory = 'itil';
+        let currentCategory = 'itil'; // Inicia com ITIL
         let materialToDelete = null;
         let currentUser = null;
         let allMaterials = [];
@@ -970,12 +1614,11 @@
                         </p>
                         
                         <div class="upload-btn-wrapper">
-                            <button class="upload-btn-card" onclick="openUploadForCard('pmg')">
+                            <button class="upload-btn-card pmg" onclick="openUploadForCard('pmg')">
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
                             ${currentUser ? `
-                                <button class="upload-btn-card" style="background: linear-gradient(135deg, #3498db, #2980b9);" 
-                                        onclick="checkAuthAndUpload()">
+                                <button class="upload-btn-card" onclick="checkAuthAndUpload()">
                                     <i class="fas fa-cloud-upload-alt"></i> Upload Geral
                                 </button>
                             ` : ''}
@@ -1060,12 +1703,11 @@
                         </p>
                         
                         <div class="upload-btn-wrapper">
-                            <button class="upload-btn-card" onclick="openUploadForCard('monitoring')">
+                            <button class="upload-btn-card monitoring" onclick="openUploadForCard('monitoring')">
                                 <i class="fas fa-plus-circle"></i> Adicionar Material
                             </button>
                             ${currentUser ? `
-                                <button class="upload-btn-card" style="background: linear-gradient(135deg, #3498db, #2980b9);" 
-                                        onclick="checkAuthAndUpload()">
+                                <button class="upload-btn-card" onclick="checkAuthAndUpload()">
                                     <i class="fas fa-cloud-upload-alt"></i> Upload Geral
                                 </button>
                             ` : ''}
@@ -1424,6 +2066,19 @@
             document.getElementById('fileInputPage').click();
         }
 
+        function checkAuthAndUpload() {
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                showNotification('Faça login para compartilhar materiais.', 'warning');
+                setTimeout(() => {
+                    window.location.href = 'index.html#login';
+                }, 1500);
+                return;
+            }
+            
+            currentUploadCardType = 'general';
+            document.getElementById('fileInputPage').click();
+        }
+
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1483,8 +2138,8 @@
             // Se for ITIL, mostrar seleção de card
             if (currentCategory === 'itil') {
                 document.getElementById('itilCardSelection').style.display = 'block';
-                document.getElementById('materialCard').value = currentUploadCardType;
-                document.getElementById('uploadCardType').value = currentUploadCardType;
+                document.getElementById('materialCard').value = currentUploadCardType === 'general' ? 'pmg' : currentUploadCardType;
+                document.getElementById('uploadCardType').value = currentUploadCardType === 'general' ? 'pmg' : currentUploadCardType;
             } else {
                 document.getElementById('itilCardSelection').style.display = 'none';
             }
@@ -1720,6 +2375,117 @@
         }
 
         // ============================================
+        // FUNÇÕES DE EXCLUSÃO
+        // ============================================
+
+        function showDeleteModal(materialId, materialTitle) {
+            materialToDelete = {
+                id: materialId,
+                title: materialTitle
+            };
+            
+            document.getElementById('deleteMaterialName').textContent = materialTitle;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            materialToDelete = null;
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        async function confirmDeleteMaterial() {
+            if (!materialToDelete) {
+                showNotification('Erro: Nenhum material selecionado para exclusão.', 'error');
+                closeDeleteModal();
+                return;
+            }
+            
+            if (!window.authManager || !window.authManager.isAuthenticated()) {
+                showNotification('Sessão expirada. Faça login novamente.', 'error');
+                closeDeleteModal();
+                window.location.href = 'index.html#login';
+                return;
+            }
+            
+            const currentUser = window.authManager.getUser();
+            if (!currentUser || !currentUser.id) {
+                showNotification('Erro: usuário não identificado.', 'error');
+                closeDeleteModal();
+                return;
+            }
+            
+            try {
+                console.log('🗑️ Iniciando exclusão do material:', materialToDelete.id);
+                
+                // 1. Primeiro buscar o material para obter informações
+                const { data: material, error: fetchError } = await supabaseClient
+                    .from('materiais')
+                    .select('*')
+                    .eq('id', materialToDelete.id)
+                    .single();
+                
+                if (fetchError) {
+                    console.error('❌ Erro ao buscar material:', fetchError);
+                    throw new Error('Material não encontrado.');
+                }
+                
+                // 2. Verificar se o usuário é o dono
+                if (material.usuario_id !== currentUser.id) {
+                    showNotification('Você só pode excluir seus próprios materiais.', 'error');
+                    closeDeleteModal();
+                    return;
+                }
+                
+                // 3. Extrair caminho do arquivo da URL para excluir do Storage
+                const fileUrl = material.arquivo_url;
+                console.log('🔗 URL do arquivo:', fileUrl);
+                
+                // Extrair o caminho do arquivo do bucket
+                const urlParts = fileUrl.split('/materiais/');
+                if (urlParts.length > 1) {
+                    const filePath = urlParts[1];
+                    console.log('📁 Caminho do arquivo no storage:', filePath);
+                    
+                    // Excluir do Storage
+                    const { error: storageError } = await supabaseClient.storage
+                        .from('materiais')
+                        .remove([filePath]);
+                    
+                    if (storageError) {
+                        console.warn('⚠️ Não foi possível excluir do storage:', storageError.message);
+                    } else {
+                        console.log('✅ Arquivo excluído do storage');
+                    }
+                }
+                
+                // 4. Excluir do banco de dados
+                const { error: deleteError } = await supabaseClient
+                    .from('materiais')
+                    .delete()
+                    .eq('id', materialToDelete.id);
+                
+                if (deleteError) {
+                    console.error('❌ Erro ao excluir do banco:', deleteError);
+                    throw new Error(`Erro ao excluir material: ${deleteError.message}`);
+                }
+                
+                console.log('✅ Material excluído com sucesso');
+                
+                // Fechar modal e mostrar mensagem
+                closeDeleteModal();
+                showNotification('✅ Material excluído com sucesso!', 'success');
+                
+                // Recarregar a lista de materiais
+                loadAllMaterials();
+                
+            } catch (error) {
+                console.error('❌ Erro na exclusão:', error);
+                showNotification(`❌ Erro: ${error.message}`, 'error');
+                closeDeleteModal();
+            }
+        }
+
+        // ============================================
         // FUNÇÕES ADICIONAIS PARA OS NOVOS CARDS
         // ============================================
 
@@ -1770,21 +2536,7 @@
         }
 
         // ============================================
-        // FUNÇÕES RESTANTES (filterMaterials, sortMaterials, etc.)
-        // ============================================
-
-        // ... (o restante do seu código JavaScript permanece igual a partir daqui,
-        // incluindo as funções filterMaterials, sortMaterials, updateStats,
-        // showNoMaterials, canViewFile, handleFileAction, recordView, recordDownload,
-        // detectFileType, getFileIcon, getTypeName, formatFileSize, formatDateCompact,
-        // sanitizeFileName, escapeString, showNotification, etc.)
-        // ... (copie todas as funções restantes do seu código original aqui)
-
-        // Para economizar espaço, estou assumindo que você tem as funções restantes
-        // do seu código original. Se precisar de alguma função específica, me avise!
-
-        // ============================================
-        // FILTRAR MATERIAIS (FUNÇÃO ATUALIZADA)
+        // FUNÇÕES DE FILTRO E ORDENAÇÃO
         // ============================================
 
         function filterMaterials() {
@@ -1849,6 +2601,238 @@
             
             // Atualizar estatísticas com os materiais filtrados
             updateStats(filteredMaterials);
+        }
+
+        function sortMaterials(materials, sortType) {
+            const sorted = [...materials];
+            
+            switch(sortType) {
+                case 'date_asc':
+                    return sorted.sort((a, b) => new Date(a.data_upload) - new Date(b.data_upload));
+                case 'views_desc':
+                    return sorted.sort((a, b) => (b.visualizacoes || 0) - (a.visualizacoes || 0));
+                case 'name_asc':
+                    return sorted.sort((a, b) => (a.titulo || '').localeCompare(b.titulo || ''));
+                case 'date_desc':
+                default:
+                    return sorted.sort((a, b) => new Date(b.data_upload) - new Date(a.data_upload));
+            }
+        }
+
+        function updateStats(materials) {
+            const totalMaterials = materials.length;
+            const totalSize = materials.reduce((sum, material) => sum + (material.arquivo_tamanho_kb || 0), 0) / 1024;
+            const totalViews = materials.reduce((sum, material) => sum + (material.visualizacoes || 0), 0);
+            const totalDownloads = materials.reduce((sum, material) => sum + (material.downloads || 0), 0);
+            
+            document.getElementById('totalMaterials').textContent = totalMaterials;
+            document.getElementById('totalSize').textContent = totalSize.toFixed(1) + ' MB';
+            document.getElementById('totalViews').textContent = totalViews;
+            document.getElementById('totalDownloads').textContent = totalDownloads;
+        }
+
+        function showNoMaterials(message) {
+            const container = document.getElementById('materialsContainer');
+            container.innerHTML = `
+                <div class="no-materials-message-compact">
+                    <i class="fas fa-folder-open"></i>
+                    <div>
+                        <h4>${message}</h4>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // FUNÇÕES PARA MANIPULAÇÃO DE ARQUIVOS
+        // ============================================
+
+        function canViewFile(fileType) {
+            return VIEWABLE_FILE_TYPES.includes(fileType);
+        }
+
+        function handleFileAction(fileId, fileName, fileUrl, fileType) {
+            if (!fileUrl || fileUrl === '#' || fileUrl === 'undefined') {
+                showNotification('Link do arquivo não disponível.', 'error');
+                return;
+            }
+            
+            // Registrar visualização
+            recordView(fileId);
+            
+            if (canViewFile(fileType)) {
+                // PDF e TXT - abrir em nova aba
+                openFileInNewTab(fileUrl);
+            } else {
+                // DOC, PPT, ZIP, vídeos, etc. - download automático
+                downloadFile(fileId, fileName, fileUrl);
+            }
+        }
+
+        function openFileInNewTab(fileUrl) {
+            window.open(fileUrl, '_blank');
+        }
+
+        function downloadFile(fileId, fileName, fileUrl) {
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = sanitizeFileName(fileName);
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Registrar download
+            recordDownload(fileId);
+            
+            showNotification(`Download de "${fileName}" iniciado.`, 'success');
+        }
+
+        // ============================================
+        // FUNÇÕES AUXILIARES
+        // ============================================
+
+        function detectFileType(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            
+            const typeMap = {
+                'pdf': 'pdf',
+                'doc': 'doc', 'docx': 'doc', 'odt': 'doc',
+                'ppt': 'ppt', 'pptx': 'ppt', 'odp': 'ppt',
+                'txt': 'txt', 'rtf': 'txt', 'md': 'txt',
+                'zip': 'zip', 'rar': 'zip', '7z': 'zip',
+                'mp4': 'video', 'avi': 'video', 'mov': 'video',
+                'jpg': 'other', 'jpeg': 'other', 'png': 'other'
+            };
+            
+            return typeMap[ext] || 'other';
+        }
+
+        function getFileIcon(fileType) {
+            const iconMap = {
+                'pdf': 'file-pdf',
+                'doc': 'file-word',
+                'ppt': 'file-powerpoint',
+                'txt': 'file-alt',
+                'zip': 'file-archive',
+                'video': 'file-video',
+                'other': 'file'
+            };
+            
+            return iconMap[fileType] || 'file';
+        }
+
+        function getTypeName(fileType) {
+            const nameMap = {
+                'pdf': 'PDFs',
+                'doc': 'Documentos',
+                'ppt': 'Apresentações',
+                'txt': 'Textos',
+                'zip': 'Arquivos Compactados',
+                'video': 'Videoaulas',
+                'other': 'Outros'
+            };
+            
+            return nameMap[fileType] || 'Arquivos';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function formatDateCompact(dateString) {
+            try {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) {
+                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                    if (diffHours < 1) {
+                        return 'Hoje';
+                    }
+                    return `${diffHours}h atrás`;
+                } else if (diffDays === 1) {
+                    return 'Ontem';
+                } else if (diffDays < 7) {
+                    return `${diffDays}d atrás`;
+                } else {
+                    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                }
+            } catch (e) {
+                return '--/--';
+            }
+        }
+
+        function sanitizeFileName(name) {
+            return name
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, '_')
+                .replace(/[^\w\.\-]/g, '')
+                .replace(/_{2,}/g, '_')
+                .replace(/^_+|_+$/g, '');
+        }
+
+        function escapeString(str) {
+            if (!str) return '';
+            return str
+                .replace(/'/g, "\\'")
+                .replace(/"/g, '\\"')
+                .replace(/\n/g, ' ')
+                .replace(/\r/g, ' ');
+        }
+
+        function recordView(materialId) {
+            console.log(`Registrando visualização: ${materialId}`);
+            // Atualizar contador local
+            const material = allMaterials.find(m => m.id === materialId);
+            if (material) {
+                material.visualizacoes = (material.visualizacoes || 0) + 1;
+                updateStats(allMaterials);
+            }
+        }
+
+        function recordDownload(materialId) {
+            console.log(`Registrando download: ${materialId}`);
+            // Atualizar contador local
+            const material = allMaterials.find(m => m.id === materialId);
+            if (material) {
+                material.downloads = (material.downloads || 0) + 1;
+                updateStats(allMaterials);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Remover notificações anteriores
+            const oldNotifications = document.querySelectorAll('.notification');
+            oldNotifications.forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                  type === 'error' ? 'exclamation-circle' : 
+                                  type === 'warning' ? 'exclamation-triangle' : 
+                                  'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
         }
 
         // ============================================
