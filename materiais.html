@@ -1071,6 +1071,7 @@
                     <select id="materialCard" class="filter-input">
                         <option value="pmg">PMG Academy</option>
                         <option value="monitoring">Monitoring and Event Management</option>
+                        <option value="general">Material Geral</option>
                     </select>
                 </div>
                 
@@ -1130,7 +1131,7 @@
             icon: 'fas fa-cube',
             bannerClass: 'itil-banner',
             description: 'Guias de estudo, resumos e recursos para certificação ITIL 4 Foundation',
-            cards: ['pmg', 'monitoring']
+            cards: ['pmg', 'monitoring', 'general']
         },
         'azure': { 
             title: 'Microsoft Azure', 
@@ -1172,6 +1173,19 @@
             description: 'Recursos para Cisco Certified Network Associate',
             cards: []
         }
+    };
+
+    // Mapeamento de valores para a coluna certificacao
+    const certificationMapping = {
+        'pmg': 'itil4_pmg',
+        'monitoring': 'itil4_monitoring',
+        'general': 'itil4',
+        'itil': 'itil4',
+        'azure': 'azure',
+        'aws': 'aws',
+        'linux': 'lpic',
+        'security': 'security',
+        'ccna': 'ccna'
     };
 
     // Mapeamento de nomes de cards
@@ -1476,8 +1490,14 @@
         // Primeiro, filtrar por categoria da certificação
         let filteredMaterials = allMaterials.filter(m => {
             const cert = m.certificacao || '';
+            
+            // Para ITIL, aceitamos diferentes valores de certificação
+            if (currentCategory === 'itil') {
+                return cert.includes('itil4');
+            }
+            
+            // Para outras categorias, filtro específico
             const categoryMapping = {
-                'itil': ['itil4', 'itil'],
                 'azure': ['azure'],
                 'aws': ['aws'],
                 'linux': ['lpic', 'linux'],
@@ -1485,7 +1505,7 @@
                 'ccna': ['ccna']
             };
             
-            const validCerts = categoryMapping[currentCategory] || [currentCategory];
+            const validCerts = categoryMapping[currentCategory] || [];
             return validCerts.some(validCert => cert.includes(validCert));
         });
         
@@ -1517,20 +1537,23 @@
         const container = document.getElementById('dynamicCardsContainer');
         
         if (currentCategory === 'itil') {
-            // Para ITIL, separar os materiais por categoria/card
+            // Para ITIL, separar os materiais pelo valor da certificação
             const pmgMaterials = materials.filter(m => 
-                m.categoria === 'PMG Academy' || m.categoria === 'pmg'
+                m.certificacao === 'itil4_pmg' || m.certificacao === 'itil4 pmg' || m.certificacao === 'itil4_pmg_academy'
             );
             
             const monitoringMaterials = materials.filter(m => 
-                m.categoria === 'Monitoring and Event Management' || m.categoria === 'monitoring'
+                m.certificacao === 'itil4_monitoring' || m.certificacao === 'itil4 monitoring' || m.certificacao === 'itil4_monitoring_event'
             );
             
             const generalMaterials = materials.filter(m => 
-                !m.categoria || 
-                m.categoria === 'general' || 
-                m.categoria === '' ||
-                (m.categoria !== 'PMG Academy' && m.categoria !== 'Monitoring and Event Management' && m.categoria !== 'pmg' && m.categoria !== 'monitoring')
+                m.certificacao === 'itil4' || 
+                !m.certificacao ||
+                (m.certificacao.includes('itil4') && 
+                 !m.certificacao.includes('_pmg') && 
+                 !m.certificacao.includes('_monitoring') &&
+                 !m.certificacao.includes('pmg') &&
+                 !m.certificacao.includes('monitoring'))
             );
             
             console.log('📊 Estatísticas ITIL:');
@@ -2063,24 +2086,17 @@
             
             console.log('🔗 URL pública:', urlData.publicUrl);
             
-            const certMapping = {
-                'itil': 'itil4',
-                'azure': 'azure',
-                'aws': 'aws',
-                'linux': 'lpic',
-                'security': 'security',
-                'ccna': 'ccna'
-            };
+            // Definir o valor correto para a certificação baseado no card type
+            let certificacao = certificationMapping[category] || category;
             
-            const certificacao = certMapping[category] || category;
-            
-            // CORREÇÃO CRÍTICA: Definir a categoria corretamente baseada no card type
-            let categoria = 'general';
-            if (currentCategory === 'itil') {
+            // Se estiver no ITIL e escolheu um card específico, usar o mapeamento correto
+            if (category === 'itil') {
                 if (cardType === 'pmg') {
-                    categoria = 'PMG Academy';
+                    certificacao = 'itil4_pmg';
                 } else if (cardType === 'monitoring') {
-                    categoria = 'Monitoring and Event Management';
+                    certificacao = 'itil4_monitoring';
+                } else {
+                    certificacao = 'itil4';
                 }
             }
             
@@ -2088,8 +2104,7 @@
                 titulo: title,
                 descricao: description || null,
                 tipo: fileType,
-                categoria: categoria, // CORREÇÃO: Usar a categoria determinada acima
-                certificacao: certificacao,
+                certificacao: certificacao, // Usando apenas a coluna existente
                 arquivo_url: urlData.publicUrl,
                 arquivo_nome: file.name,
                 arquivo_tamanho_kb: Math.round(file.size / 1024),
@@ -2102,50 +2117,17 @@
             
             console.log('💾 Salvando no banco...', materialData);
             
-            // Tentar inserir com categoria primeiro
-            let dbData, dbError;
-            
-            try {
-                const result = await supabaseClient
-                    .from('materiais')
-                    .insert([materialData])
-                    .select()
-                    .single();
-                    
-                dbData = result.data;
-                dbError = result.error;
-            } catch (insertError) {
-                console.error('❌ Erro na inserção:', insertError);
-                dbError = insertError;
-            }
-            
-            if (dbError) {
-                console.error('❌ Erro ao salvar material:', dbError);
+            const { data: dbData, error: dbError } = await supabaseClient
+                .from('materiais')
+                .insert([materialData])
+                .select()
+                .single();
                 
-                // Se o erro for sobre coluna categoria não existir, tentar sem ela
-                if (dbError.message && dbError.message.includes("Could not find the 'categoria' column")) {
-                    console.warn('⚠️ Coluna "categoria" não encontrada. Tentando sem ela...');
-                    
-                    delete materialData.categoria;
-                    
-                    const { data: dbData2, error: dbError2 } = await supabaseClient
-                        .from('materiais')
-                        .insert([materialData])
-                        .select()
-                        .single();
-                        
-                    if (dbError2) {
-                        throw new Error(`Erro ao salvar sem categoria: ${dbError2.message}`);
-                    }
-                    
-                    console.log('✅ Material salvo sem categoria:', dbData2);
-                    dbData = dbData2;
-                } else {
-                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
-                }
-            } else {
-                console.log('✅ Material salvo no banco:', dbData);
+            if (dbError) {
+                throw new Error(`Erro ao salvar informações: ${dbError.message}`);
             }
+            
+            console.log('✅ Material salvo no banco:', dbData);
             
             updateProgressBar(100, 'modal');
             
