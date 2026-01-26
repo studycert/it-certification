@@ -1071,6 +1071,7 @@
                     <select id="materialCard" class="filter-input">
                         <option value="pmg">PMG Academy</option>
                         <option value="monitoring">Monitoring and Event Management</option>
+                        <option value="general">Materiais Gerais - ITIL 4</option>
                     </select>
                 </div>
                 
@@ -1130,7 +1131,7 @@
             icon: 'fas fa-cube',
             bannerClass: 'itil-banner',
             description: 'Guias de estudo, resumos e recursos para certificação ITIL 4 Foundation',
-            cards: ['pmg', 'monitoring']
+            cards: ['pmg', 'monitoring', 'general']
         },
         'azure': { 
             title: 'Microsoft Azure', 
@@ -1178,7 +1179,14 @@
     const cardNames = {
         'pmg': 'PMG Academy',
         'monitoring': 'Monitoring and Event Management',
-        'general': 'Material Geral'
+        'general': 'Materiais Gerais - ITIL 4'
+    };
+
+    // Mapeamento de categorias para cards ITIL
+    const itilCategoryMapping = {
+        'pmg': ['PMG Academy', 'pmg'],
+        'monitoring': ['Monitoring and Event Management', 'monitoring'],
+        'general': ['Materiais Gerais - ITIL 4', 'general', '']
     };
 
     // Variáveis globais
@@ -1486,7 +1494,7 @@
             };
             
             const validCerts = categoryMapping[currentCategory] || [currentCategory];
-            return validCerts.some(validCert => cert.includes(validCert));
+            return validCerts.some(validCert => cert.toLowerCase().includes(validCert.toLowerCase()));
         });
         
         // Aplicar filtro de tipo de arquivo
@@ -1517,21 +1525,29 @@
         const container = document.getElementById('dynamicCardsContainer');
         
         if (currentCategory === 'itil') {
-            // Para ITIL, separar os materiais por categoria/card
-            const pmgMaterials = materials.filter(m => 
-                m.categoria === 'PMG Academy' || m.categoria === 'pmg'
-            );
+            // Para ITIL, separar os materiais por categoria/card - CORREÇÃO AQUI
+            const pmgMaterials = materials.filter(m => {
+                const categoria = m.categoria || '';
+                // Verificar se a categoria corresponde ao PMG Academy
+                return categoria.toLowerCase().includes('pmg') || 
+                       categoria.toLowerCase().includes('pmg academy');
+            });
             
-            const monitoringMaterials = materials.filter(m => 
-                m.categoria === 'Monitoring and Event Management' || m.categoria === 'monitoring'
-            );
+            const monitoringMaterials = materials.filter(m => {
+                const categoria = m.categoria || '';
+                // Verificar se a categoria corresponde ao Monitoring
+                return categoria.toLowerCase().includes('monitoring') ||
+                       categoria.toLowerCase().includes('event management');
+            });
             
-            const generalMaterials = materials.filter(m => 
-                !m.categoria || 
-                m.categoria === 'general' || 
-                m.categoria === '' ||
-                (m.categoria !== 'PMG Academy' && m.categoria !== 'Monitoring and Event Management' && m.categoria !== 'pmg' && m.categoria !== 'monitoring')
-            );
+            // Materiais gerais são aqueles que não se encaixam nas categorias específicas
+            const generalMaterials = materials.filter(m => {
+                const categoria = m.categoria || '';
+                return !categoria.toLowerCase().includes('pmg') &&
+                       !categoria.toLowerCase().includes('pmg academy') &&
+                       !categoria.toLowerCase().includes('monitoring') &&
+                       !categoria.toLowerCase().includes('event management');
+            });
             
             console.log('📊 Estatísticas ITIL:');
             console.log('- PMG Academy:', pmgMaterials.length, 'materiais');
@@ -1548,7 +1564,7 @@
             
             // Card para materiais gerais (apenas se houver)
             if (generalMaterials.length > 0) {
-                html += renderGeneralCard(generalMaterials, 'Materiais Gerais - ITIL 4', 'fas fa-file-alt', '#3498db');
+                html += renderGeneralITILCard(generalMaterials);
             }
             
             container.innerHTML = html;
@@ -1736,6 +1752,78 @@
         `;
     }
 
+    function renderGeneralITILCard(files = []) {
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        const color = '#1a237e';
+        const darkerColor = '#283593';
+        
+        return `
+            <div class="other-cert-card">
+                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%);">
+                    <div class="other-cert-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="other-cert-title">
+                        <h3>Materiais Gerais - ITIL 4</h3>
+                        <span class="monitoring-badge">
+                            <i class="fas fa-certificate"></i> 
+                            ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="other-cert-content">
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')" style="background: linear-gradient(135deg, ${color}, ${darkerColor});">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="monitoring-stats">
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-label">Arquivos</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-label">Visualizações</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-label">Downloads</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn" style="background: ${color};">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="general-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, 'general')}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material!</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
     function renderGeneralCard(files = [], title, icon, color) {
         const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
         const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
@@ -1782,7 +1870,7 @@
                         </div>
                         <div class="monitoring-stat">
                             <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
-                                <div class="monitoring-stat-label">Tamanho Total</div>
+                            <div class="monitoring-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
@@ -1861,7 +1949,7 @@
         
         return `
             <div class="${cardType === 'pmg' ? 'pmg-file-card' : cardType === 'monitoring' ? 'monitoring-file-card' : 'pmg-file-card'}">
-                <div class="${cardType === 'pmg' ? 'pmg-file-icon' : cardType === 'monitoring' ? 'monitoring-file-icon' : 'pmg-file-icon'}" style="${cardType === 'general' ? `background: linear-gradient(135deg, ${getCategoryColor(currentCategory)}, ${getDarkerColor(getCategoryColor(currentCategory))});` : ''}">
+                <div class="${cardType === 'pmg' ? 'pmg-file-icon' : cardType === 'monitoring' ? 'monitoring-file-icon' : 'pmg-file-icon'}" style="${cardType === 'general' && currentCategory === 'itil' ? 'background: linear-gradient(135deg, #1a237e, #283593);' : cardType === 'general' ? `background: linear-gradient(135deg, ${getCategoryColor(currentCategory)}, ${getDarkerColor(getCategoryColor(currentCategory))});` : ''}">
                     <i class="fas fa-${fileIcon}"></i>
                 </div>
                 <div class="pmg-file-info">
@@ -1878,7 +1966,7 @@
                         <button class="${cardType === 'pmg' ? 'pmg-action-btn' : cardType === 'monitoring' ? 'monitoring-action-btn' : 'pmg-action-btn'}" 
                            onclick="handleFileAction('${fileId}', '${escapeString(fileName)}', '${escapeString(fileUrl)}', '${fileType}')" 
                            title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}"
-                           style="${cardType === 'general' ? `border-color: ${getCategoryColor(currentCategory)};` : ''}">
+                           style="${cardType === 'general' && currentCategory === 'itil' ? 'border-color: #1a237e;' : cardType === 'general' ? `border-color: ${getCategoryColor(currentCategory)};` : ''}">
                             <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
                         </button>
                     ` : `
@@ -1912,6 +2000,12 @@
         }
         
         currentUploadCardType = cardType;
+        
+        // Atualizar o select no modal para corresponder ao cardType
+        if (currentCategory === 'itil') {
+            document.getElementById('materialCard').value = cardType;
+        }
+        
         document.getElementById('fileInputPage').click();
     }
 
@@ -1948,7 +2042,7 @@
         
         document.getElementById('selectedFileInfo').innerHTML = `
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <div style="width: 60px; height: 60px; background: ${currentUploadCardType === 'pmg' ? '#4ECDC4' : currentUploadCardType === 'monitoring' ? '#6f42c1' : getCategoryColor(currentCategory)}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 60px; height: 60px; background: ${currentUploadCardType === 'pmg' ? '#4ECDC4' : currentUploadCardType === 'monitoring' ? '#6f42c1' : currentCategory === 'itil' ? '#1a237e' : getCategoryColor(currentCategory)}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-${fileIconName}" style="color: white; font-size: 1.5rem;"></i>
                 </div>
                 <div>
@@ -1966,7 +2060,6 @@
         
         if (currentCategory === 'itil') {
             document.getElementById('itilCardSelection').style.display = 'block';
-            // Usar o cardType atual em vez do valor do select
             document.getElementById('materialCard').value = currentUploadCardType;
             document.getElementById('uploadCardType').value = currentUploadCardType;
         } else {
@@ -1988,7 +2081,7 @@
         const title = document.getElementById('materialTitle').value.trim();
         const description = document.getElementById('materialDescription').value.trim();
         const category = document.getElementById('materialCategory').value;
-        const cardType = document.getElementById('uploadCardType').value || currentUploadCardType;
+        const cardType = currentUploadCardType || document.getElementById('materialCard').value || 'general';
         const file = currentUploadFile;
         
         if (!title) {
@@ -2075,20 +2168,13 @@
             const certificacao = certMapping[category] || category;
             
             // CORREÇÃO CRÍTICA: Definir a categoria corretamente baseada no card type
-            let categoria = 'general';
-            if (currentCategory === 'itil') {
-                if (cardType === 'pmg') {
-                    categoria = 'PMG Academy';
-                } else if (cardType === 'monitoring') {
-                    categoria = 'Monitoring and Event Management';
-                }
-            }
+            let categoria = cardNames[cardType] || 'Materiais Gerais - ITIL 4';
             
             const materialData = {
                 titulo: title,
                 descricao: description || null,
                 tipo: fileType,
-                categoria: categoria, // CORREÇÃO: Usar a categoria determinada acima
+                categoria: categoria,
                 certificacao: certificacao,
                 arquivo_url: urlData.publicUrl,
                 arquivo_nome: file.name,
@@ -2102,23 +2188,13 @@
             
             console.log('💾 Salvando no banco...', materialData);
             
-            // Tentar inserir com categoria primeiro
-            let dbData, dbError;
-            
-            try {
-                const result = await supabaseClient
-                    .from('materiais')
-                    .insert([materialData])
-                    .select()
-                    .single();
-                    
-                dbData = result.data;
-                dbError = result.error;
-            } catch (insertError) {
-                console.error('❌ Erro na inserção:', insertError);
-                dbError = insertError;
-            }
-            
+            // Inserir no banco
+            const { data: dbData, error: dbError } = await supabaseClient
+                .from('materiais')
+                .insert([materialData])
+                .select()
+                .single();
+                
             if (dbError) {
                 console.error('❌ Erro ao salvar material:', dbError);
                 
@@ -2139,7 +2215,6 @@
                     }
                     
                     console.log('✅ Material salvo sem categoria:', dbData2);
-                    dbData = dbData2;
                 } else {
                     throw new Error(`Erro ao salvar informações: ${dbError.message}`);
                 }
@@ -2398,7 +2473,9 @@
         switch(cardType) {
             case 'pmg': return '#4ECDC4';
             case 'monitoring': return '#6f42c1';
-            case 'general': return getCategoryColor(currentCategory);
+            case 'general': 
+                if (currentCategory === 'itil') return '#1a237e';
+                return getCategoryColor(currentCategory);
             default: return '#3498db';
         }
     }
