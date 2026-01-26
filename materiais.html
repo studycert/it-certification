@@ -1063,17 +1063,20 @@
                     </select>
                 </div>
                 
-                <!-- Seleção de Card específico para ITIL -->
-                <div id="itilCardSelection" style="margin-bottom: 1.5rem; display: none;">
+                <!-- Seleção automática baseada no nome do arquivo -->
+                <div id="autoCardSelection" style="margin-bottom: 1.5rem; display: none;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
-                        <i class="fas fa-folder"></i> Adicionar ao Card
+                        <i class="fas fa-folder"></i> Card de Destino
                     </label>
-                    <select id="materialCard" class="filter-input">
-                        <option value="pmg">PMG Academy</option>
-                        <option value="monitoring">Monitoring and Event Management</option>
-                        <option value="general">Materiais Gerais - ITIL 4</option>
-                    </select>
+                    <div style="padding: 1rem; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #3498db;">
+                        <p style="margin: 0; font-weight: 500;" id="autoCardSelectionText">
+                            O arquivo será salvo automaticamente no card apropriado baseado no nome do arquivo.
+                        </p>
+                    </div>
                 </div>
+                
+                <!-- Campo oculto para card automático -->
+                <input type="hidden" id="autoSelectedCard" value="">
                 
                 <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
                     <button onclick="closeUploadModal()" class="btn btn-outline">
@@ -1182,11 +1185,10 @@
         'general': 'Materiais Gerais - ITIL 4'
     };
 
-    // Mapeamento de categorias para cards ITIL
-    const itilCategoryMapping = {
-        'pmg': ['PMG Academy', 'pmg'],
-        'monitoring': ['Monitoring and Event Management', 'monitoring'],
-        'general': ['Materiais Gerais - ITIL 4', 'general', '']
+    // Palavras-chave para classificação automática baseada no nome do arquivo
+    const fileNameKeywords = {
+        'pmg': ['pmg', 'pmg academy', 'academy', 'curso', 'treinamento'],
+        'monitoring': ['monitoring', 'monitoramento', 'event', 'event management', 'evento', 'alerta', 'log']
     };
 
     // Variáveis globais
@@ -1509,7 +1511,8 @@
         if (searchFilter) {
             filteredMaterials = filteredMaterials.filter(m => 
                 (m.titulo || '').toLowerCase().includes(searchFilter) ||
-                (m.descricao || '').toLowerCase().includes(searchFilter)
+                (m.descricao || '').toLowerCase().includes(searchFilter) ||
+                (m.arquivo_nome || '').toLowerCase().includes(searchFilter)
             );
         }
         
@@ -1525,28 +1528,41 @@
         const container = document.getElementById('dynamicCardsContainer');
         
         if (currentCategory === 'itil') {
-            // Para ITIL, separar os materiais por categoria/card - CORREÇÃO AQUI
+            // Para ITIL, separar os materiais baseado no NOME DO ARQUIVO
             const pmgMaterials = materials.filter(m => {
-                const categoria = m.categoria || '';
-                // Verificar se a categoria corresponde ao PMG Academy
-                return categoria.toLowerCase().includes('pmg') || 
-                       categoria.toLowerCase().includes('pmg academy');
+                const fileName = (m.arquivo_nome || '').toLowerCase();
+                const title = (m.titulo || '').toLowerCase();
+                
+                // Verificar se contém palavras-chave do PMG
+                return fileNameKeywords.pmg.some(keyword => 
+                    fileName.includes(keyword) || title.includes(keyword)
+                );
             });
             
             const monitoringMaterials = materials.filter(m => {
-                const categoria = m.categoria || '';
-                // Verificar se a categoria corresponde ao Monitoring
-                return categoria.toLowerCase().includes('monitoring') ||
-                       categoria.toLowerCase().includes('event management');
+                const fileName = (m.arquivo_nome || '').toLowerCase();
+                const title = (m.titulo || '').toLowerCase();
+                
+                // Verificar se contém palavras-chave do Monitoring
+                return fileNameKeywords.monitoring.some(keyword => 
+                    fileName.includes(keyword) || title.includes(keyword)
+                );
             });
             
             // Materiais gerais são aqueles que não se encaixam nas categorias específicas
             const generalMaterials = materials.filter(m => {
-                const categoria = m.categoria || '';
-                return !categoria.toLowerCase().includes('pmg') &&
-                       !categoria.toLowerCase().includes('pmg academy') &&
-                       !categoria.toLowerCase().includes('monitoring') &&
-                       !categoria.toLowerCase().includes('event management');
+                const fileName = (m.arquivo_nome || '').toLowerCase();
+                const title = (m.titulo || '').toLowerCase();
+                
+                // Verificar se NÃO contém palavras-chave de nenhum card específico
+                const hasPmgKeyword = fileNameKeywords.pmg.some(keyword => 
+                    fileName.includes(keyword) || title.includes(keyword)
+                );
+                const hasMonitoringKeyword = fileNameKeywords.monitoring.some(keyword => 
+                    fileName.includes(keyword) || title.includes(keyword)
+                );
+                
+                return !hasPmgKeyword && !hasMonitoringKeyword;
             });
             
             console.log('📊 Estatísticas ITIL:');
@@ -1601,6 +1617,48 @@
             document.getElementById('uploadSection').style.display = 'block';
         }
     }
+
+    // ============================================
+    // FUNÇÕES PARA DETECTAR CARD PELO NOME DO ARQUIVO
+    // ============================================
+
+    function detectCardFromFileName(fileName, title) {
+        const fileNameLower = fileName.toLowerCase();
+        const titleLower = title.toLowerCase();
+        
+        // Verificar PMG Academy
+        for (const keyword of fileNameKeywords.pmg) {
+            if (fileNameLower.includes(keyword) || titleLower.includes(keyword)) {
+                return 'pmg';
+            }
+        }
+        
+        // Verificar Monitoring and Event Management
+        for (const keyword of fileNameKeywords.monitoring) {
+            if (fileNameLower.includes(keyword) || titleLower.includes(keyword)) {
+                return 'monitoring';
+            }
+        }
+        
+        // Se não encontrar nenhuma palavra-chave, vai para materiais gerais
+        return 'general';
+    }
+
+    function getCardInfoForFileName(fileName) {
+        const detectedCard = detectCardFromFileName(fileName, fileName);
+        const cardName = cardNames[detectedCard] || 'Materiais Gerais - ITIL 4';
+        const cardColor = getCardColor(detectedCard);
+        
+        return {
+            cardType: detectedCard,
+            cardName: cardName,
+            cardColor: cardColor
+        };
+    }
+
+    // ============================================
+    // RENDERIZAÇÃO DOS CARDS
+    // ============================================
 
     function renderPMGAcademyCard(files = []) {
         const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
@@ -1669,7 +1727,7 @@
                         <div class="empty-state">
                             <i class="fas fa-folder-open"></i>
                             <h4>Nenhum material ainda</h4>
-                            <p>Seja o primeiro a compartilhar um material!</p>
+                            <p>Seja o primeiro a compartilhar um material! Use "PMG" no nome do arquivo.</p>
                         </div>
                     `}
                 </div>
@@ -1744,7 +1802,7 @@
                         <div class="empty-state">
                             <i class="fas fa-folder-open"></i>
                             <h4>Nenhum material ainda</h4>
-                            <p>Seja o primeiro a compartilhar um material!</p>
+                            <p>Seja o primeiro a compartilhar um material! Use "Monitoring" no nome do arquivo.</p>
                         </div>
                     `}
                 </div>
@@ -2000,12 +2058,6 @@
         }
         
         currentUploadCardType = cardType;
-        
-        // Atualizar o select no modal para corresponder ao cardType
-        if (currentCategory === 'itil') {
-            document.getElementById('materialCard').value = cardType;
-        }
-        
         document.getElementById('fileInputPage').click();
     }
 
@@ -2037,18 +2089,26 @@
 
     function showUploadForm(file) {
         currentUploadFile = file;
+        
+        // Detectar automaticamente o card baseado no nome do arquivo
+        const cardInfo = getCardInfoForFileName(file.name);
+        currentUploadCardType = cardInfo.cardType;
+        
         const fileType = detectFileType(file.name);
         const fileIconName = getFileIcon(fileType);
         
         document.getElementById('selectedFileInfo').innerHTML = `
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <div style="width: 60px; height: 60px; background: ${currentUploadCardType === 'pmg' ? '#4ECDC4' : currentUploadCardType === 'monitoring' ? '#6f42c1' : currentCategory === 'itil' ? '#1a237e' : getCategoryColor(currentCategory)}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 60px; height: 60px; background: ${cardInfo.cardColor}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-${fileIconName}" style="color: white; font-size: 1.5rem;"></i>
                 </div>
                 <div>
                     <div style="font-weight: bold; margin-bottom: 0.3rem;">${file.name}</div>
                     <div style="font-size: 0.9rem; color: #666;">
-                        ${formatFileSize(file.size)} • ${fileType.toUpperCase()} • ${cardNames[currentUploadCardType] || 'Material Geral'}
+                        ${formatFileSize(file.size)} • ${fileType.toUpperCase()} • ${cardInfo.cardName}
+                    </div>
+                    <div style="font-size: 0.8rem; color: #27ae60; margin-top: 0.3rem; font-weight: 500;">
+                        <i class="fas fa-magic"></i> Card detectado automaticamente: ${cardInfo.cardName}
                     </div>
                 </div>
             </div>
@@ -2058,12 +2118,20 @@
         document.getElementById('materialTitle').value = fileNameWithoutExt;
         document.getElementById('materialCategory').value = currentCategory;
         
+        // Configurar a seleção automática no modal
+        document.getElementById('autoSelectedCard').value = currentUploadCardType;
+        
         if (currentCategory === 'itil') {
-            document.getElementById('itilCardSelection').style.display = 'block';
-            document.getElementById('materialCard').value = currentUploadCardType;
+            document.getElementById('autoCardSelection').style.display = 'block';
+            document.getElementById('autoCardSelectionText').innerHTML = `
+                <i class="fas fa-magic" style="color: #9b59b6;"></i> 
+                Este arquivo será salvo automaticamente no card: 
+                <strong style="color: ${cardInfo.cardColor};">${cardInfo.cardName}</strong>
+                <br><small>Detectado baseado no nome do arquivo.</small>
+            `;
             document.getElementById('uploadCardType').value = currentUploadCardType;
         } else {
-            document.getElementById('itilCardSelection').style.display = 'none';
+            document.getElementById('autoCardSelection').style.display = 'none';
             document.getElementById('uploadCardType').value = currentUploadCardType;
         }
         
@@ -2081,7 +2149,9 @@
         const title = document.getElementById('materialTitle').value.trim();
         const description = document.getElementById('materialDescription').value.trim();
         const category = document.getElementById('materialCategory').value;
-        const cardType = currentUploadCardType || document.getElementById('materialCard').value || 'general';
+        
+        // Usar o card detectado automaticamente OU o card type atual
+        const cardType = document.getElementById('autoSelectedCard').value || currentUploadCardType || 'general';
         const file = currentUploadFile;
         
         if (!title) {
@@ -2167,7 +2237,7 @@
             
             const certificacao = certMapping[category] || category;
             
-            // CORREÇÃO CRÍTICA: Definir a categoria corretamente baseada no card type
+            // CORREÇÃO CRÍTICA: Usar o card detectado automaticamente
             let categoria = cardNames[cardType] || 'Materiais Gerais - ITIL 4';
             
             const materialData = {
@@ -2255,6 +2325,7 @@
         document.getElementById('fileInputPage').value = '';
         currentUploadFile = null;
         currentUploadCardType = '';
+        document.getElementById('autoSelectedCard').value = '';
     }
 
     // ============================================
