@@ -1053,7 +1053,7 @@
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
                         <i class="fas fa-certificate"></i> Categoria *
                     </label>
-                    <select id="materialCategory" class="filter-input" required>
+                    <select id="materialCategory" class="filter-select" required>
                         <option value="itil">ITIL 4</option>
                         <option value="azure">Azure</option>
                         <option value="aws">AWS</option>
@@ -1068,9 +1068,10 @@
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
                         <i class="fas fa-folder"></i> Adicionar ao Card
                     </label>
-                    <select id="materialCard" class="filter-input">
+                    <select id="materialCard" class="filter-select">
                         <option value="pmg">PMG Academy</option>
                         <option value="monitoring">Monitoring and Event Management</option>
+                        <option value="general">Material Geral</option>
                     </select>
                 </div>
                 
@@ -1130,7 +1131,7 @@
             icon: 'fas fa-cube',
             bannerClass: 'itil-banner',
             description: 'Guias de estudo, resumos e recursos para certificação ITIL 4 Foundation',
-            cards: ['pmg', 'monitoring']
+            cards: ['pmg', 'monitoring', 'general']
         },
         'azure': { 
             title: 'Microsoft Azure', 
@@ -1179,6 +1180,13 @@
         'pmg': 'PMG Academy',
         'monitoring': 'Monitoring and Event Management',
         'general': 'Material Geral'
+    };
+
+    // Mapeamento de valores para a coluna 'categoria'
+    const categoryValues = {
+        'pmg': 'PMG Academy',
+        'monitoring': 'Monitoring and Event Management',
+        'general': 'General ITIL'
     };
 
     // Variáveis globais
@@ -1528,6 +1536,7 @@
             
             const generalMaterials = materials.filter(m => 
                 !m.categoria || 
+                m.categoria === 'General ITIL' || 
                 m.categoria === 'general' || 
                 m.categoria === '' ||
                 (m.categoria !== 'PMG Academy' && m.categoria !== 'Monitoring and Event Management' && m.categoria !== 'pmg' && m.categoria !== 'monitoring')
@@ -1782,7 +1791,7 @@
                         </div>
                         <div class="monitoring-stat">
                             <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
-                                <div class="monitoring-stat-label">Tamanho Total</div>
+                            <div class="monitoring-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
@@ -1912,6 +1921,7 @@
         }
         
         currentUploadCardType = cardType;
+        document.getElementById('uploadCardType').value = cardType;
         document.getElementById('fileInputPage').click();
     }
 
@@ -1925,6 +1935,7 @@
         }
         
         currentUploadCardType = 'general';
+        document.getElementById('uploadCardType').value = 'general';
         document.getElementById('fileInputPage').click();
     }
 
@@ -1948,7 +1959,7 @@
         
         document.getElementById('selectedFileInfo').innerHTML = `
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <div style="width: 60px; height: 60px; background: ${currentUploadCardType === 'pmg' ? '#4ECDC4' : currentUploadCardType === 'monitoring' ? '#6f42c1' : getCategoryColor(currentCategory)}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 60px; height: 60px; background: ${getCardColor(currentUploadCardType)}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-${fileIconName}" style="color: white; font-size: 1.5rem;"></i>
                 </div>
                 <div>
@@ -1964,14 +1975,12 @@
         document.getElementById('materialTitle').value = fileNameWithoutExt;
         document.getElementById('materialCategory').value = currentCategory;
         
+        // Mostrar/ocultar a seleção de card específico para ITIL
         if (currentCategory === 'itil') {
             document.getElementById('itilCardSelection').style.display = 'block';
-            // Usar o cardType atual em vez do valor do select
             document.getElementById('materialCard').value = currentUploadCardType;
-            document.getElementById('uploadCardType').value = currentUploadCardType;
         } else {
             document.getElementById('itilCardSelection').style.display = 'none';
-            document.getElementById('uploadCardType').value = currentUploadCardType;
         }
         
         document.getElementById('materialDescription').value = '';
@@ -1989,6 +1998,7 @@
         const description = document.getElementById('materialDescription').value.trim();
         const category = document.getElementById('materialCategory').value;
         const cardType = document.getElementById('uploadCardType').value || currentUploadCardType;
+        const selectedCard = document.getElementById('materialCard')?.value || cardType;
         const file = currentUploadFile;
         
         if (!title) {
@@ -2013,7 +2023,7 @@
         document.getElementById('uploadProgressContainer').style.display = 'block';
         
         try {
-            console.log('🚀 Iniciando upload de material para card:', cardType);
+            console.log('🚀 Iniciando upload de material para card:', cardType, 'selectedCard:', selectedCard);
             
             const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
             if (sessionError || !sessionData.session) {
@@ -2028,7 +2038,7 @@
                 .replace(/_{2,}/g, '_')
                 .replace(/^_+|_+$/g, '');
             
-            const fileName = `${cardType}_${Date.now()}_${cleanFileName}`;
+            const fileName = `${selectedCard}_${Date.now()}_${cleanFileName}`;
             const filePath = `${user.id}/${category}/${fileName}`;
             const fileType = detectFileType(file.name);
             
@@ -2074,21 +2084,14 @@
             
             const certificacao = certMapping[category] || category;
             
-            // CORREÇÃO CRÍTICA: Definir a categoria corretamente baseada no card type
-            let categoria = 'general';
-            if (currentCategory === 'itil') {
-                if (cardType === 'pmg') {
-                    categoria = 'PMG Academy';
-                } else if (cardType === 'monitoring') {
-                    categoria = 'Monitoring and Event Management';
-                }
-            }
+            // CORREÇÃO CRÍTICA: Definir a categoria corretamente baseada no card type selecionado
+            let categoria = categoryValues[selectedCard] || 'General ITIL';
             
             const materialData = {
                 titulo: title,
                 descricao: description || null,
                 tipo: fileType,
-                categoria: categoria, // CORREÇÃO: Usar a categoria determinada acima
+                categoria: categoria,
                 certificacao: certificacao,
                 arquivo_url: urlData.publicUrl,
                 arquivo_nome: file.name,
@@ -2102,22 +2105,11 @@
             
             console.log('💾 Salvando no banco...', materialData);
             
-            // Tentar inserir com categoria primeiro
-            let dbData, dbError;
-            
-            try {
-                const result = await supabaseClient
-                    .from('materiais')
-                    .insert([materialData])
-                    .select()
-                    .single();
-                    
-                dbData = result.data;
-                dbError = result.error;
-            } catch (insertError) {
-                console.error('❌ Erro na inserção:', insertError);
-                dbError = insertError;
-            }
+            const { data: dbData, error: dbError } = await supabaseClient
+                .from('materiais')
+                .insert([materialData])
+                .select()
+                .single();
             
             if (dbError) {
                 console.error('❌ Erro ao salvar material:', dbError);
@@ -2139,7 +2131,6 @@
                     }
                     
                     console.log('✅ Material salvo sem categoria:', dbData2);
-                    dbData = dbData2;
                 } else {
                     throw new Error(`Erro ao salvar informações: ${dbError.message}`);
                 }
@@ -2180,6 +2171,7 @@
         document.getElementById('fileInputPage').value = '';
         currentUploadFile = null;
         currentUploadCardType = '';
+        document.getElementById('uploadCardType').value = '';
     }
 
     // ============================================
@@ -2416,7 +2408,6 @@
         let color = colors[category] || '#3498db';
         
         if (darker) {
-            // Escurecer a cor
             const hex = color.replace('#', '');
             const r = parseInt(hex.substr(0, 2), 16);
             const g = parseInt(hex.substr(2, 2), 16);
@@ -2584,6 +2575,6 @@
     window.logoutFromPage = logoutFromPage;
     window.filterMaterials = filterMaterials;
     window.selectCategory = selectCategory;
-</script>
+    </script>
 </body>
 </html>
