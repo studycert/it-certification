@@ -392,16 +392,18 @@
         }
     };
 
-    // Mapeamento de nomes de cards para tags
-    const cardTags = {
-        'pmg': ['itil4', 'pmg-academy', 'pmg'],
-        'monitoring': ['itil4', 'monitoring', 'event-management'],
-        'general': ['itil4', 'general'],
-        'azure': ['azure'],
-        'aws': ['aws'],
-        'linux': ['lpic', 'linux'],
-        'security': ['security+', 'security'],
-        'ccna': ['ccna']
+    // Mapeamento de nomes de cards
+    const cardNames = {
+        'pmg': 'PMG Academy',
+        'monitoring': 'Monitoring and Event Management',
+        'general': 'Material Geral'
+    };
+
+    // Mapeamento de valores para a coluna 'categoria' no banco
+    const categoryValues = {
+        'pmg': 'PMG Academy',
+        'monitoring': 'Monitoring and Event Management',
+        'general': 'General ITIL'
     };
 
     // Variáveis globais
@@ -696,40 +698,37 @@
         const sortFilter = document.getElementById('filterSort').value;
         const searchFilter = document.getElementById('searchMaterial').value.toLowerCase();
         
-        // CORREÇÃO: Filtrar materiais baseado na certificação E tags
+        // CORREÇÃO: Filtrar materiais apenas da categoria atual
         let filteredMaterials = allMaterials.filter(m => {
             const cert = (m.certificacao || '').toLowerCase();
-            const tags = Array.isArray(m.tags) ? m.tags.map(t => t.toLowerCase()) : [];
+            const categoria = (m.categoria || '').toLowerCase();
             
-            // Se for ITIL, pode ter diferentes cards
-            if (currentCategory === 'itil') {
-                // Verificar se tem certificação ITIL
-                if (cert.includes('itil4') || cert.includes('itil')) {
-                    return true;
-                }
-                
-                // Ou verificar se tem tags de ITIL
-                const itilTags = ['itil4', 'itil', 'pmg-academy', 'pmg', 'monitoring', 'event-management'];
-                return itilTags.some(tag => tags.includes(tag));
-            }
-            
-            // Para outras categorias, verificar certificação
+            // Mapeamento de categorias para certificações
             const categoryMapping = {
-                'azure': 'azure',
-                'aws': 'aws',
-                'linux': 'lpic',
-                'security': 'security',
-                'ccna': 'ccna'
+                'itil': ['itil4', 'itil'],
+                'azure': ['azure'],
+                'aws': ['aws'],
+                'linux': ['lpic', 'linux'],
+                'security': ['security'],
+                'ccna': ['ccna']
             };
             
-            const targetCert = categoryMapping[currentCategory];
-            if (targetCert && cert.includes(targetCert)) {
-                return true;
+            // Para ITIL, também verificar a categoria
+            if (currentCategory === 'itil') {
+                const validCerts = categoryMapping['itil'] || ['itil'];
+                const hasValidCert = validCerts.some(validCert => cert.includes(validCert));
+                
+                // Se não tem certificação ITIL, verificar se está em uma categoria ITIL
+                if (!hasValidCert) {
+                    const itilCategories = ['pmg academy', 'monitoring and event management', 'general itil'];
+                    return itilCategories.some(itilCat => categoria.includes(itilCat));
+                }
+                return hasValidCert;
             }
             
-            // Ou verificar tags
-            const targetTags = cardTags[currentCategory] || [];
-            return targetTags.some(tag => tags.includes(tag));
+            // Para outras categorias, verificar apenas a certificação
+            const validCerts = categoryMapping[currentCategory] || [currentCategory];
+            return validCerts.some(validCert => cert.includes(validCert));
         });
         
         console.log(`📊 Materiais filtrados para ${currentCategory}: ${filteredMaterials.length}`);
@@ -755,31 +754,33 @@
         
         // Renderizar os cards
         renderCategoryCards(filteredMaterials);
-        updateStats(filteredMaterials);
+        updateStats(filteredMaterials); // CORREÇÃO: Passar apenas os materiais filtrados
     }
 
     function renderCategoryCards(materials) {
         const container = document.getElementById('dynamicCardsContainer');
         
         if (currentCategory === 'itil') {
-            // Para ITIL, separar os materiais por tags
+            // Para ITIL, separar os materiais por categoria/card
             const pmgMaterials = materials.filter(m => {
-                const tags = Array.isArray(m.tags) ? m.tags.map(t => t.toLowerCase()) : [];
-                return tags.includes('pmg-academy') || tags.includes('pmg') || 
-                       (m.titulo || '').toLowerCase().includes('pmg');
+                const categoria = (m.categoria || '').toLowerCase();
+                return categoria.includes('pmg academy') || categoria.includes('pmg');
             });
             
             const monitoringMaterials = materials.filter(m => {
-                const tags = Array.isArray(m.tags) ? m.tags.map(t => t.toLowerCase()) : [];
-                return tags.includes('monitoring') || tags.includes('event-management') || 
-                       (m.titulo || '').toLowerCase().includes('monitoring');
+                const categoria = (m.categoria || '').toLowerCase();
+                return categoria.includes('monitoring and event management') || categoria.includes('monitoring');
             });
             
             const generalMaterials = materials.filter(m => {
-                const tags = Array.isArray(m.tags) ? m.tags.map(t => t.toLowerCase()) : [];
-                const isPmg = tags.includes('pmg-academy') || tags.includes('pmg');
-                const isMonitoring = tags.includes('monitoring') || tags.includes('event-management');
-                return !isPmg && !isMonitoring;
+                const categoria = (m.categoria || '').toLowerCase();
+                return !categoria || 
+                       categoria.includes('general itil') || 
+                       categoria === '' ||
+                       (!categoria.includes('pmg academy') && 
+                        !categoria.includes('monitoring and event management') && 
+                        !categoria.includes('pmg') && 
+                        !categoria.includes('monitoring'));
             });
             
             console.log('📊 Estatísticas ITIL:');
@@ -1205,7 +1206,7 @@
                 <div>
                     <div style="font-weight: bold; margin-bottom: 0.3rem;">${file.name}</div>
                     <div style="font-size: 0.9rem; color: #666;">
-                        ${formatFileSize(file.size)} • ${fileType.toUpperCase()} • ${getCardDisplayName(currentUploadCardType)}
+                        ${formatFileSize(file.size)} • ${fileType.toUpperCase()} • ${cardNames[currentUploadCardType] || 'Material Geral'}
                     </div>
                 </div>
             </div>
@@ -1324,29 +1325,28 @@
             
             const certificacao = certMapping[category] || category;
             
-            // CORREÇÃO: Usar a coluna tags para armazenar a categoria/card
-            let tags = cardTags[selectedCard] || [];
+            // CORREÇÃO: Definir a categoria corretamente baseada no card type selecionado
+            let categoria = categoryValues[selectedCard] || 'General ITIL';
             
-            // Se não for ITIL, adicionar tag da categoria
+            // Se não for ITIL, a categoria deve ser vazia ou o nome da certificação
             if (category !== 'itil') {
-                tags = [category, ...tags];
+                categoria = certifications[category]?.title || '';
             }
             
             const materialData = {
                 titulo: title,
                 descricao: description || null,
                 tipo: fileType,
+                categoria: categoria,
                 certificacao: certificacao,
                 arquivo_url: urlData.publicUrl,
                 arquivo_nome: file.name,
                 arquivo_tamanho_kb: Math.round(file.size / 1024),
                 usuario_id: user.id,
-                tags: tags,
                 visualizacoes: 0,
                 downloads: 0,
                 publico: true,
-                data_upload: new Date().toISOString(),
-                file_path: filePath
+                data_upload: new Date().toISOString()
             };
             
             console.log('💾 Salvando no banco...', materialData);
@@ -1359,10 +1359,30 @@
             
             if (dbError) {
                 console.error('❌ Erro ao salvar material:', dbError);
-                throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                
+                // Se o erro for sobre coluna categoria não existir, tentar sem ela
+                if (dbError.message && dbError.message.includes("Could not find the 'categoria' column")) {
+                    console.warn('⚠️ Coluna "categoria" não encontrada. Tentando sem ela...');
+                    
+                    delete materialData.categoria;
+                    
+                    const { data: dbData2, error: dbError2 } = await supabaseClient
+                        .from('materiais')
+                        .insert([materialData])
+                        .select()
+                        .single();
+                        
+                    if (dbError2) {
+                        throw new Error(`Erro ao salvar sem categoria: ${dbError2.message}`);
+                    }
+                    
+                    console.log('✅ Material salvo sem categoria:', dbData2);
+                } else {
+                    throw new Error(`Erro ao salvar informações: ${dbError.message}`);
+                }
+            } else {
+                console.log('✅ Material salvo no banco:', dbData);
             }
-            
-            console.log('✅ Material salvo no banco:', dbData);
             
             updateProgressBar(100, 'modal');
             
@@ -1376,15 +1396,6 @@
             console.error('❌ Erro no processo de upload:', error);
             showNotification(`❌ Erro: ${error.message}`, 'error');
             closeUploadModal();
-        }
-    }
-
-    function getCardDisplayName(cardType) {
-        switch(cardType) {
-            case 'pmg': return 'PMG Academy';
-            case 'monitoring': return 'Monitoring and Event Management';
-            case 'general': return 'Material Geral';
-            default: return certifications[cardType]?.title || cardType;
         }
     }
 
@@ -1514,6 +1525,7 @@
     }
 
     function updateStats(materials) {
+        // CORREÇÃO: Atualizar estatísticas apenas com os materiais filtrados
         const totalMaterials = materials.length;
         const totalSize = materials.reduce((sum, material) => sum + (material.arquivo_tamanho_kb || 0), 0) / 1024;
         const totalViews = materials.reduce((sum, material) => sum + (material.visualizacoes || 0), 0);
@@ -1728,7 +1740,20 @@
         const material = allMaterials.find(m => m.id === materialId);
         if (material) {
             material.visualizacoes = (material.visualizacoes || 0) + 1;
-            updateStats(allMaterials.filter(m => filterCurrentCategory(m)));
+            updateStats(allMaterials.filter(m => {
+                // Atualizar apenas para a categoria atual
+                const cert = (m.certificacao || '').toLowerCase();
+                const categoryMapping = {
+                    'itil': ['itil4', 'itil'],
+                    'azure': ['azure'],
+                    'aws': ['aws'],
+                    'linux': ['lpic', 'linux'],
+                    'security': ['security'],
+                    'ccna': ['ccna']
+                };
+                const validCerts = categoryMapping[currentCategory] || [currentCategory];
+                return validCerts.some(validCert => cert.includes(validCert));
+            }));
         }
     }
 
@@ -1737,38 +1762,21 @@
         const material = allMaterials.find(m => m.id === materialId);
         if (material) {
             material.downloads = (material.downloads || 0) + 1;
-            updateStats(allMaterials.filter(m => filterCurrentCategory(m)));
+            updateStats(allMaterials.filter(m => {
+                // Atualizar apenas para a categoria atual
+                const cert = (m.certificacao || '').toLowerCase();
+                const categoryMapping = {
+                    'itil': ['itil4', 'itil'],
+                    'azure': ['azure'],
+                    'aws': ['aws'],
+                    'linux': ['lpic', 'linux'],
+                    'security': ['security'],
+                    'ccna': ['ccna']
+                };
+                const validCerts = categoryMapping[currentCategory] || [currentCategory];
+                return validCerts.some(validCert => cert.includes(validCert));
+            }));
         }
-    }
-
-    function filterCurrentCategory(material) {
-        const cert = (material.certificacao || '').toLowerCase();
-        const tags = Array.isArray(material.tags) ? material.tags.map(t => t.toLowerCase()) : [];
-        
-        if (currentCategory === 'itil') {
-            if (cert.includes('itil4') || cert.includes('itil')) {
-                return true;
-            }
-            
-            const itilTags = ['itil4', 'itil', 'pmg-academy', 'pmg', 'monitoring', 'event-management'];
-            return itilTags.some(tag => tags.includes(tag));
-        }
-        
-        const categoryMapping = {
-            'azure': 'azure',
-            'aws': 'aws',
-            'linux': 'lpic',
-            'security': 'security',
-            'ccna': 'ccna'
-        };
-        
-        const targetCert = categoryMapping[currentCategory];
-        if (targetCert && cert.includes(targetCert)) {
-            return true;
-        }
-        
-        const targetTags = cardTags[currentCategory] || [];
-        return targetTags.some(tag => tags.includes(tag));
     }
 
     function showNotification(message, type = 'info') {
