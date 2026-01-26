@@ -1966,6 +1966,7 @@
         
         if (currentCategory === 'itil') {
             document.getElementById('itilCardSelection').style.display = 'block';
+            // Usar o cardType atual em vez do valor do select
             document.getElementById('materialCard').value = currentUploadCardType;
             document.getElementById('uploadCardType').value = currentUploadCardType;
         } else {
@@ -1987,7 +1988,7 @@
         const title = document.getElementById('materialTitle').value.trim();
         const description = document.getElementById('materialDescription').value.trim();
         const category = document.getElementById('materialCategory').value;
-        const cardType = document.getElementById('uploadCardType').value;
+        const cardType = document.getElementById('uploadCardType').value || currentUploadCardType;
         const file = currentUploadFile;
         
         if (!title) {
@@ -2073,10 +2074,21 @@
             
             const certificacao = certMapping[category] || category;
             
+            // CORREÇÃO CRÍTICA: Definir a categoria corretamente baseada no card type
+            let categoria = 'general';
+            if (currentCategory === 'itil') {
+                if (cardType === 'pmg') {
+                    categoria = 'PMG Academy';
+                } else if (cardType === 'monitoring') {
+                    categoria = 'Monitoring and Event Management';
+                }
+            }
+            
             const materialData = {
                 titulo: title,
                 descricao: description || null,
                 tipo: fileType,
+                categoria: categoria, // CORREÇÃO: Usar a categoria determinada acima
                 certificacao: certificacao,
                 arquivo_url: urlData.publicUrl,
                 arquivo_nome: file.name,
@@ -2088,28 +2100,32 @@
                 data_upload: new Date().toISOString()
             };
             
-            // CORREÇÃO AQUI: Definir categoria correta baseada no card type
-            if (cardType === 'pmg') {
-                materialData.categoria = 'PMG Academy';
-            } else if (cardType === 'monitoring') {
-                materialData.categoria = 'Monitoring and Event Management';
-            } else if (cardType === 'general') {
-                // Para categorias não-ITIL, manter como 'general'
-                materialData.categoria = 'general';
-            }
-            
             console.log('💾 Salvando no banco...', materialData);
             
-            const { data: dbData, error: dbError } = await supabaseClient
-                .from('materiais')
-                .insert([materialData])
-                .select()
-                .single();
+            // Tentar inserir com categoria primeiro
+            let dbData, dbError;
+            
+            try {
+                const result = await supabaseClient
+                    .from('materiais')
+                    .insert([materialData])
+                    .select()
+                    .single();
+                    
+                dbData = result.data;
+                dbError = result.error;
+            } catch (insertError) {
+                console.error('❌ Erro na inserção:', insertError);
+                dbError = insertError;
+            }
             
             if (dbError) {
                 console.error('❌ Erro ao salvar material:', dbError);
-                if (dbError.message.includes("Could not find the 'categoria' column")) {
+                
+                // Se o erro for sobre coluna categoria não existir, tentar sem ela
+                if (dbError.message && dbError.message.includes("Could not find the 'categoria' column")) {
                     console.warn('⚠️ Coluna "categoria" não encontrada. Tentando sem ela...');
+                    
                     delete materialData.categoria;
                     
                     const { data: dbData2, error: dbError2 } = await supabaseClient
@@ -2123,6 +2139,7 @@
                     }
                     
                     console.log('✅ Material salvo sem categoria:', dbData2);
+                    dbData = dbData2;
                 } else {
                     throw new Error(`Erro ao salvar informações: ${dbError.message}`);
                 }
