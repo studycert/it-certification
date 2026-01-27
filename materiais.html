@@ -114,6 +114,542 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
 
+        /* Cards para Azure */
+        .azure-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #0078D4;
+        }
+        
+        .azure-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .azure-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .azure-title {
+            flex: 1;
+        }
+        
+        .azure-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .azure-badge {
+            background: linear-gradient(135deg, #4fc3f7, #0288d1);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .azure-content {
+            padding: 1.5rem;
+        }
+        
+        .azure-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .azure-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #0078D4;
+        }
+        
+        .azure-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #0078D4, #005A9E);
+        }
+        
+        .azure-file-info {
+            flex: 1;
+        }
+        
+        .azure-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .azure-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .azure-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .azure-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .azure-action-btn:hover {
+            background: #0078D4;
+            color: white;
+            border-color: #0078D4;
+        }
+        
+        .azure-action-btn.delete:hover {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        
+        .azure-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .azure-stat {
+            text-align: center;
+        }
+        
+        .azure-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0078D4;
+        }
+        
+        .azure-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .azure-toggle-btn {
+            background: #0078D4;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .azure-toggle-btn:hover {
+            background: #005A9E;
+            transform: translateY(-2px);
+        }
+        
+        /* Cards para Linux */
+        .linux-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #FFD700;
+        }
+        
+        .linux-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FF9800 100%);
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .linux-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #333;
+        }
+        
+        .linux-title {
+            flex: 1;
+        }
+        
+        .linux-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: #333;
+            font-size: 1.3rem;
+        }
+        
+        .linux-badge {
+            background: linear-gradient(135deg, #FFEB3B, #FF9800);
+            color: #5D4037;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .linux-content {
+            padding: 1.5rem;
+        }
+        
+        .linux-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .linux-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #FFD700;
+        }
+        
+        .linux-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #FFD700, #FF9800);
+        }
+        
+        .linux-file-info {
+            flex: 1;
+        }
+        
+        .linux-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .linux-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .linux-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .linux-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .linux-action-btn:hover {
+            background: #FFD700;
+            color: #333;
+            border-color: #FFD700;
+        }
+        
+        .linux-action-btn.delete:hover {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        
+        .linux-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .linux-stat {
+            text-align: center;
+        }
+        
+        .linux-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF9800;
+        }
+        
+        .linux-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .linux-toggle-btn {
+            background: #FFD700;
+            color: #333;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .linux-toggle-btn:hover {
+            background: #FF9800;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Cards para Security+ */
+        .security-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #d32f2f;
+        }
+        
+        .security-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .security-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .security-title {
+            flex: 1;
+        }
+        
+        .security-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .security-badge {
+            background: linear-gradient(135deg, #f44336, #c62828);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .security-content {
+            padding: 1.5rem;
+        }
+        
+        .security-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .security-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #d32f2f;
+        }
+        
+        .security-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+        
+        .security-file-info {
+            flex: 1;
+        }
+        
+        .security-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .security-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .security-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .security-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .security-action-btn:hover {
+            background: #d32f2f;
+            color: white;
+            border-color: #d32f2f;
+        }
+        
+        .security-action-btn.delete:hover {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        
+        .security-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .security-stat {
+            text-align: center;
+        }
+        
+        .security-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        
+        .security-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .security-toggle-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .security-toggle-btn:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+        
         /* Card especial para PMG Academy */
         .pmg-academy-container,
         .monitoring-container {
@@ -415,6 +951,32 @@
             background: #5e35b1;
         }
         
+        .upload-btn-card.azure {
+            background: linear-gradient(135deg, #0078D4, #005A9E);
+        }
+        
+        .upload-btn-card.azure:hover {
+            background: #005A9E;
+        }
+        
+        .upload-btn-card.linux {
+            background: linear-gradient(135deg, #FFD700, #FF9800);
+            color: #333;
+        }
+        
+        .upload-btn-card.linux:hover {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .upload-btn-card.security {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+        
+        .upload-btn-card.security:hover {
+            background: #b71c1c;
+        }
+        
         .upload-btn-wrapper {
             display: flex;
             gap: 0.5rem;
@@ -696,24 +1258,36 @@
             }
             
             .pmg-academy-header,
-            .monitoring-header {
+            .monitoring-header,
+            .azure-header,
+            .linux-header,
+            .security-header {
                 flex-direction: column;
                 text-align: center;
             }
             
             .pmg-academy-icon,
-            .monitoring-icon {
+            .monitoring-icon,
+            .azure-icon,
+            .linux-icon,
+            .security-icon {
                 margin-bottom: 1rem;
             }
             
             .pmg-stats,
-            .monitoring-stats {
+            .monitoring-stats,
+            .azure-stats,
+            .linux-stats,
+            .security-stats {
                 flex-wrap: wrap;
                 gap: 1rem;
             }
             
             .pmg-stat,
-            .monitoring-stat {
+            .monitoring-stat,
+            .azure-stat,
+            .linux-stat,
+            .security-stat {
                 flex: 1;
                 min-width: 80px;
             }
@@ -1142,7 +1716,7 @@
             icon: 'fab fa-microsoft',
             bannerClass: 'azure-banner',
             description: 'Guias de estudo, resumos e recursos para certificações Azure (AZ-900, AZ-104, etc.)',
-            cards: []
+            cards: ['az900', 'az104']
         },
         'aws': { 
             title: 'Amazon AWS', 
@@ -1153,20 +1727,20 @@
             cards: []
         },
         'linux': { 
-            title: 'LPIC-1 e LPIC-2', 
-            level: 'Linux Professional', 
+            title: 'Linux Professional', 
+            level: 'Sistema Operacional', 
             icon: 'fas fa-server',
             bannerClass: 'linux-banner',
-            description: 'Recursos para certificações Linux Professional Institute',
-            cards: []
+            description: 'Recursos para certificações Linux Professional Institute (LPIC-1, LPIC-2, LPIC-3)',
+            cards: ['lpic1', 'lpic2', 'lpic3']
         },
         'security': { 
             title: 'Security+', 
             level: 'Segurança da Informação', 
             icon: 'fas fa-shield-alt',
             bannerClass: 'security-banner',
-            description: 'Material para preparação da certificação CompTIA Security+',
-            cards: []
+            description: 'Material para preparação das certificações CompTIA Security+ e CySA+',
+            cards: ['securityplus', 'cysa']
         },
         'ccna': { 
             title: 'CCNA', 
@@ -1180,15 +1754,37 @@
 
     // Mapeamento de nomes de cards
     const cardNames = {
+        // ITIL
         'pmg': 'PMG Academy',
         'monitoring': 'Monitoring and Event Management',
-        'general': 'Materiais Gerais - ITIL 4'
+        'general': 'Materiais Gerais - ITIL 4',
+        // Azure
+        'az900': 'Azure Fundamentals (AZ-900)',
+        'az104': 'Azure Administrator (AZ-104)',
+        // Linux
+        'lpic1': 'LPIC-1: Linux Administrator',
+        'lpic2': 'LPIC-2: Linux Engineer',
+        'lpic3': 'LPIC-3: Linux Enterprise Professional',
+        // Security+
+        'securityplus': 'Security+ SY0-701',
+        'cysa': 'CompTIA CySA+ Cs0-003'
     };
 
     // Palavras-chave para classificação automática baseada no nome do arquivo
     const fileNameKeywords = {
+        // ITIL
         'pmg': ['pmg', 'pmg academy', 'academy', 'curso', 'treinamento'],
-        'monitoring': ['monitoring', 'monitoramento', 'event', 'event management', 'evento', 'alerta', 'log']
+        'monitoring': ['monitoring', 'monitoramento', 'event', 'event management', 'evento', 'alerta', 'log'],
+        // Azure
+        'az900': ['az-900', 'az900', 'azure fundamentals', 'fundamentos azure', 'fundamentals'],
+        'az104': ['az-104', 'az104', 'azure administrator', 'administrator', 'administrador'],
+        // Linux
+        'lpic1': ['lpic-1', 'lpic1', 'lpic 1', '101', '102', 'linux administrator'],
+        'lpic2': ['lpic-2', 'lpic2', 'lpic 2', '201', '202', 'linux engineer'],
+        'lpic3': ['lpic-3', 'lpic3', 'lpic 3', '300', '305', 'enterprise professional'],
+        // Security+
+        'securityplus': ['security+', 'security plus', 'sy0-701', 'sy0701', 'comptia security'],
+        'cysa': ['cysa+', 'cysa plus', 'cs0-003', 'cs0003', 'cybersecurity analyst', 'analyst']
     };
 
     // Variáveis globais
@@ -1527,95 +2123,302 @@
     function renderCategoryCards(materials) {
         const container = document.getElementById('dynamicCardsContainer');
         
-        if (currentCategory === 'itil') {
-            // Para ITIL, separar os materiais baseado no NOME DO ARQUIVO
-            const pmgMaterials = materials.filter(m => {
-                const fileName = (m.arquivo_nome || '').toLowerCase();
-                const title = (m.titulo || '').toLowerCase();
-                
-                // Verificar se contém palavras-chave do PMG
-                return fileNameKeywords.pmg.some(keyword => 
-                    fileName.includes(keyword) || title.includes(keyword)
-                );
-            });
+        switch(currentCategory) {
+            case 'itil':
+                renderITILCards(container, materials);
+                break;
+            case 'azure':
+                renderAzureCards(container, materials);
+                break;
+            case 'linux':
+                renderLinuxCards(container, materials);
+                break;
+            case 'security':
+                renderSecurityCards(container, materials);
+                break;
+            default:
+                renderGeneralCategory(container, materials);
+                break;
+        }
+    }
+
+    function renderITILCards(container, materials) {
+        // Para ITIL, separar os materiais baseado no NOME DO ARQUIVO
+        const pmgMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
             
-            const monitoringMaterials = materials.filter(m => {
-                const fileName = (m.arquivo_nome || '').toLowerCase();
-                const title = (m.titulo || '').toLowerCase();
-                
-                // Verificar se contém palavras-chave do Monitoring
-                return fileNameKeywords.monitoring.some(keyword => 
-                    fileName.includes(keyword) || title.includes(keyword)
-                );
-            });
+            // Verificar se contém palavras-chave do PMG
+            return fileNameKeywords.pmg.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const monitoringMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
             
-            // Materiais gerais são aqueles que não se encaixam nas categorias específicas
-            const generalMaterials = materials.filter(m => {
-                const fileName = (m.arquivo_nome || '').toLowerCase();
-                const title = (m.titulo || '').toLowerCase();
-                
-                // Verificar se NÃO contém palavras-chave de nenhum card específico
-                const hasPmgKeyword = fileNameKeywords.pmg.some(keyword => 
-                    fileName.includes(keyword) || title.includes(keyword)
-                );
-                const hasMonitoringKeyword = fileNameKeywords.monitoring.some(keyword => 
-                    fileName.includes(keyword) || title.includes(keyword)
-                );
-                
-                return !hasPmgKeyword && !hasMonitoringKeyword;
-            });
+            // Verificar se contém palavras-chave do Monitoring
+            return fileNameKeywords.monitoring.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        // Materiais gerais são aqueles que não se encaixam nas categorias específicas
+        const generalMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
             
-            console.log('📊 Estatísticas ITIL:');
-            console.log('- PMG Academy:', pmgMaterials.length, 'materiais');
-            console.log('- Monitoring:', monitoringMaterials.length, 'materiais');
-            console.log('- Geral:', generalMaterials.length, 'materiais');
+            // Verificar se NÃO contém palavras-chave de nenhum card específico
+            const hasPmgKeyword = fileNameKeywords.pmg.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasMonitoringKeyword = fileNameKeywords.monitoring.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
             
-            let html = '';
+            return !hasPmgKeyword && !hasMonitoringKeyword;
+        });
+        
+        console.log('📊 Estatísticas ITIL:');
+        console.log('- PMG Academy:', pmgMaterials.length, 'materiais');
+        console.log('- Monitoring:', monitoringMaterials.length, 'materiais');
+        console.log('- Geral:', generalMaterials.length, 'materiais');
+        
+        let html = '';
+        
+        // Card PMG Academy
+        html += renderPMGAcademyCard(pmgMaterials);
+        
+        // Card Monitoring and Event Management
+        html += renderMonitoringCard(monitoringMaterials);
+        
+        // Card para materiais gerais (apenas se houver)
+        if (generalMaterials.length > 0) {
+            html += renderGeneralITILCard(generalMaterials);
+        }
+        
+        container.innerHTML = html;
+        document.getElementById('uploadSection').style.display = 'none';
+    }
+
+    function renderAzureCards(container, materials) {
+        // Separar materiais do Azure por certificação específica
+        const az900Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
             
-            // Card PMG Academy
-            html += renderPMGAcademyCard(pmgMaterials);
+            return fileNameKeywords.az900.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const az104Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
             
-            // Card Monitoring and Event Management
-            html += renderMonitoringCard(monitoringMaterials);
+            return fileNameKeywords.az104.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        // Materiais gerais do Azure
+        const generalAzureMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
             
-            // Card para materiais gerais (apenas se houver)
-            if (generalMaterials.length > 0) {
-                html += renderGeneralITILCard(generalMaterials);
-            }
+            const hasAz900 = fileNameKeywords.az900.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasAz104 = fileNameKeywords.az104.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
             
-            container.innerHTML = html;
-            document.getElementById('uploadSection').style.display = 'none';
+            return !hasAz900 && !hasAz104;
+        });
+        
+        console.log('📊 Estatísticas Azure:');
+        console.log('- AZ-900:', az900Materials.length, 'materiais');
+        console.log('- AZ-104:', az104Materials.length, 'materiais');
+        console.log('- Geral Azure:', generalAzureMaterials.length, 'materiais');
+        
+        let html = '';
+        
+        // Card AZ-900
+        html += renderAzureCard(az900Materials, 'az900');
+        
+        // Card AZ-104
+        html += renderAzureCard(az104Materials, 'az104');
+        
+        // Card para materiais gerais do Azure (apenas se houver)
+        if (generalAzureMaterials.length > 0) {
+            html += renderGeneralAzureCard(generalAzureMaterials);
+        }
+        
+        container.innerHTML = html;
+        document.getElementById('uploadSection').style.display = 'block';
+    }
+
+    function renderLinuxCards(container, materials) {
+        // Separar materiais do Linux por certificação específica
+        const lpic1Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.lpic1.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const lpic2Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.lpic2.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const lpic3Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.lpic3.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        // Materiais gerais do Linux
+        const generalLinuxMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            const hasLpic1 = fileNameKeywords.lpic1.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasLpic2 = fileNameKeywords.lpic2.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasLpic3 = fileNameKeywords.lpic3.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            
+            return !hasLpic1 && !hasLpic2 && !hasLpic3;
+        });
+        
+        console.log('📊 Estatísticas Linux:');
+        console.log('- LPIC-1:', lpic1Materials.length, 'materiais');
+        console.log('- LPIC-2:', lpic2Materials.length, 'materiais');
+        console.log('- LPIC-3:', lpic3Materials.length, 'materiais');
+        console.log('- Geral Linux:', generalLinuxMaterials.length, 'materiais');
+        
+        let html = '';
+        
+        // Card LPIC-1
+        html += renderLinuxCard(lpic1Materials, 'lpic1');
+        
+        // Card LPIC-2
+        html += renderLinuxCard(lpic2Materials, 'lpic2');
+        
+        // Card LPIC-3
+        html += renderLinuxCard(lpic3Materials, 'lpic3');
+        
+        // Card para materiais gerais do Linux (apenas se houver)
+        if (generalLinuxMaterials.length > 0) {
+            html += renderGeneralLinuxCard(generalLinuxMaterials);
+        }
+        
+        container.innerHTML = html;
+        document.getElementById('uploadSection').style.display = 'block';
+    }
+
+    function renderSecurityCards(container, materials) {
+        // Separar materiais do Security+ por certificação específica
+        const securityPlusMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.securityplus.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const cysaMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.cysa.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        // Materiais gerais de Security
+        const generalSecurityMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            const hasSecurityPlus = fileNameKeywords.securityplus.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasCysa = fileNameKeywords.cysa.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            
+            return !hasSecurityPlus && !hasCysa;
+        });
+        
+        console.log('📊 Estatísticas Security+:');
+        console.log('- Security+ SY0-701:', securityPlusMaterials.length, 'materiais');
+        console.log('- CySA+ Cs0-003:', cysaMaterials.length, 'materiais');
+        console.log('- Geral Security:', generalSecurityMaterials.length, 'materiais');
+        
+        let html = '';
+        
+        // Card Security+ SY0-701
+        html += renderSecurityCard(securityPlusMaterials, 'securityplus');
+        
+        // Card CompTIA CySA+ Cs0-003
+        html += renderSecurityCard(cysaMaterials, 'cysa');
+        
+        // Card para materiais gerais de Security (apenas se houver)
+        if (generalSecurityMaterials.length > 0) {
+            html += renderGeneralSecurityCard(generalSecurityMaterials);
+        }
+        
+        container.innerHTML = html;
+        document.getElementById('uploadSection').style.display = 'block';
+    }
+
+    function renderGeneralCategory(container, materials) {
+        // Para outras categorias, renderizar um card único
+        if (materials.length > 0) {
+            container.innerHTML = renderGeneralCard(materials, certifications[currentCategory].title, certifications[currentCategory].icon, getCategoryColor(currentCategory));
         } else {
-            // Para outras categorias, renderizar um card único
-            if (materials.length > 0) {
-                container.innerHTML = renderGeneralCard(materials, certifications[currentCategory].title, certifications[currentCategory].icon, getCategoryColor(currentCategory));
-            } else {
-                container.innerHTML = `
-                    <div class="other-cert-card">
-                        <div class="other-cert-header" style="background: linear-gradient(135deg, ${getCategoryColor(currentCategory)} 0%, ${getCategoryColor(currentCategory, true)} 100%);">
-                            <div class="other-cert-icon">
-                                <i class="${certifications[currentCategory].icon}"></i>
-                            </div>
-                            <div class="other-cert-title">
-                                <h3>${certifications[currentCategory].title}</h3>
-                                <span class="monitoring-badge">
-                                    <i class="fas fa-certificate"></i> 
-                                    ${certifications[currentCategory].level}
-                                </span>
-                            </div>
+            container.innerHTML = `
+                <div class="other-cert-card">
+                    <div class="other-cert-header" style="background: linear-gradient(135deg, ${getCategoryColor(currentCategory)} 0%, ${getCategoryColor(currentCategory, true)} 100%);">
+                        <div class="other-cert-icon">
+                            <i class="${certifications[currentCategory].icon}"></i>
                         </div>
-                        <div class="other-cert-content">
-                            <div class="empty-state">
-                                <i class="fas fa-folder-open"></i>
-                                <h4>Nenhum material disponível</h4>
-                                <p>Seja o primeiro a compartilhar um material para ${certifications[currentCategory].title}!</p>
-                            </div>
+                        <div class="other-cert-title">
+                            <h3>${certifications[currentCategory].title}</h3>
+                            <span class="monitoring-badge">
+                                <i class="fas fa-certificate"></i> 
+                                ${certifications[currentCategory].level}
+                            </span>
                         </div>
                     </div>
-                `;
-            }
-            document.getElementById('uploadSection').style.display = 'block';
+                    <div class="other-cert-content">
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material disponível</h4>
+                            <p>Seja o primeiro a compartilhar um material para ${certifications[currentCategory].title}!</p>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
+        document.getElementById('uploadSection').style.display = 'block';
     }
 
     // ============================================
@@ -1626,17 +2429,12 @@
         const fileNameLower = fileName.toLowerCase();
         const titleLower = title.toLowerCase();
         
-        // Verificar PMG Academy
-        for (const keyword of fileNameKeywords.pmg) {
-            if (fileNameLower.includes(keyword) || titleLower.includes(keyword)) {
-                return 'pmg';
-            }
-        }
-        
-        // Verificar Monitoring and Event Management
-        for (const keyword of fileNameKeywords.monitoring) {
-            if (fileNameLower.includes(keyword) || titleLower.includes(keyword)) {
-                return 'monitoring';
+        // Verificar todas as categorias
+        for (const [cardType, keywords] of Object.entries(fileNameKeywords)) {
+            for (const keyword of keywords) {
+                if (fileNameLower.includes(keyword) || titleLower.includes(keyword)) {
+                    return cardType;
+                }
             }
         }
         
@@ -1646,7 +2444,7 @@
 
     function getCardInfoForFileName(fileName) {
         const detectedCard = detectCardFromFileName(fileName, fileName);
-        const cardName = cardNames[detectedCard] || 'Materiais Gerais - ITIL 4';
+        const cardName = cardNames[detectedCard] || 'Materiais Gerais';
         const cardColor = getCardColor(detectedCard);
         
         return {
@@ -1810,6 +2608,254 @@
         `;
     }
 
+    function renderAzureCard(files = [], cardType) {
+        const cardInfo = cardNames[cardType] || 'Azure';
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        
+        let description = '';
+        if (cardType === 'az900') {
+            description = 'Material para a certificação Azure Fundamentals (AZ-900). Inclui fundamentos de nuvem, serviços Azure básicos, segurança e conformidade.';
+        } else if (cardType === 'az104') {
+            description = 'Material para a certificação Azure Administrator (AZ-104). Inclui gerenciamento de identidades, armazenamento, computação, rede e monitoramento no Azure.';
+        }
+        
+        return `
+            <div class="azure-card">
+                <div class="azure-header">
+                    <div class="azure-icon">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="azure-title">
+                        <h3>${cardInfo}</h3>
+                        <span class="azure-badge">
+                            <i class="fas fa-cloud"></i> 
+                            Certificação Microsoft - ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="azure-content">
+                    <p style="margin-bottom: 1.5rem; color: #666;">
+                        ${description}
+                    </p>
+                    
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card azure" onclick="openUploadForCard('${cardType}')">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="azure-stats">
+                        <div class="azure-stat">
+                            <div class="azure-stat-value">${files.length}</div>
+                            <div class="azure-stat-label">Arquivos</div>
+                        </div>
+                        <div class="azure-stat">
+                            <div class="azure-stat-value">${totalViews}</div>
+                            <div class="azure-stat-label">Visualizações</div>
+                        </div>
+                        <div class="azure-stat">
+                            <div class="azure-stat-value">${totalDownloads}</div>
+                            <div class="azure-stat-label">Downloads</div>
+                        </div>
+                        <div class="azure-stat">
+                            <div class="azure-stat-value">${totalSizeMB} MB</div>
+                            <div class="azure-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="azure-toggle-btn" onclick="toggleFiles('${cardType}')" id="${cardType}ToggleBtn">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="${cardType}-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, cardType)}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material! Use "${cardType.toUpperCase()}" no nome do arquivo.</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderLinuxCard(files = [], cardType) {
+        const cardInfo = cardNames[cardType] || 'Linux';
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        
+        let description = '';
+        if (cardType === 'lpic1') {
+            description = 'Material para a certificação LPIC-1: Linux Administrator. Inclui administração básica do sistema, linha de comando, instalação e configuração.';
+        } else if (cardType === 'lpic2') {
+            description = 'Material para a certificação LPIC-2: Linux Engineer. Inclui administração avançada, serviços de rede, segurança e solução de problemas.';
+        } else if (cardType === 'lpic3') {
+            description = 'Material para a certificação LPIC-3: Linux Enterprise Professional. Inclui administração enterprise, virtualização, alta disponibilidade e segurança.';
+        }
+        
+        return `
+            <div class="linux-card">
+                <div class="linux-header">
+                    <div class="linux-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="linux-title">
+                        <h3>${cardInfo}</h3>
+                        <span class="linux-badge">
+                            <i class="fas fa-penguin"></i> 
+                            Linux Professional - ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="linux-content">
+                    <p style="margin-bottom: 1.5rem; color: #666;">
+                        ${description}
+                    </p>
+                    
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card linux" onclick="openUploadForCard('${cardType}')">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="linux-stats">
+                        <div class="linux-stat">
+                            <div class="linux-stat-value">${files.length}</div>
+                            <div class="linux-stat-label">Arquivos</div>
+                        </div>
+                        <div class="linux-stat">
+                            <div class="linux-stat-value">${totalViews}</div>
+                            <div class="linux-stat-label">Visualizações</div>
+                        </div>
+                        <div class="linux-stat">
+                            <div class="linux-stat-value">${totalDownloads}</div>
+                            <div class="linux-stat-label">Downloads</div>
+                        </div>
+                        <div class="linux-stat">
+                            <div class="linux-stat-value">${totalSizeMB} MB</div>
+                            <div class="linux-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="linux-toggle-btn" onclick="toggleFiles('${cardType}')" id="${cardType}ToggleBtn">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="${cardType}-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, cardType)}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material! Use "${cardType.toUpperCase()}" no nome do arquivo.</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderSecurityCard(files = [], cardType) {
+        const cardInfo = cardNames[cardType] || 'Security+';
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        
+        let description = '';
+        if (cardType === 'securityplus') {
+            description = 'Material para a certificação CompTIA Security+ SY0-701. Inclui fundamentos de segurança, ameaças, ataques, vulnerabilidades e controle de acesso.';
+        } else if (cardType === 'cysa') {
+            description = 'Material para a certificação CompTIA CySA+ Cs0-003. Inclui análise de ameaças, vulnerabilidades, resposta a incidentes e conformidade de segurança.';
+        }
+        
+        return `
+            <div class="security-card">
+                <div class="security-header">
+                    <div class="security-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="security-title">
+                        <h3>${cardInfo}</h3>
+                        <span class="security-badge">
+                            <i class="fas fa-lock"></i> 
+                            CompTIA Security - ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="security-content">
+                    <p style="margin-bottom: 1.5rem; color: #666;">
+                        ${description}
+                    </p>
+                    
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card security" onclick="openUploadForCard('${cardType}')">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="security-stats">
+                        <div class="security-stat">
+                            <div class="security-stat-value">${files.length}</div>
+                            <div class="security-stat-label">Arquivos</div>
+                        </div>
+                        <div class="security-stat">
+                            <div class="security-stat-value">${totalViews}</div>
+                            <div class="security-stat-label">Visualizações</div>
+                        </div>
+                        <div class="security-stat">
+                            <div class="security-stat-value">${totalDownloads}</div>
+                            <div class="security-stat-label">Downloads</div>
+                        </div>
+                        <div class="security-stat">
+                            <div class="security-stat-value">${totalSizeMB} MB</div>
+                            <div class="security-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="security-toggle-btn" onclick="toggleFiles('${cardType}')" id="${cardType}ToggleBtn">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="${cardType}-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, cardType)}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material! Use "${cardType === 'securityplus' ? 'Security+' : 'CySA+'}" no nome do arquivo.</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
     function renderGeneralITILCard(files = []) {
         const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
         const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
@@ -1830,6 +2876,222 @@
                         <h3>Materiais Gerais - ITIL 4</h3>
                         <span class="monitoring-badge">
                             <i class="fas fa-certificate"></i> 
+                            ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="other-cert-content">
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')" style="background: linear-gradient(135deg, ${color}, ${darkerColor});">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="monitoring-stats">
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-label">Arquivos</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-label">Visualizações</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-label">Downloads</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn" style="background: ${color};">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="general-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, 'general')}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material!</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderGeneralAzureCard(files = []) {
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        const color = '#0078D4';
+        const darkerColor = '#005A9E';
+        
+        return `
+            <div class="other-cert-card">
+                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%);">
+                    <div class="other-cert-icon">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="other-cert-title">
+                        <h3>Materiais Gerais - Azure</h3>
+                        <span class="monitoring-badge">
+                            <i class="fas fa-cloud"></i> 
+                            ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="other-cert-content">
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')" style="background: linear-gradient(135deg, ${color}, ${darkerColor});">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="monitoring-stats">
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-label">Arquivos</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-label">Visualizações</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-label">Downloads</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn" style="background: ${color};">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="general-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, 'general')}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material!</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderGeneralLinuxCard(files = []) {
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        const color = '#FFD700';
+        const darkerColor = '#FF9800';
+        
+        return `
+            <div class="other-cert-card">
+                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%); color: #333;">
+                    <div class="other-cert-icon" style="color: #333;">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="other-cert-title">
+                        <h3 style="color: #333;">Materiais Gerais - Linux</h3>
+                        <span class="monitoring-badge" style="background: linear-gradient(135deg, #FFEB3B, #FF9800); color: #5D4037;">
+                            <i class="fas fa-penguin"></i> 
+                            ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="other-cert-content">
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card linux" onclick="openUploadForCard('general')">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="monitoring-stats">
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-label">Arquivos</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-label">Visualizações</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-label">Downloads</div>
+                        </div>
+                        <div class="monitoring-stat">
+                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="linux-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="general-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, 'general')}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material!</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderGeneralSecurityCard(files = []) {
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        const color = '#d32f2f';
+        const darkerColor = '#b71c1c';
+        
+        return `
+            <div class="other-cert-card">
+                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%);">
+                    <div class="other-cert-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="other-cert-title">
+                        <h3>Materiais Gerais - Security</h3>
+                        <span class="monitoring-badge">
+                            <i class="fas fa-lock"></i> 
                             ${files.length} arquivos
                         </span>
                     </div>
@@ -2004,10 +3266,58 @@
         const isOwner = currentUserId && file.usuario_id === currentUserId;
         const canView = canViewFile(fileType);
         const cardColor = getCardColor(cardType);
+        const cardCategory = getCardCategory(cardType);
+        
+        let cardClass = 'pmg-file-card';
+        let iconClass = 'pmg-file-icon';
+        let actionClass = 'pmg-action-btn';
+        let isGeneralCard = false;
+        
+        switch(cardCategory) {
+            case 'azure':
+                cardClass = 'azure-file-card';
+                iconClass = 'azure-file-icon';
+                actionClass = 'azure-action-btn';
+                break;
+            case 'linux':
+                cardClass = 'linux-file-card';
+                iconClass = 'linux-file-icon';
+                actionClass = 'linux-action-btn';
+                break;
+            case 'security':
+                cardClass = 'security-file-card';
+                iconClass = 'security-file-icon';
+                actionClass = 'security-action-btn';
+                break;
+            case 'monitoring':
+                cardClass = 'monitoring-file-card';
+                iconClass = 'monitoring-file-icon';
+                actionClass = 'monitoring-action-btn';
+                break;
+            case 'pmg':
+                cardClass = 'pmg-file-card';
+                iconClass = 'pmg-file-icon';
+                actionClass = 'pmg-action-btn';
+                break;
+            default:
+                isGeneralCard = true;
+                break;
+        }
+        
+        let iconStyle = '';
+        if (isGeneralCard) {
+            if (currentCategory === 'itil') {
+                iconStyle = 'background: linear-gradient(135deg, #1a237e, #283593);';
+            } else {
+                const color = getCategoryColor(currentCategory);
+                const darkerColor = getDarkerColor(color);
+                iconStyle = `background: linear-gradient(135deg, ${color}, ${darkerColor});`;
+            }
+        }
         
         return `
-            <div class="${cardType === 'pmg' ? 'pmg-file-card' : cardType === 'monitoring' ? 'monitoring-file-card' : 'pmg-file-card'}">
-                <div class="${cardType === 'pmg' ? 'pmg-file-icon' : cardType === 'monitoring' ? 'monitoring-file-icon' : 'pmg-file-icon'}" style="${cardType === 'general' && currentCategory === 'itil' ? 'background: linear-gradient(135deg, #1a237e, #283593);' : cardType === 'general' ? `background: linear-gradient(135deg, ${getCategoryColor(currentCategory)}, ${getDarkerColor(getCategoryColor(currentCategory))});` : ''}">
+            <div class="${cardClass}">
+                <div class="${iconClass}" style="${iconStyle}">
                     <i class="fas fa-${fileIcon}"></i>
                 </div>
                 <div class="pmg-file-info">
@@ -2021,19 +3331,19 @@
                 </div>
                 <div class="pmg-file-actions">
                     ${hasValidUrl ? `
-                        <button class="${cardType === 'pmg' ? 'pmg-action-btn' : cardType === 'monitoring' ? 'monitoring-action-btn' : 'pmg-action-btn'}" 
+                        <button class="${actionClass}" 
                            onclick="handleFileAction('${fileId}', '${escapeString(fileName)}', '${escapeString(fileUrl)}', '${fileType}')" 
                            title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}"
-                           style="${cardType === 'general' && currentCategory === 'itil' ? 'border-color: #1a237e;' : cardType === 'general' ? `border-color: ${getCategoryColor(currentCategory)};` : ''}">
+                           ${isGeneralCard && currentCategory !== 'itil' ? `style="border-color: ${getCategoryColor(currentCategory)};"` : ''}>
                             <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
                         </button>
                     ` : `
-                        <span class="${cardType === 'pmg' ? 'pmg-action-btn disabled' : cardType === 'monitoring' ? 'monitoring-action-btn disabled' : 'pmg-action-btn disabled'}" title="Link não disponível">
+                        <span class="${actionClass} disabled" title="Link não disponível">
                             <i class="fas fa-eye"></i>
                         </span>
                     `}
                     ${isOwner ? `
-                        <button class="${cardType === 'pmg' ? 'pmg-action-btn delete' : cardType === 'monitoring' ? 'monitoring-action-btn delete' : 'pmg-action-btn delete'}" 
+                        <button class="${actionClass} delete" 
                                 onclick="showDeleteModal('${fileId}', '${escapeString(fileName)}')" 
                                 title="Excluir">
                             <i class="fas fa-trash"></i>
@@ -2121,7 +3431,7 @@
         // Configurar a seleção automática no modal
         document.getElementById('autoSelectedCard').value = currentUploadCardType;
         
-        if (currentCategory === 'itil') {
+        if (['itil', 'azure', 'linux', 'security'].includes(currentCategory)) {
             document.getElementById('autoCardSelection').style.display = 'block';
             document.getElementById('autoCardSelectionText').innerHTML = `
                 <i class="fas fa-magic" style="color: #9b59b6;"></i> 
@@ -2238,7 +3548,7 @@
             const certificacao = certMapping[category] || category;
             
             // CORREÇÃO CRÍTICA: Usar o card detectado automaticamente
-            let categoria = cardNames[cardType] || 'Materiais Gerais - ITIL 4';
+            let categoria = cardNames[cardType] || 'Materiais Gerais';
             
             const materialData = {
                 titulo: title,
@@ -2542,13 +3852,37 @@
 
     function getCardColor(cardType) {
         switch(cardType) {
+            // ITIL
             case 'pmg': return '#4ECDC4';
             case 'monitoring': return '#6f42c1';
+            // Azure
+            case 'az900': return '#0078D4';
+            case 'az104': return '#005A9E';
+            // Linux
+            case 'lpic1': return '#FFD700';
+            case 'lpic2': return '#FF9800';
+            case 'lpic3': return '#FF5722';
+            // Security+
+            case 'securityplus': return '#d32f2f';
+            case 'cysa': return '#b71c1c';
+            // Geral
             case 'general': 
                 if (currentCategory === 'itil') return '#1a237e';
+                if (currentCategory === 'azure') return '#0078D4';
+                if (currentCategory === 'linux') return '#FFD700';
+                if (currentCategory === 'security') return '#d32f2f';
                 return getCategoryColor(currentCategory);
-            default: return '#3498db';
+            default: 
+                return getCategoryColor(getCardCategory(cardType)) || '#3498db';
         }
+    }
+
+    function getCardCategory(cardType) {
+        if (['pmg', 'monitoring'].includes(cardType)) return 'itil';
+        if (['az900', 'az104'].includes(cardType)) return 'azure';
+        if (['lpic1', 'lpic2', 'lpic3'].includes(cardType)) return 'linux';
+        if (['securityplus', 'cysa'].includes(cardType)) return 'security';
+        return 'general';
     }
 
     function getCategoryColor(category, darker = false) {
