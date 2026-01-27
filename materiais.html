@@ -76,19 +76,19 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><ellipse cx="50" cy="40" rx="35" ry="20" fill="white"/><ellipse cx="50" cy="70" rx="40" ry="25" fill="white"/></svg>');
         }
         
-        .security-banner {
+        .comptia-banner {
             background: linear-gradient(135deg, #d32f2f 0%, #c62828 25%, #b71c1c 50%, #8b0000 75%, #660000 100%) !important;
             color: white !important;
             position: relative;
             overflow: hidden;
         }
         
-        .security-banner * {
+        .comptia-banner * {
             color: white !important;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
         }
         
-        .security-banner::before {
+        .comptia-banner::before {
             content: "";
             position: absolute;
             top: 0;
@@ -114,8 +114,12 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
 
-        /* Cards para Azure */
-        .azure-card {
+        /* Cards para Azure - MODELO BASE PARA TODOS */
+        .azure-card,
+        .linux-card,
+        .security-card,
+        .pmg-academy-card,
+        .monitoring-card {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border: none;
             border-radius: 12px;
@@ -126,7 +130,11 @@
             border-left: 5px solid #0078D4;
         }
         
-        .azure-header {
+        .azure-header,
+        .linux-header,
+        .security-header,
+        .pmg-academy-header,
+        .monitoring-header {
             padding: 1.5rem;
             background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
             color: white;
@@ -135,558 +143,9 @@
             gap: 1rem;
         }
         
-        .azure-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        .azure-title {
-            flex: 1;
-        }
-        
-        .azure-title h3 {
-            margin: 0 0 0.3rem 0;
-            color: white;
-            font-size: 1.3rem;
-        }
-        
-        .azure-badge {
-            background: linear-gradient(135deg, #4fc3f7, #0288d1);
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
-        .azure-content {
-            padding: 1.5rem;
-        }
-        
-        .azure-file-card {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .azure-file-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #0078D4;
-        }
-        
-        .azure-file-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #0078D4, #005A9E);
-        }
-        
-        .azure-file-info {
-            flex: 1;
-        }
-        
-        .azure-file-info h5 {
-            margin: 0 0 0.3rem 0;
-            color: #2c3e50;
-            font-size: 0.95rem;
-        }
-        
-        .azure-file-meta {
-            display: flex;
-            gap: 0.8rem;
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .azure-file-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .azure-action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            color: #495057;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .azure-action-btn:hover {
-            background: #0078D4;
-            color: white;
-            border-color: #0078D4;
-        }
-        
-        .azure-action-btn.delete:hover {
-            background: #e74c3c;
-            color: white;
-            border-color: #e74c3c;
-        }
-        
-        .azure-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px dashed #dee2e6;
-        }
-        
-        .azure-stat {
-            text-align: center;
-        }
-        
-        .azure-stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #0078D4;
-        }
-        
-        .azure-stat-label {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .azure-toggle-btn {
-            background: #0078D4;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            transition: all 0.3s;
-        }
-        
-        .azure-toggle-btn:hover {
-            background: #005A9E;
-            transform: translateY(-2px);
-        }
-        
-        /* Cards para Linux */
-        .linux-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            position: relative;
-            border-left: 5px solid #FFD700;
-        }
-        
-        .linux-header {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #FFD700 0%, #FF9800 100%);
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .linux-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: #333;
-        }
-        
-        .linux-title {
-            flex: 1;
-        }
-        
-        .linux-title h3 {
-            margin: 0 0 0.3rem 0;
-            color: #333;
-            font-size: 1.3rem;
-        }
-        
-        .linux-badge {
-            background: linear-gradient(135deg, #FFEB3B, #FF9800);
-            color: #5D4037;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
-        .linux-content {
-            padding: 1.5rem;
-        }
-        
-        .linux-file-card {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .linux-file-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #FFD700;
-        }
-        
-        .linux-file-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #333;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #FFD700, #FF9800);
-        }
-        
-        .linux-file-info {
-            flex: 1;
-        }
-        
-        .linux-file-info h5 {
-            margin: 0 0 0.3rem 0;
-            color: #2c3e50;
-            font-size: 0.95rem;
-        }
-        
-        .linux-file-meta {
-            display: flex;
-            gap: 0.8rem;
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .linux-file-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .linux-action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            color: #495057;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .linux-action-btn:hover {
-            background: #FFD700;
-            color: #333;
-            border-color: #FFD700;
-        }
-        
-        .linux-action-btn.delete:hover {
-            background: #e74c3c;
-            color: white;
-            border-color: #e74c3c;
-        }
-        
-        .linux-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px dashed #dee2e6;
-        }
-        
-        .linux-stat {
-            text-align: center;
-        }
-        
-        .linux-stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #FF9800;
-        }
-        
-        .linux-stat-label {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .linux-toggle-btn {
-            background: #FFD700;
-            color: #333;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            transition: all 0.3s;
-        }
-        
-        .linux-toggle-btn:hover {
-            background: #FF9800;
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        /* Cards para Security+ */
-        .security-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            position: relative;
-            border-left: 5px solid #d32f2f;
-        }
-        
-        .security-header {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .security-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        .security-title {
-            flex: 1;
-        }
-        
-        .security-title h3 {
-            margin: 0 0 0.3rem 0;
-            color: white;
-            font-size: 1.3rem;
-        }
-        
-        .security-badge {
-            background: linear-gradient(135deg, #f44336, #c62828);
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
-        .security-content {
-            padding: 1.5rem;
-        }
-        
-        .security-file-card {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .security-file-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #d32f2f;
-        }
-        
-        .security-file-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #d32f2f, #b71c1c);
-        }
-        
-        .security-file-info {
-            flex: 1;
-        }
-        
-        .security-file-info h5 {
-            margin: 0 0 0.3rem 0;
-            color: #2c3e50;
-            font-size: 0.95rem;
-        }
-        
-        .security-file-meta {
-            display: flex;
-            gap: 0.8rem;
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .security-file-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .security-action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            color: #495057;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .security-action-btn:hover {
-            background: #d32f2f;
-            color: white;
-            border-color: #d32f2f;
-        }
-        
-        .security-action-btn.delete:hover {
-            background: #e74c3c;
-            color: white;
-            border-color: #e74c3c;
-        }
-        
-        .security-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px dashed #dee2e6;
-        }
-        
-        .security-stat {
-            text-align: center;
-        }
-        
-        .security-stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #d32f2f;
-        }
-        
-        .security-stat-label {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .security-toggle-btn {
-            background: #d32f2f;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            transition: all 0.3s;
-        }
-        
-        .security-toggle-btn:hover {
-            background: #b71c1c;
-            transform: translateY(-2px);
-        }
-        
-        /* Card especial para PMG Academy */
-        .pmg-academy-container,
-        .monitoring-container {
-            margin-bottom: 2rem;
-            display: block !important;
-        }
-        
-        .pmg-academy-card,
-        .monitoring-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            position: relative;
-            border-left: 5px solid #4ECDC4;
-        }
-        
-        .monitoring-card {
-            border-left: 5px solid #6f42c1;
-        }
-        
-        .pmg-academy-header,
-        .monitoring-header {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .monitoring-header {
-            background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
-        }
-        
+        .azure-icon,
+        .linux-icon,
+        .security-icon,
         .pmg-academy-icon,
         .monitoring-icon {
             width: 60px;
@@ -699,11 +158,17 @@
             font-size: 1.5rem;
         }
         
+        .azure-title,
+        .linux-title,
+        .security-title,
         .pmg-academy-title,
         .monitoring-title {
             flex: 1;
         }
         
+        .azure-title h3,
+        .linux-title h3,
+        .security-title h3,
         .pmg-academy-title h3,
         .monitoring-title h3 {
             margin: 0 0 0.3rem 0;
@@ -711,20 +176,12 @@
             font-size: 1.3rem;
         }
         
-        .pmg-badge {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #8B4513;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
+        .azure-badge,
+        .linux-badge,
+        .security-badge,
+        .pmg-badge,
         .monitoring-badge {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            background: linear-gradient(135deg, #4fc3f7, #0288d1);
             color: white;
             padding: 0.3rem 1rem;
             border-radius: 20px;
@@ -735,18 +192,17 @@
             gap: 0.3rem;
         }
         
+        .azure-content,
+        .linux-content,
+        .security-content,
         .pmg-academy-content,
         .monitoring-content {
             padding: 1.5rem;
         }
         
-        .files-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
+        .azure-file-card,
+        .linux-file-card,
+        .security-file-card,
         .pmg-file-card,
         .monitoring-file-card {
             background: white;
@@ -760,18 +216,19 @@
             cursor: pointer;
         }
         
-        .pmg-file-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #4ECDC4;
-        }
-        
+        .azure-file-card:hover,
+        .linux-file-card:hover,
+        .security-file-card:hover,
+        .pmg-file-card:hover,
         .monitoring-file-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #6f42c1;
+            border-color: #0078D4;
         }
         
+        .azure-file-icon,
+        .linux-file-icon,
+        .security-file-icon,
         .pmg-file-icon,
         .monitoring-file-icon {
             width: 50px;
@@ -782,21 +239,20 @@
             justify-content: center;
             color: white;
             font-size: 1.2rem;
+            background: linear-gradient(135deg, #0078D4, #005A9E);
         }
         
-        .pmg-file-icon {
-            background: linear-gradient(135deg, #4ECDC4, #44A08D);
-        }
-        
-        .monitoring-file-icon {
-            background: linear-gradient(135deg, #6f42c1, #5a32a3);
-        }
-        
+        .azure-file-info,
+        .linux-file-info,
+        .security-file-info,
         .pmg-file-info,
         .monitoring-file-info {
             flex: 1;
         }
         
+        .azure-file-info h5,
+        .linux-file-info h5,
+        .security-file-info h5,
         .pmg-file-info h5,
         .monitoring-file-info h5 {
             margin: 0 0 0.3rem 0;
@@ -804,6 +260,9 @@
             font-size: 0.95rem;
         }
         
+        .azure-file-meta,
+        .linux-file-meta,
+        .security-file-meta,
         .pmg-file-meta,
         .monitoring-file-meta {
             display: flex;
@@ -812,12 +271,18 @@
             color: #7f8c8d;
         }
         
+        .azure-file-actions,
+        .linux-file-actions,
+        .security-file-actions,
         .pmg-file-actions,
         .monitoring-file-actions {
             display: flex;
             gap: 0.5rem;
         }
         
+        .azure-action-btn,
+        .linux-action-btn,
+        .security-action-btn,
         .pmg-action-btn,
         .monitoring-action-btn {
             width: 36px;
@@ -833,18 +298,19 @@
             transition: all 0.3s;
         }
         
-        .pmg-action-btn:hover {
-            background: #4ECDC4;
-            color: white;
-            border-color: #4ECDC4;
-        }
-        
+        .azure-action-btn:hover,
+        .linux-action-btn:hover,
+        .security-action-btn:hover,
+        .pmg-action-btn:hover,
         .monitoring-action-btn:hover {
-            background: #6f42c1;
+            background: #0078D4;
             color: white;
-            border-color: #6f42c1;
+            border-color: #0078D4;
         }
         
+        .azure-action-btn.delete:hover,
+        .linux-action-btn.delete:hover,
+        .security-action-btn.delete:hover,
         .pmg-action-btn.delete:hover,
         .monitoring-action-btn.delete:hover {
             background: #e74c3c;
@@ -852,6 +318,9 @@
             border-color: #e74c3c;
         }
         
+        .azure-stats,
+        .linux-stats,
+        .security-stats,
         .pmg-stats,
         .monitoring-stats {
             display: flex;
@@ -861,32 +330,39 @@
             border-top: 1px dashed #dee2e6;
         }
         
+        .azure-stat,
+        .linux-stat,
+        .security-stat,
         .pmg-stat,
         .monitoring-stat {
             text-align: center;
         }
         
-        .pmg-stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #4ECDC4;
-        }
-        
+        .azure-stat-value,
+        .linux-stat-value,
+        .security-stat-value,
+        .pmg-stat-value,
         .monitoring-stat-value {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #6f42c1;
+            color: #0078D4;
         }
         
+        .azure-stat-label,
+        .linux-stat-label,
+        .security-stat-label,
         .pmg-stat-label,
         .monitoring-stat-label {
             font-size: 0.8rem;
             color: #7f8c8d;
         }
         
+        .azure-toggle-btn,
+        .linux-toggle-btn,
+        .security-toggle-btn,
         .pmg-toggle-btn,
         .monitoring-toggle-btn {
-            background: #4ECDC4;
+            background: #0078D4;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -899,23 +375,155 @@
             transition: all 0.3s;
         }
         
+        .azure-toggle-btn:hover,
+        .linux-toggle-btn:hover,
+        .security-toggle-btn:hover,
+        .pmg-toggle-btn:hover,
+        .monitoring-toggle-btn:hover {
+            background: #005A9E;
+            transform: translateY(-2px);
+        }
+        
+        /* Cards para Linux - mantendo as classes mas usando cores do Azure */
+        .linux-card {
+            border-left: 5px solid #0078D4;
+        }
+        
+        .linux-header {
+            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
+        }
+        
+        .linux-file-card:hover {
+            border-color: #0078D4;
+        }
+        
+        .linux-file-icon {
+            background: linear-gradient(135deg, #0078D4, #005A9E);
+        }
+        
+        .linux-action-btn:hover {
+            background: #0078D4;
+            color: white;
+            border-color: #0078D4;
+        }
+        
+        .linux-toggle-btn {
+            background: #0078D4;
+            color: white;
+        }
+        
+        .linux-toggle-btn:hover {
+            background: #005A9E;
+            color: white;
+        }
+        
+        /* Cards para Security+ (agora CompTIA) - usando cores do Azure */
+        .security-card {
+            border-left: 5px solid #0078D4;
+        }
+        
+        .security-header {
+            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
+        }
+        
+        .security-file-card:hover {
+            border-color: #0078D4;
+        }
+        
+        .security-file-icon {
+            background: linear-gradient(135deg, #0078D4, #005A9E);
+        }
+        
+        .security-action-btn:hover {
+            background: #0078D4;
+            color: white;
+            border-color: #0078D4;
+        }
+        
+        .security-toggle-btn {
+            background: #0078D4;
+            color: white;
+        }
+        
+        .security-toggle-btn:hover {
+            background: #005A9E;
+            color: white;
+        }
+        
+        /* Card especial para PMG Academy */
+        .pmg-academy-container,
+        .monitoring-container {
+            margin-bottom: 2rem;
+            display: block !important;
+        }
+        
+        .pmg-academy-card {
+            border-left: 5px solid #0078D4;
+        }
+        
+        .monitoring-card {
+            border-left: 5px solid #0078D4;
+        }
+        
+        .pmg-academy-header {
+            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
+        }
+        
+        .monitoring-header {
+            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
+        }
+        
+        .pmg-file-card:hover {
+            border-color: #0078D4;
+        }
+        
+        .monitoring-file-card:hover {
+            border-color: #0078D4;
+        }
+        
+        .pmg-file-icon {
+            background: linear-gradient(135deg, #0078D4, #005A9E);
+        }
+        
+        .monitoring-file-icon {
+            background: linear-gradient(135deg, #0078D4, #005A9E);
+        }
+        
+        .pmg-action-btn:hover {
+            background: #0078D4;
+            color: white;
+            border-color: #0078D4;
+        }
+        
+        .monitoring-action-btn:hover {
+            background: #0078D4;
+            color: white;
+            border-color: #0078D4;
+        }
+        
+        .pmg-toggle-btn {
+            background: #0078D4;
+            color: white;
+        }
+        
         .monitoring-toggle-btn {
-            background: #6f42c1;
+            background: #0078D4;
+            color: white;
         }
         
         .pmg-toggle-btn:hover {
-            background: #44A08D;
+            background: #005A9E;
             transform: translateY(-2px);
         }
         
         .monitoring-toggle-btn:hover {
-            background: #5a32a3;
+            background: #005A9E;
             transform: translateY(-2px);
         }
         
         /* Botões de upload nos cards */
         .upload-btn-card {
-            background: linear-gradient(135deg, #28a745, #20c997);
+            background: linear-gradient(135deg, #0078D4, #005A9E);
             color: white;
             border: none;
             padding: 0.5rem 1.2rem;
@@ -930,51 +538,9 @@
         }
         
         .upload-btn-card:hover {
-            background: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-        }
-        
-        .upload-btn-card.pmg {
-            background: linear-gradient(135deg, #4ECDC4, #44A08D);
-        }
-        
-        .upload-btn-card.pmg:hover {
-            background: #3db7ae;
-        }
-        
-        .upload-btn-card.monitoring {
-            background: linear-gradient(135deg, #6f42c1, #5a32a3);
-        }
-        
-        .upload-btn-card.monitoring:hover {
-            background: #5e35b1;
-        }
-        
-        .upload-btn-card.azure {
-            background: linear-gradient(135deg, #0078D4, #005A9E);
-        }
-        
-        .upload-btn-card.azure:hover {
             background: #005A9E;
-        }
-        
-        .upload-btn-card.linux {
-            background: linear-gradient(135deg, #FFD700, #FF9800);
-            color: #333;
-        }
-        
-        .upload-btn-card.linux:hover {
-            background: #FF9800;
-            color: white;
-        }
-        
-        .upload-btn-card.security {
-            background: linear-gradient(135deg, #d32f2f, #b71c1c);
-        }
-        
-        .upload-btn-card.security:hover {
-            background: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
         }
         
         .upload-btn-wrapper {
@@ -1055,48 +621,17 @@
         }
         
         .category-chip:hover {
-            background: #e9ecef;
-            transform: translateY(-2px);
+            background: #0078D4;
             color: white !important;
+            transform: translateY(-2px);
         }
         
         .category-chip.active {
+            background: #0078D4;
             color: white !important;
             border-color: transparent;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
-        /* Cores específicas para cada categoria */
-        .category-chip[data-category="itil"]:hover,
-        .category-chip.active[data-category="itil"] { 
-            background: #1a237e; 
-            color: white !important; 
-        }
-        .category-chip[data-category="azure"]:hover,
-        .category-chip.active[data-category="azure"] { 
-            background: #0078D4; 
-            color: white !important; 
-        }
-        .category-chip[data-category="aws"]:hover,
-        .category-chip.active[data-category="aws"] { 
-            background: #FF9900; 
-            color: white !important; 
-        }
-        .category-chip[data-category="linux"]:hover,
-        .category-chip.active[data-category="linux"] { 
-            background: #FFD700; 
-            color: white !important;
-        }
-        .category-chip[data-category="security"]:hover,
-        .category-chip.active[data-category="security"] { 
-            background: #d32f2f; 
-            color: white !important;
-        }
-        .category-chip[data-category="ccna"]:hover,
-        .category-chip.active[data-category="ccna"] { 
-            background: #00a0d2; 
-            color: white !important; 
+            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
         }
         
         /* NOTIFICAÇÕES */
@@ -1238,7 +773,7 @@
         
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #4ECDC4, #44A08D);
+            background: linear-gradient(90deg, #0078D4, #005A9E);
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 5px;
@@ -1334,12 +869,12 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 1.5rem;
             overflow: hidden;
-            border-left: 5px solid #3498db;
+            border-left: 5px solid #0078D4;
         }
         
         .other-cert-header {
             padding: 1.5rem;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
             color: white;
             display: flex;
             align-items: center;
@@ -1369,6 +904,13 @@
         
         .other-cert-content {
             padding: 1.5rem;
+        }
+        
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -1436,7 +978,7 @@
                     <div class="category-chip" data-category="azure">Azure</div>
                     <div class="category-chip" data-category="aws">AWS</div>
                     <div class="category-chip" data-category="linux">Linux</div>
-                    <div class="category-chip" data-category="security">Security+</div>
+                    <div class="category-chip" data-category="comptia">CompTIA</div>
                     <div class="category-chip" data-category="ccna">CCNA</div>
                 </div>
             </div>
@@ -1587,7 +1129,7 @@
     <div id="uploadModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <button class="close-modal" onclick="closeUploadModal()">&times;</button>
-            <h3 style="color: var(--primary); margin-bottom: 1.5rem;">
+            <h3 style="color: #0078D4; margin-bottom: 1.5rem;">
                 <i class="fas fa-upload"></i> Compartilhar Material
             </h3>
             
@@ -1608,7 +1150,7 @@
                 <div id="selectedFileInfo" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;"></div>
                 
                 <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2c3e50;">
                         <i class="fas fa-heading"></i> Título *
                     </label>
                     <input type="text" id="materialTitle" class="filter-input" 
@@ -1616,7 +1158,7 @@
                 </div>
                 
                 <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2c3e50;">
                         <i class="fas fa-align-left"></i> Descrição
                     </label>
                     <textarea id="materialDescription" class="filter-input" rows="3" 
@@ -1624,7 +1166,7 @@
                 </div>
                 
                 <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2c3e50;">
                         <i class="fas fa-certificate"></i> Categoria *
                     </label>
                     <select id="materialCategory" class="filter-input" required>
@@ -1632,17 +1174,17 @@
                         <option value="azure">Azure</option>
                         <option value="aws">AWS</option>
                         <option value="linux">Linux</option>
-                        <option value="security">Security+</option>
+                        <option value="comptia">CompTIA</option>
                         <option value="ccna">CCNA</option>
                     </select>
                 </div>
                 
                 <!-- Seleção automática baseada no nome do arquivo -->
                 <div id="autoCardSelection" style="margin-bottom: 1.5rem; display: none;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2c3e50;">
                         <i class="fas fa-folder"></i> Card de Destino
                     </label>
-                    <div style="padding: 1rem; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #3498db;">
+                    <div style="padding: 1rem; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #0078D4;">
                         <p style="margin: 0; font-weight: 500;" id="autoCardSelectionText">
                             O arquivo será salvo automaticamente no card apropriado baseado no nome do arquivo.
                         </p>
@@ -1667,7 +1209,7 @@
     <div id="deleteConfirmModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <button class="close-modal" onclick="closeDeleteModal()">&times;</button>
-            <h3 style="margin-bottom: 1.5rem; color: var(--primary);">
+            <h3 style="margin-bottom: 1.5rem; color: #0078D4;">
                 <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Confirmar Exclusão
             </h3>
             
@@ -1700,7 +1242,7 @@
     const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-    // Mapeamento de certificações
+    // Mapeamento de certificações - ATUALIZADO: Security+ alterado para CompTIA
     const certifications = {
         'itil': { 
             title: 'ITIL 4 Foundation', 
@@ -1734,13 +1276,13 @@
             description: 'Recursos para certificações Linux Professional Institute (LPIC-1, LPIC-2, LPIC-3)',
             cards: ['lpic1', 'lpic2', 'lpic3']
         },
-        'security': { 
-            title: 'Security+', 
+        'comptia': { 
+            title: 'CompTIA', 
             level: 'Segurança da Informação', 
             icon: 'fas fa-shield-alt',
-            bannerClass: 'security-banner',
-            description: 'Material para preparação das certificações CompTIA Security+ e CySA+',
-            cards: ['securityplus', 'cysa']
+            bannerClass: 'comptia-banner',
+            description: 'Material para preparação das certificações CompTIA Security+, Network+, A+',
+            cards: ['securityplus', 'cysa', 'networkplus']
         },
         'ccna': { 
             title: 'CCNA', 
@@ -1757,7 +1299,7 @@
         // ITIL
         'pmg': 'PMG Academy',
         'monitoring': 'Monitoring and Event Management',
-        'general': 'Materiais Gerais - ITIL 4',
+        'general': 'Materiais Gerais',
         // Azure
         'az900': 'Azure Fundamentals (AZ-900)',
         'az104': 'Azure Administrator (AZ-104)',
@@ -1765,9 +1307,10 @@
         'lpic1': 'LPIC-1: Linux Administrator',
         'lpic2': 'LPIC-2: Linux Engineer',
         'lpic3': 'LPIC-3: Linux Enterprise Professional',
-        // Security+
+        // CompTIA
         'securityplus': 'Security+ SY0-701',
-        'cysa': 'CompTIA CySA+ Cs0-003'
+        'cysa': 'CompTIA CySA+ Cs0-003',
+        'networkplus': 'Network+ N10-009'
     };
 
     // Palavras-chave para classificação automática baseada no nome do arquivo
@@ -1782,9 +1325,10 @@
         'lpic1': ['lpic-1', 'lpic1', 'lpic 1', '101', '102', 'linux administrator'],
         'lpic2': ['lpic-2', 'lpic2', 'lpic 2', '201', '202', 'linux engineer'],
         'lpic3': ['lpic-3', 'lpic3', 'lpic 3', '300', '305', 'enterprise professional'],
-        // Security+
+        // CompTIA
         'securityplus': ['security+', 'security plus', 'sy0-701', 'sy0701', 'comptia security'],
-        'cysa': ['cysa+', 'cysa plus', 'cs0-003', 'cs0003', 'cybersecurity analyst', 'analyst']
+        'cysa': ['cysa+', 'cysa plus', 'cs0-003', 'cs0003', 'cybersecurity analyst', 'analyst'],
+        'networkplus': ['network+', 'network plus', 'n10-009', 'n10009', 'comptia network']
     };
 
     // Variáveis globais
@@ -2026,7 +1570,7 @@
         const description = document.getElementById('certDescription');
         const breadcrumb = document.getElementById('currentCertification');
         
-        hero.classList.remove('itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'security-banner', 'ccna-banner');
+        hero.classList.remove('itil-banner', 'azure-banner', 'aws-banner', 'linux-banner', 'comptia-banner', 'ccna-banner');
         hero.classList.add(cert.bannerClass);
         
         icon.innerHTML = `<i class="${cert.icon}"></i>`;
@@ -2087,7 +1631,7 @@
                 'azure': ['azure'],
                 'aws': ['aws'],
                 'linux': ['lpic', 'linux'],
-                'security': ['security'],
+                'comptia': ['security', 'comptia'],
                 'ccna': ['ccna']
             };
             
@@ -2133,8 +1677,8 @@
             case 'linux':
                 renderLinuxCards(container, materials);
                 break;
-            case 'security':
-                renderSecurityCards(container, materials);
+            case 'comptia':
+                renderCompTIACards(container, materials);
                 break;
             default:
                 renderGeneralCategory(container, materials);
@@ -2332,8 +1876,8 @@
         document.getElementById('uploadSection').style.display = 'block';
     }
 
-    function renderSecurityCards(container, materials) {
-        // Separar materiais do Security+ por certificação específica
+    function renderCompTIACards(container, materials) {
+        // Separar materiais do CompTIA por certificação específica
         const securityPlusMaterials = materials.filter(m => {
             const fileName = (m.arquivo_nome || '').toLowerCase();
             const title = (m.titulo || '').toLowerCase();
@@ -2352,8 +1896,17 @@
             );
         });
         
-        // Materiais gerais de Security
-        const generalSecurityMaterials = materials.filter(m => {
+        const networkPlusMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.networkplus.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        // Materiais gerais de CompTIA
+        const generalCompTIAMaterials = materials.filter(m => {
             const fileName = (m.arquivo_nome || '').toLowerCase();
             const title = (m.titulo || '').toLowerCase();
             
@@ -2363,14 +1916,18 @@
             const hasCysa = fileNameKeywords.cysa.some(keyword => 
                 fileName.includes(keyword) || title.includes(keyword)
             );
+            const hasNetworkPlus = fileNameKeywords.networkplus.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
             
-            return !hasSecurityPlus && !hasCysa;
+            return !hasSecurityPlus && !hasCysa && !hasNetworkPlus;
         });
         
-        console.log('📊 Estatísticas Security+:');
+        console.log('📊 Estatísticas CompTIA:');
         console.log('- Security+ SY0-701:', securityPlusMaterials.length, 'materiais');
         console.log('- CySA+ Cs0-003:', cysaMaterials.length, 'materiais');
-        console.log('- Geral Security:', generalSecurityMaterials.length, 'materiais');
+        console.log('- Network+ N10-009:', networkPlusMaterials.length, 'materiais');
+        console.log('- Geral CompTIA:', generalCompTIAMaterials.length, 'materiais');
         
         let html = '';
         
@@ -2380,9 +1937,14 @@
         // Card CompTIA CySA+ Cs0-003
         html += renderSecurityCard(cysaMaterials, 'cysa');
         
-        // Card para materiais gerais de Security (apenas se houver)
-        if (generalSecurityMaterials.length > 0) {
-            html += renderGeneralSecurityCard(generalSecurityMaterials);
+        // Card Network+ N10-009
+        html += renderSecurityCard(networkPlusMaterials, 'networkplus');
+        
+        // Card para materiais gerais de CompTIA (apenas se houver)
+        if (generalCompTIAMaterials.length > 0) {
+            html += renderGeneralSecurityCard(generalCompTIAMaterials);
+        } else if (securityPlusMaterials.length === 0 && cysaMaterials.length === 0 && networkPlusMaterials.length === 0) {
+            html += renderGeneralSecurityCard([]);
         }
         
         container.innerHTML = html;
@@ -2392,31 +1954,9 @@
     function renderGeneralCategory(container, materials) {
         // Para outras categorias, renderizar um card único
         if (materials.length > 0) {
-            container.innerHTML = renderGeneralCard(materials, certifications[currentCategory].title, certifications[currentCategory].icon, getCategoryColor(currentCategory));
+            container.innerHTML = renderGeneralCard(materials, certifications[currentCategory].title, certifications[currentCategory].icon, '#0078D4');
         } else {
-            container.innerHTML = `
-                <div class="other-cert-card">
-                    <div class="other-cert-header" style="background: linear-gradient(135deg, ${getCategoryColor(currentCategory)} 0%, ${getCategoryColor(currentCategory, true)} 100%);">
-                        <div class="other-cert-icon">
-                            <i class="${certifications[currentCategory].icon}"></i>
-                        </div>
-                        <div class="other-cert-title">
-                            <h3>${certifications[currentCategory].title}</h3>
-                            <span class="monitoring-badge">
-                                <i class="fas fa-certificate"></i> 
-                                ${certifications[currentCategory].level}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="other-cert-content">
-                        <div class="empty-state">
-                            <i class="fas fa-folder-open"></i>
-                            <h4>Nenhum material disponível</h4>
-                            <p>Seja o primeiro a compartilhar um material para ${certifications[currentCategory].title}!</p>
-                        </div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = renderGeneralCard([], certifications[currentCategory].title, certifications[currentCategory].icon, '#0078D4');
         }
         document.getElementById('uploadSection').style.display = 'block';
     }
@@ -2445,7 +1985,7 @@
     function getCardInfoForFileName(fileName) {
         const detectedCard = detectCardFromFileName(fileName, fileName);
         const cardName = cardNames[detectedCard] || 'Materiais Gerais';
-        const cardColor = getCardColor(detectedCard);
+        const cardColor = '#0078D4'; // Cor padrão Azure
         
         return {
             cardType: detectedCard,
@@ -2455,7 +1995,7 @@
     }
 
     // ============================================
-    // RENDERIZAÇÃO DOS CARDS
+    // RENDERIZAÇÃO DOS CARDS - MANTENDO ESTRUTURA ORIGINAL
     // ============================================
 
     function renderPMGAcademyCard(files = []) {
@@ -2488,7 +2028,7 @@
                     </p>
                     
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card pmg" onclick="openUploadForCard('pmg')">
+                        <button class="upload-btn-card" onclick="openUploadForCard('pmg')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
@@ -2563,7 +2103,7 @@
                     </p>
                     
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card monitoring" onclick="openUploadForCard('monitoring')">
+                        <button class="upload-btn-card" onclick="openUploadForCard('monitoring')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
@@ -2645,7 +2185,7 @@
                     </p>
                     
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card azure" onclick="openUploadForCard('${cardType}')">
+                        <button class="upload-btn-card" onclick="openUploadForCard('${cardType}')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
@@ -2729,7 +2269,7 @@
                     </p>
                     
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card linux" onclick="openUploadForCard('${cardType}')">
+                        <button class="upload-btn-card" onclick="openUploadForCard('${cardType}')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
@@ -2775,7 +2315,7 @@
     }
 
     function renderSecurityCard(files = [], cardType) {
-        const cardInfo = cardNames[cardType] || 'Security+';
+        const cardInfo = cardNames[cardType] || 'CompTIA Security+';
         const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
         const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
         const totalSizeMB = files.length > 0 ? 
@@ -2788,6 +2328,8 @@
             description = 'Material para a certificação CompTIA Security+ SY0-701. Inclui fundamentos de segurança, ameaças, ataques, vulnerabilidades e controle de acesso.';
         } else if (cardType === 'cysa') {
             description = 'Material para a certificação CompTIA CySA+ Cs0-003. Inclui análise de ameaças, vulnerabilidades, resposta a incidentes e conformidade de segurança.';
+        } else if (cardType === 'networkplus') {
+            description = 'Material para a certificação CompTIA Network+ N10-009. Inclui fundamentos de redes, protocolos, topologias, segurança de rede e solução de problemas.';
         }
         
         return `
@@ -2800,7 +2342,7 @@
                         <h3>${cardInfo}</h3>
                         <span class="security-badge">
                             <i class="fas fa-lock"></i> 
-                            CompTIA Security - ${files.length} arquivos
+                            CompTIA Certification - ${files.length} arquivos
                         </span>
                     </div>
                 </div>
@@ -2811,7 +2353,7 @@
                     </p>
                     
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card security" onclick="openUploadForCard('${cardType}')">
+                        <button class="upload-btn-card" onclick="openUploadForCard('${cardType}')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
@@ -2848,7 +2390,7 @@
                         <div class="empty-state">
                             <i class="fas fa-folder-open"></i>
                             <h4>Nenhum material ainda</h4>
-                            <p>Seja o primeiro a compartilhar um material! Use "${cardType === 'securityplus' ? 'Security+' : 'CySA+'}" no nome do arquivo.</p>
+                            <p>Seja o primeiro a compartilhar um material para ${cardInfo}!</p>
                         </div>
                     `}
                 </div>
@@ -2863,12 +2405,10 @@
             (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
         
         const groupedFiles = groupFilesByType(files);
-        const color = '#1a237e';
-        const darkerColor = '#283593';
         
         return `
             <div class="other-cert-card">
-                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%);">
+                <div class="other-cert-header">
                     <div class="other-cert-icon">
                         <i class="fas fa-file-alt"></i>
                     </div>
@@ -2883,32 +2423,32 @@
                 
                 <div class="other-cert-content">
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card" onclick="openUploadForCard('general')" style="background: linear-gradient(135deg, ${color}, ${darkerColor});">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
                     <div class="monitoring-stats">
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-value">${files.length}</div>
                             <div class="monitoring-stat-label">Arquivos</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-value">${totalViews}</div>
                             <div class="monitoring-stat-label">Visualizações</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-value">${totalDownloads}</div>
                             <div class="monitoring-stat-label">Downloads</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
                             <div class="monitoring-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn" style="background: ${color};">
+                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -2935,12 +2475,10 @@
             (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
         
         const groupedFiles = groupFilesByType(files);
-        const color = '#0078D4';
-        const darkerColor = '#005A9E';
         
         return `
             <div class="other-cert-card">
-                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%);">
+                <div class="other-cert-header">
                     <div class="other-cert-icon">
                         <i class="fab fa-microsoft"></i>
                     </div>
@@ -2955,32 +2493,32 @@
                 
                 <div class="other-cert-content">
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card" onclick="openUploadForCard('general')" style="background: linear-gradient(135deg, ${color}, ${darkerColor});">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
                     <div class="monitoring-stats">
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-value">${files.length}</div>
                             <div class="monitoring-stat-label">Arquivos</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-value">${totalViews}</div>
                             <div class="monitoring-stat-label">Visualizações</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-value">${totalDownloads}</div>
                             <div class="monitoring-stat-label">Downloads</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
                             <div class="monitoring-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn" style="background: ${color};">
+                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -3007,18 +2545,16 @@
             (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
         
         const groupedFiles = groupFilesByType(files);
-        const color = '#FFD700';
-        const darkerColor = '#FF9800';
         
         return `
             <div class="other-cert-card">
-                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%); color: #333;">
-                    <div class="other-cert-icon" style="color: #333;">
+                <div class="other-cert-header">
+                    <div class="other-cert-icon">
                         <i class="fas fa-server"></i>
                     </div>
                     <div class="other-cert-title">
-                        <h3 style="color: #333;">Materiais Gerais - Linux</h3>
-                        <span class="monitoring-badge" style="background: linear-gradient(135deg, #FFEB3B, #FF9800); color: #5D4037;">
+                        <h3>Materiais Gerais - Linux</h3>
+                        <span class="monitoring-badge">
                             <i class="fas fa-penguin"></i> 
                             ${files.length} arquivos
                         </span>
@@ -3027,32 +2563,32 @@
                 
                 <div class="other-cert-content">
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card linux" onclick="openUploadForCard('general')">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
                     <div class="monitoring-stats">
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-value">${files.length}</div>
                             <div class="monitoring-stat-label">Arquivos</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-value">${totalViews}</div>
                             <div class="monitoring-stat-label">Visualizações</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-value">${totalDownloads}</div>
                             <div class="monitoring-stat-label">Downloads</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
                             <div class="monitoring-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="linux-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
+                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -3079,17 +2615,15 @@
             (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
         
         const groupedFiles = groupFilesByType(files);
-        const color = '#d32f2f';
-        const darkerColor = '#b71c1c';
         
         return `
             <div class="other-cert-card">
-                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%);">
+                <div class="other-cert-header">
                     <div class="other-cert-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <div class="other-cert-title">
-                        <h3>Materiais Gerais - Security</h3>
+                        <h3>Materiais Gerais - CompTIA</h3>
                         <span class="monitoring-badge">
                             <i class="fas fa-lock"></i> 
                             ${files.length} arquivos
@@ -3099,32 +2633,32 @@
                 
                 <div class="other-cert-content">
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card" onclick="openUploadForCard('general')" style="background: linear-gradient(135deg, ${color}, ${darkerColor});">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
                     <div class="monitoring-stats">
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-value">${files.length}</div>
                             <div class="monitoring-stat-label">Arquivos</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-value">${totalViews}</div>
                             <div class="monitoring-stat-label">Visualizações</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-value">${totalDownloads}</div>
                             <div class="monitoring-stat-label">Downloads</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
                             <div class="monitoring-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn" style="background: ${color};">
+                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -3151,11 +2685,10 @@
             (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
         
         const groupedFiles = groupFilesByType(files);
-        const darkerColor = getDarkerColor(color);
         
         return `
             <div class="other-cert-card">
-                <div class="other-cert-header" style="background: linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%);">
+                <div class="other-cert-header">
                     <div class="other-cert-icon">
                         <i class="${icon}"></i>
                     </div>
@@ -3170,32 +2703,32 @@
                 
                 <div class="other-cert-content">
                     <div class="upload-btn-wrapper">
-                        <button class="upload-btn-card" onclick="openUploadForCard('general')" style="background: linear-gradient(135deg, ${color}, ${darkerColor});">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
                     <div class="monitoring-stats">
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${files.length}</div>
+                            <div class="monitoring-stat-value">${files.length}</div>
                             <div class="monitoring-stat-label">Arquivos</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalViews}</div>
+                            <div class="monitoring-stat-value">${totalViews}</div>
                             <div class="monitoring-stat-label">Visualizações</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalDownloads}</div>
+                            <div class="monitoring-stat-value">${totalDownloads}</div>
                             <div class="monitoring-stat-label">Downloads</div>
                         </div>
                         <div class="monitoring-stat">
-                            <div class="monitoring-stat-value" style="color: ${color};">${totalSizeMB} MB</div>
+                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
                             <div class="monitoring-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn" style="background: ${color};">
+                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -3238,7 +2771,7 @@
             
             html += `
                 <div style="margin-bottom: 2rem;">
-                    <h4 style="color: ${getCardColor(cardType)}; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <h4 style="color: #0078D4; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-${typeIcon}"></i>
                         ${typeName} (${files.length})
                     </h4>
@@ -3265,26 +2798,31 @@
         const currentUserId = currentUser?.id;
         const isOwner = currentUserId && file.usuario_id === currentUserId;
         const canView = canViewFile(fileType);
-        const cardColor = getCardColor(cardType);
-        const cardCategory = getCardCategory(cardType);
         
         let cardClass = 'pmg-file-card';
         let iconClass = 'pmg-file-icon';
         let actionClass = 'pmg-action-btn';
-        let isGeneralCard = false;
         
-        switch(cardCategory) {
+        switch(cardType) {
             case 'azure':
+            case 'az900':
+            case 'az104':
                 cardClass = 'azure-file-card';
                 iconClass = 'azure-file-icon';
                 actionClass = 'azure-action-btn';
                 break;
             case 'linux':
+            case 'lpic1':
+            case 'lpic2':
+            case 'lpic3':
                 cardClass = 'linux-file-card';
                 iconClass = 'linux-file-icon';
                 actionClass = 'linux-action-btn';
                 break;
             case 'security':
+            case 'securityplus':
+            case 'cysa':
+            case 'networkplus':
                 cardClass = 'security-file-card';
                 iconClass = 'security-file-icon';
                 actionClass = 'security-action-btn';
@@ -3300,41 +2838,31 @@
                 actionClass = 'pmg-action-btn';
                 break;
             default:
-                isGeneralCard = true;
+                cardClass = 'azure-file-card';
+                iconClass = 'azure-file-icon';
+                actionClass = 'azure-action-btn';
                 break;
-        }
-        
-        let iconStyle = '';
-        if (isGeneralCard) {
-            if (currentCategory === 'itil') {
-                iconStyle = 'background: linear-gradient(135deg, #1a237e, #283593);';
-            } else {
-                const color = getCategoryColor(currentCategory);
-                const darkerColor = getDarkerColor(color);
-                iconStyle = `background: linear-gradient(135deg, ${color}, ${darkerColor});`;
-            }
         }
         
         return `
             <div class="${cardClass}">
-                <div class="${iconClass}" style="${iconStyle}">
+                <div class="${iconClass}">
                     <i class="fas fa-${fileIcon}"></i>
                 </div>
-                <div class="pmg-file-info">
+                <div class="${cardType === 'pmg' ? 'pmg-file-info' : 'azure-file-info'}">
                     <h5 title="${fileName}">${fileName}</h5>
-                    <div class="pmg-file-meta">
+                    <div class="${cardType === 'pmg' ? 'pmg-file-meta' : 'azure-file-meta'}">
                         <span><i class="fas fa-file"></i> ${fileType.toUpperCase()}</span>
                         <span><i class="fas fa-hdd"></i> ${fileSize}</span>
                         <span><i class="fas fa-calendar"></i> ${uploadDate}</span>
                     </div>
                     ${fileDesc ? `<p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">${fileDesc}</p>` : ''}
                 </div>
-                <div class="pmg-file-actions">
+                <div class="${cardType === 'pmg' ? 'pmg-file-actions' : 'azure-file-actions'}">
                     ${hasValidUrl ? `
                         <button class="${actionClass}" 
                            onclick="handleFileAction('${fileId}', '${escapeString(fileName)}', '${escapeString(fileUrl)}', '${fileType}')" 
-                           title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}"
-                           ${isGeneralCard && currentCategory !== 'itil' ? `style="border-color: ${getCategoryColor(currentCategory)};"` : ''}>
+                           title="${canView ? 'Abrir em nova aba' : 'Baixar arquivo'}">
                             <i class="fas ${canView ? 'fa-eye' : 'fa-download'}"></i>
                         </button>
                     ` : `
@@ -3409,7 +2937,7 @@
         
         document.getElementById('selectedFileInfo').innerHTML = `
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <div style="width: 60px; height: 60px; background: ${cardInfo.cardColor}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 60px; height: 60px; background: #0078D4; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-${fileIconName}" style="color: white; font-size: 1.5rem;"></i>
                 </div>
                 <div>
@@ -3431,12 +2959,12 @@
         // Configurar a seleção automática no modal
         document.getElementById('autoSelectedCard').value = currentUploadCardType;
         
-        if (['itil', 'azure', 'linux', 'security'].includes(currentCategory)) {
+        if (['itil', 'azure', 'linux', 'comptia'].includes(currentCategory)) {
             document.getElementById('autoCardSelection').style.display = 'block';
             document.getElementById('autoCardSelectionText').innerHTML = `
-                <i class="fas fa-magic" style="color: #9b59b6;"></i> 
+                <i class="fas fa-magic" style="color: #0078D4;"></i> 
                 Este arquivo será salvo automaticamente no card: 
-                <strong style="color: ${cardInfo.cardColor};">${cardInfo.cardName}</strong>
+                <strong style="color: #0078D4;">${cardInfo.cardName}</strong>
                 <br><small>Detectado baseado no nome do arquivo.</small>
             `;
             document.getElementById('uploadCardType').value = currentUploadCardType;
@@ -3541,7 +3069,7 @@
                 'azure': 'azure',
                 'aws': 'aws',
                 'linux': 'lpic',
-                'security': 'security',
+                'comptia': 'comptia',
                 'ccna': 'ccna'
             };
             
@@ -3848,83 +3376,6 @@
         };
         
         return nameMap[fileType] || 'Arquivos';
-    }
-
-    function getCardColor(cardType) {
-        switch(cardType) {
-            // ITIL
-            case 'pmg': return '#4ECDC4';
-            case 'monitoring': return '#6f42c1';
-            // Azure
-            case 'az900': return '#0078D4';
-            case 'az104': return '#005A9E';
-            // Linux
-            case 'lpic1': return '#FFD700';
-            case 'lpic2': return '#FF9800';
-            case 'lpic3': return '#FF5722';
-            // Security+
-            case 'securityplus': return '#d32f2f';
-            case 'cysa': return '#b71c1c';
-            // Geral
-            case 'general': 
-                if (currentCategory === 'itil') return '#1a237e';
-                if (currentCategory === 'azure') return '#0078D4';
-                if (currentCategory === 'linux') return '#FFD700';
-                if (currentCategory === 'security') return '#d32f2f';
-                return getCategoryColor(currentCategory);
-            default: 
-                return getCategoryColor(getCardCategory(cardType)) || '#3498db';
-        }
-    }
-
-    function getCardCategory(cardType) {
-        if (['pmg', 'monitoring'].includes(cardType)) return 'itil';
-        if (['az900', 'az104'].includes(cardType)) return 'azure';
-        if (['lpic1', 'lpic2', 'lpic3'].includes(cardType)) return 'linux';
-        if (['securityplus', 'cysa'].includes(cardType)) return 'security';
-        return 'general';
-    }
-
-    function getCategoryColor(category, darker = false) {
-        const colors = {
-            'itil': '#1a237e',
-            'azure': '#0078D4',
-            'aws': '#FF9900',
-            'linux': '#FFD700',
-            'security': '#d32f2f',
-            'ccna': '#00a0d2'
-        };
-        
-        let color = colors[category] || '#3498db';
-        
-        if (darker) {
-            // Escurecer a cor
-            const hex = color.replace('#', '');
-            const r = parseInt(hex.substr(0, 2), 16);
-            const g = parseInt(hex.substr(2, 2), 16);
-            const b = parseInt(hex.substr(4, 2), 16);
-            
-            const darkerR = Math.max(0, r - 40);
-            const darkerG = Math.max(0, g - 40);
-            const darkerB = Math.max(0, b - 40);
-            
-            color = `#${darkerR.toString(16).padStart(2, '0')}${darkerG.toString(16).padStart(2, '0')}${darkerB.toString(16).padStart(2, '0')}`;
-        }
-        
-        return color;
-    }
-
-    function getDarkerColor(color) {
-        const hex = color.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-        
-        const darkerR = Math.max(0, r - 40);
-        const darkerG = Math.max(0, g - 40);
-        const darkerB = Math.max(0, b - 40);
-        
-        return `#${darkerR.toString(16).padStart(2, '0')}${darkerG.toString(16).padStart(2, '0')}${darkerB.toString(16).padStart(2, '0')}`;
     }
 
     function formatFileSize(bytes) {
