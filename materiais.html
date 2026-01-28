@@ -2319,7 +2319,7 @@
     const SUPABASE_URL = 'https://uhbwudgdeyvbkqoflaqw.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_cmUH9ytPbQ1N3fyPiCU4CA_TrAuK5i4';
 
-    // Mapeamento de certificações - ATUALIZADO: Security+ alterado para CompTIA
+    // Mapeamento de certificações - ATUALIZADO COM OS NOVOS CARDS
     const certifications = {
         'itil': { 
             title: 'ITIL 4 Foundation', 
@@ -2383,23 +2383,23 @@
         }
     };
 
-    // Mapeamento de nomes de cards
+    // Mapeamento de nomes de cards - ATUALIZADO COM OS NOVOS CARDS
     const cardNames = {
         // ITIL
         'pmg': 'PMG Academy',
         'monitoring': 'Monitoring and Event Management',
         'general': 'Materiais Gerais',
         
-        // Azure
+        // Azure - ATUALIZADO com os novos cards
         'az900': 'Azure Fundamentals (AZ-900)',
         'az104': 'Azure Administrator (AZ-104)',
-        'sc900': 'Security, Compliance, and Identity Fundamentals (SC-900)',
-        'dp900': 'Azure Data Fundamentals (DP-900)',
-        'ai900': 'Azure AI Fundamentals (AI-900)',
-        'az204': 'Developing Solutions for Azure (AZ-204)',
-        'az500': 'Azure Security Technologies (AZ-500)',
+        'sc900': 'Microsoft Security, Compliance, and Identity Fundamentals (SC-900)',
+        'dp900': 'Microsoft Azure Data Fundamentals (DP-900)',
+        'ai900': 'Microsoft Azure AI Fundamentals (AI-900)',
+        'az204': 'Developing Solutions for Microsoft Azure (AZ-204)',
+        'az500': 'Microsoft Azure Security Technologies (AZ-500)',
         
-        // AWS
+        // AWS - ATUALIZADO com os novos cards detalhados
         'clfc02': 'AWS Certified Cloud Practitioner (CLF-C02)',
         'saac03': 'AWS Certified Solutions Architect – Associate (SAA-C03)',
         'dvac02': 'AWS Certified Developer – Associate (DVA-C02)',
@@ -2411,45 +2411,45 @@
         'lpic2': 'LPIC-2: Linux Engineer',
         'lpic3': 'LPIC-3: Linux Enterprise Professional',
         
-        // CompTIA
+        // CompTIA - ATUALIZADO com CASP+
         'securityplus': 'Security+ SY0-701',
         'cysa': 'CompTIA CySA+ Cs0-003',
         'networkplus': 'Network+ N10-009',
         'caspplus': 'CompTIA Advanced Security Practitioner (CASP+ CAS-004)'
     };
 
-    // Palavras-chave para classificação automática baseada no nome do arquivo
+    // Palavras-chave para classificação automática baseada no nome do arquivo - ATUALIZADO
     const fileNameKeywords = {
         // ITIL
         'pmg': ['pmg', 'pmg academy', 'academy', 'curso', 'treinamento'],
         'monitoring': ['monitoring', 'monitoramento', 'event', 'event management', 'evento', 'alerta', 'log'],
         
-        // Azure
+        // Azure - ATUALIZADO
         'az900': ['az-900', 'az900', 'azure fundamentals', 'fundamentos azure', 'fundamentals'],
         'az104': ['az-104', 'az104', 'azure administrator', 'administrator', 'administrador'],
-        'sc900': ['sc-900', 'sc900', 'security compliance', 'identity', 'segurança', 'conformidade'],
-        'dp900': ['dp-900', 'dp900', 'data fundamentals', 'fundamentos dados', 'dados azure'],
-        'ai900': ['ai-900', 'ai900', 'ai fundamentals', 'artificial intelligence', 'machine learning'],
-        'az204': ['az-204', 'az204', 'developing solutions', 'developer', 'desenvolvedor'],
-        'az500': ['az-500', 'az500', 'azure security', 'security technologies', 'segurança azure'],
+        'sc900': ['sc-900', 'sc900', 'security compliance', 'identity', 'segurança', 'conformidade', 'microsoft security'],
+        'dp900': ['dp-900', 'dp900', 'data fundamentals', 'fundamentos dados', 'dados azure', 'azure data'],
+        'ai900': ['ai-900', 'ai900', 'ai fundamentals', 'artificial intelligence', 'machine learning', 'azure ai'],
+        'az204': ['az-204', 'az204', 'developing solutions', 'developer', 'desenvolvedor', 'solutions developer'],
+        'az500': ['az-500', 'az500', 'azure security', 'security technologies', 'segurança azure', 'microsoft azure security'],
         
-        // AWS
-        'clfc02': ['clf-c02', 'clfc02', 'cloud practitioner', 'cloud essentials', 'fundamentos aws'],
-        'saac03': ['saa-c03', 'saac03', 'solutions architect', 'architect', 'arquitetura aws'],
-        'dvac02': ['dva-c02', 'dvac02', 'developer associate', 'aws developer', 'desenvolvedor aws'],
-        'soac02': ['soa-c02', 'soac02', 'sysops administrator', 'sysops', 'administrador aws'],
-        'deac01': ['dea-c01', 'deac01', 'data engineer', 'aws data', 'engenheiro dados aws'],
+        // AWS - ATUALIZADO
+        'clfc02': ['clf-c02', 'clfc02', 'cloud practitioner', 'cloud essentials', 'fundamentos aws', 'aws cloud practitioner'],
+        'saac03': ['saa-c03', 'saac03', 'solutions architect', 'architect', 'arquitetura aws', 'aws architect'],
+        'dvac02': ['dva-c02', 'dvac02', 'developer associate', 'aws developer', 'desenvolvedor aws', 'aws developer associate'],
+        'soac02': ['soa-c02', 'soac02', 'sysops administrator', 'sysops', 'administrador aws', 'aws sysops'],
+        'deac01': ['dea-c01', 'deac01', 'data engineer', 'aws data', 'engenheiro dados aws', 'aws data engineer'],
         
         // Linux
         'lpic1': ['lpic-1', 'lpic1', 'lpic 1', '101', '102', 'linux administrator'],
         'lpic2': ['lpic-2', 'lpic2', 'lpic 2', '201', '202', 'linux engineer'],
         'lpic3': ['lpic-3', 'lpic3', 'lpic 3', '300', '305', 'enterprise professional'],
         
-        // CompTIA
+        // CompTIA - ATUALIZADO com CASP+
         'securityplus': ['security+', 'security plus', 'sy0-701', 'sy0701', 'comptia security'],
         'cysa': ['cysa+', 'cysa plus', 'cs0-003', 'cs0003', 'cybersecurity analyst', 'analyst'],
         'networkplus': ['network+', 'network plus', 'n10-009', 'n10009', 'comptia network'],
-        'caspplus': ['casp+', 'casp plus', 'cas-004', 'cas004', 'advanced security practitioner']
+        'caspplus': ['casp+', 'casp plus', 'cas-004', 'cas004', 'advanced security practitioner', 'comptia casp']
     };
 
     // Variáveis globais
@@ -3270,7 +3270,7 @@
         // Card Network+ N10-009
         html += renderSecurityCard(networkPlusMaterials, 'networkplus');
         
-        // Card CompTIA Advanced Security Practitioner (CASP+ CAS-004)
+        // Card CompTIA Advanced Security Practitioner (CASP+ CAS-004) - NOVO CARD
         html += renderSecurityCard(caspPlusMaterials, 'caspplus');
         
         // Card para materiais gerais de CompTIA (apenas se houver)
