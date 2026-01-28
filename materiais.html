@@ -1654,6 +1654,7 @@
         
         .category-chip:hover {
             transform: translateY(-2px);
+            color: white !important; /* Adicionado: fonte branca no hover */
         }
         
         .category-chip.active {
@@ -1667,31 +1668,37 @@
         .category-chip[data-category="itil"]:hover,
         .category-chip[data-category="itil"].active {
             background: #3949ab;
+            color: white !important;
         }
         
         .category-chip[data-category="azure"]:hover,
         .category-chip[data-category="azure"].active {
             background: #0078D4;
+            color: white !important;
         }
         
         .category-chip[data-category="aws"]:hover,
         .category-chip[data-category="aws"].active {
             background: #FF9900;
+            color: white !important;
         }
         
         .category-chip[data-category="linux"]:hover,
         .category-chip[data-category="linux"].active {
             background: #FFD700;
+            color: white !important;
         }
         
         .category-chip[data-category="comptia"]:hover,
         .category-chip[data-category="comptia"].active {
             background: #d32f2f;
+            color: white !important;
         }
         
         .category-chip[data-category="ccna"]:hover,
         .category-chip[data-category="ccna"].active {
             background: #00a0d2;
+            color: white !important;
         }
         
         /* NOTIFICAÇÕES */
@@ -2329,8 +2336,8 @@
             level: 'Cloud Computing', 
             icon: 'fab fa-microsoft',
             bannerClass: 'azure-banner',
-            description: 'Guias de estudo, resumos e recursos para certificações Azure (AZ-900, AZ-104, etc.)',
-            cards: ['az900', 'az104'],
+            description: 'Guias de estudo, resumos e recursos para certificações Azure (AZ-900, AZ-104, SC-900, DP-900, AI-900, AZ-204, AZ-500)',
+            cards: ['az900', 'az104', 'sc900', 'dp900', 'ai900', 'az204', 'az500'],
             color: '#0078D4',
             gradient: 'linear-gradient(135deg, #0078D4 0%, #005A9E 100%)'
         },
@@ -2339,8 +2346,8 @@
             level: 'Cloud Computing', 
             icon: 'fab fa-aws',
             bannerClass: 'aws-banner',
-            description: 'Material para Cloud Practitioner, Solutions Architect e outras certificações AWS',
-            cards: [],
+            description: 'Material para AWS Certified Cloud Practitioner (CLF-C02), Solutions Architect (SAA-C03), Developer (DVA-C02), SysOps (SOA-C02), Data Engineer (DEA-C01)',
+            cards: ['clfc02', 'saac03', 'dvac02', 'soac02', 'deac01'],
             color: '#FF9900',
             gradient: 'linear-gradient(135deg, #FF9900 0%, #FF6B00 100%)'
         },
@@ -2359,8 +2366,8 @@
             level: 'Segurança da Informação', 
             icon: 'fas fa-shield-alt',
             bannerClass: 'comptia-banner',
-            description: 'Material para preparação das certificações CompTIA Security+, Network+, A+',
-            cards: ['securityplus', 'cysa', 'networkplus'],
+            description: 'Material para preparação das certificações CompTIA Security+, Network+, A+, CASP+',
+            cards: ['securityplus', 'cysa', 'networkplus', 'caspplus'],
             color: '#d32f2f',
             gradient: 'linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%)'
         },
@@ -2382,17 +2389,33 @@
         'pmg': 'PMG Academy',
         'monitoring': 'Monitoring and Event Management',
         'general': 'Materiais Gerais',
+        
         // Azure
         'az900': 'Azure Fundamentals (AZ-900)',
         'az104': 'Azure Administrator (AZ-104)',
+        'sc900': 'Security, Compliance, and Identity Fundamentals (SC-900)',
+        'dp900': 'Azure Data Fundamentals (DP-900)',
+        'ai900': 'Azure AI Fundamentals (AI-900)',
+        'az204': 'Developing Solutions for Azure (AZ-204)',
+        'az500': 'Azure Security Technologies (AZ-500)',
+        
+        // AWS
+        'clfc02': 'AWS Certified Cloud Practitioner (CLF-C02)',
+        'saac03': 'AWS Certified Solutions Architect – Associate (SAA-C03)',
+        'dvac02': 'AWS Certified Developer – Associate (DVA-C02)',
+        'soac02': 'AWS Certified SysOps Administrator – Associate (SOA-C02)',
+        'deac01': 'AWS Certified Data Engineer – Associate (DEA-C01)',
+        
         // Linux
         'lpic1': 'LPIC-1: Linux Administrator',
         'lpic2': 'LPIC-2: Linux Engineer',
         'lpic3': 'LPIC-3: Linux Enterprise Professional',
+        
         // CompTIA
         'securityplus': 'Security+ SY0-701',
         'cysa': 'CompTIA CySA+ Cs0-003',
-        'networkplus': 'Network+ N10-009'
+        'networkplus': 'Network+ N10-009',
+        'caspplus': 'CompTIA Advanced Security Practitioner (CASP+ CAS-004)'
     };
 
     // Palavras-chave para classificação automática baseada no nome do arquivo
@@ -2400,17 +2423,33 @@
         // ITIL
         'pmg': ['pmg', 'pmg academy', 'academy', 'curso', 'treinamento'],
         'monitoring': ['monitoring', 'monitoramento', 'event', 'event management', 'evento', 'alerta', 'log'],
+        
         // Azure
         'az900': ['az-900', 'az900', 'azure fundamentals', 'fundamentos azure', 'fundamentals'],
         'az104': ['az-104', 'az104', 'azure administrator', 'administrator', 'administrador'],
+        'sc900': ['sc-900', 'sc900', 'security compliance', 'identity', 'segurança', 'conformidade'],
+        'dp900': ['dp-900', 'dp900', 'data fundamentals', 'fundamentos dados', 'dados azure'],
+        'ai900': ['ai-900', 'ai900', 'ai fundamentals', 'artificial intelligence', 'machine learning'],
+        'az204': ['az-204', 'az204', 'developing solutions', 'developer', 'desenvolvedor'],
+        'az500': ['az-500', 'az500', 'azure security', 'security technologies', 'segurança azure'],
+        
+        // AWS
+        'clfc02': ['clf-c02', 'clfc02', 'cloud practitioner', 'cloud essentials', 'fundamentos aws'],
+        'saac03': ['saa-c03', 'saac03', 'solutions architect', 'architect', 'arquitetura aws'],
+        'dvac02': ['dva-c02', 'dvac02', 'developer associate', 'aws developer', 'desenvolvedor aws'],
+        'soac02': ['soa-c02', 'soac02', 'sysops administrator', 'sysops', 'administrador aws'],
+        'deac01': ['dea-c01', 'deac01', 'data engineer', 'aws data', 'engenheiro dados aws'],
+        
         // Linux
         'lpic1': ['lpic-1', 'lpic1', 'lpic 1', '101', '102', 'linux administrator'],
         'lpic2': ['lpic-2', 'lpic2', 'lpic 2', '201', '202', 'linux engineer'],
         'lpic3': ['lpic-3', 'lpic3', 'lpic 3', '300', '305', 'enterprise professional'],
+        
         // CompTIA
         'securityplus': ['security+', 'security plus', 'sy0-701', 'sy0701', 'comptia security'],
         'cysa': ['cysa+', 'cysa plus', 'cs0-003', 'cs0003', 'cybersecurity analyst', 'analyst'],
-        'networkplus': ['network+', 'network plus', 'n10-009', 'n10009', 'comptia network']
+        'networkplus': ['network+', 'network plus', 'n10-009', 'n10009', 'comptia network'],
+        'caspplus': ['casp+', 'casp plus', 'cas-004', 'cas004', 'advanced security practitioner']
     };
 
     // Variáveis globais
@@ -2742,7 +2781,7 @@
             'azure': ['azure'],
             'aws': ['aws'],
             'linux': ['lpic', 'linux'],
-            'comptia': ['security', 'comptia', 'security+', 'network+'],
+            'comptia': ['security', 'comptia', 'security+', 'network+', 'casp+'],
             'ccna': ['ccna']
         };
         
@@ -2774,6 +2813,9 @@
                 break;
             case 'azure':
                 renderAzureCards(container, materials);
+                break;
+            case 'aws':
+                renderAWSCards(container, materials);
                 break;
             case 'linux':
                 renderLinuxCards(container, materials);
@@ -2867,6 +2909,51 @@
             );
         });
         
+        const sc900Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.sc900.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const dp900Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.dp900.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const ai900Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.ai900.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const az204Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.az204.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const az500Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.az500.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
         // Materiais gerais do Azure
         const generalAzureMaterials = materials.filter(m => {
             const fileName = (m.arquivo_nome || '').toLowerCase();
@@ -2878,26 +2965,155 @@
             const hasAz104 = fileNameKeywords.az104.some(keyword => 
                 fileName.includes(keyword) || title.includes(keyword)
             );
+            const hasSc900 = fileNameKeywords.sc900.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasDp900 = fileNameKeywords.dp900.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasAi900 = fileNameKeywords.ai900.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasAz204 = fileNameKeywords.az204.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasAz500 = fileNameKeywords.az500.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
             
-            return !hasAz900 && !hasAz104;
+            return !hasAz900 && !hasAz104 && !hasSc900 && !hasDp900 && !hasAi900 && !hasAz204 && !hasAz500;
         });
         
         console.log('📊 Estatísticas Azure:');
         console.log('- AZ-900:', az900Materials.length, 'materiais');
         console.log('- AZ-104:', az104Materials.length, 'materiais');
+        console.log('- SC-900:', sc900Materials.length, 'materiais');
+        console.log('- DP-900:', dp900Materials.length, 'materiais');
+        console.log('- AI-900:', ai900Materials.length, 'materiais');
+        console.log('- AZ-204:', az204Materials.length, 'materiais');
+        console.log('- AZ-500:', az500Materials.length, 'materiais');
         console.log('- Geral Azure:', generalAzureMaterials.length, 'materiais');
         
         let html = '';
         
-        // Card AZ-900
-        html += renderAzureCard(az900Materials, 'az900');
-        
-        // Card AZ-104
-        html += renderAzureCard(az104Materials, 'az104');
+        // Cards Azure
+        if (az900Materials.length > 0) html += renderAzureCard(az900Materials, 'az900');
+        if (az104Materials.length > 0) html += renderAzureCard(az104Materials, 'az104');
+        if (sc900Materials.length > 0) html += renderAzureCard(sc900Materials, 'sc900');
+        if (dp900Materials.length > 0) html += renderAzureCard(dp900Materials, 'dp900');
+        if (ai900Materials.length > 0) html += renderAzureCard(ai900Materials, 'ai900');
+        if (az204Materials.length > 0) html += renderAzureCard(az204Materials, 'az204');
+        if (az500Materials.length > 0) html += renderAzureCard(az500Materials, 'az500');
         
         // Card para materiais gerais do Azure (apenas se houver)
         if (generalAzureMaterials.length > 0) {
             html += renderGeneralAzureCard(generalAzureMaterials);
+        } else if (az900Materials.length === 0 && az104Materials.length === 0 && 
+                   sc900Materials.length === 0 && dp900Materials.length === 0 && 
+                   ai900Materials.length === 0 && az204Materials.length === 0 && 
+                   az500Materials.length === 0) {
+            html += renderGeneralAzureCard([]);
+        }
+        
+        container.innerHTML = html;
+        document.getElementById('uploadSection').style.display = 'block';
+    }
+
+    function renderAWSCards(container, materials) {
+        // Separar materiais do AWS por certificação específica
+        const clfc02Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.clfc02.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const saac03Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.saac03.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const dvac02Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.dvac02.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const soac02Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.soac02.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        const deac01Materials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.deac01.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
+        // Materiais gerais do AWS
+        const generalAWSMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            const hasClfc02 = fileNameKeywords.clfc02.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasSaac03 = fileNameKeywords.saac03.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasDvac02 = fileNameKeywords.dvac02.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasSoac02 = fileNameKeywords.soac02.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            const hasDeac01 = fileNameKeywords.deac01.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+            
+            return !hasClfc02 && !hasSaac03 && !hasDvac02 && !hasSoac02 && !hasDeac01;
+        });
+        
+        console.log('📊 Estatísticas AWS:');
+        console.log('- CLF-C02:', clfc02Materials.length, 'materiais');
+        console.log('- SAA-C03:', saac03Materials.length, 'materiais');
+        console.log('- DVA-C02:', dvac02Materials.length, 'materiais');
+        console.log('- SOA-C02:', soac02Materials.length, 'materiais');
+        console.log('- DEA-C01:', deac01Materials.length, 'materiais');
+        console.log('- Geral AWS:', generalAWSMaterials.length, 'materiais');
+        
+        let html = '';
+        
+        // Cards AWS
+        if (clfc02Materials.length > 0) html += renderAWSCard(clfc02Materials, 'clfc02');
+        if (saac03Materials.length > 0) html += renderAWSCard(saac03Materials, 'saac03');
+        if (dvac02Materials.length > 0) html += renderAWSCard(dvac02Materials, 'dvac02');
+        if (soac02Materials.length > 0) html += renderAWSCard(soac02Materials, 'soac02');
+        if (deac01Materials.length > 0) html += renderAWSCard(deac01Materials, 'deac01');
+        
+        // Card para materiais gerais do AWS (apenas se houver)
+        if (generalAWSMaterials.length > 0) {
+            html += renderGeneralAWSCard(generalAWSMaterials);
+        } else if (clfc02Materials.length === 0 && saac03Materials.length === 0 && 
+                   dvac02Materials.length === 0 && soac02Materials.length === 0 && 
+                   deac01Materials.length === 0) {
+            html += renderGeneralAWSCard([]);
         }
         
         container.innerHTML = html;
@@ -3006,6 +3222,15 @@
             );
         });
         
+        const caspPlusMaterials = materials.filter(m => {
+            const fileName = (m.arquivo_nome || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            
+            return fileNameKeywords.caspplus.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
+        });
+        
         // Materiais gerais de CompTIA
         const generalCompTIAMaterials = materials.filter(m => {
             const fileName = (m.arquivo_nome || '').toLowerCase();
@@ -3020,14 +3245,18 @@
             const hasNetworkPlus = fileNameKeywords.networkplus.some(keyword => 
                 fileName.includes(keyword) || title.includes(keyword)
             );
+            const hasCaspPlus = fileNameKeywords.caspplus.some(keyword => 
+                fileName.includes(keyword) || title.includes(keyword)
+            );
             
-            return !hasSecurityPlus && !hasCysa && !hasNetworkPlus;
+            return !hasSecurityPlus && !hasCysa && !hasNetworkPlus && !hasCaspPlus;
         });
         
         console.log('📊 Estatísticas CompTIA:');
         console.log('- Security+ SY0-701:', securityPlusMaterials.length, 'materiais');
         console.log('- CySA+ Cs0-003:', cysaMaterials.length, 'materiais');
         console.log('- Network+ N10-009:', networkPlusMaterials.length, 'materiais');
+        console.log('- CASP+ CAS-004:', caspPlusMaterials.length, 'materiais');
         console.log('- Geral CompTIA:', generalCompTIAMaterials.length, 'materiais');
         
         let html = '';
@@ -3041,10 +3270,14 @@
         // Card Network+ N10-009
         html += renderSecurityCard(networkPlusMaterials, 'networkplus');
         
+        // Card CompTIA Advanced Security Practitioner (CASP+ CAS-004)
+        html += renderSecurityCard(caspPlusMaterials, 'caspplus');
+        
         // Card para materiais gerais de CompTIA (apenas se houver)
         if (generalCompTIAMaterials.length > 0) {
             html += renderGeneralSecurityCard(generalCompTIAMaterials);
-        } else if (securityPlusMaterials.length === 0 && cysaMaterials.length === 0 && networkPlusMaterials.length === 0) {
+        } else if (securityPlusMaterials.length === 0 && cysaMaterials.length === 0 && 
+                   networkPlusMaterials.length === 0 && caspPlusMaterials.length === 0) {
             html += renderGeneralSecurityCard([]);
         }
         
@@ -3265,6 +3498,16 @@
             description = 'Material para a certificação Azure Fundamentals (AZ-900). Inclui fundamentos de nuvem, serviços Azure básicos, segurança e conformidade.';
         } else if (cardType === 'az104') {
             description = 'Material para a certificação Azure Administrator (AZ-104). Inclui gerenciamento de identidades, armazenamento, computação, rede e monitoramento no Azure.';
+        } else if (cardType === 'sc900') {
+            description = 'Material para a certificação Microsoft Security, Compliance, and Identity Fundamentals (SC-900). Inclui conceitos de segurança, conformidade e identidade na nuvem.';
+        } else if (cardType === 'dp900') {
+            description = 'Material para a certificação Microsoft Azure Data Fundamentals (DP-900). Inclui fundamentos de dados, conceitos de dados no Azure e serviços de dados básicos.';
+        } else if (cardType === 'ai900') {
+            description = 'Material para a certificação Microsoft Azure AI Fundamentals (AI-900). Inclui fundamentos de inteligência artificial, machine learning e serviços cognitivos.';
+        } else if (cardType === 'az204') {
+            description = 'Material para a certificação Developing Solutions for Microsoft Azure (AZ-204). Inclui desenvolvimento de soluções, integração e deploy de aplicações no Azure.';
+        } else if (cardType === 'az500') {
+            description = 'Material para a certificação Microsoft Azure Security Technologies (AZ-500). Inclui segurança avançada, proteção de dados, gerenciamento de identidades e segurança de rede.';
         }
         
         return `
@@ -3314,6 +3557,94 @@
                     
                     ${files.length > 0 ? `
                         <button class="azure-toggle-btn" onclick="toggleFiles('${cardType}')" id="${cardType}ToggleBtn">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="${cardType}-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, cardType)}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material! Use "${cardType.toUpperCase()}" no nome do arquivo.</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderAWSCard(files = [], cardType) {
+        const cardInfo = cardNames[cardType] || 'AWS';
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        
+        let description = '';
+        if (cardType === 'clfc02') {
+            description = 'Material para a certificação AWS Certified Cloud Practitioner (CLF-C02). Indicado para iniciantes, inclui fundamentos da nuvem AWS, serviços básicos e conceitos de segurança.';
+        } else if (cardType === 'saac03') {
+            description = 'Material para a certificação AWS Certified Solutions Architect – Associate (SAA-C03). Focado em design de arquiteturas seguras e resilientes na AWS.';
+        } else if (cardType === 'dvac02') {
+            description = 'Material para a certificação AWS Certified Developer – Associate (DVA-C02). Focado em desenvolvimento e manutenção de aplicações na AWS.';
+        } else if (cardType === 'soac02') {
+            description = 'Material para a certificação AWS Certified SysOps Administrator – Associate (SOA-C02). Focado em implantação, gerenciamento e operações na AWS.';
+        } else if (cardType === 'deac01') {
+            description = 'Material para a certificação AWS Certified Data Engineer – Associate (DEA-C01). Focado em tarefas de dados, processamento e análise na AWS.';
+        }
+        
+        return `
+            <div class="aws-card">
+                <div class="aws-header">
+                    <div class="aws-icon">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="aws-title">
+                        <h3>${cardInfo}</h3>
+                        <span class="aws-badge">
+                            <i class="fas fa-cloud"></i> 
+                            Certificação AWS - ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="aws-content">
+                    <p style="margin-bottom: 1.5rem; color: #666;">
+                        ${description}
+                    </p>
+                    
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card" onclick="openUploadForCard('${cardType}')">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="aws-stats">
+                        <div class="aws-stat">
+                            <div class="aws-stat-value">${files.length}</div>
+                            <div class="aws-stat-label">Arquivos</div>
+                        </div>
+                        <div class="aws-stat">
+                            <div class="aws-stat-value">${totalViews}</div>
+                            <div class="aws-stat-label">Visualizações</div>
+                        </div>
+                        <div class="aws-stat">
+                            <div class="aws-stat-value">${totalDownloads}</div>
+                            <div class="aws-stat-label">Downloads</div>
+                        </div>
+                        <div class="aws-stat">
+                            <div class="aws-stat-value">${totalSizeMB} MB</div>
+                            <div class="aws-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="aws-toggle-btn" onclick="toggleFiles('${cardType}')" id="${cardType}ToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -3433,6 +3764,8 @@
             description = 'Material para a certificação CompTIA CySA+ Cs0-003. Inclui análise de ameaças, vulnerabilidades, resposta a incidentes e conformidade de segurança.';
         } else if (cardType === 'networkplus') {
             description = 'Material para a certificação CompTIA Network+ N10-009. Inclui fundamentos de redes, protocolos, topologias, segurança de rede e solução de problemas.';
+        } else if (cardType === 'caspplus') {
+            description = 'Material para a certificação CompTIA Advanced Security Practitioner (CASP+ CAS-004). Focado em segurança avançada, arquitetura de segurança, gerenciamento de riscos e integração de tecnologias empresariais.';
         }
         
         return `
@@ -3622,6 +3955,76 @@
                     
                     ${files.length > 0 ? `
                         <button class="azure-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Mostrar ${files.length} Arquivos</span>
+                        </button>
+                        
+                        <div id="general-files-container" style="display: none; margin-top: 1.5rem;">
+                            ${renderFileGroups(groupedFiles, 'general')}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Nenhum material ainda</h4>
+                            <p>Seja o primeiro a compartilhar um material!</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderGeneralAWSCard(files = []) {
+        const totalViews = files.reduce((sum, file) => sum + (file.visualizacoes || 0), 0);
+        const totalDownloads = files.reduce((sum, file) => sum + (file.downloads || 0), 0);
+        const totalSizeMB = files.length > 0 ? 
+            (files.reduce((sum, file) => sum + (file.arquivo_tamanho_kb || 0), 0) / 1024).toFixed(1) : '0';
+        
+        const groupedFiles = groupFilesByType(files);
+        
+        return `
+            <div class="aws-card">
+                <div class="aws-header">
+                    <div class="aws-icon">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="aws-title">
+                        <h3>Materiais Gerais - AWS</h3>
+                        <span class="aws-badge">
+                            <i class="fas fa-cloud"></i> 
+                            ${files.length} arquivos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="aws-content">
+                    <div class="upload-btn-wrapper">
+                        <button class="upload-btn-card" onclick="openUploadForCard('general')">
+                            <i class="fas fa-plus-circle"></i> Adicionar Material
+                        </button>
+                    </div>
+                    
+                    <div class="aws-stats">
+                        <div class="aws-stat">
+                            <div class="aws-stat-value">${files.length}</div>
+                            <div class="aws-stat-label">Arquivos</div>
+                        </div>
+                        <div class="aws-stat">
+                            <div class="aws-stat-value">${totalViews}</div>
+                            <div class="aws-stat-label">Visualizações</div>
+                        </div>
+                        <div class="aws-stat">
+                            <div class="aws-stat-value">${totalDownloads}</div>
+                            <div class="aws-stat-label">Downloads</div>
+                        </div>
+                        <div class="aws-stat">
+                            <div class="aws-stat-value">${totalSizeMB} MB</div>
+                            <div class="aws-stat-label">Tamanho Total</div>
+                        </div>
+                    </div>
+                    
+                    ${files.length > 0 ? `
+                        <button class="aws-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -4109,7 +4512,7 @@
         // Configurar a seleção automática no modal
         document.getElementById('autoSelectedCard').value = currentUploadCardType;
         
-        if (['itil', 'azure', 'linux', 'comptia'].includes(currentCategory)) {
+        if (['itil', 'azure', 'aws', 'linux', 'comptia'].includes(currentCategory)) {
             document.getElementById('autoCardSelection').style.display = 'block';
             document.getElementById('autoCardSelectionText').innerHTML = `
                 <i class="fas fa-magic" style="color: ${cardColor};"></i> 
