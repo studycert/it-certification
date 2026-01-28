@@ -114,12 +114,10 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><circle cx="30" cy="50" r="15" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><line x1="45" y1="50" x2="55" y2="50" stroke="white" stroke-width="3"/></svg>');
         }
 
-        /* Cards para Azure - MODELO BASE PARA TODOS */
-        .azure-card,
-        .linux-card,
-        .security-card,
-        .pmg-academy-card,
-        .monitoring-card {
+        /* Cards personalizados por certificação */
+        
+        /* Card ITIL - Azul */
+        .itil-card {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border: none;
             border-radius: 12px;
@@ -127,27 +125,19 @@
             overflow: hidden;
             margin-bottom: 1.5rem;
             position: relative;
-            border-left: 5px solid #0078D4;
+            border-left: 5px solid #3949ab;
         }
         
-        .azure-header,
-        .linux-header,
-        .security-header,
-        .pmg-academy-header,
-        .monitoring-header {
+        .itil-header {
             padding: 1.5rem;
-            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
             color: white;
             display: flex;
             align-items: center;
             gap: 1rem;
         }
         
-        .azure-icon,
-        .linux-icon,
-        .security-icon,
-        .pmg-academy-icon,
-        .monitoring-icon {
+        .itil-icon {
             width: 60px;
             height: 60px;
             background: rgba(255, 255, 255, 0.2);
@@ -158,29 +148,189 @@
             font-size: 1.5rem;
         }
         
-        .azure-title,
-        .linux-title,
-        .security-title,
-        .pmg-academy-title,
-        .monitoring-title {
+        .itil-title {
             flex: 1;
         }
         
-        .azure-title h3,
-        .linux-title h3,
-        .security-title h3,
-        .pmg-academy-title h3,
-        .monitoring-title h3 {
+        .itil-title h3 {
             margin: 0 0 0.3rem 0;
             color: white;
             font-size: 1.3rem;
         }
         
-        .azure-badge,
-        .linux-badge,
-        .security-badge,
-        .pmg-badge,
-        .monitoring-badge {
+        .itil-badge {
+            background: linear-gradient(135deg, #5c6bc0, #3949ab);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .itil-content {
+            padding: 1.5rem;
+        }
+        
+        .itil-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .itil-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #3949ab;
+        }
+        
+        .itil-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #3949ab, #1a237e);
+        }
+        
+        .itil-file-info {
+            flex: 1;
+        }
+        
+        .itil-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .itil-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .itil-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .itil-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .itil-action-btn:hover {
+            background: #3949ab;
+            color: white;
+            border-color: #3949ab;
+        }
+        
+        .itil-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .itil-stat {
+            text-align: center;
+        }
+        
+        .itil-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3949ab;
+        }
+        
+        .itil-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .itil-toggle-btn {
+            background: #3949ab;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .itil-toggle-btn:hover {
+            background: #283593;
+            transform: translateY(-2px);
+        }
+        
+        /* Card Azure - Azul Microsoft */
+        .azure-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #0078D4;
+        }
+        
+        .azure-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .azure-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .azure-title {
+            flex: 1;
+        }
+        
+        .azure-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .azure-badge {
             background: linear-gradient(135deg, #4fc3f7, #0288d1);
             color: white;
             padding: 0.3rem 1rem;
@@ -192,18 +342,1042 @@
             gap: 0.3rem;
         }
         
-        .azure-content,
-        .linux-content,
-        .security-content,
-        .pmg-academy-content,
+        .azure-content {
+            padding: 1.5rem;
+        }
+        
+        .azure-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .azure-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #0078D4;
+        }
+        
+        .azure-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #0078D4, #005A9E);
+        }
+        
+        .azure-file-info {
+            flex: 1;
+        }
+        
+        .azure-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .azure-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .azure-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .azure-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .azure-action-btn:hover {
+            background: #0078D4;
+            color: white;
+            border-color: #0078D4;
+        }
+        
+        .azure-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .azure-stat {
+            text-align: center;
+        }
+        
+        .azure-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0078D4;
+        }
+        
+        .azure-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .azure-toggle-btn {
+            background: #0078D4;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .azure-toggle-btn:hover {
+            background: #005A9E;
+            transform: translateY(-2px);
+        }
+        
+        /* Card AWS - Laranja */
+        .aws-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #FF9900;
+        }
+        
+        .aws-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #FF9900 0%, #FF6B00 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .aws-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .aws-title {
+            flex: 1;
+        }
+        
+        .aws-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .aws-badge {
+            background: linear-gradient(135deg, #FFB74D, #FF9800);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .aws-content {
+            padding: 1.5rem;
+        }
+        
+        .aws-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .aws-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #FF9900;
+        }
+        
+        .aws-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #FF9900, #FF6B00);
+        }
+        
+        .aws-file-info {
+            flex: 1;
+        }
+        
+        .aws-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .aws-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .aws-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .aws-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .aws-action-btn:hover {
+            background: #FF9900;
+            color: white;
+            border-color: #FF9900;
+        }
+        
+        .aws-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .aws-stat {
+            text-align: center;
+        }
+        
+        .aws-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF9900;
+        }
+        
+        .aws-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .aws-toggle-btn {
+            background: #FF9900;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .aws-toggle-btn:hover {
+            background: #FF6B00;
+            transform: translateY(-2px);
+        }
+        
+        /* Card Linux - Amarelo/Laranja */
+        .linux-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #FFD700;
+        }
+        
+        .linux-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FF9800 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .linux-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .linux-title {
+            flex: 1;
+        }
+        
+        .linux-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .linux-badge {
+            background: linear-gradient(135deg, #FFE082, #FFB300);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .linux-content {
+            padding: 1.5rem;
+        }
+        
+        .linux-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .linux-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #FFD700;
+        }
+        
+        .linux-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #FFD700, #FF9800);
+        }
+        
+        .linux-file-info {
+            flex: 1;
+        }
+        
+        .linux-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .linux-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .linux-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .linux-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .linux-action-btn:hover {
+            background: #FFD700;
+            color: white;
+            border-color: #FFD700;
+        }
+        
+        .linux-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .linux-stat {
+            text-align: center;
+        }
+        
+        .linux-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        
+        .linux-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .linux-toggle-btn {
+            background: #FFD700;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .linux-toggle-btn:hover {
+            background: #FF9800;
+            transform: translateY(-2px);
+        }
+        
+        /* Card CompTIA - Vermelho */
+        .comptia-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #d32f2f;
+        }
+        
+        .comptia-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .comptia-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .comptia-title {
+            flex: 1;
+        }
+        
+        .comptia-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .comptia-badge {
+            background: linear-gradient(135deg, #ef5350, #d32f2f);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .comptia-content {
+            padding: 1.5rem;
+        }
+        
+        .comptia-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .comptia-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #d32f2f;
+        }
+        
+        .comptia-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+        
+        .comptia-file-info {
+            flex: 1;
+        }
+        
+        .comptia-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .comptia-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .comptia-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .comptia-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .comptia-action-btn:hover {
+            background: #d32f2f;
+            color: white;
+            border-color: #d32f2f;
+        }
+        
+        .comptia-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .comptia-stat {
+            text-align: center;
+        }
+        
+        .comptia-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        
+        .comptia-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .comptia-toggle-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .comptia-toggle-btn:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+        
+        /* Card CCNA - Azul Cisco */
+        .ccna-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #00a0d2;
+        }
+        
+        .ccna-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #00a0d2 0%, #005577 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .ccna-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .ccna-title {
+            flex: 1;
+        }
+        
+        .ccna-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .ccna-badge {
+            background: linear-gradient(135deg, #4dd0e1, #00acc1);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .ccna-content {
+            padding: 1.5rem;
+        }
+        
+        .ccna-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .ccna-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #00a0d2;
+        }
+        
+        .ccna-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #00a0d2, #005577);
+        }
+        
+        .ccna-file-info {
+            flex: 1;
+        }
+        
+        .ccna-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .ccna-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .ccna-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .ccna-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .ccna-action-btn:hover {
+            background: #00a0d2;
+            color: white;
+            border-color: #00a0d2;
+        }
+        
+        .ccna-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .ccna-stat {
+            text-align: center;
+        }
+        
+        .ccna-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00a0d2;
+        }
+        
+        .ccna-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .ccna-toggle-btn {
+            background: #00a0d2;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .ccna-toggle-btn:hover {
+            background: #005577;
+            transform: translateY(-2px);
+        }
+        
+        /* Cards especiais para ITIL */
+        .pmg-academy-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #3949ab;
+        }
+        
+        .pmg-academy-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pmg-academy-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .pmg-academy-title {
+            flex: 1;
+        }
+        
+        .pmg-academy-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .pmg-badge {
+            background: linear-gradient(135deg, #5c6bc0, #3949ab);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .pmg-academy-content {
+            padding: 1.5rem;
+        }
+        
+        .pmg-file-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .pmg-file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #3949ab;
+        }
+        
+        .pmg-file-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #3949ab, #1a237e);
+        }
+        
+        .pmg-file-info {
+            flex: 1;
+        }
+        
+        .pmg-file-info h5 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        .pmg-file-meta {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .pmg-file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .pmg-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .pmg-action-btn:hover {
+            background: #3949ab;
+            color: white;
+            border-color: #3949ab;
+        }
+        
+        .pmg-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #dee2e6;
+        }
+        
+        .pmg-stat {
+            text-align: center;
+        }
+        
+        .pmg-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3949ab;
+        }
+        
+        .pmg-stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .pmg-toggle-btn {
+            background: #3949ab;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .pmg-toggle-btn:hover {
+            background: #283593;
+            transform: translateY(-2px);
+        }
+        
+        /* Card Monitoring para ITIL */
+        .monitoring-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-left: 5px solid #3949ab;
+        }
+        
+        .monitoring-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .monitoring-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .monitoring-title {
+            flex: 1;
+        }
+        
+        .monitoring-title h3 {
+            margin: 0 0 0.3rem 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .monitoring-badge {
+            background: linear-gradient(135deg, #5c6bc0, #3949ab);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
         .monitoring-content {
             padding: 1.5rem;
         }
         
-        .azure-file-card,
-        .linux-file-card,
-        .security-file-card,
-        .pmg-file-card,
         .monitoring-file-card {
             background: white;
             border: 1px solid #e9ecef;
@@ -216,20 +1390,12 @@
             cursor: pointer;
         }
         
-        .azure-file-card:hover,
-        .linux-file-card:hover,
-        .security-file-card:hover,
-        .pmg-file-card:hover,
         .monitoring-file-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #0078D4;
+            border-color: #3949ab;
         }
         
-        .azure-file-icon,
-        .linux-file-icon,
-        .security-file-icon,
-        .pmg-file-icon,
         .monitoring-file-icon {
             width: 50px;
             height: 50px;
@@ -239,31 +1405,19 @@
             justify-content: center;
             color: white;
             font-size: 1.2rem;
-            background: linear-gradient(135deg, #0078D4, #005A9E);
+            background: linear-gradient(135deg, #3949ab, #1a237e);
         }
         
-        .azure-file-info,
-        .linux-file-info,
-        .security-file-info,
-        .pmg-file-info,
         .monitoring-file-info {
             flex: 1;
         }
         
-        .azure-file-info h5,
-        .linux-file-info h5,
-        .security-file-info h5,
-        .pmg-file-info h5,
         .monitoring-file-info h5 {
             margin: 0 0 0.3rem 0;
             color: #2c3e50;
             font-size: 0.95rem;
         }
         
-        .azure-file-meta,
-        .linux-file-meta,
-        .security-file-meta,
-        .pmg-file-meta,
         .monitoring-file-meta {
             display: flex;
             gap: 0.8rem;
@@ -271,19 +1425,11 @@
             color: #7f8c8d;
         }
         
-        .azure-file-actions,
-        .linux-file-actions,
-        .security-file-actions,
-        .pmg-file-actions,
         .monitoring-file-actions {
             display: flex;
             gap: 0.5rem;
         }
         
-        .azure-action-btn,
-        .linux-action-btn,
-        .security-action-btn,
-        .pmg-action-btn,
         .monitoring-action-btn {
             width: 36px;
             height: 36px;
@@ -298,30 +1444,12 @@
             transition: all 0.3s;
         }
         
-        .azure-action-btn:hover,
-        .linux-action-btn:hover,
-        .security-action-btn:hover,
-        .pmg-action-btn:hover,
         .monitoring-action-btn:hover {
-            background: #0078D4;
+            background: #3949ab;
             color: white;
-            border-color: #0078D4;
+            border-color: #3949ab;
         }
         
-        .azure-action-btn.delete:hover,
-        .linux-action-btn.delete:hover,
-        .security-action-btn.delete:hover,
-        .pmg-action-btn.delete:hover,
-        .monitoring-action-btn.delete:hover {
-            background: #e74c3c;
-            color: white;
-            border-color: #e74c3c;
-        }
-        
-        .azure-stats,
-        .linux-stats,
-        .security-stats,
-        .pmg-stats,
         .monitoring-stats {
             display: flex;
             gap: 2rem;
@@ -330,39 +1458,23 @@
             border-top: 1px dashed #dee2e6;
         }
         
-        .azure-stat,
-        .linux-stat,
-        .security-stat,
-        .pmg-stat,
         .monitoring-stat {
             text-align: center;
         }
         
-        .azure-stat-value,
-        .linux-stat-value,
-        .security-stat-value,
-        .pmg-stat-value,
         .monitoring-stat-value {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #0078D4;
+            color: #3949ab;
         }
         
-        .azure-stat-label,
-        .linux-stat-label,
-        .security-stat-label,
-        .pmg-stat-label,
         .monitoring-stat-label {
             font-size: 0.8rem;
             color: #7f8c8d;
         }
         
-        .azure-toggle-btn,
-        .linux-toggle-btn,
-        .security-toggle-btn,
-        .pmg-toggle-btn,
         .monitoring-toggle-btn {
-            background: #0078D4;
+            background: #3949ab;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -375,155 +1487,27 @@
             transition: all 0.3s;
         }
         
-        .azure-toggle-btn:hover,
-        .linux-toggle-btn:hover,
-        .security-toggle-btn:hover,
-        .pmg-toggle-btn:hover,
         .monitoring-toggle-btn:hover {
-            background: #005A9E;
+            background: #283593;
             transform: translateY(-2px);
         }
         
-        /* Cards para Linux - mantendo as classes mas usando cores do Azure */
-        .linux-card {
-            border-left: 5px solid #0078D4;
-        }
-        
-        .linux-header {
-            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
-        }
-        
-        .linux-file-card:hover {
-            border-color: #0078D4;
-        }
-        
-        .linux-file-icon {
-            background: linear-gradient(135deg, #0078D4, #005A9E);
-        }
-        
-        .linux-action-btn:hover {
-            background: #0078D4;
-            color: white;
-            border-color: #0078D4;
-        }
-        
-        .linux-toggle-btn {
-            background: #0078D4;
-            color: white;
-        }
-        
-        .linux-toggle-btn:hover {
-            background: #005A9E;
-            color: white;
-        }
-        
-        /* Cards para Security+ (agora CompTIA) - usando cores do Azure */
-        .security-card {
-            border-left: 5px solid #0078D4;
-        }
-        
-        .security-header {
-            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
-        }
-        
-        .security-file-card:hover {
-            border-color: #0078D4;
-        }
-        
-        .security-file-icon {
-            background: linear-gradient(135deg, #0078D4, #005A9E);
-        }
-        
-        .security-action-btn:hover {
-            background: #0078D4;
-            color: white;
-            border-color: #0078D4;
-        }
-        
-        .security-toggle-btn {
-            background: #0078D4;
-            color: white;
-        }
-        
-        .security-toggle-btn:hover {
-            background: #005A9E;
-            color: white;
-        }
-        
-        /* Card especial para PMG Academy */
-        .pmg-academy-container,
-        .monitoring-container {
-            margin-bottom: 2rem;
-            display: block !important;
-        }
-        
-        .pmg-academy-card {
-            border-left: 5px solid #0078D4;
-        }
-        
-        .monitoring-card {
-            border-left: 5px solid #0078D4;
-        }
-        
-        .pmg-academy-header {
-            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
-        }
-        
-        .monitoring-header {
-            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
-        }
-        
-        .pmg-file-card:hover {
-            border-color: #0078D4;
-        }
-        
-        .monitoring-file-card:hover {
-            border-color: #0078D4;
-        }
-        
-        .pmg-file-icon {
-            background: linear-gradient(135deg, #0078D4, #005A9E);
-        }
-        
-        .monitoring-file-icon {
-            background: linear-gradient(135deg, #0078D4, #005A9E);
-        }
-        
-        .pmg-action-btn:hover {
-            background: #0078D4;
-            color: white;
-            border-color: #0078D4;
-        }
-        
-        .monitoring-action-btn:hover {
-            background: #0078D4;
-            color: white;
-            border-color: #0078D4;
-        }
-        
-        .pmg-toggle-btn {
-            background: #0078D4;
-            color: white;
-        }
-        
-        .monitoring-toggle-btn {
-            background: #0078D4;
-            color: white;
-        }
-        
-        .pmg-toggle-btn:hover {
-            background: #005A9E;
-            transform: translateY(-2px);
-        }
-        
-        .monitoring-toggle-btn:hover {
-            background: #005A9E;
-            transform: translateY(-2px);
+        /* Botões de exclusão */
+        .itil-action-btn.delete:hover,
+        .azure-action-btn.delete:hover,
+        .aws-action-btn.delete:hover,
+        .linux-action-btn.delete:hover,
+        .comptia-action-btn.delete:hover,
+        .ccna-action-btn.delete:hover,
+        .pmg-action-btn.delete:hover,
+        .monitoring-action-btn.delete:hover {
+            background: #e74c3c !important;
+            color: white !important;
+            border-color: #e74c3c !important;
         }
         
         /* Botões de upload nos cards */
         .upload-btn-card {
-            background: linear-gradient(135deg, #0078D4, #005A9E);
             color: white;
             border: none;
             padding: 0.5rem 1.2rem;
@@ -537,10 +1521,58 @@
             margin-right: 0.5rem;
         }
         
+        /* Cor do botão de upload baseada na categoria */
+        .category-itil .upload-btn-card {
+            background: linear-gradient(135deg, #3949ab, #1a237e);
+        }
+        
+        .category-azure .upload-btn-card {
+            background: linear-gradient(135deg, #0078D4, #005A9E);
+        }
+        
+        .category-aws .upload-btn-card {
+            background: linear-gradient(135deg, #FF9900, #FF6B00);
+        }
+        
+        .category-linux .upload-btn-card {
+            background: linear-gradient(135deg, #FFD700, #FF9800);
+        }
+        
+        .category-comptia .upload-btn-card {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+        
+        .category-ccna .upload-btn-card {
+            background: linear-gradient(135deg, #00a0d2, #005577);
+        }
+        
         .upload-btn-card:hover {
-            background: #005A9E;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .category-itil .upload-btn-card:hover {
+            background: #283593;
+        }
+        
+        .category-azure .upload-btn-card:hover {
+            background: #005A9E;
+        }
+        
+        .category-aws .upload-btn-card:hover {
+            background: #FF6B00;
+        }
+        
+        .category-linux .upload-btn-card:hover {
+            background: #FF9800;
+        }
+        
+        .category-comptia .upload-btn-card:hover {
+            background: #b71c1c;
+        }
+        
+        .category-ccna .upload-btn-card:hover {
+            background: #005577;
         }
         
         .upload-btn-wrapper {
@@ -621,17 +1653,45 @@
         }
         
         .category-chip:hover {
-            background: #0078D4;
-            color: white !important;
             transform: translateY(-2px);
         }
         
         .category-chip.active {
-            background: #0078D4;
             color: white !important;
             border-color: transparent;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Cores específicas para cada chip */
+        .category-chip[data-category="itil"]:hover,
+        .category-chip[data-category="itil"].active {
+            background: #3949ab;
+        }
+        
+        .category-chip[data-category="azure"]:hover,
+        .category-chip[data-category="azure"].active {
+            background: #0078D4;
+        }
+        
+        .category-chip[data-category="aws"]:hover,
+        .category-chip[data-category="aws"].active {
+            background: #FF9900;
+        }
+        
+        .category-chip[data-category="linux"]:hover,
+        .category-chip[data-category="linux"].active {
+            background: #FFD700;
+        }
+        
+        .category-chip[data-category="comptia"]:hover,
+        .category-chip[data-category="comptia"].active {
+            background: #d32f2f;
+        }
+        
+        .category-chip[data-category="ccna"]:hover,
+        .category-chip[data-category="ccna"].active {
+            background: #00a0d2;
         }
         
         /* NOTIFICAÇÕES */
@@ -796,7 +1856,10 @@
             .monitoring-header,
             .azure-header,
             .linux-header,
-            .security-header {
+            .comptia-header,
+            .ccna-header,
+            .itil-header,
+            .aws-header {
                 flex-direction: column;
                 text-align: center;
             }
@@ -805,7 +1868,10 @@
             .monitoring-icon,
             .azure-icon,
             .linux-icon,
-            .security-icon {
+            .comptia-icon,
+            .ccna-icon,
+            .itil-icon,
+            .aws-icon {
                 margin-bottom: 1rem;
             }
             
@@ -813,7 +1879,10 @@
             .monitoring-stats,
             .azure-stats,
             .linux-stats,
-            .security-stats {
+            .comptia-stats,
+            .ccna-stats,
+            .itil-stats,
+            .aws-stats {
                 flex-wrap: wrap;
                 gap: 1rem;
             }
@@ -822,7 +1891,10 @@
             .monitoring-stat,
             .azure-stat,
             .linux-stat,
-            .security-stat {
+            .comptia-stat,
+            .ccna-stat,
+            .itil-stat,
+            .aws-stat {
                 flex: 1;
                 min-width: 80px;
             }
@@ -869,12 +1941,10 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 1.5rem;
             overflow: hidden;
-            border-left: 5px solid #0078D4;
         }
         
         .other-cert-header {
             padding: 1.5rem;
-            background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%);
             color: white;
             display: flex;
             align-items: center;
@@ -1017,7 +2087,7 @@
                     </div>
                 </div>
 
-                <!-- Estatísticas -->
+                <!-- Estatísticas - CORRIGIDO: Agora mostra apenas da categoria atual -->
                 <div class="stats-card-compact">
                     <div class="stats-grid-compact">
                         <div class="stat-item-compact">
@@ -1250,7 +2320,9 @@
             icon: 'fas fa-cube',
             bannerClass: 'itil-banner',
             description: 'Guias de estudo, resumos e recursos para certificação ITIL 4 Foundation',
-            cards: ['pmg', 'monitoring', 'general']
+            cards: ['pmg', 'monitoring', 'general'],
+            color: '#3949ab',
+            gradient: 'linear-gradient(135deg, #1a237e 0%, #3949ab 100%)'
         },
         'azure': { 
             title: 'Microsoft Azure', 
@@ -1258,7 +2330,9 @@
             icon: 'fab fa-microsoft',
             bannerClass: 'azure-banner',
             description: 'Guias de estudo, resumos e recursos para certificações Azure (AZ-900, AZ-104, etc.)',
-            cards: ['az900', 'az104']
+            cards: ['az900', 'az104'],
+            color: '#0078D4',
+            gradient: 'linear-gradient(135deg, #0078D4 0%, #005A9E 100%)'
         },
         'aws': { 
             title: 'Amazon AWS', 
@@ -1266,7 +2340,9 @@
             icon: 'fab fa-aws',
             bannerClass: 'aws-banner',
             description: 'Material para Cloud Practitioner, Solutions Architect e outras certificações AWS',
-            cards: []
+            cards: [],
+            color: '#FF9900',
+            gradient: 'linear-gradient(135deg, #FF9900 0%, #FF6B00 100%)'
         },
         'linux': { 
             title: 'Linux Professional', 
@@ -1274,7 +2350,9 @@
             icon: 'fas fa-server',
             bannerClass: 'linux-banner',
             description: 'Recursos para certificações Linux Professional Institute (LPIC-1, LPIC-2, LPIC-3)',
-            cards: ['lpic1', 'lpic2', 'lpic3']
+            cards: ['lpic1', 'lpic2', 'lpic3'],
+            color: '#FFD700',
+            gradient: 'linear-gradient(135deg, #FFD700 0%, #FF9800 100%)'
         },
         'comptia': { 
             title: 'CompTIA', 
@@ -1282,7 +2360,9 @@
             icon: 'fas fa-shield-alt',
             bannerClass: 'comptia-banner',
             description: 'Material para preparação das certificações CompTIA Security+, Network+, A+',
-            cards: ['securityplus', 'cysa', 'networkplus']
+            cards: ['securityplus', 'cysa', 'networkplus'],
+            color: '#d32f2f',
+            gradient: 'linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%)'
         },
         'ccna': { 
             title: 'CCNA', 
@@ -1290,7 +2370,9 @@
             icon: 'fas fa-network-wired',
             bannerClass: 'ccna-banner',
             description: 'Recursos para Cisco Certified Network Associate',
-            cards: []
+            cards: [],
+            color: '#00a0d2',
+            gradient: 'linear-gradient(135deg, #00a0d2 0%, #005577 100%)'
         }
     };
 
@@ -1610,7 +2692,6 @@
             console.log(`✅ ${allMaterials.length} materiais carregados`);
             
             filterMaterials();
-            updateStats(allMaterials);
             
         } catch (error) {
             console.error('❌ Erro ao carregar materiais:', error);
@@ -1618,26 +2699,14 @@
         }
     }
 
+    // CORREÇÃO CRÍTICA: Esta função agora filtra corretamente por categoria
     function filterMaterials() {
         const typeFilter = document.getElementById('filterType').value;
         const sortFilter = document.getElementById('filterSort').value;
         const searchFilter = document.getElementById('searchMaterial').value.toLowerCase();
         
-        // Primeiro, filtrar por categoria da certificação
-        let filteredMaterials = allMaterials.filter(m => {
-            const cert = m.certificacao || '';
-            const categoryMapping = {
-                'itil': ['itil4', 'itil'],
-                'azure': ['azure'],
-                'aws': ['aws'],
-                'linux': ['lpic', 'linux'],
-                'comptia': ['security', 'comptia'],
-                'ccna': ['ccna']
-            };
-            
-            const validCerts = categoryMapping[currentCategory] || [currentCategory];
-            return validCerts.some(validCert => cert.toLowerCase().includes(validCert.toLowerCase()));
-        });
+        // Filtrar materiais da categoria atual
+        let filteredMaterials = getMaterialsForCurrentCategory();
         
         // Aplicar filtro de tipo de arquivo
         if (typeFilter !== 'all') {
@@ -1661,11 +2730,43 @@
         
         // Renderizar os cards
         renderCategoryCards(filteredMaterials);
+        
+        // Atualizar estatísticas APENAS com materiais filtrados
         updateStats(filteredMaterials);
+    }
+
+    // NOVA FUNÇÃO: Obter materiais apenas da categoria atual
+    function getMaterialsForCurrentCategory() {
+        const categoryMapping = {
+            'itil': ['itil4', 'itil', 'itil 4'],
+            'azure': ['azure'],
+            'aws': ['aws'],
+            'linux': ['lpic', 'linux'],
+            'comptia': ['security', 'comptia', 'security+', 'network+'],
+            'ccna': ['ccna']
+        };
+        
+        const validCerts = categoryMapping[currentCategory] || [currentCategory];
+        
+        return allMaterials.filter(m => {
+            const cert = (m.certificacao || '').toLowerCase();
+            const title = (m.titulo || '').toLowerCase();
+            const desc = (m.descricao || '').toLowerCase();
+            
+            // Verificar se o material pertence à categoria atual
+            return validCerts.some(validCert => 
+                cert.includes(validCert) || 
+                title.includes(validCert) ||
+                desc.includes(validCert)
+            );
+        });
     }
 
     function renderCategoryCards(materials) {
         const container = document.getElementById('dynamicCardsContainer');
+        
+        // Adicionar classe de categoria ao container principal
+        container.className = `category-${currentCategory}`;
         
         switch(currentCategory) {
             case 'itil':
@@ -1953,10 +3054,11 @@
 
     function renderGeneralCategory(container, materials) {
         // Para outras categorias, renderizar um card único
+        const cert = certifications[currentCategory];
         if (materials.length > 0) {
-            container.innerHTML = renderGeneralCard(materials, certifications[currentCategory].title, certifications[currentCategory].icon, '#0078D4');
+            container.innerHTML = renderGeneralCard(materials, cert.title, cert.icon, cert.color);
         } else {
-            container.innerHTML = renderGeneralCard([], certifications[currentCategory].title, certifications[currentCategory].icon, '#0078D4');
+            container.innerHTML = renderGeneralCard([], cert.title, cert.icon, cert.color);
         }
         document.getElementById('uploadSection').style.display = 'block';
     }
@@ -1985,7 +3087,8 @@
     function getCardInfoForFileName(fileName) {
         const detectedCard = detectCardFromFileName(fileName, fileName);
         const cardName = cardNames[detectedCard] || 'Materiais Gerais';
-        const cardColor = '#0078D4'; // Cor padrão Azure
+        const cert = certifications[currentCategory];
+        const cardColor = cert ? cert.color : '#0078D4';
         
         return {
             cardType: detectedCard,
@@ -1995,7 +3098,7 @@
     }
 
     // ============================================
-    // RENDERIZAÇÃO DOS CARDS - MANTENDO ESTRUTURA ORIGINAL
+    // RENDERIZAÇÃO DOS CARDS - COM CORES CORRETAS
     // ============================================
 
     function renderPMGAcademyCard(files = []) {
@@ -2333,21 +3436,21 @@
         }
         
         return `
-            <div class="security-card">
-                <div class="security-header">
-                    <div class="security-icon">
+            <div class="comptia-card">
+                <div class="comptia-header">
+                    <div class="comptia-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
-                    <div class="security-title">
+                    <div class="comptia-title">
                         <h3>${cardInfo}</h3>
-                        <span class="security-badge">
+                        <span class="comptia-badge">
                             <i class="fas fa-lock"></i> 
                             CompTIA Certification - ${files.length} arquivos
                         </span>
                     </div>
                 </div>
                 
-                <div class="security-content">
+                <div class="comptia-content">
                     <p style="margin-bottom: 1.5rem; color: #666;">
                         ${description}
                     </p>
@@ -2358,27 +3461,27 @@
                         </button>
                     </div>
                     
-                    <div class="security-stats">
-                        <div class="security-stat">
-                            <div class="security-stat-value">${files.length}</div>
-                            <div class="security-stat-label">Arquivos</div>
+                    <div class="comptia-stats">
+                        <div class="comptia-stat">
+                            <div class="comptia-stat-value">${files.length}</div>
+                            <div class="comptia-stat-label">Arquivos</div>
                         </div>
-                        <div class="security-stat">
-                            <div class="security-stat-value">${totalViews}</div>
-                            <div class="security-stat-label">Visualizações</div>
+                        <div class="comptia-stat">
+                            <div class="comptia-stat-value">${totalViews}</div>
+                            <div class="comptia-stat-label">Visualizações</div>
                         </div>
-                        <div class="security-stat">
-                            <div class="security-stat-value">${totalDownloads}</div>
-                            <div class="security-stat-label">Downloads</div>
+                        <div class="comptia-stat">
+                            <div class="comptia-stat-value">${totalDownloads}</div>
+                            <div class="comptia-stat-label">Downloads</div>
                         </div>
-                        <div class="security-stat">
-                            <div class="security-stat-value">${totalSizeMB} MB</div>
-                            <div class="security-stat-label">Tamanho Total</div>
+                        <div class="comptia-stat">
+                            <div class="comptia-stat-value">${totalSizeMB} MB</div>
+                            <div class="comptia-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="security-toggle-btn" onclick="toggleFiles('${cardType}')" id="${cardType}ToggleBtn">
+                        <button class="comptia-toggle-btn" onclick="toggleFiles('${cardType}')" id="${cardType}ToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -2407,48 +3510,48 @@
         const groupedFiles = groupFilesByType(files);
         
         return `
-            <div class="other-cert-card">
-                <div class="other-cert-header">
-                    <div class="other-cert-icon">
+            <div class="itil-card">
+                <div class="itil-header">
+                    <div class="itil-icon">
                         <i class="fas fa-file-alt"></i>
                     </div>
-                    <div class="other-cert-title">
+                    <div class="itil-title">
                         <h3>Materiais Gerais - ITIL 4</h3>
-                        <span class="monitoring-badge">
+                        <span class="itil-badge">
                             <i class="fas fa-certificate"></i> 
                             ${files.length} arquivos
                         </span>
                     </div>
                 </div>
                 
-                <div class="other-cert-content">
+                <div class="itil-content">
                     <div class="upload-btn-wrapper">
                         <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
-                    <div class="monitoring-stats">
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${files.length}</div>
-                            <div class="monitoring-stat-label">Arquivos</div>
+                    <div class="itil-stats">
+                        <div class="itil-stat">
+                            <div class="itil-stat-value">${files.length}</div>
+                            <div class="itil-stat-label">Arquivos</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalViews}</div>
-                            <div class="monitoring-stat-label">Visualizações</div>
+                        <div class="itil-stat">
+                            <div class="itil-stat-value">${totalViews}</div>
+                            <div class="itil-stat-label">Visualizações</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalDownloads}</div>
-                            <div class="monitoring-stat-label">Downloads</div>
+                        <div class="itil-stat">
+                            <div class="itil-stat-value">${totalDownloads}</div>
+                            <div class="itil-stat-label">Downloads</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
-                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        <div class="itil-stat">
+                            <div class="itil-stat-value">${totalSizeMB} MB</div>
+                            <div class="itil-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
+                        <button class="itil-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -2477,48 +3580,48 @@
         const groupedFiles = groupFilesByType(files);
         
         return `
-            <div class="other-cert-card">
-                <div class="other-cert-header">
-                    <div class="other-cert-icon">
+            <div class="azure-card">
+                <div class="azure-header">
+                    <div class="azure-icon">
                         <i class="fab fa-microsoft"></i>
                     </div>
-                    <div class="other-cert-title">
+                    <div class="azure-title">
                         <h3>Materiais Gerais - Azure</h3>
-                        <span class="monitoring-badge">
+                        <span class="azure-badge">
                             <i class="fas fa-cloud"></i> 
                             ${files.length} arquivos
                         </span>
                     </div>
                 </div>
                 
-                <div class="other-cert-content">
+                <div class="azure-content">
                     <div class="upload-btn-wrapper">
                         <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
-                    <div class="monitoring-stats">
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${files.length}</div>
-                            <div class="monitoring-stat-label">Arquivos</div>
+                    <div class="azure-stats">
+                        <div class="azure-stat">
+                            <div class="azure-stat-value">${files.length}</div>
+                            <div class="azure-stat-label">Arquivos</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalViews}</div>
-                            <div class="monitoring-stat-label">Visualizações</div>
+                        <div class="azure-stat">
+                            <div class="azure-stat-value">${totalViews}</div>
+                            <div class="azure-stat-label">Visualizações</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalDownloads}</div>
-                            <div class="monitoring-stat-label">Downloads</div>
+                        <div class="azure-stat">
+                            <div class="azure-stat-value">${totalDownloads}</div>
+                            <div class="azure-stat-label">Downloads</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
-                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        <div class="azure-stat">
+                            <div class="azure-stat-value">${totalSizeMB} MB</div>
+                            <div class="azure-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
+                        <button class="azure-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -2547,48 +3650,48 @@
         const groupedFiles = groupFilesByType(files);
         
         return `
-            <div class="other-cert-card">
-                <div class="other-cert-header">
-                    <div class="other-cert-icon">
+            <div class="linux-card">
+                <div class="linux-header">
+                    <div class="linux-icon">
                         <i class="fas fa-server"></i>
                     </div>
-                    <div class="other-cert-title">
+                    <div class="linux-title">
                         <h3>Materiais Gerais - Linux</h3>
-                        <span class="monitoring-badge">
+                        <span class="linux-badge">
                             <i class="fas fa-penguin"></i> 
                             ${files.length} arquivos
                         </span>
                     </div>
                 </div>
                 
-                <div class="other-cert-content">
+                <div class="linux-content">
                     <div class="upload-btn-wrapper">
                         <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
-                    <div class="monitoring-stats">
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${files.length}</div>
-                            <div class="monitoring-stat-label">Arquivos</div>
+                    <div class="linux-stats">
+                        <div class="linux-stat">
+                            <div class="linux-stat-value">${files.length}</div>
+                            <div class="linux-stat-label">Arquivos</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalViews}</div>
-                            <div class="monitoring-stat-label">Visualizações</div>
+                        <div class="linux-stat">
+                            <div class="linux-stat-value">${totalViews}</div>
+                            <div class="linux-stat-label">Visualizações</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalDownloads}</div>
-                            <div class="monitoring-stat-label">Downloads</div>
+                        <div class="linux-stat">
+                            <div class="linux-stat-value">${totalDownloads}</div>
+                            <div class="linux-stat-label">Downloads</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
-                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        <div class="linux-stat">
+                            <div class="linux-stat-value">${totalSizeMB} MB</div>
+                            <div class="linux-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
+                        <button class="linux-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -2617,48 +3720,48 @@
         const groupedFiles = groupFilesByType(files);
         
         return `
-            <div class="other-cert-card">
-                <div class="other-cert-header">
-                    <div class="other-cert-icon">
+            <div class="comptia-card">
+                <div class="comptia-header">
+                    <div class="comptia-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
-                    <div class="other-cert-title">
+                    <div class="comptia-title">
                         <h3>Materiais Gerais - CompTIA</h3>
-                        <span class="monitoring-badge">
+                        <span class="comptia-badge">
                             <i class="fas fa-lock"></i> 
                             ${files.length} arquivos
                         </span>
                     </div>
                 </div>
                 
-                <div class="other-cert-content">
+                <div class="comptia-content">
                     <div class="upload-btn-wrapper">
                         <button class="upload-btn-card" onclick="openUploadForCard('general')">
                             <i class="fas fa-plus-circle"></i> Adicionar Material
                         </button>
                     </div>
                     
-                    <div class="monitoring-stats">
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${files.length}</div>
-                            <div class="monitoring-stat-label">Arquivos</div>
+                    <div class="comptia-stats">
+                        <div class="comptia-stat">
+                            <div class="comptia-stat-value">${files.length}</div>
+                            <div class="comptia-stat-label">Arquivos</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalViews}</div>
-                            <div class="monitoring-stat-label">Visualizações</div>
+                        <div class="comptia-stat">
+                            <div class="comptia-stat-value">${totalViews}</div>
+                            <div class="comptia-stat-label">Visualizações</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalDownloads}</div>
-                            <div class="monitoring-stat-label">Downloads</div>
+                        <div class="comptia-stat">
+                            <div class="comptia-stat-value">${totalDownloads}</div>
+                            <div class="comptia-stat-label">Downloads</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
-                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        <div class="comptia-stat">
+                            <div class="comptia-stat-value">${totalSizeMB} MB</div>
+                            <div class="comptia-stat-label">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
+                        <button class="comptia-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -2686,15 +3789,30 @@
         
         const groupedFiles = groupFilesByType(files);
         
+        // Determinar a classe CSS baseada na categoria
+        let cardClass = 'other-cert-card';
+        let headerClass = 'other-cert-header';
+        let statsClass = 'monitoring-stats';
+        
+        if (currentCategory === 'aws') {
+            cardClass = 'aws-card';
+            headerClass = 'aws-header';
+            statsClass = 'aws-stats';
+        } else if (currentCategory === 'ccna') {
+            cardClass = 'ccna-card';
+            headerClass = 'ccna-header';
+            statsClass = 'ccna-stats';
+        }
+        
         return `
-            <div class="other-cert-card">
-                <div class="other-cert-header">
+            <div class="${cardClass}">
+                <div class="${headerClass}">
                     <div class="other-cert-icon">
                         <i class="${icon}"></i>
                     </div>
                     <div class="other-cert-title">
                         <h3>${title}</h3>
-                        <span class="monitoring-badge">
+                        <span class="${currentCategory === 'aws' ? 'aws-badge' : currentCategory === 'ccna' ? 'ccna-badge' : 'monitoring-badge'}">
                             <i class="fas fa-certificate"></i> 
                             ${files.length} arquivos
                         </span>
@@ -2708,27 +3826,27 @@
                         </button>
                     </div>
                     
-                    <div class="monitoring-stats">
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${files.length}</div>
-                            <div class="monitoring-stat-label">Arquivos</div>
+                    <div class="${statsClass}">
+                        <div class="${currentCategory === 'aws' ? 'aws-stat' : currentCategory === 'ccna' ? 'ccna-stat' : 'monitoring-stat'}">
+                            <div class="${currentCategory === 'aws' ? 'aws-stat-value' : currentCategory === 'ccna' ? 'ccna-stat-value' : 'monitoring-stat-value'}">${files.length}</div>
+                            <div class="${currentCategory === 'aws' ? 'aws-stat-label' : currentCategory === 'ccna' ? 'ccna-stat-label' : 'monitoring-stat-label'}">Arquivos</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalViews}</div>
-                            <div class="monitoring-stat-label">Visualizações</div>
+                        <div class="${currentCategory === 'aws' ? 'aws-stat' : currentCategory === 'ccna' ? 'ccna-stat' : 'monitoring-stat'}">
+                            <div class="${currentCategory === 'aws' ? 'aws-stat-value' : currentCategory === 'ccna' ? 'ccna-stat-value' : 'monitoring-stat-value'}">${totalViews}</div>
+                            <div class="${currentCategory === 'aws' ? 'aws-stat-label' : currentCategory === 'ccna' ? 'ccna-stat-label' : 'monitoring-stat-label'}">Visualizações</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalDownloads}</div>
-                            <div class="monitoring-stat-label">Downloads</div>
+                        <div class="${currentCategory === 'aws' ? 'aws-stat' : currentCategory === 'ccna' ? 'ccna-stat' : 'monitoring-stat'}">
+                            <div class="${currentCategory === 'aws' ? 'aws-stat-value' : currentCategory === 'ccna' ? 'ccna-stat-value' : 'monitoring-stat-value'}">${totalDownloads}</div>
+                            <div class="${currentCategory === 'aws' ? 'aws-stat-label' : currentCategory === 'ccna' ? 'ccna-stat-label' : 'monitoring-stat-label'}">Downloads</div>
                         </div>
-                        <div class="monitoring-stat">
-                            <div class="monitoring-stat-value">${totalSizeMB} MB</div>
-                            <div class="monitoring-stat-label">Tamanho Total</div>
+                        <div class="${currentCategory === 'aws' ? 'aws-stat' : currentCategory === 'ccna' ? 'ccna-stat' : 'monitoring-stat'}">
+                            <div class="${currentCategory === 'aws' ? 'aws-stat-value' : currentCategory === 'ccna' ? 'ccna-stat-value' : 'monitoring-stat-value'}">${totalSizeMB} MB</div>
+                            <div class="${currentCategory === 'aws' ? 'aws-stat-label' : currentCategory === 'ccna' ? 'ccna-stat-label' : 'monitoring-stat-label'}">Tamanho Total</div>
                         </div>
                     </div>
                     
                     ${files.length > 0 ? `
-                        <button class="monitoring-toggle-btn" onclick="toggleFiles('general')" id="generalToggleBtn">
+                        <button class="${currentCategory === 'aws' ? 'aws-toggle-btn' : currentCategory === 'ccna' ? 'ccna-toggle-btn' : 'monitoring-toggle-btn'}" onclick="toggleFiles('general')" id="generalToggleBtn">
                             <i class="fas fa-folder-open"></i>
                             <span>Mostrar ${files.length} Arquivos</span>
                         </button>
@@ -2768,10 +3886,11 @@
         sortedGroups.forEach(([type, files]) => {
             const typeName = getTypeName(type);
             const typeIcon = getFileIcon(type);
+            const certColor = certifications[currentCategory] ? certifications[currentCategory].color : '#0078D4';
             
             html += `
                 <div style="margin-bottom: 2rem;">
-                    <h4 style="color: #0078D4; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <h4 style="color: ${certColor}; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-${typeIcon}"></i>
                         ${typeName} (${files.length})
                     </h4>
@@ -2799,48 +3918,77 @@
         const isOwner = currentUserId && file.usuario_id === currentUserId;
         const canView = canViewFile(fileType);
         
-        let cardClass = 'pmg-file-card';
-        let iconClass = 'pmg-file-icon';
-        let actionClass = 'pmg-action-btn';
+        // Determinar as classes CSS baseadas na categoria atual
+        let cardClass, iconClass, actionClass, fileInfoClass, fileMetaClass, actionsClass;
+        const cert = certifications[currentCategory];
         
-        switch(cardType) {
+        switch(currentCategory) {
+            case 'itil':
+                cardClass = 'itil-file-card';
+                iconClass = 'itil-file-icon';
+                actionClass = 'itil-action-btn';
+                fileInfoClass = 'itil-file-info';
+                fileMetaClass = 'itil-file-meta';
+                actionsClass = 'itil-file-actions';
+                break;
             case 'azure':
-            case 'az900':
-            case 'az104':
                 cardClass = 'azure-file-card';
                 iconClass = 'azure-file-icon';
                 actionClass = 'azure-action-btn';
+                fileInfoClass = 'azure-file-info';
+                fileMetaClass = 'azure-file-meta';
+                actionsClass = 'azure-file-actions';
+                break;
+            case 'aws':
+                cardClass = 'aws-file-card';
+                iconClass = 'aws-file-icon';
+                actionClass = 'aws-action-btn';
+                fileInfoClass = 'aws-file-info';
+                fileMetaClass = 'aws-file-meta';
+                actionsClass = 'aws-file-actions';
                 break;
             case 'linux':
-            case 'lpic1':
-            case 'lpic2':
-            case 'lpic3':
                 cardClass = 'linux-file-card';
                 iconClass = 'linux-file-icon';
                 actionClass = 'linux-action-btn';
+                fileInfoClass = 'linux-file-info';
+                fileMetaClass = 'linux-file-meta';
+                actionsClass = 'linux-file-actions';
                 break;
-            case 'security':
-            case 'securityplus':
-            case 'cysa':
-            case 'networkplus':
-                cardClass = 'security-file-card';
-                iconClass = 'security-file-icon';
-                actionClass = 'security-action-btn';
+            case 'comptia':
+                cardClass = 'comptia-file-card';
+                iconClass = 'comptia-file-icon';
+                actionClass = 'comptia-action-btn';
+                fileInfoClass = 'comptia-file-info';
+                fileMetaClass = 'comptia-file-meta';
+                actionsClass = 'comptia-file-actions';
                 break;
-            case 'monitoring':
-                cardClass = 'monitoring-file-card';
-                iconClass = 'monitoring-file-icon';
-                actionClass = 'monitoring-action-btn';
-                break;
-            case 'pmg':
-                cardClass = 'pmg-file-card';
-                iconClass = 'pmg-file-icon';
-                actionClass = 'pmg-action-btn';
+            case 'ccna':
+                cardClass = 'ccna-file-card';
+                iconClass = 'ccna-file-icon';
+                actionClass = 'ccna-action-btn';
+                fileInfoClass = 'ccna-file-info';
+                fileMetaClass = 'ccna-file-meta';
+                actionsClass = 'ccna-file-actions';
                 break;
             default:
-                cardClass = 'azure-file-card';
-                iconClass = 'azure-file-icon';
-                actionClass = 'azure-action-btn';
+                // Para cards específicos dentro das categorias
+                if (cardType === 'pmg' || cardType === 'monitoring') {
+                    cardClass = cardType === 'pmg' ? 'pmg-file-card' : 'monitoring-file-card';
+                    iconClass = cardType === 'pmg' ? 'pmg-file-icon' : 'monitoring-file-icon';
+                    actionClass = cardType === 'pmg' ? 'pmg-action-btn' : 'monitoring-action-btn';
+                    fileInfoClass = cardType === 'pmg' ? 'pmg-file-info' : 'monitoring-file-info';
+                    fileMetaClass = cardType === 'pmg' ? 'pmg-file-meta' : 'monitoring-file-meta';
+                    actionsClass = cardType === 'pmg' ? 'pmg-file-actions' : 'monitoring-file-actions';
+                } else {
+                    // Fallback para a categoria atual
+                    cardClass = 'azure-file-card';
+                    iconClass = 'azure-file-icon';
+                    actionClass = 'azure-action-btn';
+                    fileInfoClass = 'azure-file-info';
+                    fileMetaClass = 'azure-file-meta';
+                    actionsClass = 'azure-file-actions';
+                }
                 break;
         }
         
@@ -2849,16 +3997,16 @@
                 <div class="${iconClass}">
                     <i class="fas fa-${fileIcon}"></i>
                 </div>
-                <div class="${cardType === 'pmg' ? 'pmg-file-info' : 'azure-file-info'}">
+                <div class="${fileInfoClass}">
                     <h5 title="${fileName}">${fileName}</h5>
-                    <div class="${cardType === 'pmg' ? 'pmg-file-meta' : 'azure-file-meta'}">
+                    <div class="${fileMetaClass}">
                         <span><i class="fas fa-file"></i> ${fileType.toUpperCase()}</span>
                         <span><i class="fas fa-hdd"></i> ${fileSize}</span>
                         <span><i class="fas fa-calendar"></i> ${uploadDate}</span>
                     </div>
                     ${fileDesc ? `<p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">${fileDesc}</p>` : ''}
                 </div>
-                <div class="${cardType === 'pmg' ? 'pmg-file-actions' : 'azure-file-actions'}">
+                <div class="${actionsClass}">
                     ${hasValidUrl ? `
                         <button class="${actionClass}" 
                            onclick="handleFileAction('${fileId}', '${escapeString(fileName)}', '${escapeString(fileUrl)}', '${fileType}')" 
@@ -2934,10 +4082,12 @@
         
         const fileType = detectFileType(file.name);
         const fileIconName = getFileIcon(fileType);
+        const cert = certifications[currentCategory];
+        const cardColor = cert ? cert.color : '#0078D4';
         
         document.getElementById('selectedFileInfo').innerHTML = `
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <div style="width: 60px; height: 60px; background: #0078D4; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 60px; height: 60px; background: ${cardColor}; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-${fileIconName}" style="color: white; font-size: 1.5rem;"></i>
                 </div>
                 <div>
@@ -2962,9 +4112,9 @@
         if (['itil', 'azure', 'linux', 'comptia'].includes(currentCategory)) {
             document.getElementById('autoCardSelection').style.display = 'block';
             document.getElementById('autoCardSelectionText').innerHTML = `
-                <i class="fas fa-magic" style="color: #0078D4;"></i> 
+                <i class="fas fa-magic" style="color: ${cardColor};"></i> 
                 Este arquivo será salvo automaticamente no card: 
-                <strong style="color: #0078D4;">${cardInfo.cardName}</strong>
+                <strong style="color: ${cardColor};">${cardInfo.cardName}</strong>
                 <br><small>Detectado baseado no nome do arquivo.</small>
             `;
             document.getElementById('uploadCardType').value = currentUploadCardType;
@@ -3270,6 +4420,7 @@
         }
     }
 
+    // CORREÇÃO: Esta função agora recebe apenas os materiais filtrados
     function updateStats(materials) {
         const totalMaterials = materials.length;
         const totalSize = materials.reduce((sum, material) => sum + (material.arquivo_tamanho_kb || 0), 0) / 1024;
@@ -3435,7 +4586,9 @@
         const material = allMaterials.find(m => m.id === materialId);
         if (material) {
             material.visualizacoes = (material.visualizacoes || 0) + 1;
-            updateStats(allMaterials);
+            // Atualizar estatísticas apenas dos materiais da categoria atual
+            const filteredMaterials = getMaterialsForCurrentCategory();
+            updateStats(filteredMaterials);
         }
     }
 
@@ -3444,7 +4597,9 @@
         const material = allMaterials.find(m => m.id === materialId);
         if (material) {
             material.downloads = (material.downloads || 0) + 1;
-            updateStats(allMaterials);
+            // Atualizar estatísticas apenas dos materiais da categoria atual
+            const filteredMaterials = getMaterialsForCurrentCategory();
+            updateStats(filteredMaterials);
         }
     }
 
