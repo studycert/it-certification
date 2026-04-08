@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Simulado ITIL 4 Practitioner - Monitoração e Eventos (Simulado 2)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0b2b3d 0%, #1a4a6f 100%);
+            min-height: 100vh;
+            padding: 20px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1150px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #0f2c3b;
+            color: white;
+            padding: 24px 28px;
+            text-align: center;
+            border-bottom: 4px solid #2a9d8f;
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header .sub {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 8px;
+        }
+
+        .badge-header {
+            background: #2a9d8f;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .exam-info {
+            background: #f1f5f9;
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress {
+            font-weight: 700;
+            background: white;
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: #0f2c3b;
+            font-size: 0.9rem;
+        }
+
+        .timer {
+            font-family: 'Courier New', monospace;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: #0f2c3b;
+            color: #facc15;
+            padding: 4px 20px;
+            border-radius: 60px;
+            letter-spacing: 2px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 270px;
+            gap: 0;
+        }
+
+        .question-section {
+            padding: 28px 28px;
+            background: white;
+        }
+
+        .q-num {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #2a9d8f;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.45;
+            background: #f8fafc;
+            padding: 22px;
+            border-radius: 24px;
+            border-left: 6px solid #2a9d8f;
+            margin-bottom: 28px;
+            font-weight: 500;
+            color: #0f2c3b;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .option {
+            padding: 14px 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 28px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: white;
+        }
+
+        .option:hover:not(.locked-opt) {
+            border-color: #2a9d8f;
+            background: #f0fdf9;
+            transform: translateX(4px);
+        }
+
+        .opt-letter {
+            font-weight: 800;
+            background: #eef2ff;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            color: #1e3a5f;
+            flex-shrink: 0;
+        }
+
+        .opt-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .option.selected {
+            border-color: #2a9d8f;
+            background: #e6f7f3;
+        }
+
+        .option.correct-highlight {
+            border-color: #10b981;
+            background: #e0f9ef;
+        }
+
+        .option.incorrect-highlight {
+            border-color: #ef4444;
+            background: #fee9e6;
+        }
+
+        .locked-opt {
+            cursor: default;
+            opacity: 0.95;
+        }
+
+        .feedback-box {
+            margin: 20px 0;
+            padding: 16px;
+            border-radius: 24px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback-correct {
+            background: #dff9e6;
+            color: #0b5e42;
+            border: 1px solid #2a9d8f;
+        }
+
+        .feedback-incorrect {
+            background: #ffe6e5;
+            color: #b91c1c;
+            border: 1px solid #ef4444;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.1s;
+            background: #eef2ff;
+            color: #1e293b;
+        }
+
+        .btn-primary {
+            background: #1e5a7a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0f3b52;
+        }
+
+        .btn-warning {
+            background: #facc15;
+            color: #1e293b;
+        }
+
+        .btn-success {
+            background: #2a9d8f;
+            color: white;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #cbd5e1;
+        }
+
+        .navigation-section {
+            background: #fafcff;
+            border-left: 1px solid #e2edf2;
+            padding: 24px 18px;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            background: white;
+            border: 1px solid #cbd5e6;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.1s;
+            font-size: 0.9rem;
+        }
+
+        .grid-item.current {
+            background: #1e5a7a;
+            color: white;
+            border-color: #1e5a7a;
+        }
+
+        .grid-item.answered {
+            background: #2a9d8f;
+            color: white;
+            border-color: #2a9d8f;
+        }
+
+        .grid-item.marked {
+            background: #facc15;
+            color: #1e293b;
+            border-color: #eab308;
+        }
+
+        .results-screen, .answers-screen {
+            padding: 36px 28px;
+            text-align: center;
+        }
+
+        .score-circle {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 780px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            .navigation-section {
+                border-left: none;
+                border-top: 1px solid #e2edf2;
+            }
+            .question-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="header">
+        <h1>📡 ITIL® 4 Practitioner</h1>
+        <div class="sub">Monitoração e Gerenciamento de Evento • Simulado Oficial 2</div>
+        <div class="badge-header">20 questões | 30 minutos | Baseado no Sample Paper 2</div>
+    </div>
+
+    <!-- TELA INICIAL -->
+    <div id="startScreen">
+        <div style="padding: 48px 32px; text-align: center;">
+            <h2 style="color: #0f2c3b; margin-bottom: 16px;">🧠 Simulado de certificação (Simulado 2)</h2>
+            <p style="max-width: 550px; margin: 0 auto 20px; color: #334155;">Questões oficiais de Monitoração e Gerenciamento de Evento. Após responder uma questão, a resposta fica bloqueada. Utilize o grid para navegação.</p>
+            <button class="btn btn-primary" id="startExamBtn" style="padding: 14px 36px; font-size: 1rem;">🚀 Iniciar simulado</button>
+        </div>
+    </div>
+
+    <!-- AREA DO EXAME -->
+    <div id="examArea" style="display: none;">
+        <div class="exam-info">
+            <div class="progress">Questão <span id="currentQNum">1</span>/<span id="totalQ">20</span></div>
+            <div class="timer" id="timerDisplay">30:00</div>
+        </div>
+        <div class="content">
+            <div class="question-section">
+                <div class="q-num" id="qLabel">QUESTÃO 1</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="feedback-box" id="feedbackMsg"></div>
+                <div class="btn-group">
+                    <button class="btn" id="prevBtn">◀ Anterior</button>
+                    <button class="btn btn-warning" id="markBtn">📌 Marcar</button>
+                    <button class="btn" id="explanationBtn">💡 Explicação</button>
+                    <button class="btn btn-primary" id="nextBtn">Próxima ▶</button>
+                </div>
+                <div style="margin-top: 16px;">
+                    <button class="btn btn-success" id="finishBtn" style="width: 100%;">✅ Finalizar simulado</button>
+                </div>
+            </div>
+            <div class="navigation-section">
+                <div class="question-grid" id="gridQuestions"></div>
+                <button class="btn btn-outline" id="resetBtn" style="width: 100%;">🔄 Reiniciar simulado</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA RESULTADOS -->
+    <div id="resultScreen" class="results-screen" style="display: none;">
+        <h2>📊 Resultado Final</h2>
+        <div class="score-circle" id="scoreValue">0/20</div>
+        <p id="resultMessage" style="margin-bottom: 28px;"></p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="reviewAnswersBtn">📋 Revisar respostas</button>
+            <button class="btn btn-warning" id="restartResultBtn">🔄 Novo simulado</button>
+            <button class="btn btn-success" id="fullReportBtn">📄 Relatório completo</button>
+        </div>
+    </div>
+
+    <!-- TELA RELATÓRIO DETALHADO -->
+    <div id="detailedScreen" class="answers-screen" style="display: none;">
+        <h2>📖 Relatório detalhado</h2>
+        <div id="answersList" style="max-height: 500px; overflow-y: auto; text-align: left; margin: 20px 0;"></div>
+        <button class="btn" id="backToResultsBtn">◀ Voltar aos resultados</button>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // BASE DE DADOS - SIMULADO 2 (20 questões oficiais com justificativas)
+    // conforme PDFs: SamplePaper2 + AnswersRationales
+    // --------------------------------------------------------------
+    const questions = [
+        { number:1, text: "Qual processo inclui o envio de notificações?", options:["Planejamento da monitoração","Tratamento de evento","Revisão de monitoração e gerenciamento de evento","Estabelecimento e manutenção de abordagem"], correct:1, explanation:"B. Correta. 'Atividade:... Notificações enviadas.' Ref. 3.2.2, Tabela 3.4" },
+        { number:2, text: "Qual processo tem uma saída de 'notificações de parte interessada'?", options:["Tratamento de evento","Planejamento da monitoração","Revisão de monitoração e gerenciamento de evento","Assegurar que os eventos sejam detectados"], correct:0, explanation:"A. Correta. 'Principais saídas:... Notificações das partes interessadas.' Ref. 3.2.2, Tabela 3.3" },
+        { number:3, text: "Qual das seguintes afirmações sobre a prática de monitoração e gerenciamento de evento está CORRETA?", options:["Provedores devem detectar, monitorar e gerenciar formalmente todos os eventos","Eventos ocorrem somente quando são monitorados","A importância de todos os eventos deve ser avaliada antes que o serviço esteja em uso","Nem todos os eventos indicam que está acontecendo algo ruim ou incomum"], correct:3, explanation:"D. Correta. 'Nem todos os eventos indicam que está acontecendo algo ruim ou incomum. Alguns eventos são um sinal de que o serviço está funcionando conforme concebido.' Ref. 2.1" },
+        { number:4, text: "Como os parceiros e fornecedores apoiam a prática de monitoração e gerenciamento de evento?", options:["Definindo quais eventos de exceção não exigem ação","Fornecendo documentação clara sobre o significado dos eventos gerados por seus produtos","Iniciando revisões de evento grave após incidentes","Fornecendo consultoria sobre personalização de serviços"], correct:1, explanation:"B. Correta. 'Documentação abrangente... um bom produto deve incluir uma categorização clara e instruções sobre o significado de cada tipo de evento.' Ref. 6" },
+        { number:5, text: "Uma organização está implementando um novo sistema de gerenciamento de conhecimento. Como a prática de monitoração se beneficiará?", options:["O sistema terá que capturar e processar eventos","O sistema dará suporte à colaboração entre as equipes que respondem aos eventos","O sistema gerará registros e tarefas baseados em eventos","O sistema ajudará a gerenciar informações sobre o significado dos eventos"], correct:3, explanation:"D. Correta. O sistema de gerenciamento de conhecimento pode ajudar com 'recuperação, gerenciamento e comunicação de informação sobre a importância dos eventos e a resposta recomendada.' Ref. Tabela 5.1" },
+        { number:6, text: "Por que a monitoração fornecida por padrão para um item de configuração nem sempre é adequada para uma organização específica?", options:["Porque não garante que o componente esteja operando de forma ideal","Porque não ajuda o pessoal de operações a gerenciar o objeto","Porque não garante que valor esteja sendo criado para a organização","Porque muitos componentes não são fornecidos com capacidade de monitoração"], correct:2, explanation:"C. Correta. 'A monitoração padrão... deve incluir atividades necessárias para que o componente contribua para a criação de valor na organização.' Ref. 3.2.2" },
+        { number:7, text: "Qual das opções NÃO é um benefício de conhecer o status atual dos serviços e componentes?", options:["Realizar atividades operacionais para desempenho ideal","Responder adequadamente a eventos que impactam o serviço","Tomar ações proativas para evitar eventos adversos futuros","Filtrar a grande quantidade de dados de monitoração"], correct:3, explanation:"D. Correta. Filtrar dados é um papel dos limiares, não um benefício direto de conhecer o status. Ref. 2.2" },
+        { number:8, text: "Em que dimensão do gerenciamento de serviço são estabelecidas as regras de filtragem e categorização de evento?", options:["Fluxos de valor e processos","Informação e tecnologia","Organização e pessoas","Parceiros e fornecedores"], correct:2, explanation:"C. Correta. 'As regras de negócio... são estabelecidas na dimensão de Organizações e Pessoas do gerenciamento de serviço.' Ref. 2.4.1" },
+        { number:9, text: "Qual competência é a MAIS importante ao realizar a atividade 'registro de evento'?", options:["Coordenador/comunicador","Líder","Especialista técnico","Especialista em métodos e técnicas"], correct:0, explanation:"A. Correta. Competências para registro de evento: coordenador/comunicador e administrador. Ref. Tabela 4.1" },
+        { number:10, text: "Que critério de capacidade dá suporte ao FSP 'estabelecer e manter abordagens/modelos que descrevam os vários tipos de eventos e capacidades de monitoração'?", options:["Principais usuários dos dados e requisitos identificados","Tendências analisadas para prever ocorrência","Efetividade da abordagem é medida e relatada","Eventos detectados são interpretados e acionados"], correct:2, explanation:"C. Correta. 'A efetividade da abordagem de monitoração e gerenciamento de evento é medida e relatada.' Ref. Tabela 7.1" },
+        { number:11, text: "Uma organização definiu níveis mínimos de eventos a rastrear e identificou automação existente. O que mais deve fazer?", options:["Definir quais eventos devem ser monitorados","Identificar eventos de exceção que não exigem ação","Identificar as ferramentas de gerenciamento de evento em uso","Definir regras para colaboração em resposta a eventos"], correct:3, explanation:"D. Correta. 'Diretrizes devem ajudar as equipes a saber quando colaborar com outras partes interessadas.' Ref. 4.2" },
+        { number:12, text: "Qual princípio orientador está sendo aplicado ao analisar continuamente como eventos são monitorados e implementando melhorias?", options:["Manter de forma simples e prática","Progredir iterativamente com feedback","Otimizar e automatizar","Colaborar e promover visibilidade"], correct:1, explanation:"B. Correta. 'O ajuste fino contínuo dos eventos monitorados e da forma como são relatados...' Ref. Tabela 8.1 — relacionado a progredir iterativamente com feedback." },
+        { number:13, text: "Como a prática de monitoração e gerenciamento de evento depende de parceiros e fornecedores?", options:["Depende das capacidades de geração de evento dos produtos de terceiros","Depende dos fornecedores para descrever quais eventos de exceção não exigem ação","Depende dos fornecedores para avaliar desempenho em relação aos ANSs","Depende dos fornecedores para iniciar revisões de eventos graves"], correct:0, explanation:"A. Correta. 'Oferecer capacidades de monitoração e gerenciamento de evento em seus produtos de tecnologia.' Ref. 6" },
+        { number:14, text: "Que tipo de evento indica que um componente falhou?", options:["Informacional","Ação necessária","Aviso","Exceção"], correct:3, explanation:"D. Correta. 'Eventos de exceção indicam que um limiar crítico foi atingido ou que um componente falhou.' Ref. 2.2" },
+        { number:15, text: "Durante a avaliação do fluxo de trabalho no mapeamento de fluxos de valor, a que o gerente deve dar atenção especial?", options:["Satisfação dos usuários","Monitoração dos componentes","Identificação das partes interessadas","Operações manuais"], correct:3, explanation:"D. Correta. 'As oportunidades de melhoria podem ser encontradas em operações manuais.' Ref. 3.2.3.2" },
+        { number:16, text: "Quais ferramentas são MAIS importantes para o trabalho conjunto efetivo das equipes de TI que respondem a eventos?", options:["Ferramentas de gerenciamento de configuração","Ferramentas de gerenciamento de conhecimento","Ferramentas de colaboração e gerenciamento de fluxos de trabalho","Ferramentas de análise e relatórios"], correct:2, explanation:"C. Correta. 'Ferramentas de colaboração e gerenciamento de fluxo de trabalho são usadas para suporte à colaboração entre equipes.' Ref. Tabela 5.1" },
+        { number:17, text: "Qual é um exemplo de como as diretrizes de monitoração podem ajudar as equipes?", options:["Ajudar a identificar quais eventos informativos devem ser encaminhados a gerentes","Ajudar a entender como otimizar o tipo e o número de eventos para monitorar redes","Ajudar a decidir quais atividades incluirão post mortems","Ajudar a identificar eventos de exceção que não exigem ação"], correct:1, explanation:"B. Correta. 'Diretrizes ajudam a entender como otimizar o tipo e o número de eventos que são monitorados.' Ref. 4.2" },
+        { number:18, text: "O que é usado para minimizar o impacto negativo de um evento?", options:["Uma correlação de evento","Um conjunto de regras","Um modelo de saúde","Um plano de ação de monitoração"], correct:3, explanation:"D. Correta. 'Para cada evento ou grupo de eventos, é definido um plano de ação para minimizar o impacto negativo do evento.' Ref. 3.2.1, Tabela 3.2" },
+        { number:19, text: "Durante autoavaliação da capacidade da prática, o que deve ser considerado evidência do nível de capacidade 3?", options:["Integração em fluxos de valor de serviço","Processos, papéis e responsabilidades acordados","Revisões de prática conduzidas regularmente","Relatórios regulares sobre desempenho"], correct:0, explanation:"A. Correta. Nível 3: 'Integração nos fluxos de valor do serviço.' Ref. Tabela 7.2" },
+        { number:20, text: "Qual deve ser a PRIMEIRA etapa para estabelecer e automatizar uma prática integrada de monitoração?", options:["Definir uma estratégia para a monitoração e o gerenciamento de evento","Usar machine learning para detectar padrões","Usar inteligência artificial para dar sentido a eventos","Garantir monitoração descentralizada entre equipes"], correct:0, explanation:"A. Correta. 'Definir uma estratégia para a monitoração e o gerenciamento de evento. Deve especificar as ferramentas usadas, papel da prática...' Ref. 5.2.1" }
+    ];
+
+    const TOTAL = questions.length;
+    let userAnswers = new Array(TOTAL).fill(null);
+    let marked = new Array(TOTAL).fill(false);
+    let currentIdx = 0;
+    let examFinished = false;
+    let timeSec = 30 * 60;
+    let timerInterval = null;
+
+    // DOM elements
+    const startScreen = document.getElementById('startScreen');
+    const examArea = document.getElementById('examArea');
+    const resultScreen = document.getElementById('resultScreen');
+    const detailedScreen = document.getElementById('detailedScreen');
+
+    const questionTextEl = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const feedbackMsg = document.getElementById('feedbackMsg');
+    const qLabel = document.getElementById('qLabel');
+    const currentQNumSpan = document.getElementById('currentQNum');
+    const totalQSpan = document.getElementById('totalQ');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const gridContainer = document.getElementById('gridQuestions');
+
+    function init() {
+        totalQSpan.innerText = TOTAL;
+        document.getElementById('startExamBtn').addEventListener('click', startExam);
+        document.getElementById('prevBtn').addEventListener('click', () => navigate(-1));
+        document.getElementById('nextBtn').addEventListener('click', () => navigate(1));
+        document.getElementById('markBtn').addEventListener('click', toggleMark);
+        document.getElementById('explanationBtn').addEventListener('click', showExplanation);
+        document.getElementById('finishBtn').addEventListener('click', finishExam);
+        document.getElementById('resetBtn').addEventListener('click', resetExam);
+        document.getElementById('reviewAnswersBtn').addEventListener('click', showDetailedReport);
+        document.getElementById('restartResultBtn').addEventListener('click', resetExam);
+        document.getElementById('fullReportBtn').addEventListener('click', downloadFullReport);
+        document.getElementById('backToResultsBtn').addEventListener('click', () => { detailedScreen.style.display = 'none'; resultScreen.style.display = 'block'; });
+        buildGrid();
+    }
+
+    function startExam() {
+        startScreen.style.display = 'none';
+        examArea.style.display = 'block';
+        resultScreen.style.display = 'none';
+        detailedScreen.style.display = 'none';
+        examFinished = false;
+        if (timerInterval) clearInterval(timerInterval);
+        timeSec = 30 * 60;
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            if (!examFinished && timeSec > 0) {
+                timeSec--;
+                updateTimerDisplay();
+                if (timeSec === 0) finishExam();
+            }
+        }, 1000);
+        loadQuestion(0);
+    }
+
+    function updateTimerDisplay() {
+        let mins = Math.floor(timeSec / 60);
+        let secs = timeSec % 60;
+        timerDisplay.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        if (timeSec < 60) timerDisplay.style.color = "#ef4444";
+    }
+
+    function loadQuestion(idx) {
+        if (examFinished) return;
+        currentIdx = idx;
+        const q = questions[idx];
+        qLabel.innerText = `QUESTÃO ${q.number}`;
+        currentQNumSpan.innerText = idx+1;
+        questionTextEl.innerText = q.text;
+        optionsContainer.innerHTML = '';
+        q.options.forEach((opt, optIdx) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            const letter = String.fromCharCode(65+optIdx);
+            div.innerHTML = `<div class="opt-letter">${letter}</div><div class="opt-text">${opt}</div>`;
+            if (userAnswers[idx] === optIdx) {
+                div.classList.add('selected');
+                if (optIdx === q.correct) div.classList.add('correct-highlight');
+                else div.classList.add('incorrect-highlight');
+                div.style.pointerEvents = 'none';
+                div.classList.add('locked-opt');
+            } else {
+                div.addEventListener('click', () => selectOption(optIdx));
+            }
+            optionsContainer.appendChild(div);
+        });
+        if (userAnswers[idx] !== null) showFeedbackForCurrent();
+        else feedbackMsg.style.display = 'none';
+        updateMarkButton();
+        updateGridHighlight();
+    }
+
+    function selectOption(optIndex) {
+        if (examFinished) return;
+        userAnswers[currentIdx] = optIndex;
+        showFeedbackForCurrent();
+        loadQuestion(currentIdx);
+        updateGridHighlight();
+    }
+
+    function showFeedbackForCurrent() {
+        const q = questions[currentIdx];
+        const ans = userAnswers[currentIdx];
+        const isCorrect = (ans === q.correct);
+        feedbackMsg.style.display = 'block';
+        feedbackMsg.className = `feedback-box ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+        feedbackMsg.innerText = isCorrect ? '✅ Correta!' : `❌ Incorreta. A resposta correta é ${String.fromCharCode(65+q.correct)}.`;
+    }
+
+    function showExplanation() {
+        if (userAnswers[currentIdx] === null) {
+            alert("Responda a questão primeiro para ver a explicação.");
+            return;
+        }
+        const q = questions[currentIdx];
+        alert(`📘 Explicação (Q${q.number}):\n${q.explanation}`);
+    }
+
+    function toggleMark() {
+        if (examFinished) return;
+        marked[currentIdx] = !marked[currentIdx];
+        updateMarkButton();
+        updateGridHighlight();
+    }
+
+    function updateMarkButton() {
+        const btn = document.getElementById('markBtn');
+        if (marked[currentIdx]) btn.innerHTML = '❌ Desmarcar';
+        else btn.innerHTML = '📌 Marcar';
+    }
+
+    function navigate(delta) {
+        const newIdx = currentIdx + delta;
+        if (newIdx >= 0 && newIdx < TOTAL) loadQuestion(newIdx);
+    }
+
+    function finishExam() {
+        if (examFinished) return;
+        examFinished = true;
+        if (timerInterval) clearInterval(timerInterval);
+        const score = userAnswers.reduce((acc, ans, idx) => (ans === questions[idx].correct ? acc+1 : acc), 0);
+        examArea.style.display = 'none';
+        resultScreen.style.display = 'block';
+        document.getElementById('scoreValue').innerHTML = `${score}/${TOTAL}`;
+        let percent = (score/TOTAL)*100;
+        let msg = percent >= 70 ? "Aprovado! Bom domínio da prática." : "Reveja os conceitos e tente novamente.";
+        if (percent >= 85) msg = "Excelente! Desempenho excepcional.";
+        document.getElementById('resultMessage').innerHTML = `${percent.toFixed(1)}% de acertos. ${msg}`;
+    }
+
+    function buildGrid() {
+        gridContainer.innerHTML = '';
+        for(let i=0; i<TOTAL; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('grid-item');
+            cell.innerText = i+1;
+            cell.addEventListener('click', () => { if(!examFinished) loadQuestion(i); });
+            gridContainer.appendChild(cell);
+        }
+        updateGridHighlight();
+    }
+
+    function updateGridHighlight() {
+        const cells = gridContainer.querySelectorAll('.grid-item');
+        for(let i=0; i<TOTAL; i++) {
+            cells[i].classList.remove('current','answered','marked');
+            if (i === currentIdx) cells[i].classList.add('current');
+            if (userAnswers[i] !== null) cells[i].classList.add('answered');
+            if (marked[i]) cells[i].classList.add('marked');
+        }
+    }
+
+    function showDetailedReport() {
+        resultScreen.style.display = 'none';
+        detailedScreen.style.display = 'block';
+        const container = document.getElementById('answersList');
+        container.innerHTML = '';
+        for(let i=0; i<TOTAL; i++) {
+            const q = questions[i];
+            const userOpt = userAnswers[i];
+            const isCorrect = (userOpt === q.correct);
+            const userLetter = userOpt !== null ? String.fromCharCode(65+userOpt) : '—';
+            const correctLetter = String.fromCharCode(65+q.correct);
+            const div = document.createElement('div');
+            div.style.background = '#f9f9fc';
+            div.style.marginBottom = '18px';
+            div.style.padding = '16px';
+            div.style.borderRadius = '20px';
+            div.style.borderLeft = `6px solid ${isCorrect ? '#2a9d8f' : '#ef4444'}`;
+            div.innerHTML = `<strong>Q${q.number}:</strong> ${q.text}<br>
+                            <span style="color:#2563eb;">Sua resposta: ${userLetter} ${userOpt !== null ? q.options[userOpt] : 'Não respondida'}</span><br>
+                            <span style="color:#10b981;">Correta: ${correctLetter} - ${q.options[q.correct]}</span><br>
+                            <details><summary>📖 Justificativa oficial</summary><p style="margin-top:8px;">${q.explanation}</p></details>`;
+            container.appendChild(div);
+        }
+    }
+
+    function downloadFullReport() {
+        let report = "RELATÓRIO SIMULADO 2 – MONITORAÇÃO E EVENTOS ITIL 4\n\n";
+        let score = userAnswers.reduce((acc,ans,i) => ans === questions[i].correct ? acc+1 : acc,0);
+        report += `Acertos: ${score}/${TOTAL}\n\n`;
+        for(let i=0; i<TOTAL; i++) {
+            let q = questions[i];
+            let user = userAnswers[i];
+            report += `${i+1}. ${q.text}\n`;
+            report += `   Sua resposta: ${user !== null ? String.fromCharCode(65+user)+" - "+q.options[user] : "NÃO RESPONDIDA"}\n`;
+            report += `   Correta: ${String.fromCharCode(65+q.correct)} - ${q.options[q.correct]}\n`;
+            report += `   Justificativa: ${q.explanation}\n\n`;
+        }
+        const blob = new Blob(["\uFEFF" + report], {type: "text/plain;charset=utf-8"});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = "simulado2_itil_eventos.txt";
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
+    function resetExam() {
+        if (timerInterval) clearInterval(timerInterval);
+        userAnswers = new Array(TOTAL).fill(null);
+        marked = new Array(TOTAL).fill(false);
+        currentIdx = 0;
+        examFinished = false;
+        timeSec = 30 * 60;
+        startScreen.style.display = 'block';
+        examArea.style.display = 'none';
+        resultScreen.style.display = 'none';
+        detailedScreen.style.display = 'none';
+        updateTimerDisplay();
+    }
+
+    init();
+</script>
+</body>
+</html>
