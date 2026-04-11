@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Simulado ITIL Foundation Bridge - Sample Paper 1 (20 questões)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b2b3b 0%, #1a4a6f 100%);
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+            overflow: hidden;
+            margin: 10px;
+        }
+
+        .header {
+            background: #0f2c3b;
+            color: white;
+            padding: 18px 20px;
+            text-align: center;
+            border-bottom: 3px solid #00a8cc;
+        }
+        .header h1 {
+            font-size: 1.6em;
+            font-weight: 600;
+        }
+        .header .subtitle {
+            font-size: 0.85em;
+            opacity: 0.85;
+            margin-top: 5px;
+        }
+        .badge {
+            background: #00a8cc;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-top: 6px;
+        }
+
+        .exam-info {
+            background: #f4f7fc;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #dce5ec;
+        }
+        .timer {
+            background: #1e2f3a;
+            color: #f0f0f0;
+            font-family: monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 6px 16px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+        .progress {
+            font-weight: 600;
+            background: white;
+            padding: 6px 15px;
+            border-radius: 30px;
+            color: #0f2c3b;
+        }
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            min-height: 520px;
+        }
+        .question-section {
+            padding: 24px 22px;
+            background: #ffffff;
+        }
+        .question-number {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #0077b6;
+            margin-bottom: 12px;
+        }
+        .question-text {
+            font-size: 1.08rem;
+            line-height: 1.45;
+            background: #f9fbfd;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border-left: 5px solid #00a8cc;
+            margin-bottom: 20px;
+            font-weight: 500;
+            color: #1e2f3a;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .option {
+            padding: 14px 16px;
+            border: 1px solid #cfdfed;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .option:hover:not(.locked) {
+            border-color: #00a8cc;
+            background: #eef7fc;
+            transform: translateX(3px);
+        }
+        .option.selected {
+            border-color: #0077b6;
+            background: #e3f2f9;
+        }
+        .option.correct {
+            border-color: #2b9348;
+            background: #e6f4ea;
+        }
+        .option.incorrect {
+            border-color: #d62828;
+            background: #ffeaea;
+        }
+        .option.locked {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+        .opt-letter {
+            font-weight: 800;
+            background: #e2e8f0;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            flex-shrink: 0;
+            color: #1f5068;
+        }
+        .selected .opt-letter {
+            background: #0077b6;
+            color: white;
+        }
+        .correct .opt-letter {
+            background: #2b9348;
+            color: white;
+        }
+        .incorrect .opt-letter {
+            background: #d62828;
+            color: white;
+        }
+        .feedback-container {
+            margin: 10px 0 15px;
+            padding: 12px;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        .feedback-correct {
+            background: #e1f7e9;
+            color: #1e6f3f;
+            border: 1px solid #2b9348;
+        }
+        .feedback-incorrect {
+            background: #ffe1e1;
+            color: #b91c1c;
+            border: 1px solid #d62828;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 9px 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            background: white;
+            border: 1px solid #cbdbe2;
+            flex: 1;
+            text-align: center;
+        }
+        .btn-primary {
+            background: #0077b6;
+            color: white;
+            border: none;
+        }
+        .btn-success {
+            background: #2b9348;
+            color: white;
+        }
+        .btn-warning {
+            background: #e9c46a;
+            color: #2d2f36;
+        }
+        .btn-info {
+            background: #457b9d;
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-danger {
+            background: #bc4742;
+            color: white;
+        }
+        .navigation-section {
+            background: #f4f8fe;
+            padding: 20px 15px;
+            border-left: 1px solid #d4e0ec;
+        }
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .grid-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #cbdbe2;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .grid-item.current {
+            background: #0077b6;
+            color: white;
+            border: none;
+            transform: scale(1.02);
+        }
+        .grid-item.answered {
+            background: #2b9348;
+            color: white;
+            border: none;
+        }
+        .grid-item.marked {
+            background: #e9c46a;
+            color: #2d2f36;
+        }
+        .start-screen, .results-screen, .answers-screen {
+            padding: 35px 25px;
+            text-align: center;
+        }
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 15px 0;
+        }
+        @media (max-width: 750px) {
+            .content { grid-template-columns: 1fr; }
+            .navigation-section { border-left: none; border-top: 1px solid #ddd; }
+            .question-text { font-size: 1rem; }
+        }
+        @media (max-width: 480px) {
+            .btn-row { gap: 8px; }
+            .btn { font-size: 0.7rem; padding: 8px 6px; }
+        }
+        .explanation-btn {
+            background: none;
+            border: none;
+            color: #0077b6;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .hidden-explanation {
+            display: none;
+            background: #f1f9fe;
+            padding: 12px;
+            border-radius: 16px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            text-align: left;
+            line-height: 1.4;
+        }
+        .show-explanation {
+            display: block;
+        }
+        
+        .explanation-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 2px solid #00a8cc;
+        }
+        .explanation-modal h3 {
+            color: #0077b6;
+            margin-bottom: 15px;
+        }
+        .explanation-modal .close-modal {
+            background: #0077b6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div id="startScreen" class="start-screen">
+        <div class="header" style="border-radius: 20px 20px 0 0; margin: -35px -25px 20px -25px; padding: 20px;">
+            <h1>📘 ITIL® Foundation Bridge</h1>
+            <div class="subtitle">Sample Paper 1 - 20 questões oficiais</div>
+            <div class="badge">⏱️ 30 minutos | 🌟 Versão 5</div>
+        </div>
+        <h2 style="color:#0f2c3b;">Simulado ITIL Foundation Bridge</h2>
+        <p style="margin: 15px 0; color: #2c5a6e;">Teste seus conhecimentos com questões oficiais traduzidas. <br>Após selecionar uma resposta, você poderá ver a explicação antes de prosseguir.</p>
+        <p><strong>⚠️ Atenção:</strong> cada questão só pode ser respondida uma vez. Mínimo 13 acertos para aprovação.</p>
+        <button id="startExamBtn" style="margin-top: 25px; padding: 12px 30px; font-size: 1.1rem;" class="btn btn-primary">🚀 Iniciar Simulado</button>
+    </div>
+
+    <div id="examArea" style="display: none;">
+        <div class="header" style="padding: 14px 20px;">
+            <h1>ITIL® Foundation Bridge</h1>
+            <div class="subtitle">Simulado Oficial - 20 perguntas</div>
+        </div>
+        <div class="exam-info">
+            <div class="progress">Questão <span id="currentQNumber">1</span> / <span id="totalQ">20</span></div>
+            <div class="timer" id="timer">30:00</div>
+        </div>
+        <div class="content">
+            <div class="question-section">
+                <div class="question-number" id="qNumLabel">Questão 1</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="feedback-container" id="feedbackMsg"></div>
+                <div class="controls">
+                    <div class="btn-row">
+                        <button class="btn btn-secondary" id="prevBtn">◀ Anterior</button>
+                        <button class="btn btn-warning" id="markBtn">📌 Marcar revisão</button>
+                        <button class="btn btn-info" id="explanationBtn">💡 Ver Explicação</button>
+                        <button class="btn btn-primary" id="nextBtn">Próxima ▶</button>
+                    </div>
+                    <div class="btn-row" id="finishRow" style="display: none;">
+                        <button class="btn btn-success" id="finishBtn">✅ Finalizar Simulado</button>
+                    </div>
+                </div>
+            </div>
+            <div class="navigation-section">
+                <div class="question-grid" id="gridQuestions"></div>
+                <button class="btn btn-danger" id="resetBtn" style="width:100%;">🔄 Reiniciar exame</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultsScreen" class="results-screen" style="display: none;">
+        <h2>🏁 Simulado Finalizado</h2>
+        <div class="score-display" id="scoreFinal">0/20</div>
+        <div id="scoreMessage" style="margin-bottom: 20px;"></div>
+        <div class="btn-row" style="justify-content: center; gap: 12px;">
+            <button id="reviewAnswersBtn" class="btn btn-info">📋 Revisar respostas</button>
+            <button id="restartExamBtn" class="btn btn-warning">🔄 Novo simulado</button>
+            <button id="fullReportBtn" class="btn btn-success">📄 Relatório completo</button>
+        </div>
+    </div>
+
+    <div id="answersScreen" class="answers-screen" style="display: none; max-height: 70vh; overflow-y: auto;">
+        <h2 style="margin-bottom: 15px;">📋 Relatório detalhado</h2>
+        <div id="answersList"></div>
+        <button id="backToResultsBtn" class="btn btn-secondary" style="margin-top: 20px;">⬅️ Voltar aos resultados</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { text: "Qual conceito é ilustrado quando um funcionário recebe permissão para usar a nova plataforma de compartilhamento de arquivos da empresa no uso diário?", options: ["Garantia (Warranty)", "Bens (Goods)", "Utilidade (Utility)", "Acesso a recursos (Access to resources)"], correct: 3, rationale: "Acesso a recursos: o consumidor do serviço obtém acesso aos recursos do provedor. Ref 3.1.2" },
+        { text: "Um técnico de suporte de TI auxiliando um usuário a configurar seu laptop é um exemplo de qual conceito?", options: ["Transferência de bens", "Ações de serviço (Service actions)", "Sustentabilidade", "Acesso a recursos"], correct: 1, rationale: "Ações de serviço: realizadas pelo provedor de serviço ou em conjunto. Exemplos incluem treinamento, consultoria e ações de suporte. Ref 3.1.2" },
+        { text: "O que influencia se um serviço é percebido como valioso por um consumidor?", options: ["A capacidade do provedor de minimizar custos operacionais", "O número de provedores que entregam o serviço", "A extensão em que os efeitos positivos superam os negativos", "O montante de dinheiro investido pelo provedor"], correct: 2, rationale: "Serviços são percebidos como valiosos quando os efeitos positivos superam os negativos. Ref 3.1.1" },
+        { text: "Um provedor de serviços compromete-se a usar componentes recicláveis, reduzir emissões e manter cadeias de suprimento transparentes. Qual conceito essa prática representa?", options: ["Utilidade", "Garantia", "Experiência do usuário", "Sustentabilidade"], correct: 3, rationale: "Requisitos de sustentabilidade incluem materiais responsáveis, baixo carbono e cadeias transparentes. Ref 3.2.4" },
+        { text: "Qual dimensão do gerenciamento de produtos e serviços é diretamente influenciada pelo compromisso da liderança com segurança psicológica e aprendizado contínuo?", options: ["Parceiros e fornecedores", "Fluxos de valor e processos", "Informação e tecnologia", "Organizações e pessoas"], correct: 3, rationale: "Dimensão 'Organizações e pessoas' foca em cultura de confiança, segurança e valores compartilhados. Ref 2.2.1" },
+        { text: "Qual das dimensões do gerenciamento de produto e serviço trata de fluxos de trabalho organizacionais e interorganizacionais?", options: ["Parceiros e fornecedores", "Informação e tecnologia", "Organizações e pessoas", "Fluxos de valor e processos"], correct: 3, rationale: "A dimensão fluxos de valor e processos aborda atividades organizacionais e como são organizadas para gerar valor. Ref 2.3" },
+        { text: "Por que as organizações devem considerar a interação dos Princípios Orientadores do ITIL?", options: ["Porque os princípios são interdependentes e se complementam", "Porque um princípio é sempre superior aos demais", "Porque os princípios devem ser aplicados em ordem rigorosa", "Porque um único princípio geralmente é suficiente"], correct: 0, rationale: "Os princípios interagem e dependem entre si; devem ser considerados em conjunto. Ref 5.2.8" },
+        { text: "Qual é o papel de um órgão de governança em uma organização?", options: ["É responsável pelo desempenho e conformidade no mais alto nível", "É responsável pelas operações do dia a dia", "Gerencia diretamente os detalhes técnicos dos produtos digitais", "Foca exclusivamente em relatórios financeiros"], correct: 0, rationale: "Órgão de governança é responsável pelo desempenho e conformidade da organização. Ref 5.3.1" },
+        { text: "Qual das alternativas NÃO é uma métrica de sucesso da atividade 'descobrir' (discover)?", options: ["Ajuste estratégico das ofertas de produtos e serviços", "Relevância de mercado das ofertas", "Desempenho do serviço em relação às metas de SLA", "Satisfação das partes interessadas"], correct: 2, rationale: "Desempenho do serviço conforme SLA é métrica da atividade 'deliver'. Descobrir mede ajuste estratégico, relevância de mercado e satisfação. Ref 4.2.2/4.8.2" },
+        { text: "Qual das alternativas descreve uma prática de gerenciamento (management practice)?", options: ["Uma série de etapas para criar e entregar produtos", "Um conjunto de recursos e capacidades organizacionais projetados para realizar trabalho ou atingir um objetivo", "Uma representação visual de como a organização cocria valor", "Um conjunto de atividades interconectadas para criar valor"], correct: 1, rationale: "Prática de gerenciamento: conjunto de recursos e capacidades para executar trabalho ou atingir objetivos. Ref 5.5" },
+        { text: "Qual das opções NÃO é uma etapa do mapeamento do fluxo de valor (value stream mapping)?", options: ["Identificação do fluxo de valor", "Mapeamento do fluxo de valor 'as-is'", "Mapeamento de um fluxo de valor 'to-be'", "Gerenciamento do fluxo de valor"], correct: 3, rationale: "Etapas: identificação, mapeamento as-is, análise, mapeamento to-be, planejamento e implementação. Gerenciamento não é etapa do mapeamento. Ref 6.3" },
+        { text: "O que é um produto digital?", options: ["Descrição formal de um ou mais serviços", "Acesso aos recursos do provedor sob termos acordados", "Combinação de recursos baseados em tecnologia digital para oferecer valor aos consumidores", "Ações realizadas pelo provedor ou consumidor"], correct: 2, rationale: "Produtos digitais combinam recursos de tecnologia digital para oferecer valor. Ref 4.5.1" },
+        { text: "Qual das alternativas NÃO é uma das atividades de gerenciamento do ciclo de vida de produto e serviço digital?", options: ["Construir (Build)", "Desenhar (Design)", "Descobrir (Discover)", "Obter (Obtain)"], correct: 3, rationale: "Atividades: descobrir, desenhar, adquirir, construir, transicionar, operar, entregar, apoiar. 'Obter' não é uma atividade padrão. Ref 4.1" },
+        { text: "Qual é o PRINCIPAL propósito da atividade 'descobrir' (discover)?", options: ["Desenvolver e testar produtos digitais", "Garantir recursos de forma eficiente", "Alinhar as capacidades do produto com as necessidades do consumidor e a estratégia", "Monitorar e manter produtos digitais"], correct: 2, rationale: "Descobrir garante alinhamento contínuo dos roteiros de produtos com as necessidades e estratégia. Ref 4.2.1" },
+        { text: "Qual atividade do ciclo de vida é focada em criar protótipos e especificações?", options: ["Desenhar (Design)", "Entregar (Deliver)", "Apoiar (Support)", "Transicionar (Transition)"], correct: 0, rationale: "Design cria protótipos, especificações de funcionalidade, UX e estrutura operacional. Ref 4.3.1" },
+        { text: "Qual é o propósito PRIMÁRIO da atividade 'adquirir' (acquire)?", options: ["Resolver incidentes e cumprir procedimentos de recuperação", "Garantir e alocar recursos necessários de forma eficiente", "Fornecer serviços e gerenciar onboarding de usuários", "Criar protótipos funcionais para testes"], correct: 1, rationale: "Adquirir tem o propósito de garantir e alocar recursos eficientemente, assegurando sustentabilidade e escalabilidade. Ref 4.4.1" },
+        { text: "Qual atividade do ciclo de vida foca em minimizar o impacto de incidentes e desastres quando ocorrem?", options: ["Transicionar", "Operar", "Apoiar (Support)", "Desenhar"], correct: 2, rationale: "Support identifica e resolve incidentes, cumpre procedimentos de recuperação de desastres. Ref 4.9.1" },
+        { text: "Como o Modelo de Capacidade de IA do ITIL deve ser utilizado pelas organizações?", options: ["Para benchmark de ferramentas de IA", "Para avaliar prontidão e identificar áreas de melhoria no uso de IA", "Para automatizar decisões de governança", "Para priorizar investimentos com base no retorno financeiro"], correct: 1, rationale: "O modelo fornece classificação funcional de soluções de IA, ajuda a entender aplicações, melhorar governança e capacidade. Ref 2.4.1.1" },
+        { text: "O que MELHOR descreve um Acordo de Nível de Serviço (SLA)?", options: ["Contrato legal entre dois fornecedores sobre penalidades financeiras", "Acordo documentado entre provedor e cliente que identifica serviços e níveis acordados", "Discussão informal entre usuários e provedores sobre expectativas", "Documento de diretriz para equipes internas sem envolvimento do cliente"], correct: 1, rationale: "SLA é um acordo documentado entre provedor e cliente que identifica serviços e níveis de serviço. Ref 3.2.5" },
+        { text: "Qual é o principal propósito do mapeamento do fluxo de valor (value stream mapping) em uma organização?", options: ["Automatizar o monitoramento de serviços", "Identificar e priorizar oportunidades de melhoria", "Melhorar e apoiar práticas de gerenciamento", "Controlar diretamente as partes interessadas externas"], correct: 1, rationale: "O mapeamento do fluxo de valor permite identificar, mapear, analisar fluxos de valor e priorizar oportunidades de melhoria. Ref 6.4" }
+    ];
+
+    let currentIndex = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let marked = new Array(questions.length).fill(false);
+    let timeLeft = 30 * 60;
+    let timerInterval = null;
+    let examFinished = false;
+
+    const startScreen = document.getElementById('startScreen');
+    const examArea = document.getElementById('examArea');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const answersScreen = document.getElementById('answersScreen');
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const qNumLabel = document.getElementById('qNumLabel');
+    const currentQSpan = document.getElementById('currentQNumber');
+    const totalQSpan = document.getElementById('totalQ');
+    const timerEl = document.getElementById('timer');
+    const gridDiv = document.getElementById('gridQuestions');
+    const feedbackMsg = document.getElementById('feedbackMsg');
+    const finishRow = document.getElementById('finishRow');
+
+    function init() {
+        totalQSpan.innerText = questions.length;
+        document.getElementById('startExamBtn').addEventListener('click', startExam);
+        document.getElementById('prevBtn').addEventListener('click', () => navigate(-1));
+        document.getElementById('nextBtn').addEventListener('click', () => navigate(1));
+        document.getElementById('markBtn').addEventListener('click', toggleMark);
+        document.getElementById('explanationBtn').addEventListener('click', showExplanationModal);
+        document.getElementById('finishBtn').addEventListener('click', finishExam);
+        document.getElementById('resetBtn').addEventListener('click', resetExam);
+        document.getElementById('reviewAnswersBtn').addEventListener('click', showDetailedReview);
+        document.getElementById('restartExamBtn').addEventListener('click', resetExam);
+        document.getElementById('fullReportBtn').addEventListener('click', downloadFullReport);
+        document.getElementById('backToResultsBtn').addEventListener('click', () => {
+            answersScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+        });
+        buildGrid();
+    }
+
+    function startExam() {
+        startScreen.style.display = 'none';
+        examArea.style.display = 'block';
+        loadQuestion(0);
+        startTimer();
+    }
+
+    function buildGrid() {
+        gridDiv.innerHTML = '';
+        for (let i = 0; i < questions.length; i++) {
+            const btn = document.createElement('div');
+            btn.classList.add('grid-item');
+            btn.innerText = i+1;
+            btn.addEventListener('click', () => loadQuestion(i));
+            gridDiv.appendChild(btn);
+        }
+        updateGridStatus();
+    }
+
+    function updateGridStatus() {
+        const items = gridDiv.children;
+        for (let i = 0; i < items.length; i++) {
+            items[i].classList.remove('current', 'answered', 'marked');
+            if (i === currentIndex) items[i].classList.add('current');
+            if (userAnswers[i] !== null) items[i].classList.add('answered');
+            if (marked[i]) items[i].classList.add('marked');
+        }
+    }
+
+    function loadQuestion(idx) {
+        if (examFinished) return;
+        currentIndex = idx;
+        const q = questions[idx];
+        qNumLabel.innerText = `Questão ${idx+1}`;
+        currentQSpan.innerText = idx+1;
+        questionText.innerText = q.text;
+        optionsContainer.innerHTML = '';
+        q.options.forEach((opt, optIdx) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            const letterSpan = document.createElement('span');
+            letterSpan.className = 'opt-letter';
+            letterSpan.innerText = String.fromCharCode(65+optIdx);
+            const textSpan = document.createElement('span');
+            textSpan.innerText = opt;
+            div.appendChild(letterSpan);
+            div.appendChild(textSpan);
+            if (userAnswers[idx] !== null) {
+                div.classList.add('locked');
+                if (userAnswers[idx] === optIdx) div.classList.add('selected');
+                if (optIdx === q.correct) div.classList.add('correct');
+                if (userAnswers[idx] === optIdx && userAnswers[idx] !== q.correct) div.classList.add('incorrect');
+            } else {
+                div.addEventListener('click', () => selectOption(optIdx));
+            }
+            optionsContainer.appendChild(div);
+        });
+        if (userAnswers[idx] !== null) showFeedback(idx);
+        else feedbackMsg.style.display = 'none';
+        updateMarkButtonUI();
+        updateNavButtons();
+        updateFinishRowVisibility();
+        updateGridStatus();
+    }
+
+    function selectOption(optIdx) {
+        if (examFinished) return;
+        if (userAnswers[currentIndex] !== null) return;
+        userAnswers[currentIndex] = optIdx;
+        loadQuestion(currentIndex);
+        // NÃO avança automaticamente - usuário clica em "Próxima" ou "Explicação"
+    }
+
+    function showFeedback(idx) {
+        const q = questions[idx];
+        const userOpt = userAnswers[idx];
+        if (userOpt === null) return;
+        const isCorrect = (userOpt === q.correct);
+        feedbackMsg.style.display = 'block';
+        feedbackMsg.className = `feedback-container ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+        feedbackMsg.innerText = isCorrect ? '✅ RESPOSTA CORRETA' : '❌ RESPOSTA INCORRETA';
+    }
+
+    function showExplanationModal() {
+        const ans = userAnswers[currentIndex];
+        if (ans === null) {
+            alert("⚠️ Responda a questão primeiro para ver a explicação.");
+            return;
+        }
+        const q = questions[currentIndex];
+        const userLetter = String.fromCharCode(65+ans);
+        const correctLetter = String.fromCharCode(65+q.correct);
+        const isCorrect = (ans === q.correct);
+        
+        // Criar modal
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        const modal = document.createElement('div');
+        modal.className = 'explanation-modal';
+        modal.innerHTML = `
+            <h3>📘 Explicação - Questão ${currentIndex+1}</h3>
+            <p><strong>Sua resposta:</strong> ${userLetter} - ${q.options[ans]}</p>
+            <p><strong>Resposta correta:</strong> ${correctLetter} - ${q.options[q.correct]}</p>
+            <p><strong>Status:</strong> ${isCorrect ? '✅ Correta' : '❌ Incorreta'}</p>
+            <hr>
+            <p><strong>📌 RATIONALE:</strong><br>${q.rationale}</p>
+            <button class="close-modal">Fechar</button>
+        `;
+        document.body.appendChild(overlay);
+        document.body.appendChild(modal);
+        
+        const closeModal = () => {
+            overlay.remove();
+            modal.remove();
+        };
+        modal.querySelector('.close-modal').addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+    }
+
+    function toggleMark() {
+        if (examFinished) return;
+        marked[currentIndex] = !marked[currentIndex];
+        updateMarkButtonUI();
+        updateGridStatus();
+    }
+
+    function updateMarkButtonUI() {
+        const markBtn = document.getElementById('markBtn');
+        if (marked[currentIndex]) {
+            markBtn.innerHTML = '🔖 Desmarcar';
+        } else {
+            markBtn.innerHTML = '📌 Marcar revisão';
+        }
+    }
+
+    function navigate(delta) {
+        const newIdx = currentIndex + delta;
+        if (newIdx >= 0 && newIdx < questions.length) loadQuestion(newIdx);
+    }
+
+    function updateNavButtons() {
+        document.getElementById('prevBtn').disabled = (currentIndex === 0);
+        document.getElementById('nextBtn').disabled = (currentIndex === questions.length-1);
+    }
+
+    function updateFinishRowVisibility() {
+        finishRow.style.display = (currentIndex === questions.length-1) ? 'flex' : 'none';
+    }
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (examFinished) return;
+            if (timeLeft <= 1) finishExam();
+            else { timeLeft--; updateTimerDisplay(); }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        timerEl.innerText = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        if (timeLeft <= 60) timerEl.style.backgroundColor = '#8b2c2d';
+    }
+
+    function finishExam() {
+        if (examFinished) return;
+        examFinished = true;
+        if (timerInterval) clearInterval(timerInterval);
+        const totalCorrect = userAnswers.reduce((acc, ans, idx) => (ans === questions[idx].correct) ? acc+1 : acc, 0);
+        showFinalResults(totalCorrect);
+    }
+
+    function showFinalResults(score) {
+        examArea.style.display = 'none';
+        resultsScreen.style.display = 'block';
+        const percent = (score/questions.length)*100;
+        document.getElementById('scoreFinal').innerHTML = `${score}/${questions.length}`;
+        let msg = `${percent.toFixed(1)}% de acertos. `;
+        if (score >= 13) msg += "🎉 APROVADO! Você atingiu a pontuação mínima (13/20). Parabéns!";
+        else msg += "❌ Não aprovado. Estude mais e tente novamente. Mínimo necessário: 13 acertos.";
+        document.getElementById('scoreMessage').innerHTML = msg;
+    }
+
+    function showDetailedReview() {
+        resultsScreen.style.display = 'none';
+        answersScreen.style.display = 'block';
+        const container = document.getElementById('answersList');
+        container.innerHTML = '';
+        for (let i=0; i<questions.length; i++) {
+            const q = questions[i];
+            const userOpt = userAnswers[i];
+            const isAnswered = userOpt !== null;
+            const isCorrect = (userOpt === q.correct);
+            const userLetter = isAnswered ? String.fromCharCode(65+userOpt) : '—';
+            const correctLetter = String.fromCharCode(65+q.correct);
+            const statusIcon = (isAnswered && isCorrect) ? '✅' : (isAnswered ? '❌' : '⚠️ Não respondida');
+            const div = document.createElement('div');
+            div.style.background = '#f9fafb';
+            div.style.margin = '12px 0';
+            div.style.padding = '12px';
+            div.style.borderRadius = '16px';
+            div.style.borderLeft = `5px solid ${isCorrect ? '#2b9348' : '#d62828'}`;
+            div.innerHTML = `
+                <strong>Questão ${i+1}:</strong> ${q.text}<br>
+                <span style="font-size:0.85rem">📌 Sua resposta: ${userLetter} ${isAnswered ? q.options[userOpt] : '—'}</span><br>
+                <span style="color:#2b6e3b;">✅ Correta: ${correctLetter} - ${q.options[q.correct]}</span><br>
+                <span>${statusIcon} ${isAnswered ? (isCorrect ? 'Correta' : 'Incorreta') : 'Não respondida'}</span>
+                <button class="explanation-btn" data-idx="${i}" style="display:block; margin-top:8px;">💡 Ver explicação oficial</button>
+                <div id="explainDetail-${i}" class="hidden-explanation">📖 ${q.rationale}</div>
+            `;
+            container.appendChild(div);
+        }
+        document.querySelectorAll('.explanation-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = btn.getAttribute('data-idx');
+                const detailDiv = document.getElementById(`explainDetail-${idx}`);
+                if(detailDiv) detailDiv.classList.toggle('show-explanation');
+            });
+        });
+    }
+
+    function downloadFullReport() {
+        let report = "RELATÓRIO COMPLETO - ITIL FOUNDATION BRIDGE\n";
+        report += "=====================================\n\n";
+        let correctCount = 0;
+        for (let i=0; i<questions.length; i++) {
+            const q = questions[i];
+            const user = userAnswers[i];
+            const isCor = (user === q.correct);
+            if(isCor) correctCount++;
+            report += `Questão ${i+1}: ${q.text}\n`;
+            report += `Sua resposta: ${user !== null ? String.fromCharCode(65+user)+" - "+q.options[user] : "Não respondida"}\n`;
+            report += `Resposta correta: ${String.fromCharCode(65+q.correct)} - ${q.options[q.correct]}\n`;
+            report += `Status: ${isCor ? "CORRETO" : "ERRADO"}\n`;
+            report += `Explicação: ${q.rationale}\n\n`;
+        }
+        report += `\nRESULTADO FINAL: ${correctCount}/${questions.length}\n`;
+        const blob = new Blob(["\uFEFF" + report], {type: "text/plain;charset=utf-8"});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `relatorio_itil_bridge_${new Date().toISOString().slice(0,19)}.txt`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
+    function resetExam() {
+        if (confirm("⚠️ Reiniciar apagará todas as respostas e o tempo. Deseja continuar?")) {
+            if (timerInterval) clearInterval(timerInterval);
+            userAnswers.fill(null);
+            marked.fill(false);
+            currentIndex = 0;
+            timeLeft = 30*60;
+            examFinished = false;
+            updateTimerDisplay();
+            startScreen.style.display = 'block';
+            examArea.style.display = 'none';
+            resultsScreen.style.display = 'none';
+            answersScreen.style.display = 'none';
+            timerInterval = null;
+        }
+    }
+
+    init();
+</script>
+</body>
+</html>
