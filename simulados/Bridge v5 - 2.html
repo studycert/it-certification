@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Simulado ITIL 5 Bridge Foundation - 60 Questões | PMG Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b2b3d 0%, #1a4a6f 100%);
+            min-height: 100vh;
+            padding: 20px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .header {
+            background: #0f2c3b;
+            color: white;
+            padding: 20px 24px;
+            text-align: center;
+            border-bottom: 3px solid #2a9d8f;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .header .sub {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+
+        .badge {
+            background: #2a9d8f;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .academy-note {
+            font-size: 0.7rem;
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-top: 6px;
+            color: #1e3a5f;
+        }
+
+        .exam-info {
+            background: #f1f5f9;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress {
+            font-weight: 600;
+            color: #0f2c3b;
+            background: white;
+            padding: 5px 14px;
+            border-radius: 30px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .timer {
+            font-family: monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: #0f2c3b;
+            color: #facc15;
+            padding: 4px 16px;
+            border-radius: 60px;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 0;
+            background: white;
+        }
+
+        .question-section {
+            padding: 28px 24px;
+            background: white;
+        }
+
+        .question-number {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #2a9d8f;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.45;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 20px;
+            border-left: 5px solid #2a9d8f;
+            margin-bottom: 28px;
+            font-weight: 500;
+            color: #0f2c3b;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .option {
+            padding: 14px 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: white;
+        }
+
+        .option:hover:not(.locked-option) {
+            border-color: #2a9d8f;
+            background: #f0fdf9;
+            transform: translateX(3px);
+        }
+
+        .option-letter {
+            font-weight: 800;
+            background: #eef2ff;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: #1e3a5f;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .option.selected {
+            border-color: #2a9d8f;
+            background: #e6f7f3;
+        }
+
+        .option.correct-highlight {
+            border-color: #10b981;
+            background: #e0f9ef;
+        }
+
+        .option.incorrect-highlight {
+            border-color: #ef4444;
+            background: #fee9e6;
+        }
+
+        .locked-option {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .feedback-box {
+            margin: 20px 0;
+            padding: 18px;
+            border-radius: 18px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-correct {
+            background: linear-gradient(135deg, #dff9e6 0%, #c8f0dc 100%);
+            border-left: 5px solid #10b981;
+        }
+
+        .feedback-incorrect {
+            background: linear-gradient(135deg, #ffe6e5 0%, #ffd6d4 100%);
+            border-left: 5px solid #ef4444;
+        }
+
+        .explanation-title {
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #1e293b;
+        }
+
+        .explanation-full {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #1e293b;
+        }
+
+        .reference-note {
+            margin-top: 12px;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.1s;
+            background: #eef2ff;
+            color: #1e293b;
+        }
+
+        .btn-primary {
+            background: #1e5a7a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0f3b52;
+        }
+
+        .btn-warning {
+            background: #facc15;
+            color: #1e293b;
+        }
+
+        .btn-success {
+            background: #2a9d8f;
+            color: white;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #cbd5e1;
+        }
+
+        .navigation-section {
+            background: #fafcff;
+            border-left: 1px solid #e2edf2;
+            padding: 24px 16px;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            background: white;
+            border: 1px solid #cbd5e6;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.1s;
+            font-size: 0.9rem;
+        }
+
+        .grid-item.current {
+            background: #1e5a7a;
+            color: white;
+            border-color: #1e5a7a;
+        }
+
+        .grid-item.answered {
+            background: #2a9d8f;
+            color: white;
+            border-color: #2a9d8f;
+        }
+
+        .grid-item.marked {
+            background: #facc15;
+            color: #1e293b;
+            border-color: #eab308;
+        }
+
+        .results-screen, .answers-screen {
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .score-circle {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 780px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            .navigation-section {
+                border-left: none;
+                border-top: 1px solid #e2edf2;
+            }
+            .question-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+            .question-text {
+                font-size: 1rem;
+                padding: 16px;
+            }
+            .option-text {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="header">
+        <h1>🎓 ITIL® 5 Bridge Foundation</h1>
+        <div class="sub">PMG Academy • Preparatório para Certificação</div>
+        <div class="badge">Simulado completo • 60 questões</div>
+        <div class="academy-note">Baseado no syllabus oficial | ✅ Resposta correta em verde ao finalizar</div>
+    </div>
+
+    <!-- TELA INICIAL -->
+    <div id="startScreen">
+        <div style="padding: 40px 28px; text-align: center;">
+            <h2 style="color: #0f2c3b; margin-bottom: 16px;">🧠 Simulado ITIL 5 Bridge - 60 questões</h2>
+            <p style="max-width: 550px; margin: 0 auto 20px; color: #334155;">Questões oficiais mescladas de 3 simulados completos. Após responder, a alternativa fica bloqueada e você confere uma explicação detalhada da resposta correta. <strong>A opção correta é destacada em verde</strong> após a resposta. Prepare-se para a certificação!</p>
+            <button class="btn btn-primary" id="startExamBtn" style="padding: 12px 32px; font-size: 1rem;">▶️ Iniciar simulado</button>
+        </div>
+    </div>
+
+    <!-- ÁREA DO EXAME -->
+    <div id="examArea" style="display: none;">
+        <div class="exam-info">
+            <div class="progress">Questão <span id="currentQNum">1</span>/<span id="totalQ">60</span></div>
+            <div class="timer" id="timerDisplay">90:00</div>
+        </div>
+        <div class="content">
+            <div class="question-section">
+                <div class="question-number" id="qNumberLabel">QUESTÃO 1</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="feedback-box" id="feedbackMsg"></div>
+                <div class="btn-group">
+                    <button class="btn" id="prevBtn">◀ Anterior</button>
+                    <button class="btn btn-warning" id="markBtn">📌 Marcar</button>
+                    <button class="btn" id="explanationBtn">💡 Ver explicação</button>
+                    <button class="btn btn-primary" id="nextBtn">Próxima ▶</button>
+                </div>
+                <div style="margin-top: 16px;" id="finishBtnWrapper">
+                    <button class="btn btn-success" id="finishBtn" style="width: 100%;">✅ Finalizar simulado</button>
+                </div>
+            </div>
+            <div class="navigation-section">
+                <div class="question-grid" id="gridQuestions"></div>
+                <button class="btn btn-outline" id="resetSimuladoBtn" style="width: 100%; margin-top: 12px;">🔄 Reiniciar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE RESULTADO -->
+    <div id="resultScreen" class="results-screen" style="display: none;">
+        <h2>📊 Resultado Final</h2>
+        <div class="score-circle" id="scoreValue">0/60</div>
+        <p id="resultMessage" style="margin-bottom: 28px;"></p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="reviewAnswersBtn">📋 Revisar respostas</button>
+            <button class="btn btn-warning" id="restartFromResultBtn">🔄 Novo simulado</button>
+            <button class="btn btn-success" id="fullReportBtn">📄 Relatório completo</button>
+        </div>
+    </div>
+
+    <!-- RELATÓRIO DETALHADO -->
+    <div id="detailedAnswersScreen" class="answers-screen" style="display: none;">
+        <h2>📖 Relatório de questões (60)</h2>
+        <div id="answersList" style="max-height: 500px; overflow-y: auto; text-align: left; margin: 16px 0;"></div>
+        <button class="btn" id="backToResultsBtn">◀ Voltar aos resultados</button>
+    </div>
+</div>
+
+<script>
+    // ==================== 60 QUESTÕES MESCLADAS (ITIL 5 Bridge Foundation) ====================
+    const questions = [
+        { text: "Uma organização realizou um exercício de mapeamento de fluxo de valor (value stream mapping) e obteve resultados positivos imediatos. No entanto, após alguns meses, percebeu que as melhorias não foram sustentáveis. De acordo com o ITIL, como a organização deve evoluir para garantir a otimização contínua do fluxo de trabalho?", options: ["Garantir que as atividades sejam lineares e sequenciais.", "Migrar para o gerenciamento de fluxo de valor (value stream management), melhorando indiretamente os fluxos através do aprimoramento das práticas e da cadeia de valor.", "Implementar SRE para automatizar o mapeamento.", "Focar apenas em fatores PESTLE."], correct: 1, explanation: "📘 Correta: Mapeamento isolado não é sustentável. O gerenciamento de fluxo de valor aprimora práticas e a cadeia de valor (Foundation)." },
+        { text: "De acordo com o ITIL, o que caracteriza um fluxo de valor central (core value stream)?", options: ["Um fluxo que possibilita geração de valor para os consumidores conforme modelo operacional.", "Um fluxo que habilita valor para clientes internos.", "Sistema de elementos interconectados.", "Série de ações de fornecedor."], correct: 0, explanation: "📘 Correta: Fluxo de valor central gera valor direto ao consumidor (Seção 6.2)." },
+        { text: "No contexto das oito atividades do Ciclo de Vida do Produto e Serviço ITIL, qual atividade tem como definição “criar, configurar e testar soluções tecnológicas que constituem o produto”?", options: ["Adquirir", "Desenhar", "Construir", "Transicionar"], correct: 2, explanation: "📘 Correta: Atividade Build (Construir) transforma desenhos em soluções funcionais." },
+        { text: "Provedores de serviços digitais modernos frequentemente desenham suas ofertas para que o “acesso a recursos” seja a única forma de interação. Qual é a principal justificativa para essa escolha estratégica?", options: ["Garantir transferência de propriedade.", "Maximizar escalabilidade e disponibilidade que a tecnologia digital oferece, evitando limitações de pessoal.", "Focar exclusivamente na Utilidade.", "Substituir princípios orientadores."], correct: 1, explanation: "📘 Correta: Acesso a recursos maximiza escalabilidade e disponibilidade." },
+        { text: "De acordo com o ITIL, como é definida uma organização no contexto dos relacionamentos de serviço?", options: ["Pessoa ou grupo com funções, responsabilidades e relacionamentos para atingir objetivos.", "Representação visual de cocriação de valor.", "Sistema de elementos interconectados.", "Entidade responsável pela aquisição."], correct: 0, explanation: "📘 Definição literal de Organização." },
+        { text: "Um provedor de serviços implementa IA que automatiza análise de dados, gerando relatórios rápidos. No entanto, a equipe do cliente parou de praticar o pensamento crítico. Como o ITIL descreve esse fenômeno?", options: ["Falha na dimensão Organizações e Pessoas.", "Benefício da Prática de Conhecimento.", "Efeito colateral: serviço pode reduzir resultados desejados ou introduzir indesejados.", "Aplicação do princípio Progredir iterativamente."], correct: 2, explanation: "📘 Correta: Serviços podem introduzir resultados indesejados, como perda de habilidades críticas." },
+        { text: "No contexto da estratégia organizacional, qual termo é definido como uma “descrição breve, porém completa, do propósito e das intenções gerais de uma organização”?", options: ["Visão", "Missão", "Estratégia Digital", "Cultura"], correct: 1, explanation: "📘 Definição literal de Missão." },
+        { text: "Qual é a definição oficial de risco (risk) no contexto do gerenciamento de serviços?", options: ["Causa potencial de incidentes.", "Interrupção não planejada.", "Evento possível que pode causar dano/perda ou dificultar objetivos.", "Mudança de estado."], correct: 2, explanation: "📘 Definição de Risco no glossário ITIL." },
+        { text: "Uma organização percebe que a arquitetura de seus produtos digitais é fragmentada, espelhando a falta de comunicação entre equipes. Qual conceito explica isso?", options: ["Cadeia de Valor", "Lei de Conway", "Sustentabilidade", "Governança de Dados"], correct: 1, explanation: "📘 Lei de Conway: sistemas copiam estrutura de comunicação da organização." },
+        { text: "De acordo com o ITIL, qual é uma característica fundamental dos fatores externos que influenciam as quatro dimensões?", options: ["São componentes internos.", "Estão frequentemente além do controle da organização.", "Representam capacidades organizacionais.", "Devem seguir hierarquia rígida."], correct: 1, explanation: "📘 Fatores externos geralmente estão além do controle direto." },
+        { text: "Além de identificar fornecedores, o que a atividade Aquisição (acquire) pode envolver internamente?", options: ["Identificação e realocação de recursos tecnológicos internos.", "Definição de requisitos.", "Movimento para ambiente controlado.", "Restauração de incidentes."], correct: 0, explanation: "📘 Envolve realocação de recursos internos." },
+        { text: "Qual é o propósito da atividade Operação (operate) no Ciclo de Vida do Produto e Serviço?", options: ["Garantir alinhamento de roadmaps.", "Manter e monitorar produtos digitais, garantindo desempenho e confiabilidade.", "Desenvolver e testar.", "Alocar recursos."], correct: 1, explanation: "📘 Propósito de Operate: manter/monitorar produtos digitais." },
+        { text: "Qual é o propósito principal da atividade entrega (deliver)?", options: ["Prover serviços aos usuários, gerenciar onboarding/offboarding, manter padrões e coletar feedback.", "Monitorar produtos.", "Construir soluções.", "Garantir alinhamento."], correct: 0, explanation: "📘 Propósito de Deliver como definido no Foundation." },
+        { text: "Durante o desenvolvimento, uma equipe decide retornar à atividade de “Design” após falhas na “Construção”. Como o ITIL justifica?", options: ["Falha na prática de projetos.", "Atividades não são sequenciais, podem ser iterativas.", "Necessidade de alinhar PESTLE.", "Violação da cadeia de valor."], correct: 1, explanation: "📘 Atividades são stepping stones e iterativas, não lineares." },
+        { text: "Qual é o propósito da atividade Aquisição (acquire)?", options: ["Assegurar e alocar recursos de forma eficiente.", "Criar protótipos.", "Manter produtos.", "Alinhar roadmaps."], correct: 0, explanation: "📘 Propósito de Acquire: alocação eficiente de recursos." },
+        { text: "Uma organização está definindo estratégias e políticas para estabelecer requisitos de comportamento esperados. Qual atividade de governança está sendo realizada?", options: ["Monitorar", "Direcionar", "Avaliar", "Engajar"], correct: 1, explanation: "📘 Direcionar define estratégias, políticas e expectativas." },
+        { text: "A gerência deseja coletar dados massivos para auditoria, mas funcionários relatam lentidão. Como os princípios do ITIL sugerem resolver?", options: ["Aplicar Lei de Conway.", "Buscar equilíbrio, otimizando e automatizando para reduzir trabalho sem valor.", "Manter processo inalterado.", "Eliminar conformidade."], correct: 1, explanation: "📘 Equilíbrio entre objetivos e otimização." },
+        { text: "Uma equipe de suporte foca em reduzir tempo de resposta. Para aplicar “Focar no valor”, qual deve ser a prioridade?", options: ["Otimizar tecnologia.", "Compreender o consumidor e como o trabalho impacta sua experiência.", "Medir infraestrutura atual.", "Foco exclusivo na Utilidade."], correct: 1, explanation: "📘 Foco no valor prioriza quem é servido e impacto." },
+        { text: "Se uma organização pula o passo “Onde estamos agora?” no modelo de melhoria contínua, qual a consequência?", options: ["Perda de Utilidade.", "Não haverá baseline para medir eficácia das melhorias futuras.", "Missão inválida.", "Expansão automática da visibilidade."], correct: 1, explanation: "📘 Baseline é essencial para medir melhoria." },
+        { text: "Uma organização planeja usar ITIL com PRINCE2. Como se complementam?", options: ["PRINCE2 substitui governança.", "PRINCE2 fornece métodos estruturados para gerenciar projetos que implementam ou transformam produtos e serviços.", "PRINCE2 foca em tecnologia.", "Transforma cadeia de valor linear."], correct: 1, explanation: "📘 PRINCE2 complementa com gerenciamento de projetos estruturado." },
+        { text: "Durante um workshop de melhoria, uma equipe elabora um mapa de fluxo de valor que documenta o estado esperado para os próximos três a seis meses. De acordo com o ITIL, qual elemento foi criado?", options: ["Mapa do fluxo de valor ideal", "Mapa do fluxo de valor futuro ou próximo", "Linha de base do serviço", "Modelo operacional"], correct: 1, explanation: "📘 Correta: Mapa do fluxo de valor futuro (próximo estado)." },
+        { text: "Uma organização opera em ambiente complexo onde relações de causa e efeito só são compreendidas em retrospecto. Como os fluxos devem ser otimizados?", options: ["Procedimentos rígidos.", "Cursos de ação de alto nível que permitam agilidade, ajustes situacionais.", "Foco exclusivo em tecnologia.", "Padrão diretivo."], correct: 1, explanation: "📘 Contexto complexo exige agilidade e ajustes situacionais." },
+        { text: "Qual papel dentro de uma organização consumidora tem a função específica de autorizar o orçamento para o consumo de serviços?", options: ["Autoridade de Mudança", "Cliente", "Patrocinador", "Gerente de Relacionamento"], correct: 2, explanation: "📘 Patrocinador (Sponsor) autoriza orçamento." },
+        { text: "No contexto dos relacionamentos de serviço, qual papel é responsável por definir requisitos e assumir responsabilidade pelos resultados?", options: ["Proprietário da Prática", "Usuário", "Patrocinador", "Cliente"], correct: 3, explanation: "📘 Cliente define requisitos e assume responsabilidade pelos resultados." },
+        { text: "De acordo com os benefícios do ITIL, o que o acesso ao corpo de conhecimento proporciona?", options: ["Garantia de processos sem desvios.", "Compreensão do contexto de negócio e do cliente para competências técnicas.", "Autoridade para definir estratégia digital.", "Eliminação total de riscos."], correct: 1, explanation: "📘 Compreensão do contexto de negócio." },
+        { text: "De acordo com as definições do ITIL, como é definida uma saída (output)?", options: ["Resultado para parte interessada.", "Entregável tangível ou intangível resultante de uma atividade.", "Funcionalidade oferecida.", "Mudança de estado."], correct: 1, explanation: "📘 Definição literal de output." },
+        { text: "Qual é a definição correta de Experiência do Usuário (UX)?", options: ["Soma das interações funcionais e emocionais com um serviço percebidas por um usuário.", "Conjunto de capacidades organizacionais.", "Recomendação universal.", "Configuração de recursos."], correct: 0, explanation: "📘 Definição de UX." },
+        { text: "Em relação à medição da UX, qual é a recomendação oficial do ITIL?", options: ["Criar acordos de nível de experiência separados.", "Incluir métricas de experiência do usuário diretamente nos SLAs.", "Delegar a fornecedores.", "Substituir SLAs por IA."], correct: 1, explanation: "📘 Recomenda incluir UX nos SLAs." },
+        { text: "Quais são os seis fatores que compõem o modelo PESTLE?", options: ["Político, Econômico, Social, Tecnológico, Legal, Ambiental.", "Utilidade, Garantia.", "Organizações e pessoas.", "Descobrir, Desenhar."], correct: 0, explanation: "📘 Lista correta PESTLE." },
+        { text: "Identifique o par que representa duas das quatro dimensões do gerenciamento de produtos e serviços.", options: ["Focar no valor e Pensar holisticamente.", "Organizações e pessoas; Informação e tecnologia.", "Cadeia de valor e Práticas.", "Utilidade e Garantia."], correct: 1, explanation: "📘 Duas dimensões oficiais: Organizações e pessoas, Informação e tecnologia." },
+        { text: "Uma organização está adotando o PSLM. Como a relação entre as atividades deve ser compreendida?", options: ["Sequência linear obrigatória.", "Cadeia de valor onde atividades não são sempre sequenciais, stepping stones.", "Estrutura temporária.", "Processos isolados."], correct: 1, explanation: "📘 Atividades como stepping stones, iterativas." },
+        { text: "Qual é o propósito principal da atividade suporte (support) no PSLM?", options: ["Manter e monitorar.", "Desenvolver e testar.", "Prover serviços e onboarding.", "Identificar e resolver incidentes, cumprir recuperação de desastres e capturar feedback."], correct: 3, explanation: "📘 Propósito de Support: resolver incidentes, DR e feedback." },
+        { text: "Ao aplicar melhoria contínua, por que o passo “Qual é a visão?” é essencial?", options: ["Define requisitos técnicos.", "Garante vinculação das iniciativas aos objetivos da organização.", "Identifica práticas a eliminar.", "Estabelece baseline."], correct: 1, explanation: "📘 Vincula ações à visão e dá contexto estratégico." },
+        { text: "No passo “Onde queremos estar?”, como o ITIL descreve o estado alvo?", options: ["Alcance total da visão.", "Representa progresso em direção à visão, não totalidade.", "Foco apenas na Utilidade.", "Estrutura temporária."], correct: 1, explanation: "📘 Estado alvo representa progresso incremental." },
+        { text: "Como o ITIL define observabilidade (observability)?", options: ["Observação repetida.", "Confirmação de requisitos.", "Capacidade de entender estado interno de sistema analisando saídas externas (métricas, logs, traces).", "Movimento para ambiente controlado."], correct: 2, explanation: "📘 Definição de Observabilidade." },
+        { text: "Uma organização planeja substituir sistema legado. Envia observadores para acompanhar trabalho em tempo real. Qual justificativa do princípio “Começar de onde você está” apoia essa decisão?", options: ["Substituir medição por observação.", "Reconhecer discrepância entre relatórios e realidade, observação direta é mais perspicaz.", "Aplicar Lei de Conway.", "Foco exclusivo no Design."], correct: 1, explanation: "📘 Observação direta revela discrepâncias entre relatórios e realidade." },
+        { text: "Qual é a definição de Engenharia de Confiabilidade de Sites (SRE)?", options: ["Sistema baseado em humanos.", "Disciplina que incorpora engenharia de software a problemas de infraestrutura/operações.", "Conjunto de capacidades.", "Movimento cultural DevOps."], correct: 1, explanation: "📘 Definição de SRE." },
+        { text: "Após implantação crítica, qual métrica da atividade de transição (transition) é mais adequada para medir interrupções?", options: ["Número de incidentes operacionais.", "Impacto negativo da transição na disponibilidade e desempenho do serviço.", "Qualidade das especificações.", "Ciclo de construção."], correct: 1, explanation: "📘 Métrica específica de Transition." },
+        { text: "Aplicando o princípio “Progredir iterativamente com feedback”, qual orientação o ITIL recomenda sobre interação de princípios?", options: ["Integrar com Pensar holisticamente para assegurar que cada iteração considere todos elementos.", "Interromper iterações.", "Restringir à atividade Construir.", "Priorizar fornecedores."], correct: 0, explanation: "📘 Iteração combinada com visão holística." },
+        { text: "Uma organização implementou IA que analisa dados para identificar padrões e prever aumentos de carga. Qual capacidade do Modelo 6C está sendo utilizada?", options: ["Coordenação", "Cognição", "Curadoria", "Comunicação"], correct: 1, explanation: "📘 Cognição: identificação de padrões e detecção proativa." },
+        { text: "De acordo com o ITIL, qual é um dos objetivos fundamentais do mapeamento e gerenciamento de fluxos de valor?", options: ["Definir configuração.", "Visualizar o fluxo de habilitação de valor do início ao fim.", "Analisar fatores externos.", "Estabelecer políticas."], correct: 1, explanation: "📘 Objetivo: visualizar fluxo de valor." },
+        { text: "Como o ITIL define formalmente fluxo de valor?", options: ["Representação conceitual.", "Conjunto inteiro de atividades que habilita valor.", "Série de etapas que organização utiliza para criar e entregar produtos e serviços a um consumidor.", "Conjunto de recursos."], correct: 2, explanation: "📘 Definição literal de fluxo de valor." },
+        { text: "Qual é a definição correta para Experiência do Cliente (CX)?", options: ["Soma das interações funcionais e emocionais com serviço percebidas por cliente.", "Soma para usuário.", "Benefícios percebidos.", "Atividades conjuntas."], correct: 0, explanation: "📘 Definição de CX." },
+        { text: "Mecanismos de feedback bem construídos facilitam o quê?", options: ["Substituição das Quatro Dimensões.", "Eficácia da governança e percepções dos clientes sobre valor criado.", "Missão estática.", "Redução da visibilidade."], correct: 1, explanation: "📘 Feedback auxilia governança e percepção de valor." },
+        { text: "Como é definido o conceito de melhoria contínua no ITIL VS?", options: ["Conjunto de capacidades.", "Atividade recorrente para garantir que a organização atenda continuamente às expectativas.", "Sistema de elementos.", "Recomendação universal."], correct: 1, explanation: "📘 Definição de melhoria contínua." },
+        { text: "Para fornecedores de produtos digitais, qual é um benefício específico do ITIL?", options: ["Substituição de capacidades do consumidor.", "Foco no desenvolvimento e gerenciamento de produtos para criar valor, evitando build trap.", "Aplicar Lei de Conway.", "Definir propósito."], correct: 1, explanation: "📘 ITIL ajuda evitar build trap." },
+        { text: "Como é definida uma mudança (change) no contexto de produtos e serviços?", options: ["Alteração de baixo risco.", "Adição, modificação ou remoção que pode ter efeito direto ou indireto em produtos e serviços.", "Modificação cultural.", "Mudança de estado."], correct: 1, explanation: "📘 Definição ampla de mudança." },
+        { text: "De acordo com a tabela de tipos de relacionamentos de serviço, qual é o foco típico de um relacionamento básico?", options: ["Foco em melhoria.", "Suporte e eficiência, nível operacional.", "Inovação.", "Agilidade."], correct: 1, explanation: "📘 Relacionamento básico: suporte/eficiência operacional." },
+        { text: "Quais são as quatro dimensões do gerenciamento de produtos e serviços?", options: ["Princípios, governança, cadeia de valor, práticas.", "Organizações e pessoas, parceiros e fornecedores, informação e tecnologia, fluxos de valor e processos.", "PESTLE.", "Descobrir, desenhar, adquirir, construir."], correct: 1, explanation: "📘 Quatro dimensões oficiais." },
+        { text: "Uma organização implementa sistema de regras para gerenciar ativos de dados e atribuir responsabilidades. Qual conceito está sendo aplicado?", options: ["Garantia", "Utilidade", "Governança de Dados", "Gerenciamento de Mudança"], correct: 2, explanation: "📘 Governança de dados: regras e controles." },
+        { text: "No contexto da atividade de suporte, como o ITIL define um desastre (disaster)?", options: ["Causa potencial.", "Interrupção não planejada.", "Falha ou vulnerabilidade.", "Evento súbito não planejado que causa grande dano, impedindo funções críticas por tempo mínimo."], correct: 3, explanation: "📘 Definição de desastre." },
+        { text: "No contexto da atividade de Design, como é definido um protótipo de produto ou serviço?", options: ["Versão disponibilizada.", "Documento detalhado.", "Criação inicial usada para testar e refinar funcionalidade e hipóteses.", "Movimento controlado."], correct: 2, explanation: "📘 Definição de protótipo." },
+        { text: "Qual é o propósito da atividade de Design no Ciclo de Vida?", options: ["Introduzir em produção.", "Criar protótipos e especificações, detalhando funcionalidade, UX e estrutura operacional.", "Alocar recursos.", "Garantir alinhamento."], correct: 1, explanation: "📘 Propósito de Design." },
+        { text: "Qual é o propósito da atividade Construção (build)?", options: ["Garantir alinhamento.", "Desenvolver, integrar e testar produtos digitais, transformando desenhos em soluções funcionais.", "Alocar recursos.", "Introduzir em produção."], correct: 1, explanation: "📘 Propósito de Build." },
+        { text: "Qual é o propósito principal da atividade descoberta (discover)?", options: ["Criar protótipos.", "Garantir alinhamento contínuo dos roadmaps com necessidades dos consumidores e estratégia.", "Manter e monitorar.", "Alocar recursos."], correct: 1, explanation: "📘 Propósito de Discover." },
+        { text: "Ao adotar IA Generativa, o que considerar para alinhar-se ao princípio “Otimizar e automatizar”?", options: ["Definir automação em SLA.", "Governança, ética e conformidade.", "Remover práticas legadas.", "Operar linearmente."], correct: 1, explanation: "📘 Governança, ética e conformidade são essenciais." },
+        { text: "Como o ITIL Value System apoia a eliminação de silos?", options: ["Sequência linear rígida.", "Modelo que representa como componentes e atividades trabalham juntos para facilitar criação de valor.", "Foco exclusivo tecnologia.", "Business case financeiro."], correct: 1, explanation: "📘 ITIL VS integra componentes para criar valor." },
+        { text: "Ao implementar ferramenta de IA para requisições, qual deve ser o passo inicial segundo “Otimizar e automatizar”?", options: ["Automatizar rapidamente.", "Realizar análise PESTLE.", "Simplificar e otimizar fluxo atual antes de aplicar automação.", "Foco exclusivo na ferramenta."], correct: 2, explanation: "📘 Simplificar e otimizar antes de automatizar." },
+        { text: "Qual métrica de sucesso da atividade de descoberta (discover) deve ser usada para avaliar alinhamento estratégico?", options: ["Tempo de ciclo de aquisição.", "Desempenho versus SLA.", "Ajuste estratégico dos produtos e ofertas de serviços.", "Velocidade de restauração."], correct: 2, explanation: "📘 Ajuste estratégico é métrica de Discover." },
+        { text: "Como a IA auxilia especificamente na automação de processos ao longo do ciclo de vida?", options: ["Automatizando análise PESTLE.", "Executando tarefas que exigiam envolvimento humano, como geração de código e otimização CI/CD.", "Substituindo corpo diretivo.", "Eliminando práticas."], correct: 1, explanation: "📘 IA automatiza tarefas humanas como código e CI/CD." }
+    ];
+
+    const TOTAL = questions.length;
+    let userAnswers = new Array(TOTAL).fill(null);
+    let marked = new Array(TOTAL).fill(false);
+    let currentIdx = 0;
+    let examFinishedFlag = false;
+    let timeSeconds = 90 * 60;
+    let timerInterval = null;
+
+    // DOM
+    const startScreen = document.getElementById('startScreen');
+    const examArea = document.getElementById('examArea');
+    const resultScreen = document.getElementById('resultScreen');
+    const detailedScreen = document.getElementById('detailedAnswersScreen');
+    const questionTextEl = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const feedbackMsg = document.getElementById('feedbackMsg');
+    const qNumberLabel = document.getElementById('qNumberLabel');
+    const currentQNumSpan = document.getElementById('currentQNum');
+    const totalQSpan = document.getElementById('totalQ');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const gridContainer = document.getElementById('gridQuestions');
+
+    function init() {
+        totalQSpan.innerText = TOTAL;
+        document.getElementById('startExamBtn').addEventListener('click', startExam);
+        document.getElementById('prevBtn').addEventListener('click', () => navigate(-1));
+        document.getElementById('nextBtn').addEventListener('click', () => navigate(1));
+        document.getElementById('markBtn').addEventListener('click', toggleMark);
+        document.getElementById('explanationBtn').addEventListener('click', () => { if(userAnswers[currentIdx] !== null) alert(`📘 Explicação oficial (Q${currentIdx+1}):\n${questions[currentIdx].explanation}`); else alert("❗ Responda a questão primeiro para ver a explicação completa."); });
+        document.getElementById('finishBtn').addEventListener('click', finishExam);
+        document.getElementById('resetSimuladoBtn').addEventListener('click', resetExam);
+        document.getElementById('reviewAnswersBtn').addEventListener('click', showDetailedReportFromResult);
+        document.getElementById('restartFromResultBtn').addEventListener('click', resetExam);
+        document.getElementById('fullReportBtn').addEventListener('click', downloadFullReport);
+        document.getElementById('backToResultsBtn').addEventListener('click', () => { detailedScreen.style.display = 'none'; resultScreen.style.display = 'block'; });
+        buildGrid();
+    }
+
+    function startExam() {
+        startScreen.style.display = 'none';
+        examArea.style.display = 'block';
+        resultScreen.style.display = 'none';
+        detailedScreen.style.display = 'none';
+        examFinishedFlag = false;
+        if (timerInterval) clearInterval(timerInterval);
+        timeSeconds = 90 * 60;
+        updateTimerDisplay();
+        timerInterval = setInterval(() => { if (!examFinishedFlag && timeSeconds > 0) { timeSeconds--; updateTimerDisplay(); if (timeSeconds === 0) finishExam(); } }, 1000);
+        loadQuestion(0);
+    }
+
+    function updateTimerDisplay() { let m = Math.floor(timeSeconds/60), s = timeSeconds%60; timerDisplay.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; if(timeSeconds<60) timerDisplay.style.color = "#ef4444"; }
+    
+    function loadQuestion(idx) {
+        if(examFinishedFlag) return;
+        currentIdx = idx;
+        const q = questions[idx];
+        qNumberLabel.innerText = `QUESTÃO ${idx+1}`;
+        currentQNumSpan.innerText = idx+1;
+        questionTextEl.innerText = q.text;
+        optionsContainer.innerHTML = '';
+        
+        const isLocked = userAnswers[idx] !== null;
+        const userAnswer = userAnswers[idx];
+        
+        q.options.forEach((opt, optIdx) => {
+            const optDiv = document.createElement('div'); 
+            optDiv.className = 'option';
+            const letter = String.fromCharCode(65+optIdx);
+            optDiv.innerHTML = `<div class="option-letter">${letter}</div><div class="option-text">${opt}</div>`;
+            
+            // Se a questão já foi respondida (bloqueada)
+            if (isLocked) {
+                // SEMPRE destacar a opção correta em VERDE
+                if (optIdx === q.correct) {
+                    optDiv.classList.add('correct-highlight');
+                }
+                
+                // Se a opção atual foi a que o usuário marcou
+                if (userAnswer === optIdx) {
+                    optDiv.classList.add('selected');
+                    // Se o usuário errou, marcar a opção dele como vermelha
+                    if (userAnswer !== q.correct) {
+                        optDiv.classList.add('incorrect-highlight');
+                    }
+                }
+                
+                optDiv.style.pointerEvents = 'none'; 
+                optDiv.classList.add('locked-option');
+            } else {
+                // Questão não respondida - pode clicar
+                optDiv.addEventListener('click', () => selectOption(optIdx));
+            }
+            
+            optionsContainer.appendChild(optDiv);
+        });
+        
+        if (userAnswers[idx] !== null) showStoredFeedback(idx);
+        else feedbackMsg.style.display = 'none';
+        updateMarkButton(); 
+        updateGridHighlight();
+    }
+
+    function selectOption(optIndex) { 
+        if(examFinishedFlag) return;
+        if(userAnswers[currentIdx] !== null) return;
+        userAnswers[currentIdx] = optIndex; 
+        showStoredFeedback(currentIdx); 
+        loadQuestion(currentIdx); 
+        updateGridHighlight(); 
+    }
+    
+    function showStoredFeedback(idx) { 
+        const q = questions[idx]; 
+        const isCorrect = (userAnswers[idx] === q.correct);
+        feedbackMsg.style.display = 'block';
+        feedbackMsg.className = `feedback-box ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+        feedbackMsg.innerHTML = `
+            <div class="explanation-title">${isCorrect ? '📖 EXPLICAÇÃO DO CONTEÚDO' : '📖 EXPLICAÇÃO DO CONTEÚDO'}</div>
+            <div class="explanation-full">${q.explanation}</div>
+            <div class="reference-note">📚 Referência: Syllabus ITIL 5 Bridge Foundation - PMG Academy</div>
+        `;
+    }
+
+    function toggleMark() { 
+        if(!examFinishedFlag && userAnswers[currentIdx] !== null){ 
+            marked[currentIdx]=!marked[currentIdx]; 
+            updateMarkButton(); 
+            updateGridHighlight(); 
+        } else if(userAnswers[currentIdx] === null){ 
+            alert("⚠️ Responda a questão primeiro para poder marcá-la."); 
+        } 
+    }
+    
+    function updateMarkButton() { 
+        const btn=document.getElementById('markBtn'); 
+        if(marked[currentIdx]) btn.innerHTML='❌ Desmarcar'; 
+        else btn.innerHTML='📌 Marcar'; 
+    }
+    
+    function navigate(delta) { 
+        let newIdx=currentIdx+delta; 
+        if(newIdx>=0 && newIdx<TOTAL) loadQuestion(newIdx); 
+    }
+    
+    function finishExam() { 
+        if(examFinishedFlag) return; 
+        examFinishedFlag=true; 
+        clearInterval(timerInterval); 
+        const score = userAnswers.reduce((acc,ans,i)=> ans===questions[i].correct ? acc+1:acc,0); 
+        examArea.style.display='none'; 
+        resultScreen.style.display='block'; 
+        document.getElementById('scoreValue').innerHTML=`${score}/${TOTAL}`; 
+        let percent=(score/TOTAL)*100; 
+        let msg= percent>=70 ? "🎉 Parabéns! Você foi aprovado no simulado ITIL 5 Bridge." : "📚 Estude mais e tente novamente. Consulte as explicações detalhadas.";
+        if(percent>=85) msg="🏆 Excelente! Domínio completo da certificação ITIL 5 Bridge. Você está preparado!";
+        document.getElementById('resultMessage').innerHTML=`${percent.toFixed(1)}% de acertos. ${msg}`; 
+    }
+    
+    function buildGrid() { 
+        gridContainer.innerHTML=''; 
+        for(let i=0;i<TOTAL;i++){ 
+            const cell=document.createElement('div'); 
+            cell.classList.add('grid-item'); 
+            cell.innerText=i+1; 
+            cell.addEventListener('click',()=>{ if(!examFinishedFlag) loadQuestion(i); }); 
+            gridContainer.appendChild(cell); 
+        } 
+        updateGridHighlight(); 
+    }
+    
+    function updateGridHighlight() { 
+        const cells=gridContainer.querySelectorAll('.grid-item'); 
+        for(let i=0;i<TOTAL;i++){ 
+            cells[i].classList.remove('current','answered','marked'); 
+            if(i===currentIdx) cells[i].classList.add('current'); 
+            if(userAnswers[i]!==null) cells[i].classList.add('answered'); 
+            if(marked[i]) cells[i].classList.add('marked'); 
+        } 
+    }
+    
+    function showDetailedReportFromResult() { 
+        resultScreen.style.display='none'; 
+        detailedScreen.style.display='block'; 
+        const container=document.getElementById('answersList'); 
+        container.innerHTML=''; 
+        for(let i=0;i<TOTAL;i++){ 
+            const q=questions[i]; 
+            const userOpt=userAnswers[i]; 
+            const isCorrect=(userOpt===q.correct); 
+            const userLetter=userOpt!==null?String.fromCharCode(65+userOpt):'—'; 
+            const correctLetter=String.fromCharCode(65+q.correct); 
+            const div=document.createElement('div'); 
+            div.style.background='#f9f9fc'; 
+            div.style.marginBottom='16px'; 
+            div.style.padding='14px'; 
+            div.style.borderRadius='20px'; 
+            div.style.borderLeft=`5px solid ${isCorrect?'#2a9d8f':'#ef4444'}`; 
+            div.innerHTML=`<strong>Q${i+1}:</strong> ${q.text}<br><span style="color:#2563eb;">Sua resposta: ${userLetter} ${userOpt!==null?q.options[userOpt]:'Não respondida'}</span><br><span style="color:#10b981;">Correta: ${correctLetter} - ${q.options[q.correct]}</span><br><details><summary>📖 Explicação ITIL 5</summary><p style="margin-top:8px; background:#f0f4f8; padding:10px; border-radius:12px;">${q.explanation}</p></details>`; 
+            container.appendChild(div); 
+        } 
+    }
+    
+    function downloadFullReport() { 
+        let report="RELATÓRIO ITIL 5 BRIDGE - 60 QUESTÕES\n\n"; 
+        let score=userAnswers.reduce((acc,ans,i)=>ans===questions[i].correct?acc+1:acc,0); 
+        report+=`Acertos: ${score}/${TOTAL}\n\n`; 
+        for(let i=0;i<TOTAL;i++){ 
+            let q=questions[i]; 
+            let user=userAnswers[i]; 
+            report+=`${i+1}. ${q.text}\n`; 
+            report+=`   Sua resposta: ${user!==null?String.fromCharCode(65+user)+" - "+q.options[user]:"NÃO RESPONDIDA"}\n`; 
+            report+=`   Correta: ${String.fromCharCode(65+q.correct)} - ${q.options[q.correct]}\n`; 
+            report+=`   Explicação: ${q.explanation}\n\n`; 
+        } 
+        const blob=new Blob(["\uFEFF"+report],{type:"text/plain;charset=utf-8"}); 
+        const link=document.createElement('a'); 
+        link.href=URL.createObjectURL(blob); 
+        link.download="simulado_itil5_60_questoes_completo.txt"; 
+        link.click(); 
+        URL.revokeObjectURL(link.href); 
+    }
+    
+    function resetExam() { 
+        if(timerInterval) clearInterval(timerInterval); 
+        userAnswers=new Array(TOTAL).fill(null); 
+        marked=new Array(TOTAL).fill(false); 
+        currentIdx=0; 
+        examFinishedFlag=false; 
+        timeSeconds=90*60; 
+        startScreen.style.display='block'; 
+        examArea.style.display='none'; 
+        resultScreen.style.display='none'; 
+        detailedScreen.style.display='none'; 
+        updateTimerDisplay(); 
+    }
+    
+    init();
+</script>
+</body>
+</html>
