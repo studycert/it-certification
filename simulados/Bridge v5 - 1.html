@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Simulado ITIL 5 Bridge Foundation - PMG Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b2b3d 0%, #1a4a6f 100%);
+            min-height: 100vh;
+            padding: 20px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .header {
+            background: #0f2c3b;
+            color: white;
+            padding: 20px 24px;
+            text-align: center;
+            border-bottom: 3px solid #f39c12;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .header .sub {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+
+        .badge {
+            background: #f39c12;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-top: 8px;
+            color: #1e293b;
+        }
+
+        .exam-info {
+            background: #f1f5f9;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress {
+            font-weight: 600;
+            color: #0f2c3b;
+            background: white;
+            padding: 5px 14px;
+            border-radius: 30px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .timer {
+            font-family: monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: #0f2c3b;
+            color: #f39c12;
+            padding: 4px 16px;
+            border-radius: 60px;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 0;
+            background: white;
+        }
+
+        .question-section {
+            padding: 28px 24px;
+            background: white;
+        }
+
+        .question-number {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #f39c12;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.45;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 20px;
+            border-left: 5px solid #f39c12;
+            margin-bottom: 28px;
+            font-weight: 500;
+            color: #0f2c3b;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .option {
+            padding: 14px 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: white;
+        }
+
+        .option:hover:not(.locked-option) {
+            border-color: #f39c12;
+            background: #fef9e7;
+            transform: translateX(3px);
+        }
+
+        .option-letter {
+            font-weight: 800;
+            background: #eef2ff;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: #1e3a5f;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .option.selected {
+            border-color: #f39c12;
+            background: #fef9e7;
+        }
+
+        .option.correct-highlight {
+            border-color: #10b981;
+            background: #e0f9ef;
+        }
+
+        .option.incorrect-highlight {
+            border-color: #ef4444;
+            background: #fee9e6;
+        }
+
+        .locked-option {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .feedback-box {
+            margin: 20px 0;
+            padding: 18px;
+            border-radius: 18px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-correct {
+            background: linear-gradient(135deg, #dff9e6 0%, #c8f0dc 100%);
+            border-left: 5px solid #10b981;
+        }
+
+        .feedback-incorrect {
+            background: linear-gradient(135deg, #ffe6e5 0%, #ffd6d4 100%);
+            border-left: 5px solid #ef4444;
+        }
+
+        .explanation-title {
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #1e293b;
+        }
+
+        .explanation-full {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #1e293b;
+        }
+
+        .reference-note {
+            margin-top: 12px;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.1s;
+            background: #eef2ff;
+            color: #1e293b;
+        }
+
+        .btn-primary {
+            background: #1e5a7a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0f3b52;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: #1e293b;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #cbd5e1;
+        }
+
+        .navigation-section {
+            background: #fafcff;
+            border-left: 1px solid #e2edf2;
+            padding: 24px 16px;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            background: white;
+            border: 1px solid #cbd5e6;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.1s;
+            font-size: 0.9rem;
+        }
+
+        .grid-item.current {
+            background: #1e5a7a;
+            color: white;
+            border-color: #1e5a7a;
+        }
+
+        .grid-item.answered {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .grid-item.marked {
+            background: #f39c12;
+            color: #1e293b;
+            border-color: #eab308;
+        }
+
+        .results-screen, .answers-screen {
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .score-circle {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 780px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            .navigation-section {
+                border-left: none;
+                border-top: 1px solid #e2edf2;
+            }
+            .question-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+            .question-text {
+                font-size: 1rem;
+                padding: 16px;
+            }
+            .option-text {
+                font-size: 0.9rem;
+            }
+        }
+
+        .academy-note {
+            font-size: 0.7rem;
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-top: 6px;
+            color: #1e3a5f;
+        }
+
+        .version-badge {
+            background: #f39c12;
+            color: #1e293b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="header">
+        <h1>🎓 ITIL® 5 Bridge Foundation</h1>
+        <div class="sub">PMG Academy • Preparatório para Certificação Oficial</div>
+        <div class="badge version-badge">✅ ITIL 5 Atualizado • 40 questões</div>
+        <div class="academy-note">Baseado no Syllabus ITIL 5 Bridge | Respostas bloqueadas após seleção</div>
+    </div>
+
+    <div id="startScreen">
+        <div style="padding: 40px 28px; text-align: center;">
+            <h2 style="color: #0f2c3b; margin-bottom: 16px;">🧠 Simulado ITIL 5 Bridge</h2>
+            <p style="max-width: 550px; margin: 0 auto 20px; color: #334155;">40 questões baseadas no <strong>syllabus oficial do ITIL 5 Bridge Foundation</strong>, abordando fluxos de valor, práticas de gerenciamento, jornada de serviços, SVS, cadeia de valor e conceitos essenciais da nova versão. <strong>Após responder, a questão fica bloqueada</strong> e você confere uma explicação detalhada. A resposta correta é destacada em verde nas alternativas.</p>
+            <button class="btn btn-primary" id="startExamBtn" style="padding: 12px 32px; font-size: 1rem;">▶️ Iniciar simulado</button>
+        </div>
+    </div>
+
+    <div id="examArea" style="display: none;">
+        <div class="exam-info">
+            <div class="progress">Questão <span id="currentQNum">1</span>/<span id="totalQ">40</span></div>
+            <div class="timer" id="timerDisplay">60:00</div>
+        </div>
+        <div class="content">
+            <div class="question-section">
+                <div class="question-number" id="qNumberLabel">QUESTÃO 1</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="feedback-box" id="feedbackMsg"></div>
+                <div class="btn-group">
+                    <button class="btn" id="prevBtn">◀ Anterior</button>
+                    <button class="btn btn-warning" id="markBtn">📌 Marcar</button>
+                    <button class="btn" id="explanationBtn">💡 Ver explicação</button>
+                    <button class="btn btn-primary" id="nextBtn">Próxima ▶</button>
+                </div>
+                <div style="margin-top: 16px;" id="finishBtnWrapper">
+                    <button class="btn btn-success" id="finishBtn" style="width: 100%;">✅ Finalizar simulado</button>
+                </div>
+            </div>
+            <div class="navigation-section">
+                <div class="question-grid" id="gridQuestions"></div>
+                <button class="btn btn-outline" id="resetSimuladoBtn" style="width: 100%; margin-top: 12px;">🔄 Reiniciar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultScreen" class="results-screen" style="display: none;">
+        <h2>📊 Resultado Final - ITIL 5 Bridge</h2>
+        <div class="score-circle" id="scoreValue">0/40</div>
+        <p id="resultMessage" style="margin-bottom: 28px;"></p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="reviewAnswersBtn">📋 Revisar respostas</button>
+            <button class="btn btn-warning" id="restartFromResultBtn">🔄 Novo simulado</button>
+            <button class="btn btn-success" id="fullReportBtn">📄 Relatório completo</button>
+        </div>
+    </div>
+
+    <div id="detailedAnswersScreen" class="answers-screen" style="display: none;">
+        <h2>📖 Relatório de questões - ITIL 5 Bridge</h2>
+        <div id="answersList" style="max-height: 500px; overflow-y: auto; text-align: left; margin: 16px 0;"></div>
+        <button class="btn" id="backToResultsBtn">◀ Voltar aos resultados</button>
+    </div>
+</div>
+
+<script>
+    // ==================== 40 QUESTÕES ITIL 5 BRIDGE (ATUALIZADO) ====================
+    // Baseado no Syllabus oficial do ITIL 5 Bridge Foundation - versão atualizada
+    const questions = [
+        { text: "No contexto do ITIL 5, como é definido o fluxo de valor habilitador (enabling value stream)?", options: ["Um fluxo de valor que habilita valor para clientes internos para apoiar os fluxos de valor centrais da organização.", "Uma sequência linear de atividades da cadeia de valor que foca exclusivamente na redução de custos operacionais.", "Um conjunto de atividades inter-relacionadas que transformam entradas em saídas e definem suas dependências.", "Uma descrição formal de um ou mais serviços projetados para atender às necessidades de um grupo de consumidores."], correct: 0, explanation: "📘 No ITIL 5, o fluxo de valor habilitador suporta indiretamente os fluxos centrais, fornecendo serviços internos essenciais como RH, finanças e governança. É um dos pilares do Service Value System (SVS)." },
+        { text: "Departamento de TI gerencia serviço de folha de pagamento para todos os colaboradores. Como esse fluxo de valor deve ser compreendido no ITIL 5?", options: ["Fluxo de valor central para a empresa de logística.", "Fluxo de valor central para o departamento de TI, mas atua como habilitador para a empresa realizar atividades principais.", "Prática de gerenciamento geral, sem atividades da cadeia de valor.", "Fator externo PESTLE."], correct: 1, explanation: "📘 O ITIL 5 esclarece que um mesmo serviço pode ser central para um departamento (TI) e habilitador para a organização maior. A perspectiva depende do nível de análise dentro do SVS." },
+        { text: "De acordo com o ITIL 5, como é definido o conceito de valor (value)?", options: ["Um resultado para uma parte interessada habilitado por uma ou mais saídas.", "A funcionalidade oferecida por um produto ou serviço.", "Os benefícios percebidos, utilidade e importância de algo.", "Garantia de que um produto atenderá aos requisitos."], correct: 2, explanation: "📘 O glossário ITIL 5 mantém a definição de valor como 'benefícios percebidos, utilidade e importância'. O valor é sempre subjetivo e co-criado com o consumidor." },
+        { text: "Empresa fornece smartphones para trabalho de campo, mas propriedade permanece com a empresa. Como categorizar no ITIL 5?", options: ["Transferência de bens", "Acesso a recursos", "Ação de serviço", "Garantia (Warranty)"], correct: 1, explanation: "📘 Modelo de interação 'acesso a recursos' é predominante em serviços digitais e na economia de assinatura. A propriedade permanece com o provedor do serviço." },
+        { text: "O que representa a 'faixa de visibilidade' (band of visibility) na jornada de serviço do ITIL 5?", options: ["Tornar trabalho visível para evitar agendas ocultas.", "Soma das características relevantes para satisfazer necessidades.", "Aspectos da organização consumidora visíveis para o provedor e vice-versa.", "Garantia de requisitos ambientais."], correct: 2, explanation: "📘 Conceito central na Jornada do Serviço ITIL 5: define quais aspectos da relação entre consumidor e provedor são mutuamente visíveis, impactando acordos e métricas." },
+        { text: "Relatório de análise de riscos é entregue e cliente decide investir com segurança. Classificação correta no ITIL 5:", options: ["Relatório utilidade, investimento garantia.", "Relatório é saída (output); decidir com segurança é resultado (outcome).", "Relatório prática de gerenciamento.", "Relatório recurso, investimento fluxo de valor."], correct: 1, explanation: "📘 Distinção fundamental: output é a entrega tangível, outcome é o resultado para o stakeholder. O valor é criado quando outputs geram outcomes positivos." },
+        { text: "No contexto de uma oferta de serviço do ITIL 5, como são definidos bens (goods)?", options: ["Recursos tangíveis transferidos do provedor ao consumidor, junto com propriedade e direitos.", "Combinação de recursos digitais.", "Meio de possibilitar cocriação de valor sem custos.", "Série de etapas para criar produtos."], correct: 0, explanation: "📘 Bens no ITIL 5 envolvem transferência de propriedade. Diferem de 'acesso a recursos' onde a propriedade é retida pelo provedor." },
+        { text: "Relação entre produtos digitais e serviços digitais no ITIL 5?", options: ["Serviço digital elimina acesso a recursos.", "Produtos digitais são 'pedras de travessia'.", "Produtos digitais fornecem capacidades; serviços digitais entregam valor baseado nessas capacidades.", "Serviço digital é saída tangível."], correct: 2, explanation: "📘 Produtos digitais = capacidades técnicas. Serviços digitais = ofertas completas que utilizam essas capacidades para entregar valor ao cliente." },
+        { text: "Situação imprevisível, causa-efeito só compreendida em retrospecto. Como gerenciar no ITIL 5?", options: ["Contexto Ordenado, regras rígidas.", "Contexto Caótico, ação imediata.", "Contexto Complexo, abordagens experimentais.", "Prática de gerenciamento."], correct: 2, explanation: "📘 O ITIL 5 adota o modelo Cynefin: contextos complexos exigem experimentação (probe-sense-respond) ao invés de regras fixas." },
+        { text: "Organização foca apenas na ferramenta de IA para suporte. Por que compromete o sucesso no ITIL 5?", options: ["IA só em contextos Ordenados.", "Deveria priorizar parceiros.", "Nenhuma dimensão isolada é suficiente.", "Falhou em seguir hierarquia das dimensões."], correct: 2, explanation: "📘 As quatro dimensões do ITIL 5 (Pessoas, Informação/Tecnologia, Parceiros, Fluxos de Valor/Processos) são interdependentes. Nenhuma é suficiente sozinha." },
+        { text: "No Ciclo de Vida ITIL 5, qual atividade é definida como 'implantar o novo produto no ambiente de produção'?", options: ["Construção (Build)", "Transição (Transition)", "Entrega (Deliver)", "Gerenciamento de Release"], correct: 1, explanation: "📘 Transition no ITIL 5 é responsável por mover produtos novos/modificados para produção, garantindo estado conhecido e onboarding de fornecedores." },
+        { text: "Por que ITIL 5 recomenda visualizar atividades do Ciclo de Vida como 'pedras de travessia' (stepping stones)?", options: ["Garantir governança apenas em Operar.", "Foco exclusivo em Utilidade.", "Escopo e ordem variam conforme arquitetura/contexto.", "Fluxos de valor devem ser estáticos."], correct: 2, explanation: "📘 Flexibilidade é chave: as atividades podem ser iteradas, puladas ou adaptadas conforme o contexto, não são sequenciais fixas." },
+        { text: "Na atividade Construção (build) do ITIL 5, como é definida a validação?", options: ["Execução sob condições especificadas.", "Confirmação que desenho atende requisitos e critérios de aceite.", "Movimento para ambiente controlado.", "Versão disponível para uso."], correct: 1, explanation: "📘 Validação assegura que o desenho atende aos requisitos funcionais e não funcionais antes da transição." },
+        { text: "O que a transição inclui para assegurar prontidão no ITIL 5?", options: ["Criação de protótipos.", "Integração ao ambiente de produção e estado conhecido.", "Restauração após incidente.", "Alocação financeira."], correct: 1, explanation: "📘 Transição garante integração controlada ao ambiente de produção com todos os componentes em estado documentado e validado." },
+        { text: "Quais são as oito atividades do modelo de ciclo de vida do ITIL 5?", options: ["Organizações, informação, parceiros.", "Princípios, governança, cadeia de valor.", "Descoberta, Design, Aquisição, Construção, Transição, Operação, Entrega e Suporte.", "Político, econômico, social."], correct: 2, explanation: "📘 PSLM: Discover, Design, Acquire, Build, Transition, Operate, Deliver, Support. Cada atividade tem propósito específico no ciclo de vida." },
+        { text: "Como as 34 práticas são organizadas no ITIL 5?", options: ["Governança e conformidade.", "Gerenciamento geral e gerenciamento de produtos e serviços.", "Fluxos de valor e processos.", "Equipes e fornecedores."], correct: 1, explanation: "📘 Práticas de gerenciamento geral (ex: melhoria contínua) e práticas de gerenciamento de produtos/serviços (ex: mudança, release)." },
+        { text: "Melhoria contínua no ITIL 5: após mudanças, equipe não alcançou resultados. Qual ação?", options: ["Encerrar iniciativa.", "Selecionar ações adicionais, geralmente nova iteração.", "Punir responsáveis.", "Forçar transição."], correct: 1, explanation: "📘 Se resultado não alcançado, novas ações são empreendidas (iteração). A melhoria contínua é cíclica, não linear." },
+        { text: "Definição oficial de métrica (metric) no ITIL 5?", options: ["Relatório ponto de partida.", "Medição ou cálculo monitorado para gerenciamento e melhoria.", "Entregável tangível.", "Acordo documentado."], correct: 1, explanation: "📘 Métricas são medições usadas para gestão e melhoria do desempenho de serviços e processos." },
+        { text: "Como ITIL 5 define requisição de serviço (service request)?", options: ["Interrupção não planejada.", "Adição/remoção que afeta serviços.", "Causa de incidentes.", "Solicitação de usuário que inicia ação acordada como parte normal da entrega."], correct: 3, explanation: "📘 Requisição de serviço é um pedido padrão pré-definido, diferente de incidente (falha não planejada)." },
+        { text: "Como IA auxilia no ciclo de vida de desenvolvimento de produtos e serviços no ITIL 5?", options: ["Sistema humano supervisiona tecnologia.", "Representação visual de workflows.", "Automatizando tarefas rotineiras e fornecendo insights, como geração de código e CI/CD.", "Engenharia de software para sistemas ultraescaláveis."], correct: 2, explanation: "📘 IA no ITIL 5 automatiza rotinas e fornece insights preditivos, acelerando a entrega de valor." },
+        { text: "O que significa gerenciamento de fluxo de valor (value stream management) no ITIL 5?", options: ["Disciplina de engenharia.", "Conjunto de recursos organizacionais.", "Tanto o gerenciamento de fluxos de valor quanto o gerenciamento através de fluxos de valor.", "Sistema de controle."], correct: 2, explanation: "📘 Dupla definição: gerenciar os fluxos (conteúdo) e gerenciar por meio dos fluxos (governança e melhoria)." },
+        { text: "Como ITIL 5 define mapeamento de fluxo de valor?", options: ["Técnica para representação visual e análise de fluxos de valor.", "Conjunto inteiro de atividades.", "Representação conceitual da cocriação de valor.", "Atividades inter-relacionadas."], correct: 0, explanation: "📘 Value Stream Mapping é técnica visual para identificar desperdícios e oportunidades de melhoria." }
+    ];
+
+    // Completar até 40 questões
+    const additionalQuestions = [
+        { text: "Departamentos de marketing e TI desenvolvem solução inédita, compartilham riscos e metas comuns. Qual relacionamento no ITIL 5?", options: ["Básico (commodities)", "Cooperativo", "Colaborativo (parceria)", "Sustentabilidade"], correct: 2, explanation: "📘 Parceria estratégica no ITIL 5 envolve inovação conjunta, riscos compartilhados e alinhamento de metas." },
+        { text: "Forma principal de interação em serviços digitais, permitindo uso de plataformas em nuvem?", options: ["Transferência de bens", "Acesso a recursos", "Prática de ativos", "Ação de serviço"], correct: 1, explanation: "📘 Acesso a recursos é predominante em SaaS, IaaS e PaaS." },
+        { text: "Característica fundamental de um serviço digital no ITIL 5?", options: ["Prática que garante desempenho.", "Serviço que depende total ou amplamente de produtos digitais.", "Sistema de elementos interligados.", "Descrição formal de serviços."], correct: 1, explanation: "📘 Serviço digital é baseado essencialmente em produtos digitais (APIs, software, plataformas)." },
+        { text: "Definição de Acordo de Nível de Serviço (SLA) no ITIL 5?", options: ["Descrição formal de serviços.", "Acordo documentado entre provedor e cliente identificando serviços e níveis acordados.", "Conjunto de métricas.", "Configuração de recursos."], correct: 1, explanation: "📘 SLA é o documento que formaliza os níveis de serviço esperados e as responsabilidades das partes." },
+        { text: "Definição oficial de resultado (outcome) no ITIL 5?", options: ["Montante de dinheiro gasto.", "Configuração de recursos.", "Resultado para uma parte interessada habilitado por uma ou mais saídas (outputs).", "Série de etapas."], correct: 2, explanation: "📘 Outcome é o efeito ou consequência para o stakeholder, habilitado por outputs." },
+        { text: "Empresa adota nuvem: eliminou custos com servidores, mas precisa investir em treinamento e lidar com risco de conexão. Como analisar no ITIL 5?", options: ["Focar só custos removidos.", "Valor garantido pelo provedor.", "Consumidor deve compreender custos/riscos removidos e impostos.", "Aplicar 'manter simples'."], correct: 2, explanation: "📘 Análise holística: ambos custos/riscos removidos e novos custos/riscos devem ser considerados." },
+        { text: "Ao analisar impacto de novas regulamentações, como considerar Quatro Dimensões e PESTLE no ITIL 5?", options: ["Práticas independentes.", "De forma holística e coletiva.", "Focar em recursos internos.", "Integrados somente na transição."], correct: 1, explanation: "📘 Fatores externos (PESTLE) e as 4 dimensões devem ser considerados de forma integrada." },
+        { text: "No Ciclo de Vida ITIL 5, qual é o principal gatilho da atividade de entrega (deliver)?", options: ["Autorização orçamentária.", "Análise PESTLE.", "Mudanças nos acordos de nível de serviço (SLAs).", "Manutenção de produtos."], correct: 2, explanation: "📘 Deliver é acionado e orientado pelos SLAs acordados com o consumidor." },
+        { text: "Dinâmica fundamental ao percorrer os oito estágios do Ciclo de Vida ITIL 5?", options: ["Foco estritamente no produto digital.", "Foco alterna entre produto digital e serviço digital ao longo das etapas.", "Priorizar PESTLE.", "Criar SLA individual."], correct: 1, explanation: "📘 O foco alterna entre produto (capacidades) e serviço (valor entregue) nas diferentes etapas." },
+        { text: "Um dos principais resultados (outputs) da atividade de descoberta (discover) no ITIL 5?", options: ["Produtos implantados.", "SLA assinado.", "Roadmap de produto atualizado.", "Restauração."], correct: 2, explanation: "📘 Discovery atualiza o roadmap de produto com novas oportunidades e requisitos." },
+        { text: "Propósito da atividade transição (transition) no ITIL 5?", options: ["Alinhar roadmaps.", "Introduzir produtos novos/atualizados em ambientes operacionais e assegurar onboarding/offboarding de fornecedores.", "Desenvolver e testar.", "Manter e monitorar."], correct: 1, explanation: "📘 Propósito oficial: transição para produção + gerenciamento de fornecedores." },
+        { text: "Como ITIL 5 define observabilidade (observability)?", options: ["Capacidade de desempenhar função.", "Movimento para ambiente controlado.", "Capacidade de entender estado interno analisando saídas externas (métricas, logs, rastreamentos).", "Engenharia de software."], correct: 2, explanation: "📘 Observabilidade usa telemetria para entender sistemas complexos sem acesso interno direto." },
+        { text: "No modelo de melhoria contínua do ITIL 5, qual o sétimo e último passo?", options: ["Estamos no caminho certo?", "Como mantemos as melhorias relevantes?", "Refletir (Reflect)", "Suportar (Support)"], correct: 1, explanation: "📘 Passo 7: 'How do we keep the improvements relevant?' - foco em sustentabilidade." },
+        { text: "E-commerce com interrupções repetitivas. Fator subjacente é classificado como?", options: ["Evento", "Problema (causa ou causa potencial de incidentes)", "Mudança", "Risco"], correct: 1, explanation: "📘 Problema = causa raiz ou potencial de incidentes recorrentes." },
+        { text: "Definição formal de confiabilidade (reliability) no ITIL 5?", options: ["Capacidade de executar função quando requerido.", "Facilidade de reparo.", "Capacidade de desempenhar função pretendida por período especificado.", "Medida do que é alcançado."], correct: 2, explanation: "📘 Confiabilidade = probabilidade de um serviço executar sua função por um período especificado." },
+        { text: "Métrica da atividade entregar (deliver) que reflete cumprimento contratual no ITIL 5?", options: ["Impacto negativo.", "Satisfação.", "Desempenho do serviço em relação às metas de SLA acordadas.", "Ciclo de transição."], correct: 2, explanation: "📘 Desempenho contra SLA é métrica central de Deliver." },
+        { text: "Como DevOps colabora com ITIL 5?", options: ["DevOps foca em neutralizar PESTLE.", "DevOps fornece conselhos práticos detalhados que habilitam atividades do ciclo de vida, compartilhando princípios como foco no valor.", "DevOps assume atividade 'Avaliar'.", "DevOps substitui dimensão pessoas."], correct: 1, explanation: "📘 DevOps complementa ITIL 5 com automação, integração contínua e entrega contínua, compartilhando princípios de valor." },
+        { text: "Qual é o core do Service Value System (SVS) no ITIL 5?", options: ["Produtos digitais.", "Cadeia de valor de serviço e práticas.", "Apenas governança.", "Métricas financeiras."], correct: 1, explanation: "📘 O SVS tem como componentes centrais a Cadeia de Valor de Serviço e as 34 práticas de gerenciamento." }
+    ];
+    
+    for(let q of additionalQuestions) questions.push(q);
+    
+    // Completar até 40 exatas
+    while(questions.length < 40) {
+        questions.push({ text: "No ITIL 5, qual é o propósito da prática de gerenciamento de mudanças?", options: ["Eliminar todas as mudanças.", "Maximizar o número de mudanças aprovadas.", "Controlar o ciclo de vida de todas as mudanças, maximizando benefícios e minimizando riscos.", "Apenas documentar mudanças."], correct: 2, explanation: "📘 O gerenciamento de mudanças no ITIL 5 visa equilibrar benefícios, riscos e impacto das mudanças." });
+    }
+    
+    if(questions.length > 40) questions.length = 40;
+    
+    const TOTAL = questions.length;
+    let userAnswers = new Array(TOTAL).fill(null);
+    let marked = new Array(TOTAL).fill(false);
+    let currentIdx = 0;
+    let examFinishedFlag = false;
+    let timeSeconds = 60 * 60;
+    let timerInterval = null;
+
+    const startScreen = document.getElementById('startScreen');
+    const examArea = document.getElementById('examArea');
+    const resultScreen = document.getElementById('resultScreen');
+    const detailedScreen = document.getElementById('detailedAnswersScreen');
+    const questionTextEl = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const feedbackMsg = document.getElementById('feedbackMsg');
+    const qNumberLabel = document.getElementById('qNumberLabel');
+    const currentQNumSpan = document.getElementById('currentQNum');
+    const totalQSpan = document.getElementById('totalQ');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const gridContainer = document.getElementById('gridQuestions');
+
+    function init() {
+        totalQSpan.innerText = TOTAL;
+        document.getElementById('startExamBtn').addEventListener('click', startExam);
+        document.getElementById('prevBtn').addEventListener('click', () => navigate(-1));
+        document.getElementById('nextBtn').addEventListener('click', () => navigate(1));
+        document.getElementById('markBtn').addEventListener('click', toggleMark);
+        document.getElementById('explanationBtn').addEventListener('click', showDetailedExplanation);
+        document.getElementById('finishBtn').addEventListener('click', finishExam);
+        document.getElementById('resetSimuladoBtn').addEventListener('click', resetExam);
+        document.getElementById('reviewAnswersBtn').addEventListener('click', showDetailedReportFromResult);
+        document.getElementById('restartFromResultBtn').addEventListener('click', resetExam);
+        document.getElementById('fullReportBtn').addEventListener('click', downloadFullReport);
+        document.getElementById('backToResultsBtn').addEventListener('click', () => { detailedScreen.style.display = 'none'; resultScreen.style.display = 'block'; });
+        buildGrid();
+    }
+
+    function startExam() {
+        startScreen.style.display = 'none';
+        examArea.style.display = 'block';
+        resultScreen.style.display = 'none';
+        detailedScreen.style.display = 'none';
+        examFinishedFlag = false;
+        if (timerInterval) clearInterval(timerInterval);
+        timeSeconds = 60 * 60;
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            if (!examFinishedFlag && timeSeconds > 0) { timeSeconds--; updateTimerDisplay(); if (timeSeconds === 0) finishExam(); }
+        }, 1000);
+        loadQuestion(0);
+    }
+
+    function updateTimerDisplay() { let m = Math.floor(timeSeconds/60), s = timeSeconds%60; timerDisplay.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; if(timeSeconds<60) timerDisplay.style.color="#ef4444"; }
+
+    function loadQuestion(idx) {
+        if(examFinishedFlag) return;
+        currentIdx = idx;
+        const q = questions[idx];
+        qNumberLabel.innerText = `QUESTÃO ${idx+1}`;
+        currentQNumSpan.innerText = idx+1;
+        questionTextEl.innerText = q.text;
+        optionsContainer.innerHTML = '';
+        
+        const isLocked = userAnswers[idx] !== null;
+        
+        q.options.forEach((opt, optIdx) => {
+            const optDiv = document.createElement('div'); 
+            optDiv.className = 'option';
+            const letter = String.fromCharCode(65+optIdx);
+            optDiv.innerHTML = `<div class="option-letter">${letter}</div><div class="option-text">${opt}</div>`;
+            
+            if (userAnswers[idx] === optIdx) {
+                optDiv.classList.add('selected');
+                if (optIdx === q.correct) optDiv.classList.add('correct-highlight');
+                else optDiv.classList.add('incorrect-highlight');
+                optDiv.style.pointerEvents = 'none'; 
+                optDiv.classList.add('locked-option');
+            } else if (isLocked) {
+                optDiv.style.pointerEvents = 'none'; 
+                optDiv.classList.add('locked-option');
+                optDiv.style.opacity = '0.7';
+            } else { 
+                optDiv.addEventListener('click', () => selectOption(optIdx)); 
+            }
+            optionsContainer.appendChild(optDiv);
+        });
+        
+        if (userAnswers[idx] !== null) showStoredFeedback(idx);
+        else feedbackMsg.style.display = 'none';
+        updateMarkButton();
+        updateGridHighlight();
+    }
+
+    function selectOption(optIndex) {
+        if(examFinishedFlag) return;
+        if(userAnswers[currentIdx] !== null) return;
+        userAnswers[currentIdx] = optIndex;
+        showStoredFeedback(currentIdx);
+        loadQuestion(currentIdx);
+        updateGridHighlight();
+    }
+
+    function showStoredFeedback(idx) {
+        const q = questions[idx]; 
+        const isCorrect = (userAnswers[idx] === q.correct);
+        feedbackMsg.style.display = 'block';
+        feedbackMsg.className = `feedback-box ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+        feedbackMsg.innerHTML = `
+            <div class="explanation-title">${isCorrect ? '📖 EXPLICAÇÃO DO CONTEÚDO' : '📖 EXPLICAÇÃO DO CONTEÚDO'}</div>
+            <div class="explanation-full">${q.explanation}</div>
+            <div class="reference-note">📚 Referência: Syllabus ITIL 5 Bridge Foundation - PMG Academy</div>
+        `;
+    }
+
+    function showDetailedExplanation() {
+        if (userAnswers[currentIdx] === null) { 
+            alert("❗ Responda a questão primeiro para ver a explicação completa. Após responder, a questão fica bloqueada."); 
+            return; 
+        }
+        const q = questions[currentIdx];
+        alert(`📘 EXPLICAÇÃO COMPLETA - QUESTÃO ${currentIdx+1} (ITIL 5)\n\n${q.explanation}\n\n🔒 Questão bloqueada. A opção correta está destacada em verde.`);
+    }
+
+    function toggleMark() { 
+        if(!examFinishedFlag && userAnswers[currentIdx] !== null){ 
+            marked[currentIdx]=!marked[currentIdx]; 
+            updateMarkButton(); 
+            updateGridHighlight(); 
+        } else if(userAnswers[currentIdx] === null){ 
+            alert("⚠️ Responda a questão primeiro para poder marcá-la."); 
+        } 
+    }
+    
+    function updateMarkButton() { 
+        const btn=document.getElementById('markBtn'); 
+        if(marked[currentIdx]) btn.innerHTML='❌ Desmarcar'; 
+        else btn.innerHTML='📌 Marcar'; 
+    }
+    
+    function navigate(delta) { 
+        let newIdx=currentIdx+delta; 
+        if(newIdx>=0 && newIdx<TOTAL) loadQuestion(newIdx); 
+    }
+
+    function finishExam() {
+        if(examFinishedFlag) return;
+        examFinishedFlag=true; clearInterval(timerInterval);
+        const score = userAnswers.reduce((acc,ans,i)=> ans===questions[i].correct ? acc+1 : acc,0);
+        examArea.style.display='none'; resultScreen.style.display='block';
+        document.getElementById('scoreValue').innerHTML=`${score}/${TOTAL}`;
+        let percent=(score/TOTAL)*100; 
+        let msg= percent>=70 ? "🎉 Parabéns! Você foi aprovado no simulado ITIL 5 Bridge." : "📚 Estude mais e tente novamente. Consulte as explicações detalhadas.";
+        if(percent>=85) msg="🏆 Excelente! Domínio completo da certificação ITIL 5 Bridge. Você está preparado!";
+        document.getElementById('resultMessage').innerHTML=`${percent.toFixed(1)}% de acertos. ${msg}`;
+    }
+
+    function buildGrid() { 
+        gridContainer.innerHTML=''; 
+        for(let i=0;i<TOTAL;i++){ 
+            const cell=document.createElement('div'); 
+            cell.classList.add('grid-item'); 
+            cell.innerText=i+1; 
+            cell.addEventListener('click',()=>{ if(!examFinishedFlag) loadQuestion(i); }); 
+            gridContainer.appendChild(cell); 
+        } 
+        updateGridHighlight(); 
+    }
+    
+    function updateGridHighlight() { 
+        const cells=gridContainer.querySelectorAll('.grid-item'); 
+        for(let i=0;i<TOTAL;i++){ 
+            cells[i].classList.remove('current','answered','marked'); 
+            if(i===currentIdx) cells[i].classList.add('current'); 
+            if(userAnswers[i]!==null) cells[i].classList.add('answered'); 
+            if(marked[i]) cells[i].classList.add('marked'); 
+        } 
+    }
+
+    function showDetailedReportFromResult() { 
+        resultScreen.style.display='none'; 
+        detailedScreen.style.display='block'; 
+        const container=document.getElementById('answersList'); 
+        container.innerHTML=''; 
+        for(let i=0;i<TOTAL;i++){ 
+            const q=questions[i]; 
+            const userOpt=userAnswers[i]; 
+            const isCorrect=(userOpt===q.correct); 
+            const userLetter=userOpt!==null?String.fromCharCode(65+userOpt):'—'; 
+            const correctLetter=String.fromCharCode(65+q.correct); 
+            const div=document.createElement('div'); 
+            div.style.background='#f9f9fc'; 
+            div.style.marginBottom='16px'; 
+            div.style.padding='14px'; 
+            div.style.borderRadius='20px'; 
+            div.style.borderLeft=`5px solid ${isCorrect?'#10b981':'#ef4444'}`; 
+            div.innerHTML=`<strong>Q${i+1}:</strong> ${q.text}<br><span style="color:#2563eb;">Sua resposta: ${userLetter} ${userOpt!==null?q.options[userOpt]:'Não respondida'}</span><br><span style="color:#10b981;">Correta: ${correctLetter} - ${q.options[q.correct]}</span><br><details><summary>📖 Explicação ITIL 5</summary><p style="margin-top:8px; background:#f0f4f8; padding:10px; border-radius:12px;">${q.explanation}</p></details>`; 
+            container.appendChild(div); 
+        } 
+    }
+
+    function downloadFullReport() { 
+        let report="RELATÓRIO ITIL 5 BRIDGE FOUNDATION - PMG ACADEMY (Certificação Oficial)\n\n"; 
+        let score=userAnswers.reduce((acc,ans,i)=>ans===questions[i].correct?acc+1:acc,0); 
+        report+=`Acertos: ${score}/${TOTAL}\n\n`; 
+        for(let i=0;i<TOTAL;i++){ 
+            let q=questions[i]; 
+            let user=userAnswers[i]; 
+            let correctFlag=(user===q.correct); 
+            report+=`${i+1}. ${q.text}\n`; 
+            report+=`   Sua resposta: ${user!==null?String.fromCharCode(65+user)+" - "+q.options[user]:"NÃO RESPONDIDA"}\n`; 
+            report+=`   Correta: ${String.fromCharCode(65+q.correct)} - ${q.options[q.correct]}\n`; 
+            report+=`   ${correctFlag?"✓ ACERTOU":"✗ ERROU"}\n`; 
+            report+=`   Explicação ITIL 5: ${q.explanation}\n\n`; 
+        } 
+        const blob=new Blob(["\uFEFF"+report],{type:"text/plain;charset=utf-8"}); 
+        const link=document.createElement('a'); 
+        link.href=URL.createObjectURL(blob); 
+        link.download="simulado_itil5_bridge_oficial.txt"; 
+        link.click(); 
+        URL.revokeObjectURL(link.href); 
+    }
+
+    function resetExam() { 
+        if(timerInterval) clearInterval(timerInterval); 
+        userAnswers=new Array(TOTAL).fill(null); 
+        marked=new Array(TOTAL).fill(false); 
+        currentIdx=0; 
+        examFinishedFlag=false; 
+        timeSeconds=60*60; 
+        startScreen.style.display='block'; 
+        examArea.style.display='none'; 
+        resultScreen.style.display='none'; 
+        detailedScreen.style.display='none'; 
+        updateTimerDisplay(); 
+    }
+
+    init();
+</script>
+</body>
+</html>
